@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.components;
 import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.PatientReporterApplication2;
+import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.itextpdf.kernel.geom.Rectangle;
@@ -73,13 +73,14 @@ public final class SidePanel {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", sampleReport.hospitalPatientId()));
             }
 
-            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
+            String hospitalPathologySampleId = sampleReport.hospitalPathologySampleId();
+            if (cohort.requireHospitalPAId() && hospitalPathologySampleId != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", hospitalPathologySampleId));
             }
         }
 
         if (page.getDocument().getNumberOfPages() == 1) {
-            String reporterVersion = PatientReporterApplication2.VERSION != null ? PatientReporterApplication2.VERSION : "X.X";
+            String reporterVersion = PatientReporterApplication.VERSION != null ? PatientReporterApplication.VERSION : "X.X";
             cv.add(new Paragraph(qsFormNumber + " v" + reporterVersion).setFixedPosition(
                             pageSize.getWidth() - RECTANGLE_WIDTH + 4, 40, 60)
                     .setRotationAngle(Math.PI / 2)

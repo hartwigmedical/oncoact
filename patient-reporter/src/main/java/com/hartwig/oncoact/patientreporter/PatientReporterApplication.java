@@ -29,11 +29,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class PatientReporterApplication2 {
+public class PatientReporterApplication {
 
-    private static final Logger LOGGER = LogManager.getLogger(PatientReporterApplication2.class);
+    private static final Logger LOGGER = LogManager.getLogger(PatientReporterApplication.class);
 
-    public static final String VERSION = PatientReporterApplication2.class.getPackage().getImplementationVersion();
+    public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
 
     // Uncomment this line when generating an example report using CFReportWriterTest
     //                    public static final String VERSION = "7.26";
@@ -52,7 +52,7 @@ public class PatientReporterApplication2 {
             throw new IllegalArgumentException("Unexpected error, check inputs");
         }
 
-        new PatientReporterApplication2(config, DataUtil.formatDate(LocalDate.now())).run();
+        new PatientReporterApplication(config, DataUtil.formatDate(LocalDate.now())).run();
     }
 
     @NotNull
@@ -60,7 +60,7 @@ public class PatientReporterApplication2 {
     @NotNull
     private final String reportDate;
 
-    private PatientReporterApplication2(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
+    private PatientReporterApplication(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
         this.config = config;
         this.reportDate = reportDate;
     }

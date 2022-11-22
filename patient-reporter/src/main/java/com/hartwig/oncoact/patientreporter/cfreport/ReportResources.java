@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import com.hartwig.oncoact.patientreporter.PatientReporterApplication2;
+import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
 import com.itextpdf.io.font.PdfEncodings;
@@ -24,12 +24,12 @@ public final class ReportResources {
     public static final String CONTACT_EMAIL_QA = "qualitysystem@hartwigmedicalfoundation.nl";
     public static final String SIGNATURE_NAME = "Edwin Cuppen";
     public static final String SIGNATURE_TITLE = "Director " + HARTWIG_NAME;
-    public static final String VERSION_REPORT = "version " + PatientReporterApplication2.VERSION;
+    public static final String VERSION_REPORT = "version " + PatientReporterApplication.VERSION;
     public static final String MANUAL = "https://www.oncoact.nl/manual";
 
     public static final double PURITY_CUTOFF = 0.195;
 
-    static final String METADATA_TITLE = "HMF Sequencing Report v" + PatientReporterApplication2.VERSION;
+    static final String METADATA_TITLE = "HMF Sequencing Report v" + PatientReporterApplication.VERSION;
     static final String METADATA_AUTHOR = HARTWIG_NAME;
 
     static final float PAGE_MARGIN_TOP = 150; // Top margin also excludes the chapter title, which is rendered in the header
