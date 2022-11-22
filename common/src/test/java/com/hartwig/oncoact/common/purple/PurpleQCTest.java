@@ -100,9 +100,9 @@ public class PurpleQCTest
                 PurpleQCStatus.genderPass(qc.amberGender(), qc.cobaltGender(), qc.germlineAberrations()),
                 qc.unsupportedCopyNumberSegments(), qc.deletedGenes(), qc.purity(), qc.method(), qc.contamination(), MAX_DELETED_GENES);
 
-        assertTrue(statusSet.size() == requiredStatusSet.size());
+        assertEquals(statusSet.size(), requiredStatusSet.size());
 
-        assertTrue(requiredStatusSet.stream().allMatch(x -> statusSet.contains(x)));
+        assertTrue(statusSet.containsAll(requiredStatusSet));
     }
 
     /*

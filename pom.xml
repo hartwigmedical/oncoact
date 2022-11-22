@@ -28,6 +28,7 @@
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
         <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
+        <maven.shade.plugin.version>3.2.4</maven.shade.plugin.version>
 
         <google.artifactregistry.version>2.1.0</google.artifactregistry.version>
 
@@ -128,9 +129,9 @@
                     <version>${maven.surefire.plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-maven-plugin</artifactId>
-                    <version>${kotlin.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven.shade.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jooq</groupId>

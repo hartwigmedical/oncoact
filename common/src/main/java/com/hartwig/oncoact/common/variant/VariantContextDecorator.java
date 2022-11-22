@@ -5,22 +5,15 @@ import static com.hartwig.oncoact.common.variant.PurpleVcfTags.PURPLE_BIALLELIC_
 import static com.hartwig.oncoact.common.variant.PurpleVcfTags.PURPLE_CN_INFO;
 import static com.hartwig.oncoact.common.variant.PurpleVcfTags.PURPLE_MINOR_ALLELE_CN_INFO;
 import static com.hartwig.oncoact.common.variant.PurpleVcfTags.PURPLE_VARIANT_CN_INFO;
-import static com.hartwig.oncoact.common.variant.SageVcfTags.LOCAL_PHASE_SET;
 import static com.hartwig.oncoact.common.variant.SageVcfTags.MICROHOMOLOGY_FLAG;
 import static com.hartwig.oncoact.common.variant.SageVcfTags.TRINUCLEOTIDE_FLAG;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.common.drivercatalog.DriverImpact;
 import com.hartwig.oncoact.common.genome.position.GenomePosition;
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.pathogenic.PathogenicSummary;
-import com.hartwig.oncoact.common.pathogenic.PathogenicSummaryFactory;
-import com.hartwig.oncoact.common.pathogenic.Pathogenicity;
 import com.hartwig.oncoact.common.variant.impact.VariantImpact;
 import com.hartwig.oncoact.common.variant.impact.VariantImpactSerialiser;
 
@@ -34,8 +27,6 @@ import htsjdk.variant.variantcontext.VariantContext;
 
 public class VariantContextDecorator implements GenomePosition
 {
-    private static final Set<CodingEffect> PATHOGENIC_EFFECT = EnumSet.of(CodingEffect.NONSENSE_OR_FRAMESHIFT, CodingEffect.SPLICE);
-
     private final VariantContext mContext;
     private final VariantType mType;
     private final String mFilter;
@@ -47,8 +38,6 @@ public class VariantContextDecorator implements GenomePosition
     private VariantImpact mVariantImpact;
     @Nullable
     private DriverImpact mDriverImpact;
-    @Nullable
-    private PathogenicSummary mClinvarPathogenicSummary;
 
     public VariantContextDecorator(final VariantContext context)
     {
@@ -60,7 +49,6 @@ public class VariantContextDecorator implements GenomePosition
         mTier = VariantTier.fromContext(context);
         mVariantImpact = null;
         mDriverImpact = null;
-        mClinvarPathogenicSummary = null;
     }
 
     public static String getRef(final VariantContext context)
@@ -76,16 +64,6 @@ public class VariantContextDecorator implements GenomePosition
     public boolean isPass()
     {
         return mFilter.equals(SomaticVariantFactory.PASS_FILTER);
-    }
-
-    public PathogenicSummary clinvarPathogenicSummary()
-    {
-        if(mClinvarPathogenicSummary == null)
-        {
-            mClinvarPathogenicSummary = PathogenicSummaryFactory.fromContext(mContext);
-        }
-
-        return mClinvarPathogenicSummary;
     }
 
     public VariantContext context()
@@ -166,30 +144,6 @@ public class VariantContextDecorator implements GenomePosition
 
     public double variantCopyNumber() { return mContext.getAttributeAsDouble(PURPLE_VARIANT_CN_INFO, 0); }
 
-    @Nullable
-    public String localPhaseSetsToString()
-    {
-        List<Integer> localPhaseSets = mContext.getAttributeAsIntList(LOCAL_PHASE_SET, 0);
-        return SomaticVariantFactory.localPhaseSetsStr(localPhaseSets);
-    }
-
-    @Nullable
-    public Integer localPhaseSet()
-    {
-        if(!mContext.hasAttribute(LOCAL_PHASE_SET))
-            return null;
-
-        List<Integer> localPhaseSets = mContext.getAttributeAsIntList(LOCAL_PHASE_SET, 0);
-        return !localPhaseSets.isEmpty() ? localPhaseSets.get(0) : null;
-    }
-
-    @NotNull
-    public AllelicDepth allelicDepth(@NotNull final String sample)
-    {
-        final Genotype genotype = mContext.getGenotype(sample);
-        return genotype != null ? AllelicDepth.fromGenotype(genotype) : NO_DEPTH;
-    }
-
     @NotNull
     public GenotypeStatus genotypeStatus(@NotNull final String sample)
     {
@@ -200,11 +154,6 @@ public class VariantContextDecorator implements GenomePosition
     public VariantTier tier()
     {
         return mTier;
-    }
-
-    public PathogenicSummary pathogenicSummary()
-    {
-        return PathogenicSummaryFactory.fromContext(mContext);
     }
 
     public int repeatCount() { return mContext.getAttributeAsInt(SageVcfTags.REPEAT_COUNT_FLAG, 0); }
@@ -243,22 +192,6 @@ public class VariantContextDecorator implements GenomePosition
         return mContext.getAttributeAsString(MICROHOMOLOGY_FLAG, Strings.EMPTY);
     }
 
-    public boolean isPathogenic()
-    {
-        if(clinvarPathogenicSummary().pathogenicity() == Pathogenicity.BENIGN_BLACKLIST)
-        {
-            return false;
-        }
-
-        if(isHotspot() || clinvarPathogenicSummary().pathogenicity().isPathogenic())
-        {
-            return true;
-        }
-
-        return clinvarPathogenicSummary().pathogenicity() == Pathogenicity.UNKNOWN
-                && PATHOGENIC_EFFECT.contains(variantImpact().CanonicalCodingEffect);
-    }
-
     @NotNull
     private static String displayFilter(@NotNull final VariantContext context)
     {
@@ -273,21 +206,6 @@ public class VariantContextDecorator implements GenomePosition
             return SomaticVariantFactory.PASS_FILTER;
         }
     }
-
-    private static final AllelicDepth NO_DEPTH = new AllelicDepth()
-    {
-        @Override
-        public int totalReadCount()
-        {
-            return 0;
-        }
-
-        @Override
-        public int alleleReadCount()
-        {
-            return 0;
-        }
-    };
 
     @Override
     public String toString()

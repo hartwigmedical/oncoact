@@ -2,21 +2,11 @@ package com.hartwig.oncoact.common.genome.refgenome;
 
 import org.jetbrains.annotations.NotNull;
 
-import htsjdk.samtools.SamReader;
-
 public final class RefGenomeFunctions {
 
     private static final String CHR_PREFIX = "chr";
 
     private RefGenomeFunctions() {
-    }
-
-    public static boolean samReaderUsesChrInContigs(@NotNull SamReader samReader) {
-        return samReader.getFileHeader()
-                .getSequenceDictionary()
-                .getSequences()
-                .stream()
-                .anyMatch(x -> x.getSequenceName().contains(CHR_PREFIX));
     }
 
     @NotNull

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -217,8 +216,9 @@ public class SummaryChapter implements ReportChapter {
             if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
                 cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
             } else {
-                cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType() + " ("
-                        + DataUtil.formatPercentageDigit(patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
+                cuppaPrediction =
+                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + DataUtil.formatPercentageDigit(
+                                patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
             }
         }
 
@@ -384,7 +384,7 @@ public class SummaryChapter implements ReportChapter {
                                 TableUtil.createHeaderCell("Function") },
                         ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
-                Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet().stream().collect(Collectors.toSet()));
+                Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
                     List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
 
@@ -425,14 +425,13 @@ public class SummaryChapter implements ReportChapter {
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
-        }else {
+        } else {
             Table table = TableUtil.createReportContentTable(new float[] { 15, 15, 15 },
                     new Cell[] { TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele"),
                             TableUtil.createHeaderCell("Interpretation: presence in tumor") },
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
-            Set<String> sortedAlleles =
-                    Sets.newTreeSet(patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().keySet().stream().collect(Collectors.toSet()));
+            Set<String> sortedAlleles = Sets.newTreeSet(patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().keySet());
             for (String sortAllele : sortedAlleles) {
                 List<HlaReporting> allele = patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().get(sortAllele);
 

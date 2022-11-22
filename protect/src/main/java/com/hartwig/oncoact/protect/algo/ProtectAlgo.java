@@ -3,7 +3,6 @@ package com.hartwig.oncoact.protect.algo;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.chord.ChordData;
@@ -216,12 +215,12 @@ public class ProtectAlgo {
         Set<EvidenceKey> keys = EvidenceKey.buildKeySet(evidences);
         LOGGER.debug("Extracted {} evidence items for {} having {} keys ", evidences.size(), title, keys.size());
         for (EvidenceKey key : keys) {
-            int count = evidences.stream().filter(x -> EvidenceKey.create(x).equals(key)).collect(Collectors.toList()).size();
+            int count = (int) evidences.stream().filter(x -> EvidenceKey.create(x).equals(key)).count();
             LOGGER.debug(" Resolved {} items for '{}'", count, key);
         }
     }
 
     private static int reportedCount(@NotNull List<ProtectEvidence> evidences) {
-        return evidences.stream().filter(x -> x.reported()).collect(Collectors.toList()).size();
+        return (int) evidences.stream().filter(ProtectEvidence::reported).count();
     }
 }

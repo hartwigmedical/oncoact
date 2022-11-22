@@ -78,7 +78,7 @@ public final class PurpleQCFile
     {
         final List<String> result = Lists.newArrayList();
 
-        result.add(QC_STATUS + PurpleCommon.DELIMITER + check.toString());
+        result.add(QC_STATUS + PurpleCommon.DELIMITER + check);
         result.add(METHOD + PurpleCommon.DELIMITER + check.method());
         result.add(CN_SEGMENTS + PurpleCommon.DELIMITER + check.copyNumberSegments());
         result.add(UNSUPPORTED_CN_SEGMENTS + PurpleCommon.DELIMITER + check.unsupportedCopyNumberSegments());

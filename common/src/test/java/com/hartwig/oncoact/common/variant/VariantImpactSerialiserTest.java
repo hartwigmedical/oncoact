@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.common.variant;
 
-import static org.junit.Assert.assertEquals;
-
 import static junit.framework.TestCase.assertTrue;
 
 import java.util.List;
