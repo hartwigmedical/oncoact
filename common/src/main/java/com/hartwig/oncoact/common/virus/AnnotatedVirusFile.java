@@ -16,6 +16,7 @@ import com.hartwig.oncoact.common.utils.FileReaderUtils;
 import org.jetbrains.annotations.NotNull;
 
 public final class AnnotatedVirusFile {
+
     private static final String ANNOTATED_VIRUS_EXTENSION = ".virus.annotated.tsv";
 
     private static final String DELIMITER = "\t";
