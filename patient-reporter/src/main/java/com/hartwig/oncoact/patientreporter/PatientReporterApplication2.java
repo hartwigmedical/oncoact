@@ -1,8 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
-
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,9 +31,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PatientReporterApplication2 {
 
-    private static final Logger LOGGER = LogManager.getLogger(PatientReporterApplication.class);
+    private static final Logger LOGGER = LogManager.getLogger(PatientReporterApplication2.class);
 
-    public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
+    public static final String VERSION = PatientReporterApplication2.class.getPackage().getImplementationVersion();
 
     // Uncomment this line when generating an example report using CFReportWriterTest
     //                    public static final String VERSION = "7.26";
