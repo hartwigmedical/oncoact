@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter;
 
+
 import java.io.IOException;
 import java.io.File;
 import java.time.LocalDate;
@@ -29,14 +30,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-public class PatientReporterApplication {
+public class PatientReporterApplication2 {
 
     private static final Logger LOGGER = LogManager.getLogger(PatientReporterApplication.class);
 
     public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
 
     // Uncomment this line when generating an example report using CFReportWriterTest
-//                    public static final String VERSION = "7.26";
+    //                    public static final String VERSION = "7.26";
 
     public static void main(@NotNull String[] args) throws IOException {
         LOGGER.info("Running patient reporter v{}", VERSION);
@@ -52,7 +53,7 @@ public class PatientReporterApplication {
             throw new IllegalArgumentException("Unexpected error, check inputs");
         }
 
-        new PatientReporterApplication(config, DataUtil.formatDate(LocalDate.now())).run();
+        new PatientReporterApplication2(config, DataUtil.formatDate(LocalDate.now())).run();
     }
 
     @NotNull
@@ -60,7 +61,7 @@ public class PatientReporterApplication {
     @NotNull
     private final String reportDate;
 
-    private PatientReporterApplication(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
+    private PatientReporterApplication2(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
         this.config = config;
         this.reportDate = reportDate;
     }
@@ -92,7 +93,6 @@ public class PatientReporterApplication {
             LOGGER.debug("Updating reporting db and writing report data");
 
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
-
 
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());
 
