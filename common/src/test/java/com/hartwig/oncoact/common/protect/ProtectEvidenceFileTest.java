@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.common.protect;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence1Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence1Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence1Source.evidenceType());
-        assertNull(evidence1Source.rangeRank());
         assertTrue(evidence1Source.evidenceUrls().isEmpty());
 
         // evidences 2
@@ -43,7 +41,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence2Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA", "https://www.google.com/#q=NCCN"), evidence2Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence2Source.evidenceType());
-        assertNull(evidence2Source.rangeRank());
         assertTrue(evidence2Source.evidenceUrls().isEmpty());
 
         // evidences 3
@@ -54,7 +51,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence3Source1.sourceEvent());
         assertTrue(evidence3Source1.sourceUrls().isEmpty());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence3Source1.evidenceType());
-        assertNull(evidence3Source1.rangeRank());
         assertEquals(Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551", "http://www.ncbi.nlm.nih.gov/pubmed/27283860"),
                 evidence3Source1.evidenceUrls());
 
@@ -62,7 +58,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence3Source2.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence3Source2.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence3Source2.evidenceType());
-        assertNull(evidence3Source2.rangeRank());
         assertTrue(evidence3Source2.evidenceUrls().isEmpty());
 
         // evidences 4
@@ -73,7 +68,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence4Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence4Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence4Source.evidenceType());
-        assertEquals("600", String.valueOf(evidence4Source.rangeRank()));
         assertTrue(evidence4Source.evidenceUrls().isEmpty());
 
         // evidences 5
@@ -84,7 +78,6 @@ public class ProtectEvidenceFileTest {
         assertEquals("hotspot", evidence5Source1.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence5Source1.sourceUrls());
         assertEquals(EvidenceType.SIGNATURE, evidence5Source1.evidenceType());
-        assertNull(evidence5Source1.rangeRank());
         assertTrue(evidence5Source1.evidenceUrls().isEmpty());
     }
 
@@ -97,7 +90,6 @@ public class ProtectEvidenceFileTest {
                 .sourceEvent("event 1")
                 .sourceUrls(Sets.newHashSet("url1", "url2", "url3"))
                 .evidenceType(EvidenceType.ANY_MUTATION)
-                .rangeRank(1)
                 .evidenceUrls(Sets.newHashSet("url4", "url5", "url6"))
                 .build());
 
@@ -121,7 +113,7 @@ public class ProtectEvidenceFileTest {
     private static ProtectEvidence findByTreatmentAndEvent(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String treatment,
             @NotNull String event) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().treament().equals(treatment) && evidence.event().equals(event)) {
+            if (evidence.treatment().name().equals(treatment) && evidence.event().equals(event)) {
                 return evidence;
             }
         }

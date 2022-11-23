@@ -9,7 +9,7 @@ import com.hartwig.oncoact.common.chord.ChordStatus;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +26,7 @@ public class ChordEvidence {
             @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableCharacteristics = actionableCharacteristics.stream()
-                .filter(x -> x.name() == TumorCharacteristicAnnotation.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
+                .filter(x -> x.type() == TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .collect(Collectors.toList());
     }
 

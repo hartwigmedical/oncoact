@@ -17,7 +17,7 @@ import com.hartwig.oncoact.common.virus.VirusTestFactory;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -30,12 +30,12 @@ public class VirusEvidenceTest {
 
         ActionableCharacteristic hpv = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HPV_POSITIVE)
+                .type(TumorCharacteristicType.HPV_POSITIVE)
                 .build();
 
         ActionableCharacteristic ebv = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.EBV_POSITIVE)
+                .type(TumorCharacteristicType.EBV_POSITIVE)
                 .build();
 
         VirusEvidence virusEvidence = new VirusEvidence(EvidenceTestFactory.create(), Lists.newArrayList(hpv, ebv));

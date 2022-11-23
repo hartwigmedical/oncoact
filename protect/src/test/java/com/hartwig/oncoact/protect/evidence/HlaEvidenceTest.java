@@ -23,7 +23,7 @@ public class HlaEvidenceTest {
     public void canDetermineEvidenceForHLA() {
         ActionableHLA hla = ImmutableActionableHLA.builder()
                 .from(ServeTestFactory.createTestActionableHLA())
-                .hlaType("Allele 1")
+                .hlaAllele("Allele 1")
                 .build();
 
         HlaEvidence hlaEvidence =

@@ -16,7 +16,7 @@ import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.wildtype.WildTypeFactory;
 import com.hartwig.oncoact.common.wildtype.WildTypeGene;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ public class WildTypeEvidence {
     public WildTypeEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
             @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<DriverGene> driverGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
-        this.actionableGenes = actionableGenes.stream().filter(x -> x.event() == GeneLevelEvent.WILD_TYPE).collect(Collectors.toList());
+        this.actionableGenes = actionableGenes.stream().filter(x -> x.event() == GeneEvent.WILD_TYPE).collect(Collectors.toList());
         this.driverGenes = driverGenes;
     }
 

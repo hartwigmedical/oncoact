@@ -11,7 +11,7 @@ import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +29,8 @@ public class FusionEvidence {
             @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<ActionableFusion> actionableFusions) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionablePromiscuous = actionableGenes.stream()
-                .filter(x -> x.event().equals(GeneLevelEvent.FUSION) || x.event() == GeneLevelEvent.ACTIVATION
-                        || x.event() == GeneLevelEvent.ANY_MUTATION)
+                .filter(x -> x.event().equals(GeneEvent.FUSION) || x.event() == GeneEvent.ACTIVATION
+                        || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
         this.actionableFusions = actionableFusions;
     }
@@ -54,14 +54,14 @@ public class FusionEvidence {
     private List<ProtectEvidence> evidence(@NotNull LinxFusion fusion) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableGene promiscuous : actionablePromiscuous) {
-            if (promiscuous.event().equals(GeneLevelEvent.FUSION) && match(fusion, promiscuous)) {
+            if (promiscuous.event().equals(GeneEvent.FUSION) && match(fusion, promiscuous)) {
                 evidences.add(evidence(fusion, promiscuous));
             }
-            if (promiscuous.event().equals(GeneLevelEvent.ACTIVATION) && match(fusion, promiscuous)) {
+            if (promiscuous.event().equals(GeneEvent.ACTIVATION) && match(fusion, promiscuous)) {
                 evidences.add(unreportableEvidence(fusion, promiscuous));
             }
 
-            if (promiscuous.event().equals(GeneLevelEvent.ANY_MUTATION) && match(fusion, promiscuous)) {
+            if (promiscuous.event().equals(GeneEvent.ANY_MUTATION) && match(fusion, promiscuous)) {
                 evidences.add(unreportableEvidence(fusion, promiscuous));
             }
         }

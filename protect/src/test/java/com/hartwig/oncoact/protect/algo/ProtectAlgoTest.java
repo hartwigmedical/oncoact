@@ -16,7 +16,7 @@ import com.hartwig.oncoact.protect.ProtectApplication;
 import com.hartwig.oncoact.protect.ProtectConfig;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ActionableEventsLoader;
-import com.hartwig.serve.datamodel.genome.refgenome.RefGenomeVersion;
+import com.hartwig.serve.datamodel.refgenome.RefGenomeVersion;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;

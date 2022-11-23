@@ -5,21 +5,21 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.hartwig.serve.datamodel.ActionableEvent;
+import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableCancerType;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
-import com.hartwig.serve.datamodel.MutationTypeFilter;
+import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.Treatment;
-import com.hartwig.serve.datamodel.cancertype.CancerType;
-import com.hartwig.serve.datamodel.cancertype.ImmutableCancerType;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.fusion.ImmutableActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
@@ -27,7 +27,6 @@ import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.immuno.ImmutableActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 import com.hartwig.serve.datamodel.range.ImmutableActionableRange;
-import com.hartwig.serve.datamodel.range.RangeType;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +52,10 @@ public final class ServeTestFactory {
         return ImmutableActionableRange.builder()
                 .from(createTestBaseEvent())
                 .gene(Strings.EMPTY)
-                .transcript(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
                 .start(0)
                 .end(0)
-                .mutationType(MutationTypeFilter.ANY)
-                .rangeType(RangeType.EXON)
-                .rank(0)
+                .applicableMutationType(MutationType.ANY)
                 .build();
     }
 
@@ -68,7 +64,7 @@ public final class ServeTestFactory {
         return ImmutableActionableGene.builder()
                 .from(createTestBaseEvent())
                 .gene(Strings.EMPTY)
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .build();
     }
 
@@ -81,13 +77,13 @@ public final class ServeTestFactory {
     public static ActionableCharacteristic createTestActionableCharacteristic() {
         return ImmutableActionableCharacteristic.builder()
                 .from(createTestBaseEvent())
-                .name(TumorCharacteristicAnnotation.MICROSATELLITE_UNSTABLE)
+                .type(TumorCharacteristicType.MICROSATELLITE_UNSTABLE)
                 .build();
     }
 
     @NotNull
     public static ActionableHLA createTestActionableHLA() {
-        return ImmutableActionableHLA.builder().from(createTestBaseEvent()).hlaType(Strings.EMPTY).build();
+        return ImmutableActionableHLA.builder().from(createTestBaseEvent()).hlaAllele(Strings.EMPTY).build();
     }
 
     @NotNull
@@ -97,16 +93,18 @@ public final class ServeTestFactory {
 
     @NotNull
     private static ActionableEvent createTestBaseEvent(@NotNull Knowledgebase source) {
+        Set<CancerType> blacklist = Sets.newHashSet(ImmutableCancerType.builder().name("blacklist name").doid("blacklist doid").build());
+
         return create(source,
                 "source event",
                 Sets.newHashSet(),
                 ImmutableTreatment.builder()
-                        .treament("treatment")
+                        .name("treatment")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drug classes"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drug classes"))
                         .build(),
                 ImmutableCancerType.builder().name("applicable name").doid("applicable doid").build(),
-                Sets.newHashSet(ImmutableCancerType.builder().name("blacklist name").doid("blacklist doid").build()),
+                blacklist,
                 EvidenceLevel.A,
                 EvidenceDirection.RESPONSIVE,
                 Sets.newHashSet());

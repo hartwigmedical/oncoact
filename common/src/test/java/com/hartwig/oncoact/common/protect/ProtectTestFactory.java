@@ -21,7 +21,7 @@ public final class ProtectTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament(Strings.EMPTY)
+                        .name(Strings.EMPTY)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())

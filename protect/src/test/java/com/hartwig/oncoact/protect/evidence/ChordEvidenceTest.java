@@ -14,8 +14,8 @@ import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicsComparator;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -26,18 +26,18 @@ public class ChordEvidenceTest {
     public void canDetermineEvidenceForChord() {
         ActionableCharacteristic signature1 = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
+                .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .build();
 
         ActionableCharacteristic signature2 = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HIGH_TUMOR_MUTATIONAL_LOAD)
+                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD)
                 .build();
 
         ActionableCharacteristic signature3 = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
-                .comparator(TumorCharacteristicsComparator.GREATER)
+                .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
+                .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(0.8)
                 .build();
 

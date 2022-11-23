@@ -29,7 +29,7 @@ import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.fusion.ImmutableActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +42,10 @@ public class FusionEvidenceTest {
         ActionableGene promiscuous3_1 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("EGFR")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.ACTIN)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment1")
+                        .name("treatment1")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -53,10 +53,10 @@ public class FusionEvidenceTest {
         ActionableGene promiscuous3_2 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("TP53")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.ACTIN)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment2")
+                        .name("treatment2")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -64,10 +64,10 @@ public class FusionEvidenceTest {
         ActionableGene promiscuous3_3 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("PTEN")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.ACTIN)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment3")
+                        .name("treatment3")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -75,10 +75,10 @@ public class FusionEvidenceTest {
         ActionableGene promiscuous5 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("BRAF")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.ACTIN)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment4")
+                        .name("treatment4")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -86,10 +86,10 @@ public class FusionEvidenceTest {
         ActionableGene amp = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("KRAS")
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment5")
+                        .name("treatment5")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -100,7 +100,7 @@ public class FusionEvidenceTest {
                 .geneDown("ALK")
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment6")
+                        .name("treatment6")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -108,10 +108,10 @@ public class FusionEvidenceTest {
         ActionableGene other = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("AB")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment9")
+                        .name("treatment9")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -122,7 +122,7 @@ public class FusionEvidenceTest {
                 .geneDown("BCL2")
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment10")
+                        .name("treatment10")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -130,10 +130,10 @@ public class FusionEvidenceTest {
         ActionableGene ig_fusion = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("IGH")
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.ACTIN)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment11")
+                        .name("treatment11")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -142,10 +142,10 @@ public class FusionEvidenceTest {
         ActionableGene activation = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("EGFR")
-                .event(GeneLevelEvent.ACTIVATION)
+                .event(GeneEvent.ACTIVATION)
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment12")
+                        .name("treatment12")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
@@ -154,15 +154,14 @@ public class FusionEvidenceTest {
         ActionableGene any_mutation = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("EGFR")
-                .event(GeneLevelEvent.ANY_MUTATION)
+                .event(GeneEvent.ANY_MUTATION)
                 .source(Knowledgebase.CKB)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment13")
+                        .name("treatment13")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build())
                 .build();
-
 
         FusionEvidence fusionEvidence = new FusionEvidence(EvidenceTestFactory.create(),
                 Lists.newArrayList(activation,
@@ -269,7 +268,7 @@ public class FusionEvidenceTest {
             @NotNull String treatment) {
         String event = EventGenerator.fusionEvent(fusion);
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.event().equals(event) && evidence.treatment().treament().equals(treatment)) {
+            if (evidence.event().equals(event) && evidence.treatment().name().equals(treatment)) {
                 return evidence;
             }
         }
@@ -336,7 +335,7 @@ public class FusionEvidenceTest {
     @NotNull
     private static KnowledgebaseSource findByKnowledgebase(@NotNull ProtectEvidence evidence, @NotNull String event,
             @NotNull Knowledgebase knowledgebaseToFind, @NotNull String treatment) {
-        if (evidence.treatment().treament().equals(treatment) && evidence.event().equals(event)) {
+        if (evidence.treatment().name().equals(treatment) && evidence.event().equals(event)) {
             for (KnowledgebaseSource source : evidence.sources()) {
                 if (source.name() == knowledgebaseToFind) {
                     return source;

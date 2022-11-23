@@ -16,7 +16,7 @@ import com.hartwig.oncoact.common.purple.loader.GainLossTestFactory;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,19 +31,19 @@ public class CopyNumberEvidenceTest {
         ActionableGene amp = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneAmp)
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene inactivation = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneDel)
-                .event(GeneLevelEvent.INACTIVATION)
+                .event(GeneEvent.INACTIVATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene fusion = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneAmp)
-                .event(GeneLevelEvent.FUSION)
+                .event(GeneEvent.FUSION)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -83,7 +83,8 @@ public class CopyNumberEvidenceTest {
     }
 
     @NotNull
-    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources, @NotNull Knowledgebase knowledgebaseToFind) {
+    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources,
+            @NotNull Knowledgebase knowledgebaseToFind) {
         for (KnowledgebaseSource source : sources) {
             if (source.name() == knowledgebaseToFind) {
                 return source;

@@ -30,7 +30,7 @@ import com.hartwig.oncoact.common.wildtype.WildTypeFactoryTest;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.apache.logging.log4j.util.Strings;
@@ -81,7 +81,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeSomaticVariant = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("BRCA2")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -105,7 +105,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeGermlineVariant = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("BRCA1")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -125,7 +125,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeCNV = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("APC")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -145,7 +145,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeFusion5 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("BAG4")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -165,7 +165,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeFusion3 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("BAG4")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -185,7 +185,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeHomozygousDisruption = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("NRAS")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -206,7 +206,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildTypeGeneDisruption = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("MYC")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -226,7 +226,7 @@ public class WildTypeEvidenceTest {
         ActionableGene wildType = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene("EGFR")
-                .event(GeneLevelEvent.WILD_TYPE)
+                .event(GeneEvent.WILD_TYPE)
                 .source(Knowledgebase.CKB)
                 .build();
 

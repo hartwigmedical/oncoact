@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.serve.datamodel.genome.refgenome.RefGenomeVersion;
+import com.hartwig.serve.datamodel.refgenome.RefGenomeVersion;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -165,7 +165,7 @@ public interface ProtectConfig {
                 .referenceSampleId(optionalValue(cmd, REFERENCE_SAMPLE_ID))
                 .primaryTumorDoids(toStringSet(nonOptionalValue(cmd, PRIMARY_TUMOR_DOIDS), DOID_SEPARATOR))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
-                .refGenomeVersion(RefGenomeVersion.from(nonOptionalValue(cmd, REF_GENOME_VERSION)))
+                .refGenomeVersion(resolveRefGenomeVersion(nonOptionalValue(cmd, REF_GENOME_VERSION)))
                 .serveActionabilityDir(nonOptionalDir(cmd, SERVE_ACTIONABILITY_DIRECTORY))
                 .doidJsonFile(nonOptionalFile(cmd, DOID_JSON))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
@@ -184,6 +184,12 @@ public interface ProtectConfig {
                 .lilacResultCsv(nonOptionalFile(cmd, LILAC_RESULT_CSV))
                 .lilacQcCsv(nonOptionalFile(cmd, LILAC_QC_CSV))
                 .build();
+    }
+
+    @NotNull
+    static RefGenomeVersion resolveRefGenomeVersion(@NotNull String value) {
+        // TODO Implement
+        return RefGenomeVersion.valueOf(value);
     }
 
     @NotNull

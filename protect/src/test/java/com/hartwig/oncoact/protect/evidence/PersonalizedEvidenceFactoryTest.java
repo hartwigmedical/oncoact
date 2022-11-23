@@ -3,7 +3,6 @@ package com.hartwig.oncoact.protect.evidence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -12,23 +11,22 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.ActionableEvent;
+import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableCancerType;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
-import com.hartwig.serve.datamodel.cancertype.CancerType;
-import com.hartwig.serve.datamodel.cancertype.ImmutableCancerType;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 import com.hartwig.serve.datamodel.range.ImmutableActionableRange;
-import com.hartwig.serve.datamodel.range.RangeType;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -79,24 +77,24 @@ public class PersonalizedEvidenceFactoryTest {
                 PersonalizedEvidenceFactory.determineEvidenceType(ServeTestFactory.createTestActionableHotspot()));
 
         ActionableRange range =
-                ImmutableActionableRange.builder().from(ServeTestFactory.createTestActionableRange()).rangeType(RangeType.EXON).build();
+                ImmutableActionableRange.builder().from(ServeTestFactory.createTestActionableRange()).build();
         assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(range));
 
         ActionableGene gene = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
-                .event(GeneLevelEvent.INACTIVATION)
+                .event(GeneEvent.INACTIVATION)
                 .build();
         assertEquals(EvidenceType.INACTIVATION, PersonalizedEvidenceFactory.determineEvidenceType(gene));
 
         ActionableGene amplification = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .build();
         assertEquals(EvidenceType.AMPLIFICATION, PersonalizedEvidenceFactory.determineEvidenceType(amplification));
 
         ActionableGene overexpression = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
-                .event(GeneLevelEvent.OVEREXPRESSION)
+                .event(GeneEvent.OVEREXPRESSION)
                 .build();
         assertEquals(EvidenceType.OVER_EXPRESSION, PersonalizedEvidenceFactory.determineEvidenceType(overexpression));
 
@@ -108,18 +106,9 @@ public class PersonalizedEvidenceFactoryTest {
     }
 
     @Test
-    public void canDetermineEvidenceTypesForAllRanges() {
-        ActionableRange base = ServeTestFactory.createTestActionableRange();
-        for (RangeType rangeType : RangeType.values()) {
-            ActionableRange range = ImmutableActionableRange.builder().from(base).rangeType(rangeType).build();
-            assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(range));
-        }
-    }
-
-    @Test
     public void canDetermineEvidenceTypesFroAllGeneEvents() {
         ActionableGene base = ServeTestFactory.createTestActionableGene();
-        for (GeneLevelEvent geneLevelEvent : GeneLevelEvent.values()) {
+        for (GeneEvent geneLevelEvent : GeneEvent.values()) {
             ActionableGene gene = ImmutableActionableGene.builder().from(base).event(geneLevelEvent).build();
             assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(gene));
         }
@@ -128,19 +117,10 @@ public class PersonalizedEvidenceFactoryTest {
     @Test
     public void canDetermineEvidenceTypesForAllCharacteristics() {
         ActionableCharacteristic base = ServeTestFactory.createTestActionableCharacteristic();
-        for (TumorCharacteristicAnnotation name : TumorCharacteristicAnnotation.values()) {
-            ActionableCharacteristic characteristic = ImmutableActionableCharacteristic.builder().from(base).name(name).build();
+        for (TumorCharacteristicType type : TumorCharacteristicType.values()) {
+            ActionableCharacteristic characteristic = ImmutableActionableCharacteristic.builder().from(base).type(type).build();
             assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(characteristic));
         }
-    }
-
-    @Test
-    public void canDetermineRangeRank() {
-        ActionableRange range = ImmutableActionableRange.builder().from(ServeTestFactory.createTestActionableRange()).rank(2).build();
-
-        assertEquals(2, (int) PersonalizedEvidenceFactory.determineRangeRank(range));
-
-        assertNull(PersonalizedEvidenceFactory.determineRangeRank(ServeTestFactory.createTestActionableFusion()));
     }
 
     @NotNull
@@ -160,7 +140,7 @@ public class PersonalizedEvidenceFactoryTest {
                 "amp",
                 Sets.newHashSet(),
                 ImmutableTreatment.builder()
-                        .treament("treatment A")
+                        .name("treatment A")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
                         .build(),

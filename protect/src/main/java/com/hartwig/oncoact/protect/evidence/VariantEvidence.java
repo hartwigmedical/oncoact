@@ -16,9 +16,9 @@ import com.hartwig.oncoact.common.variant.Variant;
 import com.hartwig.oncoact.common.variant.VariantType;
 import com.hartwig.oncoact.common.variant.impact.AltTranscriptReportableInfo;
 import com.hartwig.serve.datamodel.ActionableEvent;
-import com.hartwig.serve.datamodel.MutationTypeFilter;
+import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 
@@ -46,8 +46,8 @@ public class VariantEvidence {
         this.hotspots = hotspots;
         this.ranges = ranges;
         this.genes = genes.stream()
-                .filter(x -> x.event() == GeneLevelEvent.ACTIVATION || x.event() == GeneLevelEvent.INACTIVATION
-                        || x.event() == GeneLevelEvent.ANY_MUTATION)
+                .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION
+                        || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
@@ -143,17 +143,17 @@ public class VariantEvidence {
 
     private static boolean rangeMatch(@NotNull Variant variant, @NotNull ActionableRange range) {
         return variant.chromosome().equals(range.chromosome()) && variant.gene().equals(range.gene()) && variant.position() >= range.start()
-                && variant.position() <= range.end() && meetsMutationTypeFilter(variant, range.mutationType());
+                && variant.position() <= range.end() && meetsMutationType(variant, range.applicableMutationType());
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {
-        assert gene.event() == GeneLevelEvent.ACTIVATION || gene.event() == GeneLevelEvent.INACTIVATION
-                || gene.event() == GeneLevelEvent.ANY_MUTATION;
+        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION
+                || gene.event() == GeneEvent.ANY_MUTATION;
 
-        return gene.gene().equals(variant.gene()) && meetsMutationTypeFilter(variant, MutationTypeFilter.ANY);
+        return gene.gene().equals(variant.gene()) && meetsMutationType(variant, MutationType.ANY);
     }
 
-    private static boolean meetsMutationTypeFilter(@NotNull Variant variant, @NotNull MutationTypeFilter filter) {
+    private static boolean meetsMutationType(@NotNull Variant variant, @NotNull MutationType applicableMutationType) {
         CodingEffect effect;
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
@@ -164,7 +164,7 @@ public class VariantEvidence {
             effect = variant.canonicalCodingEffect();
         }
 
-        switch (filter) {
+        switch (applicableMutationType) {
             case NONSENSE_OR_FRAMESHIFT:
                 return effect == CodingEffect.NONSENSE_OR_FRAMESHIFT;
             case SPLICE:
@@ -180,7 +180,7 @@ public class VariantEvidence {
             case ANY:
                 return effect == CodingEffect.MISSENSE || effect == CodingEffect.NONSENSE_OR_FRAMESHIFT || effect == CodingEffect.SPLICE;
             default: {
-                LOGGER.warn("Unrecognized mutation type filter: '{}'", filter);
+                LOGGER.warn("Unrecognized mutation type filter: '{}'", applicableMutationType);
                 return false;
             }
         }

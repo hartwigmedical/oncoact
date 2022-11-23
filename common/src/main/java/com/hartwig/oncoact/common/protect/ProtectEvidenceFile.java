@@ -88,7 +88,7 @@ public final class ProtectEvidenceFile {
                 .add(nullToEmpty(evidence.eventIsHighDriver()))
                 .add(String.valueOf(evidence.germline()))
                 .add(String.valueOf(evidence.reported()))
-                .add(evidence.treatment().treament())
+                .add(evidence.treatment().name())
                 .add(treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()))
                 .add(treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()))
                 .add(String.valueOf(evidence.onLabel()))
@@ -111,7 +111,7 @@ public final class ProtectEvidenceFile {
                 .germline(Boolean.parseBoolean(values[fields.get("germline")]))
                 .reported(Boolean.parseBoolean(values[fields.get("reported")]))
                 .treatment(ImmutableTreatment.builder()
-                        .treament(values[fields.get("treatment")])
+                        .name(values[fields.get("treatment")])
                         .sourceRelevantTreatmentApproaches(fields.containsKey("sourceRelevantTreatmentApproach") ? stringToDrugClasses(
                                 values[fields.get("sourceRelevantTreatmentApproach")]) : Sets.newHashSet())
                         .relevantTreatmentApproaches(fields.containsKey("relevantTreatmentApproach")
@@ -154,7 +154,6 @@ public final class ProtectEvidenceFile {
             }
             joiner.add(sourceUrls.toString());
             joiner.add(source.evidenceType().toString());
-            joiner.add(nullToEmpty(source.rangeRank()));
 
             StringJoiner evidenceUrls = new StringJoiner(SOURCES_ITEM_URL_DELIMITER);
             for (String url : source.evidenceUrls()) {
@@ -180,8 +179,7 @@ public final class ProtectEvidenceFile {
                     .sourceEvent(items[1])
                     .sourceUrls(urlsToSet(items[2]))
                     .evidenceType(EvidenceType.valueOf(items[3]))
-                    .rangeRank(emptyToNullInteger(items[4]))
-                    .evidenceUrls(urlsToSet(items[5]))
+                    .evidenceUrls(urlsToSet(items[4]))
                     .build());
         }
         return sources;
@@ -213,15 +211,5 @@ public final class ProtectEvidenceFile {
     @Nullable
     private static String emptyToNullString(@NotNull String value) {
         return !value.isEmpty() ? value : null;
-    }
-
-    @NotNull
-    private static String nullToEmpty(@Nullable Integer integer) {
-        return integer != null ? String.valueOf(integer) : Strings.EMPTY;
-    }
-
-    @Nullable
-    private static Integer emptyToNullInteger(@NotNull String value) {
-        return !value.isEmpty() ? Integer.parseInt(value) : null;
     }
 }

@@ -40,7 +40,7 @@ public class EvidenceReportingCurationTest {
 
         ProtectEvidence evidence1 = ProtectTestFactory.builder()
                 .treatment(ImmutableTreatment.builder()
-                        .treament(treatment1)
+                        .name(treatment1)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build())
@@ -48,7 +48,7 @@ public class EvidenceReportingCurationTest {
                 .build();
         ProtectEvidence evidence2 = ProtectTestFactory.builder()
                 .treatment(ImmutableTreatment.builder()
-                        .treament(treatment2)
+                        .name(treatment2)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build())
@@ -66,7 +66,7 @@ public class EvidenceReportingCurationTest {
     @NotNull
     private static ProtectEvidence findByTreatment(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String treatment) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().treament().equals(treatment)) {
+            if (evidence.treatment().name().equals(treatment)) {
                 return evidence;
             }
         }

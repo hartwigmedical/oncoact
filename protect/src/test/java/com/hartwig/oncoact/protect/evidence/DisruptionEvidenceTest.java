@@ -15,7 +15,7 @@ import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.apache.logging.log4j.util.Strings;
@@ -34,26 +34,26 @@ public class DisruptionEvidenceTest {
         ActionableGene amp = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneAmp)
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene inactivation = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneInact)
-                .event(GeneLevelEvent.INACTIVATION)
+                .event(GeneEvent.INACTIVATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene deletion = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneDel)
-                .event(GeneLevelEvent.DELETION)
+                .event(GeneEvent.DELETION)
                 .source(Knowledgebase.CKB)
                 .build();
 
         ActionableGene underexpression = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(geneUnder)
-                .event(GeneLevelEvent.UNDEREXPRESSION)
+                .event(GeneEvent.UNDEREXPRESSION)
                 .source(Knowledgebase.CKB)
                 .build();
 

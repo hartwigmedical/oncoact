@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicsComparator;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class CharacteristicsFunctionsTest {
     public void canDetermineWhetherCharacteristicHasCutoff() {
         ActionableCharacteristic withoutCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .comparator(null)
+                .cutoffType(null)
                 .cutoff(null)
                 .build();
 
@@ -25,7 +25,7 @@ public class CharacteristicsFunctionsTest {
 
         ActionableCharacteristic withCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .comparator(TumorCharacteristicsComparator.GREATER)
+                .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(4D)
                 .build();
 
@@ -34,10 +34,10 @@ public class CharacteristicsFunctionsTest {
 
     @Test
     public void canEvaluateCutoffs() {
-        ActionableCharacteristic greaterOrEqualOne = create(TumorCharacteristicsComparator.EQUAL_OR_GREATER, 1D);
-        ActionableCharacteristic greaterOne = create(TumorCharacteristicsComparator.GREATER, 1D);
-        ActionableCharacteristic lowerOrEqualOne = create(TumorCharacteristicsComparator.EQUAL_OR_LOWER, 1D);
-        ActionableCharacteristic lowerOne = create(TumorCharacteristicsComparator.LOWER, 1D);
+        ActionableCharacteristic greaterOrEqualOne = create(TumorCharacteristicCutoffType.EQUAL_OR_GREATER, 1D);
+        ActionableCharacteristic greaterOne = create(TumorCharacteristicCutoffType.GREATER, 1D);
+        ActionableCharacteristic lowerOrEqualOne = create(TumorCharacteristicCutoffType.EQUAL_OR_LOWER, 1D);
+        ActionableCharacteristic lowerOne = create(TumorCharacteristicCutoffType.LOWER, 1D);
 
         assertTrue(CharacteristicsFunctions.evaluateVersusCutoff(greaterOrEqualOne, 2D));
         assertTrue(CharacteristicsFunctions.evaluateVersusCutoff(greaterOne, 2D));
@@ -56,12 +56,11 @@ public class CharacteristicsFunctionsTest {
     }
 
     @NotNull
-    private static ActionableCharacteristic create(@NotNull TumorCharacteristicsComparator comparator, double cutoff) {
+    private static ActionableCharacteristic create(@NotNull TumorCharacteristicCutoffType cutoffType, double cutoff) {
         return ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .comparator(comparator)
+                .cutoffType(cutoffType)
                 .cutoff(cutoff)
                 .build();
     }
-
 }

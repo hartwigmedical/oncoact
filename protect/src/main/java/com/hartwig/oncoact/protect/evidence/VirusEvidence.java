@@ -10,7 +10,7 @@ import com.hartwig.oncoact.common.virus.VirusConstants;
 import com.hartwig.oncoact.common.virus.VirusInterpreterData;
 import com.hartwig.oncoact.common.virus.VirusLikelihoodType;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +28,8 @@ public class VirusEvidence {
             @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableViruses = actionableCharacteristics.stream()
-                .filter(x -> x.name() == TumorCharacteristicAnnotation.HPV_POSITIVE
-                        || x.name() == TumorCharacteristicAnnotation.EBV_POSITIVE)
+                .filter(x -> x.type() == TumorCharacteristicType.HPV_POSITIVE
+                        || x.type() == TumorCharacteristicType.EBV_POSITIVE)
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class VirusEvidence {
 
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableCharacteristic virus : actionableViruses) {
-            switch (virus.name()) {
+            switch (virus.type()) {
                 case HPV_POSITIVE: {
                     if (!hpv.isEmpty()) {
                         ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(virus)

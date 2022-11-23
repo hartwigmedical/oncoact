@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +24,8 @@ public class DisruptionEvidence {
             @NotNull final List<ActionableGene> actionableGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
-                .filter(x -> x.event() == GeneLevelEvent.ANY_MUTATION || x.event() == GeneLevelEvent.INACTIVATION
-                        || x.event() == GeneLevelEvent.DELETION || x.event() == GeneLevelEvent.UNDEREXPRESSION)
+                .filter(x -> x.event() == GeneEvent.ANY_MUTATION || x.event() == GeneEvent.INACTIVATION
+                        || x.event() == GeneEvent.DELETION || x.event() == GeneEvent.UNDEREXPRESSION)
                 .collect(Collectors.toList());
     }
 

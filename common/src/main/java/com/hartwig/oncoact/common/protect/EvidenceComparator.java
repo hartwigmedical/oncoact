@@ -46,7 +46,7 @@ public class EvidenceComparator implements Comparator<ProtectEvidence> {
             return onLabelCompare;
         }
 
-        int treatmentCompare = evidence1.treatment().treament().compareTo(evidence2.treatment().treament());
+        int treatmentCompare = evidence1.treatment().name().compareTo(evidence2.treatment().name());
         if (treatmentCompare != 0) {
             return treatmentCompare;
         }
@@ -67,12 +67,7 @@ public class EvidenceComparator implements Comparator<ProtectEvidence> {
             return relevantTreatmentApproachCompare;
         }
 
-        int directionCompare = evidence1.direction().compareTo(evidence2.direction());
-        if (directionCompare != 0) {
-            return directionCompare;
-        }
-
-        return 0;
+        return evidence1.direction().compareTo(evidence2.direction());
     }
 
     private static int compareBoolean(@Nullable Boolean boolean1, @Nullable Boolean boolean2) {

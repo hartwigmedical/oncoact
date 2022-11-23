@@ -23,7 +23,7 @@ public class EvidenceKeyTest {
                 .gene("gene 1")
                 .event("event 1")
                 .treatment(ImmutableTreatment.builder()
-                        .treament("treatment 1")
+                        .name("treatment 1")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build())
@@ -40,7 +40,7 @@ public class EvidenceKeyTest {
         assertEquals("treatment 1", key.treatment());
 
         ProtectEvidence evidence2 = ProtectTestFactory.builder().gene(null).event("event 2").treatment(ImmutableTreatment.builder()
-                .treament("treatment 2")
+                .name("treatment 2")
                 .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                 .relevantTreatmentApproaches(Sets.newHashSet("A"))
                 .build()).build();

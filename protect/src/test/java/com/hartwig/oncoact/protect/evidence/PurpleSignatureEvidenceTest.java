@@ -11,8 +11,8 @@ import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicAnnotation;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicsComparator;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class PurpleSignatureEvidenceTest {
     public void canHandleNonPurpleSignatureEvidence() {
         ActionableCharacteristic nonPurple = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
+                .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .build();
 
         PurpleSignatureEvidence purpleSignatureEvidence = new PurpleSignatureEvidence(EvidenceTestFactory.create(),
@@ -37,13 +37,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineMSI() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.MICROSATELLITE_UNSTABLE)
+                .type(TumorCharacteristicType.MICROSATELLITE_UNSTABLE)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.MICROSATELLITE_UNSTABLE)
-                .comparator(TumorCharacteristicsComparator.EQUAL_OR_GREATER)
+                .type(TumorCharacteristicType.MICROSATELLITE_UNSTABLE)
+                .cutoffType(TumorCharacteristicCutoffType.EQUAL_OR_GREATER)
                 .cutoff(4D)
                 .build();
 
@@ -64,13 +64,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineMSS() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.MICROSATELLITE_STABLE)
+                .type(TumorCharacteristicType.MICROSATELLITE_STABLE)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.MICROSATELLITE_STABLE)
-                .comparator(TumorCharacteristicsComparator.LOWER)
+                .type(TumorCharacteristicType.MICROSATELLITE_STABLE)
+                .cutoffType(TumorCharacteristicCutoffType.LOWER)
                 .cutoff(4D)
                 .build();
 
@@ -91,13 +91,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineHighTML() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HIGH_TUMOR_MUTATIONAL_LOAD)
+                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HIGH_TUMOR_MUTATIONAL_LOAD)
-                .comparator(TumorCharacteristicsComparator.GREATER)
+                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD)
+                .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(100D)
                 .build();
 
@@ -118,13 +118,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineLowTML() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.LOW_TUMOR_MUTATIONAL_LOAD)
+                .type(TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_LOAD)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.LOW_TUMOR_MUTATIONAL_LOAD)
-                .comparator(TumorCharacteristicsComparator.EQUAL_OR_LOWER)
+                .type(TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_LOAD)
+                .cutoffType(TumorCharacteristicCutoffType.EQUAL_OR_LOWER)
                 .cutoff(100D)
                 .build();
 
@@ -145,13 +145,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineHighTMB() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HIGH_TUMOR_MUTATIONAL_BURDEN)
+                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_BURDEN)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.HIGH_TUMOR_MUTATIONAL_BURDEN)
-                .comparator(TumorCharacteristicsComparator.EQUAL_OR_GREATER)
+                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_BURDEN)
+                .cutoffType(TumorCharacteristicCutoffType.EQUAL_OR_GREATER)
                 .cutoff(12D)
                 .build();
 
@@ -172,13 +172,13 @@ public class PurpleSignatureEvidenceTest {
     public void canDetermineLowTMB() {
         ActionableCharacteristic signatureDefault = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.LOW_TUMOR_MUTATIONAL_BURDEN)
+                .type(TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_BURDEN)
                 .build();
 
         ActionableCharacteristic signatureWithCutoff = ImmutableActionableCharacteristic.builder()
                 .from(ServeTestFactory.createTestActionableCharacteristic())
-                .name(TumorCharacteristicAnnotation.LOW_TUMOR_MUTATIONAL_BURDEN)
-                .comparator(TumorCharacteristicsComparator.LOWER)
+                .type(TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_BURDEN)
+                .cutoffType(TumorCharacteristicCutoffType.LOWER)
                 .cutoff(8D)
                 .build();
 
@@ -198,7 +198,7 @@ public class PurpleSignatureEvidenceTest {
 
     @Test
     public void canConvertCharacteristicToEvent() {
-        assertEquals("Microsatellite unstable", PurpleSignatureEvidence.toEvent(TumorCharacteristicAnnotation.MICROSATELLITE_UNSTABLE));
+        assertEquals("Microsatellite unstable", PurpleSignatureEvidence.toEvent(TumorCharacteristicType.MICROSATELLITE_UNSTABLE));
     }
 
     @NotNull

@@ -10,9 +10,8 @@ import com.hartwig.oncoact.common.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.common.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
 import com.hartwig.serve.datamodel.ActionableEvent;
+import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.cancertype.CancerType;
-import com.hartwig.serve.datamodel.cancertype.CancerTypeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
@@ -23,7 +22,6 @@ import com.hartwig.serve.datamodel.range.ActionableRange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PersonalizedEvidenceFactory {
 
@@ -54,11 +52,11 @@ public class PersonalizedEvidenceFactory {
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
         return ImmutableProtectEvidence.builder()
                 .treatment(ImmutableTreatment.builder()
-                        .treament(actionable.treatment().treament())
+                        .name(actionable.treatment().name())
                         .sourceRelevantTreatmentApproaches(actionable.treatment().sourceRelevantTreatmentApproaches())
                         .relevantTreatmentApproaches(actionable.treatment().relevantTreatmentApproaches())
                         .build())
-                .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().treament()))
+                .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().name()))
                 .level(actionable.level())
                 .direction(actionable.direction())
                 .sources(Sets.newHashSet(resolveProtectSource(actionable)));
@@ -71,7 +69,7 @@ public class PersonalizedEvidenceFactory {
 
     @VisibleForTesting
     boolean isBlacklisted(@NotNull Set<CancerType> blacklistCancerTypes, @NotNull String treatment) {
-        Set<String> blacklistDoids = CancerTypeFactory.doidStrings(blacklistCancerTypes);
+        Set<String> blacklistDoids = extractDoidStrings(blacklistCancerTypes);
         Set<String> allDoids = Sets.newHashSet();
 
         if (!blacklistDoids.isEmpty()) {
@@ -94,21 +92,20 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
+    private static Set<String> extractDoidStrings(@NotNull Set<CancerType> cancerTypes) {
+        // TODO Implement
+        return Sets.newHashSet();
+    }
+
+    @NotNull
     private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())
                 .sourceUrls(actionable.sourceUrls())
                 .evidenceType(determineEvidenceType(actionable))
-                .rangeRank(determineRangeRank(actionable))
                 .evidenceUrls(actionable.evidenceUrls())
                 .build();
-    }
-
-    @VisibleForTesting
-    @Nullable
-    static Integer determineRangeRank(@NotNull ActionableEvent actionable) {
-        return actionable instanceof ActionableRange ? ((ActionableRange) actionable).rank() : null;
     }
 
     @VisibleForTesting
@@ -133,15 +130,8 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static EvidenceType fromActionableRange(@NotNull ActionableRange range) {
-        switch (range.rangeType()) {
-            case EXON:
-                return EvidenceType.EXON_MUTATION;
-            case CODON:
-                return EvidenceType.CODON_MUTATION;
-            default: {
-                throw new IllegalStateException("Unsupported range type: " + range.rangeType());
-            }
-        }
+        // TODO Implement based on length
+        return EvidenceType.CODON_MUTATION;
     }
 
     @NotNull
@@ -173,7 +163,7 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static EvidenceType fromActionableCharacteristic(@NotNull ActionableCharacteristic characteristic) {
-        switch (characteristic.name()) {
+        switch (characteristic.type()) {
             case MICROSATELLITE_UNSTABLE:
             case MICROSATELLITE_STABLE:
             case HIGH_TUMOR_MUTATIONAL_LOAD:
@@ -186,7 +176,7 @@ public class PersonalizedEvidenceFactory {
             case EBV_POSITIVE:
                 return EvidenceType.VIRAL_PRESENCE;
             default: {
-                throw new IllegalStateException("Unsupported tumor characteristic: " + characteristic.name());
+                throw new IllegalStateException("Unsupported tumor characteristic: " + characteristic.type());
             }
         }
     }

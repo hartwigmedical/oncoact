@@ -17,9 +17,9 @@ import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
 import com.hartwig.oncoact.common.variant.SomaticVariant;
 import com.hartwig.oncoact.protect.ServeTestFactory;
 import com.hartwig.serve.datamodel.Knowledgebase;
-import com.hartwig.serve.datamodel.MutationTypeFilter;
+import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
@@ -102,7 +102,7 @@ public class VariantEvidenceTest {
         String chromosome = "1";
         int start = 5;
         int end = 15;
-        MutationTypeFilter mutationTypeFilter = MutationTypeFilter.MISSENSE;
+        MutationType mutationType = MutationType.MISSENSE;
 
         ActionableRange rangeHigh = ImmutableActionableRange.builder()
                 .from(ServeTestFactory.createTestActionableRange())
@@ -110,7 +110,7 @@ public class VariantEvidenceTest {
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
-                .mutationType(mutationTypeFilter)
+                .applicableMutationType(mutationType)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -120,7 +120,7 @@ public class VariantEvidenceTest {
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
-                .mutationType(mutationTypeFilter)
+                .applicableMutationType(mutationType)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -130,7 +130,7 @@ public class VariantEvidenceTest {
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
-                .mutationType(mutationTypeFilter)
+                .applicableMutationType(mutationType)
                 .source(Knowledgebase.CKB)
                 .build();
 
@@ -229,19 +229,19 @@ public class VariantEvidenceTest {
         ActionableGene actionableGene1 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(activatedGene)
-                .event(GeneLevelEvent.ACTIVATION)
+                .event(GeneEvent.ACTIVATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene actionableGene2 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(inactivatedGene)
-                .event(GeneLevelEvent.INACTIVATION)
+                .event(GeneEvent.INACTIVATION)
                 .source(Knowledgebase.CKB)
                 .build();
         ActionableGene actionableGene3 = ImmutableActionableGene.builder()
                 .from(ServeTestFactory.createTestActionableGene())
                 .gene(amplifiedGene)
-                .event(GeneLevelEvent.AMPLIFICATION)
+                .event(GeneEvent.AMPLIFICATION)
                 .source(Knowledgebase.CKB)
                 .build();
 

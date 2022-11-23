@@ -22,7 +22,6 @@ CREATE TABLE protect
     sourceEvent varchar(255) NOT NULL,
     sourceUrls varchar(2500),
     evidenceType varchar(50) NOT NULL,
-    rangeRank int,
     evidenceUrls varchar(2500),
     PRIMARY KEY (id),
     INDEX(sampleId)

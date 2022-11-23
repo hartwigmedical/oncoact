@@ -9,14 +9,15 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Iterables;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.common.protect.ProtectEvidence;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep21;
+import org.jooq.InsertValuesStep20;
 
+@SuppressWarnings("rawtypes")
 class ProtectDAO {
 
     private static final String TREATMENT_APPROACH_DELIMITER = ",";
@@ -33,7 +34,7 @@ class ProtectDAO {
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
         for (List<ProtectEvidence> batch : Iterables.partition(evidence, DatabaseUtil.DB_BATCH_INSERT_SIZE)) {
-            InsertValuesStep21 inserter = context.insertInto(PROTECT,
+            InsertValuesStep20 inserter = context.insertInto(PROTECT,
                     PROTECT.SAMPLEID,
                     PROTECT.GENE,
                     PROTECT.TRANSCRIPT,
@@ -52,7 +53,6 @@ class ProtectDAO {
                     PROTECT.SOURCEEVENT,
                     PROTECT.SOURCEURLS,
                     PROTECT.EVIDENCETYPE,
-                    PROTECT.RANGERANK,
                     PROTECT.EVIDENCEURLS,
                     PROTECT.MODIFIED);
             batch.forEach(entry -> addRecord(timestamp, inserter, sample, entry));
@@ -60,7 +60,7 @@ class ProtectDAO {
         }
     }
 
-    private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStep21 inserter, @NotNull String sample,
+    private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStep20 inserter, @NotNull String sample,
             @NotNull ProtectEvidence evidence) {
         for (KnowledgebaseSource source : evidence.sources()) {
             StringJoiner sourceUrlJoiner = new StringJoiner(",");
@@ -81,7 +81,7 @@ class ProtectDAO {
                     evidence.eventIsHighDriver(),
                     evidence.germline(),
                     evidence.reported(),
-                    evidence.treatment().treament(),
+                    evidence.treatment().name(),
                     treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()),
                     treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()),
                     evidence.onLabel(),
@@ -91,7 +91,6 @@ class ProtectDAO {
                     source.sourceEvent(),
                     sourceUrlJoiner.toString().isEmpty() ? null : sourceUrlJoiner.toString(),
                     source.evidenceType().toString(),
-                    source.rangeRank(),
                     evidenceUrlJoiner.toString().isEmpty() ? null : evidenceUrlJoiner.toString(),
                     timestamp);
         }

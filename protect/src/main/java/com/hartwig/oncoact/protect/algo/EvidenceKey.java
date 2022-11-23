@@ -36,7 +36,7 @@ class EvidenceKey {
     public static EvidenceKey create(@NotNull ProtectEvidence evidence) {
         return new EvidenceKey(evidence.gene(),
                 evidence.event(),
-                evidence.treatment().treament(),
+                evidence.treatment().name(),
                 evidence.treatment().sourceRelevantTreatmentApproaches(),
                 evidence.treatment().relevantTreatmentApproaches());
     }

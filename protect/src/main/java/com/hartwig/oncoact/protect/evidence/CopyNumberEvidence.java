@@ -9,7 +9,7 @@ import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
-import com.hartwig.serve.datamodel.gene.GeneLevelEvent;
+import com.hartwig.serve.datamodel.gene.GeneEvent;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,9 +24,9 @@ public class CopyNumberEvidence {
             @NotNull final List<ActionableGene> actionableGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
-                .filter(x -> x.event() == GeneLevelEvent.INACTIVATION || x.event() == GeneLevelEvent.AMPLIFICATION
-                        || x.event() == GeneLevelEvent.OVEREXPRESSION || x.event() == GeneLevelEvent.DELETION
-                        || x.event() == GeneLevelEvent.UNDEREXPRESSION || x.event() == GeneLevelEvent.ANY_MUTATION)
+                .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
+                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.DELETION
+                        || x.event() == GeneEvent.UNDEREXPRESSION || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 

@@ -30,19 +30,19 @@ public class EvidenceConsolidationTest {
 
         ProtectEvidence evidence1 =
                 builder().treatment(ImmutableTreatment.builder()
-                        .treament(treatment1)
+                        .name(treatment1)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase1))).build();
         ProtectEvidence evidence2 =
                 builder().treatment(ImmutableTreatment.builder()
-                        .treament(treatment1)
+                        .name(treatment1)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
         ProtectEvidence evidence3 =
                 builder().treatment(ImmutableTreatment.builder()
-                        .treament(treatment2)
+                        .name(treatment2)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
@@ -64,7 +64,7 @@ public class EvidenceConsolidationTest {
     @NotNull
     private static ProtectEvidence findByTreatment(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String treatment) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().treament().equals(treatment)) {
+            if (evidence.treatment().name().equals(treatment)) {
                 return evidence;
             }
         }
