@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Set;
 
-import com.beust.jcommander.internal.Sets;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneGermlineReporting;
 import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGene;
@@ -91,7 +91,7 @@ public class WildTypeEvidenceTest {
         Set<PurpleQCStatus> purpleQCStatusSet = Sets.newHashSet();
         purpleQCStatusSet.add(PurpleQCStatus.PASS);
 
-        List<ProtectEvidence> evidencesWildTypeSoamticVariant = wildTypeEvidenceSomaticVariant.evidence(reportableGermlineVariant,
+        List<ProtectEvidence> evidencesWildTypeSomaticVariant = wildTypeEvidenceSomaticVariant.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
                 reportableSomaticGainsLosses,
                 reportableFusions,
@@ -99,7 +99,7 @@ public class WildTypeEvidenceTest {
                 geneDisruptions,
                 purpleQCStatusSet);
 
-        assertEquals(evidencesWildTypeSoamticVariant.size(), 0);
+        assertEquals(evidencesWildTypeSomaticVariant.size(), 0);
 
         //Test wild-type with germline variant
         ActionableGene wildTypeGermlineVariant = ImmutableActionableGene.builder()
