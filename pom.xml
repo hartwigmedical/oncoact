@@ -115,11 +115,6 @@
                     <artifactId>jooq-codegen-maven</artifactId>
                     <version>${jooq.version}</version>
                 </plugin>
-                <plugin>
-                    <groupId>com.fasterxml.jackson.dataformat</groupId>
-                    <artifactId>jackson-dataformat-xml</artifactId>
-                    <version>${jackson-dataformat-xml.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
