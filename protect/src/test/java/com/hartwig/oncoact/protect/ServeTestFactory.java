@@ -40,6 +40,7 @@ public final class ServeTestFactory {
     public static ActionableHotspot createTestActionableHotspot() {
         return ImmutableActionableHotspot.builder()
                 .from(createTestBaseEvent())
+                .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
                 .position(0)
                 .ref(Strings.EMPTY)

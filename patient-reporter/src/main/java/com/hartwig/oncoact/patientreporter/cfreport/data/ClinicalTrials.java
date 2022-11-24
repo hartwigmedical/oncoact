@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.common.protect.ProtectEvidence;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public final class ClinicalTrials {
     public static int uniqueTrialCount(@NotNull List<ProtectEvidence> trials) {
         Set<String> acronyms = Sets.newHashSet();
         for (ProtectEvidence trial : trials) {
-            acronyms.add(trial.treatment().treament());
+            acronyms.add(trial.treatment().name());
         }
         return acronyms.size();
     }
@@ -35,7 +35,7 @@ public final class ClinicalTrials {
     @NotNull
     public static String createLinkiClusion(@NotNull ProtectEvidence evidence) {
         String link = Strings.EMPTY;
-        for (KnowledgebaseSource source: evidence.sources()) {
+        for (KnowledgebaseSource source : evidence.sources()) {
             for (String url : source.sourceUrls()) {
                 if (url.contains("trial-eye")) {
                     link = url;

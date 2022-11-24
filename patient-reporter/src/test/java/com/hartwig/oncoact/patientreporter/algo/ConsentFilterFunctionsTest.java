@@ -73,7 +73,7 @@ public class ConsentFilterFunctionsTest {
                 .germline(true)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("TryMe")
+                        .name("TryMe")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())

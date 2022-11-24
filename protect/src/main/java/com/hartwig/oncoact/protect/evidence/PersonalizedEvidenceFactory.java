@@ -93,8 +93,11 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static Set<String> extractDoidStrings(@NotNull Set<CancerType> cancerTypes) {
-        // TODO Implement
-        return Sets.newHashSet();
+        Set<String> doids = Sets.newHashSet();
+        for (CancerType cancerType : cancerTypes) {
+            doids.add(cancerType.doid());
+        }
+        return doids;
     }
 
     @NotNull
@@ -130,8 +133,9 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static EvidenceType fromActionableRange(@NotNull ActionableRange range) {
-        // TODO Implement based on length
-        return EvidenceType.CODON_MUTATION;
+        // Might be a shaky assumption that exons are never length 3...
+        int length = 1 + range.end() - range.start();
+        return length == 3 ? EvidenceType.CODON_MUTATION : EvidenceType.EXON_MUTATION;
     }
 
     @NotNull

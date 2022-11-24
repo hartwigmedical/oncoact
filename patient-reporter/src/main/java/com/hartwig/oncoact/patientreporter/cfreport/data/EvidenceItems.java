@@ -46,7 +46,7 @@ public final class EvidenceItems {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.onLabel() == requireOnLabel && (reportGermline || !evidence.germline())) {
                 if (evidence.level().equals(EvidenceLevel.A) || evidence.level().equals(EvidenceLevel.B)) {
-                    treatments.add(evidence.treatment().treament());
+                    treatments.add(evidence.treatment().name());
                     levels.add(evidence.level());
                 }
             }

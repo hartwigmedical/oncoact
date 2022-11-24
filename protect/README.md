@@ -133,6 +133,9 @@ The list of sources contains the following information per source:
 | evidenceUrls | A list of urls with additional information about the evidence                             | https://pubmed.ncbi.nlm.nih.gov |
 
 ## Version History and Download Links
+- Upcoming
+  - Switch to SERVE 2.0
+  - Dropped rangeRank from KnowledgebaseSource record in evidence records.
 - [2.3](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v2.3)
   - Support for making a distinction between amplification/overexpression and deletion/underexpression 
   - Support the evidence matching of HLA Class I evidence

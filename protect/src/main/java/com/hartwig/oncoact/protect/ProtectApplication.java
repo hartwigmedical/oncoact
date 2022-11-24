@@ -12,6 +12,7 @@ import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneFile;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.protect.algo.ProtectAlgo;
+import com.hartwig.oncoact.protect.serve.ServeRefGenome;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ActionableEventsLoader;
 
@@ -61,7 +62,8 @@ public class ProtectApplication {
         DoidParents doidParentModel = DoidParents.fromEdges(DiseaseOntology.readDoidOwlEntryFromDoidJson(config.doidJsonFile()).edges());
 
         Set<String> patientTumorDoids = patientTumorDoids(config, doidParentModel);
-        ActionableEvents actionableEvents = ActionableEventsLoader.readFromDir(config.serveActionabilityDir(), config.refGenomeVersion());
+        ActionableEvents actionableEvents = ActionableEventsLoader.readFromDir(config.serveActionabilityDir(),
+                ServeRefGenome.toServeRefGenome(config.refGenomeVersion()));
 
         List<DriverGene> driverGenes = readDriverGenesFromFile(config.driverGeneTsv());
 

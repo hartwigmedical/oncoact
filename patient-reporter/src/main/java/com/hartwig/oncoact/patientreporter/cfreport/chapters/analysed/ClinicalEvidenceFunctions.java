@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.codon.AminoAcids;
-import com.hartwig.oncoact.common.protect.EvidenceType;
 import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -38,7 +37,7 @@ public class ClinicalEvidenceFunctions {
     private static final String TREATMENT_DELIMITER = " + ";
 
     private static final String RESPONSE_SYMBOL = "\u25B2";
-    private static final String RESISTENT_SYMBOL = "\u25BC";
+    private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
 
     private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
@@ -55,14 +54,14 @@ public class ClinicalEvidenceFunctions {
 
         for (ProtectEvidence evidence : evidences) {
             if ((reportGermline || !evidence.germline()) && evidence.onLabel() == requireOnLabel) {
-                List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment());
+                List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment().name());
                 if (treatmentEvidences == null) {
                     treatmentEvidences = Lists.newArrayList();
                 }
                 if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
                     treatmentEvidences.add(evidence);
                 }
-                evidencePerTreatmentMap.put(evidence.treatment().treament(), treatmentEvidences);
+                evidencePerTreatmentMap.put(evidence.treatment().name(), treatmentEvidences);
             }
         }
         return evidencePerTreatmentMap;
@@ -135,7 +134,7 @@ public class ClinicalEvidenceFunctions {
 
     private static boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
             @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
-        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet().stream().collect(Collectors.toSet()));
+        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
         boolean hasEvidence = false;
         for (String treatment : sortedTreatments) {
             List<ProtectEvidence> evidences = treatmentMap.get(treatment);
@@ -157,9 +156,7 @@ public class ClinicalEvidenceFunctions {
                     Set<String> evidenceUrls = Sets.newHashSet();
 
                     for (KnowledgebaseSource source : responsive.sources()) {
-                        for (String url : source.evidenceUrls()) {
-                            evidenceUrls.add(url);
-                        }
+                        evidenceUrls.addAll(source.evidenceUrls());
 
                         if (source.sourceUrls().size() >= 1) {
                             sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
@@ -182,7 +179,7 @@ public class ClinicalEvidenceFunctions {
                         }
 
                         if (RESISTANT_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistent = TableUtil.createTransparentCell(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle());
+                            cellResistent = TableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(ReportResources.resistentStyle());
                         }
 
                         if (RESPONSE_DIRECTIONS.contains(responsive.direction())) {
@@ -226,20 +223,20 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     private static String determineEvidenceType(@NotNull KnowledgebaseSource source) {
-
         String evidenceRank = Strings.EMPTY;
         String evidenceSource = source.evidenceType().display();
-        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
-            evidenceRank = String.valueOf(source.rangeRank());
-        }
-
-        String evidenceMerged;
-        if (!evidenceRank.isEmpty()) {
-            evidenceMerged = evidenceSource + " " + evidenceRank;
-        } else {
-            evidenceMerged = evidenceSource;
-        }
-        return evidenceMerged;
+        // TODO Consider handling missing range rank.
+//        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
+//            evidenceRank = String.valueOf(source.rangeRank());
+//        }
+//
+//        String evidenceMerged;
+//        if (!evidenceRank.isEmpty()) {
+//            evidenceMerged = evidenceSource + " " + evidenceRank;
+//        } else {
+//            evidenceMerged = evidenceSource;
+//        }
+        return evidenceSource;
     }
 
     @NotNull
@@ -278,7 +275,7 @@ public class ClinicalEvidenceFunctions {
                     return item1.level().compareTo(item2.level());
                 }
             } else {
-                return item1.treatment().treament().compareTo(item2.treatment().treament());
+                return item1.treatment().name().compareTo(item2.treatment().name());
             }
         }).collect(Collectors.toList());
     }
@@ -287,7 +284,7 @@ public class ClinicalEvidenceFunctions {
     public static Paragraph noteGlossaryTerms() {
         return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(ReportResources.responseStyle()))
                 .add(" ) means that the evidence is responsive. The symbol ( ")
-                .add(new Text(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle()))
+                .add(new Text(RESISTANT_SYMBOL).addStyle(ReportResources.resistentStyle()))
                 .add(" ) means that the evidence is resistant. The abbreviation ( ")
                 .add(new Text(PREDICTED_SYMBOL).addStyle(ReportResources.predictedStyle()))
                 .add(" mentioned after the level of evidence) indicates the evidence is predicted "

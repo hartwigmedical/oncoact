@@ -152,6 +152,7 @@ public class PersonalizedEvidenceFactoryTest {
 
         return ImmutableActionableHotspot.builder()
                 .from(event)
+                .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
                 .position(0)
                 .ref(Strings.EMPTY)

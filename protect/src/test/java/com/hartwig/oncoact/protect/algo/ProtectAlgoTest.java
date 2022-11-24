@@ -11,12 +11,13 @@ import com.google.common.io.Resources;
 import com.hartwig.oncoact.common.doid.DoidEdge;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.doid.DoidParentsTest;
+import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
 import com.hartwig.oncoact.protect.ImmutableProtectConfig;
 import com.hartwig.oncoact.protect.ProtectApplication;
 import com.hartwig.oncoact.protect.ProtectConfig;
+import com.hartwig.oncoact.protect.serve.ServeRefGenome;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ActionableEventsLoader;
-import com.hartwig.serve.datamodel.refgenome.RefGenomeVersion;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -73,7 +74,8 @@ public class ProtectAlgoTest {
                 .lilacQcCsv(LILAC_QC_CSV)
                 .build();
 
-        ActionableEvents events = ActionableEventsLoader.readFromDir(config.serveActionabilityDir(), config.refGenomeVersion());
+        ActionableEvents events = ActionableEventsLoader.readFromDir(config.serveActionabilityDir(),
+                ServeRefGenome.toServeRefGenome(config.refGenomeVersion()));
 
         List<DoidEdge> edges = Lists.newArrayList();
         edges.add(DoidParentsTest.createParent("299", "305"));

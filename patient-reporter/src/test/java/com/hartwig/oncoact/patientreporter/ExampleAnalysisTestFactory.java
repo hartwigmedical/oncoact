@@ -75,7 +75,6 @@ import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -376,16 +375,14 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String soureEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer rank,
-            @NotNull Set<String> evidenceurls) {
-
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType,
+            @NotNull Set<String> evidenceUrls) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(source)
                 .sourceEvent(soureEvent)
                 .sourceUrls(sourceUrls)
                 .evidenceType(protectEvidenceType)
-                .rangeRank(rank)
-                .evidenceUrls(evidenceurls)
+                .evidenceUrls(evidenceUrls)
                 .build();
     }
 
@@ -402,7 +399,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Cobimetinib + Vemurafenib")
+                        .name("Cobimetinib + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -413,7 +410,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -425,7 +421,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Dabrafenib")
+                        .name("Dabrafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -436,7 +432,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -448,7 +443,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Dabrafenib + Trametinib")
+                        .name("Dabrafenib + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -459,13 +454,11 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -477,7 +470,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Trametinib")
+                        .name("Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -488,7 +481,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -500,7 +492,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Vemurafenib")
+                        .name("Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -511,13 +503,11 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808"))))
                 .build());
 
@@ -529,7 +519,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("RO4987655")
+                        .name("RO4987655")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -540,7 +530,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
-                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"))))
                 .build());
 
@@ -552,7 +541,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Buparlisib + Carboplatin + Paclitaxel")
+                        .name("Buparlisib + Carboplatin + Paclitaxel")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -563,7 +552,6 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25672916"))))
                 .build());
         return evidenceItemsOnLabel;
@@ -582,7 +570,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("BASKET OF BASKETS (VHIO17002)")
+                        .name("BASKET OF BASKETS (VHIO17002)")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -593,7 +581,6 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/11087"),
                         EvidenceType.SIGNATURE,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -605,7 +592,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("CheckMate 848")
+                        .name("CheckMate 848")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -616,7 +603,6 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10560"),
                         EvidenceType.SIGNATURE,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -628,7 +614,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("DRUP")
+                        .name("DRUP")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -639,7 +625,6 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                         EvidenceType.SIGNATURE,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -651,7 +636,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("KEYNOTE-158")
+                        .name("KEYNOTE-158")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -662,7 +647,6 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/4866"),
                         EvidenceType.SIGNATURE,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -674,7 +658,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("COLUMBUS-AD")
+                        .name("COLUMBUS-AD")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -685,7 +669,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/15589"),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -697,7 +680,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("DRUP")
+                        .name("DRUP")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -708,13 +691,11 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF ACTIVATING MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.ACTIVATION,
-                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "BRAF V600",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.CODON_MUTATION,
-                                600,
                                 Sets.newHashSet())))
                 .build());
 
@@ -726,7 +707,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("EBIN (EORTC-1612-MG)")
+                        .name("EBIN (EORTC-1612-MG)")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -737,7 +718,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet("https://trial-eye.com/hmf/11284"),
                         EvidenceType.CODON_MUTATION,
-                        600,
                         Sets.newHashSet())))
                 .build());
 
@@ -749,7 +729,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("NASAM")
+                        .name("NASAM")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -760,7 +740,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/14995"),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -772,7 +751,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("DRUP")
+                        .name("DRUP")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -783,13 +762,11 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.DELETION,
-                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "PTEN INACTIVATION MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.INACTIVATION,
-                                null,
                                 Sets.newHashSet())))
                 .build());
         return trialsOnLabel;
@@ -809,7 +786,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Bevacizumab")
+                        .name("Bevacizumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -820,7 +797,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19571295", "http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -832,7 +808,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("CI-1040")
+                        .name("CI-1040")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -843,7 +819,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
                 .build());
 
@@ -855,7 +830,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Cetuximab")
+                        .name("Cetuximab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -866,7 +841,6 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
@@ -874,7 +848,6 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19884556",
@@ -889,7 +862,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Cetuximab + Irinotecan + Vemurafenib")
+                        .name("Cetuximab + Irinotecan + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -900,7 +873,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/27729313"))))
                 .build());
 
@@ -912,7 +884,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Fluorouracil")
+                        .name("Fluorouracil")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -923,7 +895,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -935,7 +906,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Irinotecan")
+                        .name("Irinotecan")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -946,7 +917,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -958,7 +928,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Oxaliplatin")
+                        .name("Oxaliplatin")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -969,7 +939,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -981,7 +950,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Panitumumab")
+                        .name("Panitumumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -992,7 +961,6 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
@@ -1000,13 +968,11 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600",
                                 Sets.newHashSet(),
                                 EvidenceType.CODON_MUTATION,
-                                600,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320"))))
                 .build());
 
@@ -1018,7 +984,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Selumetinib")
+                        .name("Selumetinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1029,7 +995,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22492957"))))
                 .build());
 
@@ -1041,7 +1006,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Sorafenib")
+                        .name("Sorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1052,7 +1017,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
                 .build());
 
@@ -1064,7 +1028,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Vemurafenib")
+                        .name("Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1075,7 +1039,6 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
-                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/26287849"))))
                 .build());
 
@@ -1087,7 +1050,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Anti-EGFR monoclonal antibody")
+                        .name("Anti-EGFR monoclonal antibody")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1098,13 +1061,11 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN oncogenic mutation",
                                 Sets.newHashSet(),
                                 EvidenceType.ANY_MUTATION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703", "http://www.ncbi.nlm.nih.gov/pubmed/19398573")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "PTEN deletion",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19398573"))))
                 .build());
@@ -1117,7 +1078,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Cetuximab")
+                        .name("Cetuximab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1128,7 +1089,6 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703"))))
                 .build());
 
@@ -1140,7 +1100,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Everolimus")
+                        .name("Everolimus")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1151,7 +1111,6 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23989949"))))
                 .build());
 
@@ -1163,7 +1122,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Lapatinib + Trastuzumab")
+                        .name("Lapatinib + Trastuzumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1174,7 +1133,6 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
-                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25300346"))))
                 .build());
 
@@ -1186,7 +1144,7 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("Trastuzumab")
+                        .name("Trastuzumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -1197,13 +1155,11 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
-                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334"))))
                 .build());
         return evidenceItemsOffLabel;

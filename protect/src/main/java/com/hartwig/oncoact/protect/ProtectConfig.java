@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.serve.datamodel.refgenome.RefGenomeVersion;
+import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -187,9 +187,14 @@ public interface ProtectConfig {
     }
 
     @NotNull
-    static RefGenomeVersion resolveRefGenomeVersion(@NotNull String value) {
-        // TODO Implement
-        return RefGenomeVersion.valueOf(value);
+    static RefGenomeVersion resolveRefGenomeVersion(@NotNull String version) {
+        if (version.equals(RefGenomeVersion.V37.toString()) || version.equals("37")) {
+            return RefGenomeVersion.V37;
+        } else if (version.equals(RefGenomeVersion.V38.toString()) || version.equals("38")) {
+            return RefGenomeVersion.V38;
+        }
+
+        throw new IllegalArgumentException("Cannot resolve ref genome version: " + version);
     }
 
     @NotNull

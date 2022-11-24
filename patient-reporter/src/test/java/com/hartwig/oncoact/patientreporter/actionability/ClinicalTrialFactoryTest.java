@@ -27,7 +27,7 @@ public class ClinicalTrialFactoryTest {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .treament("acronym")
+                        .name("acronym")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
@@ -46,6 +46,6 @@ public class ClinicalTrialFactoryTest {
 
         assertEquals(1, trial.size());
         assertEquals("event", trial.get(0).event());
-        assertEquals("acronym", trial.get(0).treatment().treament());
+        assertEquals("acronym", trial.get(0).treatment().name());
     }
 }
