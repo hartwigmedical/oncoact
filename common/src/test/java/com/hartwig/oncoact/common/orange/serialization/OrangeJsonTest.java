@@ -95,24 +95,24 @@ public class OrangeJsonTest {
         assertEquals(185, purple.characteristics().tumorMutationalLoad());
         assertEquals("HIGH", purple.characteristics().tumorMutationalLoadStatus());
 
-        assertEquals(3, purple.drivers().size());
-        PurpleDriver driver1 = findDriverByGene(purple.drivers(), "SF3B1");
+        assertEquals(3, purple.somaticDrivers().size());
+        PurpleDriver driver1 = findDriverByGene(purple.somaticDrivers(), "SF3B1");
         assertEquals("ENST00000335508", driver1.transcript());
         assertEquals(PurpleDriverType.MUTATION, driver1.type());
         assertEquals(0.2, driver1.driverLikelihood(), EPSILON);
 
-        PurpleDriver driver2 = findDriverByGene(purple.drivers(), "SMAD4");
+        PurpleDriver driver2 = findDriverByGene(purple.somaticDrivers(), "SMAD4");
         assertEquals("ENST00000342988", driver2.transcript());
         assertEquals(PurpleDriverType.DEL, driver2.type());
         assertEquals(1.0, driver2.driverLikelihood(), EPSILON);
 
-        PurpleDriver driver3 = findDriverByGene(purple.drivers(), "BRCA1");
+        PurpleDriver driver3 = findDriverByGene(purple.somaticDrivers(), "BRCA1");
         assertEquals("ENST00000471181", driver3.transcript());
         assertEquals(PurpleDriverType.GERMLINE_MUTATION, driver3.type());
         assertEquals(0.8, driver3.driverLikelihood(), EPSILON);
 
-        assertEquals(2, purple.variants().size());
-        PurpleVariant variant1 = findVariantByGene(purple.variants(), "SF3B1");
+        assertEquals(2, purple.somaticVariants().size());
+        PurpleVariant variant1 = findVariantByGene(purple.somaticVariants(), "SF3B1");
         assertTrue(variant1.reported());
         assertEquals(PurpleVariantType.SNP, variant1.type());
         assertEquals("2", variant1.chromosome());
@@ -136,7 +136,7 @@ public class OrangeJsonTest {
         assertEquals(PurpleCodingEffect.MISSENSE, variant1.canonicalImpact().codingEffect());
         assertTrue(variant1.otherImpacts().isEmpty());
 
-        PurpleVariant variant2 = findVariantByGene(purple.variants(), "BRCA1");
+        PurpleVariant variant2 = findVariantByGene(purple.somaticVariants(), "BRCA1");
         assertTrue(variant2.reported());
         assertEquals(PurpleVariantType.SNP, variant2.type());
         assertEquals("17", variant2.chromosome());

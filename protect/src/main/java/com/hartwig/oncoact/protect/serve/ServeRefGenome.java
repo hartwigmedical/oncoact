@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.protect.serve;
 
-import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
+import com.hartwig.oncoact.common.orange.datamodel.OrangeRefGenomeVersion;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ public final class ServeRefGenome {
     }
 
     @NotNull
-    public static com.hartwig.serve.datamodel.refgenome.RefGenomeVersion toServeRefGenome(@NotNull RefGenomeVersion refGenomeVersion) {
+    public static com.hartwig.serve.datamodel.refgenome.RefGenomeVersion toServeRefGenome(@NotNull OrangeRefGenomeVersion refGenomeVersion) {
         switch (refGenomeVersion) {
             case V37: {
                 return com.hartwig.serve.datamodel.refgenome.RefGenomeVersion.V37;

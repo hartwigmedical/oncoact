@@ -17,10 +17,16 @@ public abstract class PurpleRecord {
     public abstract PurpleCharacteristics characteristics();
 
     @NotNull
-    public abstract Set<PurpleDriver> drivers();
+    public abstract Set<PurpleDriver> somaticDrivers();
+
+    @Nullable
+    public abstract Set<PurpleDriver> germlineDrivers();
 
     @NotNull
-    public abstract Set<PurpleVariant> variants();
+    public abstract Set<PurpleVariant> somaticVariants();
+
+    @Nullable
+    public abstract Set<PurpleVariant> germlineVariants();
 
     @NotNull
     public abstract Set<PurpleCopyNumber> copyNumbers();

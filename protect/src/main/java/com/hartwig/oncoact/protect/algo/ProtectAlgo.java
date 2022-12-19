@@ -5,19 +5,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.chord.ChordData;
-import com.hartwig.oncoact.common.chord.ChordDataFile;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.common.datamodel.ReportableVariant;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.hla.LilacSummaryData;
-import com.hartwig.oncoact.common.linx.LinxData;
-import com.hartwig.oncoact.common.linx.LinxDataLoader;
+import com.hartwig.oncoact.common.interpretation.ReportableVariantFactory;
+import com.hartwig.oncoact.common.orange.datamodel.OrangeRecord;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleRecord;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.purple.loader.PurpleData;
-import com.hartwig.oncoact.common.purple.loader.PurpleDataLoader;
-import com.hartwig.oncoact.common.virus.VirusInterpreterData;
-import com.hartwig.oncoact.common.virus.VirusInterpreterDataLoader;
-import com.hartwig.oncoact.protect.ProtectConfig;
 import com.hartwig.oncoact.protect.evidence.ChordEvidence;
 import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
 import com.hartwig.oncoact.protect.evidence.DisruptionEvidence;
@@ -33,6 +29,7 @@ import com.hartwig.serve.datamodel.ActionableEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ProtectAlgo {
 
@@ -59,7 +56,7 @@ public class ProtectAlgo {
 
     @NotNull
     public static ProtectAlgo build(@NotNull ActionableEvents actionableEvents, @NotNull Set<String> patientTumorDoids,
-            @NotNull List<DriverGene> driverGenes, @NotNull final DoidParents doidParentModel) {
+            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel) {
         PersonalizedEvidenceFactory personalizedEvidenceFactory = new PersonalizedEvidenceFactory(patientTumorDoids, doidParentModel);
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
@@ -105,71 +102,39 @@ public class ProtectAlgo {
     }
 
     @NotNull
-    public List<ProtectEvidence> run(@NotNull ProtectConfig config) throws IOException {
-        PurpleData purpleData = loadPurpleData(config);
-        LinxData linxData = loadLinxData(config);
-        VirusInterpreterData virusInterpreterData = loadVirusInterpreterData(config);
-        ChordData chordAnalysis = ChordDataFile.read(config.chordPredictionTxt(), true);
-        LilacSummaryData lilacData = loadLilacData(config);
-
-        return determineEvidence(purpleData, linxData, virusInterpreterData, chordAnalysis, lilacData);
-    }
-
-    @NotNull
-    private static PurpleData loadPurpleData(@NotNull ProtectConfig config) throws IOException {
-        return PurpleDataLoader.load(config.tumorSampleId(),
-                config.referenceSampleId(),
-                null,
-                config.purpleQcFile(),
-                config.purplePurityTsv(),
-                config.purpleSomaticDriverCatalogTsv(),
-                config.purpleSomaticVariantVcf(),
-                config.purpleGermlineDriverCatalogTsv(),
-                config.purpleGermlineVariantVcf(),
-                config.purpleGeneCopyNumberTsv(),
-                null,
-                null,
-                null);
-    }
-
-    @NotNull
-    private static LinxData loadLinxData(@NotNull ProtectConfig config) throws IOException {
-        return LinxDataLoader.load(config.linxFusionTsv(), config.linxBreakendTsv(), config.linxDriverCatalogTsv());
-    }
-
-    @NotNull
-    private static VirusInterpreterData loadVirusInterpreterData(@NotNull ProtectConfig config) throws IOException {
-        return VirusInterpreterDataLoader.load(config.annotatedVirusTsv());
-    }
-
-    @NotNull
-    private static LilacSummaryData loadLilacData(@NotNull ProtectConfig config) throws IOException {
-        return LilacSummaryData.load(config.lilacQcCsv(), config.lilacResultCsv());
-    }
-
-    @NotNull
-    private List<ProtectEvidence> determineEvidence(@NotNull PurpleData purpleData, @NotNull LinxData linxData,
-            @NotNull VirusInterpreterData virusInterpreterData, @NotNull ChordData chordAnalysis, @NotNull LilacSummaryData lilacData) {
+    public List<ProtectEvidence> run(@NotNull OrangeRecord orange) throws IOException {
         LOGGER.info("Evidence extraction started");
-        List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(purpleData.reportableGermlineVariants(),
-                purpleData.reportableSomaticVariants(),
-                purpleData.allSomaticVariants());
+
+        List<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
+        List<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
+
+        List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
+                reportableSomaticVariants,
+                orange.purple().somaticVariants());
         printExtraction("somatic and germline variants", variantEvidence);
+
         List<ProtectEvidence> copyNumberEvidence =
                 copyNumberEvidenceFactory.evidence(purpleData.reportableSomaticGainsLosses(), purpleData.allSomaticGainsLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
+
         List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(linxData.homozygousDisruptions());
         printExtraction("homozygous disruptions", disruptionEvidence);
+
         List<ProtectEvidence> fusionEvidence = fusionEvidenceFactory.evidence(linxData.reportableFusions(), linxData.allFusions());
         printExtraction("fusions", fusionEvidence);
+
         List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(purpleData);
         printExtraction("purple signatures", purpleSignatureEvidence);
+
         List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(virusInterpreterData);
         printExtraction("viruses", virusEvidence);
+
         List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(chordAnalysis);
         printExtraction("chord", chordEvidence);
+
         List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(lilacData);
         printExtraction("hla", hlaEvidence);
+
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(purpleData.reportableGermlineVariants(),
                 purpleData.reportableSomaticVariants(),
                 purpleData.reportableSomaticGainsLosses(),
@@ -209,6 +174,33 @@ public class ProtectAlgo {
                 reportedCount(updatedForBlacklist));
 
         return updatedForBlacklist;
+    }
+
+    @NotNull
+    private static List<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
+        return ReportableVariantFactory.toReportableSomaticVariants(filterReported(purple.somaticVariants()), purple.somaticDrivers());
+    }
+
+    @Nullable
+    private static List<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
+        Set<PurpleVariant> germlineVariants = purple.germlineVariants();
+        if (germlineVariants == null) {
+            return null;
+        }
+
+        Set<PurpleVariant> reported = filterReported(germlineVariants);
+        return ReportableVariantFactory.toReportableGermlineVariants(reported, purple.germlineDrivers());
+    }
+
+    @NotNull
+    private static Set<PurpleVariant> filterReported(@NotNull Set<PurpleVariant> variants) {
+        Set<PurpleVariant> reported = Sets.newHashSet();
+        for (PurpleVariant variant : variants) {
+            if (variant.reported()) {
+                reported.add(variant);
+            }
+        }
+        return reported;
     }
 
     private static void printExtraction(@NotNull String title, @NotNull List<ProtectEvidence> evidences) {

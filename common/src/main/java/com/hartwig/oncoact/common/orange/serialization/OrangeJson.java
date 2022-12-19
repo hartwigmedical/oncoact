@@ -126,19 +126,13 @@ public final class OrangeJson {
 
         @NotNull
         private static PurpleRecord toPurpleRecord(@NotNull JsonObject purple) {
-            Set<PurpleDriver> drivers = Sets.newHashSet();
-            drivers.addAll(toPurpleDrivers(array(purple, "somaticDrivers")));
-            drivers.addAll(toPurpleDrivers(nullableArray(purple, "germlineDrivers")));
-
-            Set<PurpleVariant> variants = Sets.newHashSet();
-            variants.addAll(toPurpleVariants(array(purple, "allSomaticVariants")));
-            variants.addAll(toPurpleVariants(nullableArray(purple, "reportableGermlineVariants")));
-
             return ImmutablePurpleRecord.builder()
                     .fit(toPurpleFit(object(purple, "fit")))
                     .characteristics(toPurpleCharacteristics(object(purple, "characteristics")))
-                    .drivers(drivers)
-                    .variants(variants)
+                    .somaticDrivers(toPurpleDrivers(array(purple, "somaticDrivers")))
+                    .germlineDrivers(toPurpleDrivers(nullableArray(purple, "germlineDrivers")))
+                    .somaticVariants(toPurpleVariants(array(purple, "allSomaticVariants")))
+                    .germlineVariants(toPurpleVariants(nullableArray(purple, "allGermlineVariants")))
                     .copyNumbers(toPurpleCopyNumbers(array(purple, "allSomaticGainsLosses")))
                     .build();
         }

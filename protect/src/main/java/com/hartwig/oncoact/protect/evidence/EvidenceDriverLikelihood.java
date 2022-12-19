@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import com.hartwig.oncoact.common.datamodel.DriverInterpretation;
 import com.hartwig.oncoact.common.linx.FusionLikelihoodType;
-import com.hartwig.oncoact.common.variant.DriverInterpretation;
 
 import org.jetbrains.annotations.NotNull;
 

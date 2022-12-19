@@ -9,25 +9,31 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
-public abstract class PurpleVariant {
+public abstract class PurpleVariant implements Variant {
 
     public abstract boolean reported();
 
     @NotNull
+    @Override
     public abstract PurpleVariantType type();
 
     @NotNull
+    @Override
     public abstract String gene();
 
     @NotNull
+    @Override
     public abstract String chromosome();
 
+    @Override
     public abstract int position();
 
     @NotNull
+    @Override
     public abstract String ref();
 
     @NotNull
+    @Override
     public abstract String alt();
 
     public abstract double adjustedCopyNumber();

@@ -1,12 +1,17 @@
 package com.hartwig.oncoact.common.protect;
 
+import java.util.Set;
+import java.util.StringJoiner;
+
 import com.google.common.annotations.VisibleForTesting;
+import com.hartwig.oncoact.common.datamodel.ReportableVariant;
+import com.hartwig.oncoact.common.interpretation.AltTranscriptReportableInfo;
 import com.hartwig.oncoact.common.linx.LinxFusion;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.common.orange.datamodel.purple.Variant;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.variant.CodingEffect;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.Variant;
-import com.hartwig.oncoact.common.variant.impact.AltTranscriptReportableInfo;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,10 +36,28 @@ public final class EventGenerator {
 
     @NotNull
     private static String canonicalVariantEvent(@NotNull Variant variant) {
-        return toVariantEvent(variant.canonicalHgvsProteinImpact(),
-                variant.canonicalHgvsCodingImpact(),
-                variant.canonicalEffect(),
-                variant.canonicalCodingEffect());
+        if (variant instanceof ReportableVariant) {
+            ReportableVariant reportable = (ReportableVariant) variant;
+            return toVariantEvent(reportable.canonicalHgvsProteinImpact(),
+                    reportable.canonicalHgvsCodingImpact(),
+                    reportable.canonicalEffect(),
+                    reportable.canonicalCodingEffect());
+        } else {
+            PurpleVariant purple = (PurpleVariant) variant;
+            return toVariantEvent(purple.canonicalImpact().hgvsProteinImpact(),
+                    purple.canonicalImpact().hgvsCodingImpact(),
+                    concat(purple.canonicalImpact().effects()),
+                    purple.canonicalImpact().codingEffect());
+        }
+    }
+
+    @NotNull
+    private static String concat(@NotNull Set<PurpleVariantEffect> effects) {
+        StringJoiner joiner = new StringJoiner("&");
+        for (PurpleVariantEffect effect : effects) {
+            joiner.add(effect.toString().toLowerCase());
+        }
+        return joiner.toString();
     }
 
     @NotNull
@@ -48,13 +71,13 @@ public final class EventGenerator {
     @NotNull
     @VisibleForTesting
     static String toVariantEvent(@NotNull String protein, @NotNull String coding, @NotNull String effect,
-            @NotNull CodingEffect codingEffect) {
+            @NotNull PurpleCodingEffect codingEffect) {
         if (!protein.isEmpty() && !protein.equals("p.?")) {
             return protein;
         }
 
         if (!coding.isEmpty()) {
-            return codingEffect == CodingEffect.SPLICE ? coding + " splice" : coding;
+            return codingEffect == PurpleCodingEffect.SPLICE ? coding + " splice" : coding;
         }
 
         return effect;

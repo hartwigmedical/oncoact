@@ -9,6 +9,8 @@ import com.hartwig.oncoact.common.doid.DiseaseOntology;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneFile;
+import com.hartwig.oncoact.common.orange.datamodel.OrangeRecord;
+import com.hartwig.oncoact.common.orange.serialization.OrangeJson;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.protect.algo.ProtectAlgo;
@@ -56,21 +58,24 @@ public class ProtectApplication {
     }
 
     public void run() throws IOException {
-        LOGGER.info("Running PROTECT algo on sample {} (with reference sample {})", config.tumorSampleId(), config.referenceSampleId());
+        LOGGER.info("Loading ORANGE file from {}", config.orangeJson());
+        OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
         LOGGER.info("Loading DOID file from {}", config.doidJsonFile());
         DoidParents doidParentModel = DoidParents.fromEdges(DiseaseOntology.readDoidOwlEntryFromDoidJson(config.doidJsonFile()).edges());
 
         Set<String> patientTumorDoids = patientTumorDoids(config, doidParentModel);
         ActionableEvents actionableEvents = ActionableEventsLoader.readFromDir(config.serveActionabilityDir(),
-                ServeRefGenome.toServeRefGenome(config.refGenomeVersion()));
+                ServeRefGenome.toServeRefGenome(orange.refGenomeVersion()));
 
-        List<DriverGene> driverGenes = readDriverGenesFromFile(config.driverGeneTsv());
+        LOGGER.info(" Reading driver genes from {}", config.driverGeneTsv());
+        List<DriverGene> driverGenes = DriverGeneFile.read(config.driverGeneTsv());
+        LOGGER.info("  Read {} driver gene entries", driverGenes.size());
 
         ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel);
-        List<ProtectEvidence> evidences = algo.run(config);
+        List<ProtectEvidence> evidences = algo.run(orange);
 
-        String filename = ProtectEvidenceFile.generateFilename(config.outputDir(), config.tumorSampleId());
+        String filename = ProtectEvidenceFile.generateFilename(config.outputDir(), orange.sampleId());
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);
         ProtectEvidenceFile.write(filename, evidences);
     }

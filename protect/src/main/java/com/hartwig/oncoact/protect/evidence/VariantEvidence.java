@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.common.datamodel.DriverInterpretation;
+import com.hartwig.oncoact.common.datamodel.ReportableVariant;
+import com.hartwig.oncoact.common.datamodel.ReportableVariantSource;
+import com.hartwig.oncoact.common.interpretation.AltTranscriptReportableInfo;
+import com.hartwig.oncoact.common.interpretation.ReportableVariantFactory;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariantType;
+import com.hartwig.oncoact.common.orange.datamodel.purple.Variant;
 import com.hartwig.oncoact.common.protect.EventGenerator;
 import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.variant.CodingEffect;
-import com.hartwig.oncoact.common.variant.DriverInterpretation;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantFactory;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.variant.SomaticVariant;
-import com.hartwig.oncoact.common.variant.Variant;
-import com.hartwig.oncoact.common.variant.VariantType;
-import com.hartwig.oncoact.common.variant.impact.AltTranscriptReportableInfo;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
@@ -52,16 +52,16 @@ public class VariantEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<ReportableVariant> germline, @NotNull List<ReportableVariant> somatic,
-            @NotNull List<SomaticVariant> allSomaticVariants) {
+    public List<ProtectEvidence> evidence(@NotNull Iterable<ReportableVariant> germline, @NotNull Iterable<ReportableVariant> somatic,
+            @NotNull Iterable<PurpleVariant> allSomaticVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(germline, somatic)) {
             evidences.addAll(evidence(reportableVariant));
         }
 
-        for (SomaticVariant allSomaticVariant : allSomaticVariants) {
-            if (!allSomaticVariant.reported()) {
-                evidences.addAll(evidence(allSomaticVariant));
+        for (PurpleVariant somaticVariant : allSomaticVariants) {
+            if (!somaticVariant.reported()) {
+                evidences.addAll(evidence(somaticVariant));
             }
         }
 
@@ -119,9 +119,10 @@ public class VariantEvidence {
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
         } else {
+            PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;
             driverInterpretation = DriverInterpretation.LOW;
-            transcript = variant.canonicalTranscript();
+            transcript = purple.canonicalImpact().transcript();
             isCanonical = true;
         }
 
@@ -147,38 +148,39 @@ public class VariantEvidence {
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {
-        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION
-                || gene.event() == GeneEvent.ANY_MUTATION;
+        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION;
 
         return gene.gene().equals(variant.gene()) && meetsMutationType(variant, MutationType.ANY);
     }
 
     private static boolean meetsMutationType(@NotNull Variant variant, @NotNull MutationType applicableMutationType) {
-        CodingEffect effect;
+        PurpleCodingEffect effect;
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
             effect = reportable.isCanonical()
                     ? reportable.canonicalCodingEffect()
                     : AltTranscriptReportableInfo.firstOtherCodingEffect(reportable.otherReportedEffects());
         } else {
-            effect = variant.canonicalCodingEffect();
+            PurpleVariant purple = (PurpleVariant) variant;
+            effect = purple.canonicalImpact().codingEffect();
         }
 
         switch (applicableMutationType) {
             case NONSENSE_OR_FRAMESHIFT:
-                return effect == CodingEffect.NONSENSE_OR_FRAMESHIFT;
+                return effect == PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT;
             case SPLICE:
-                return effect == CodingEffect.SPLICE;
+                return effect == PurpleCodingEffect.SPLICE;
             case INFRAME:
-                return effect == CodingEffect.MISSENSE && variant.type() == VariantType.INDEL;
+                return effect == PurpleCodingEffect.MISSENSE && variant.type() == PurpleVariantType.INDEL;
             case INFRAME_DELETION:
-                return effect == CodingEffect.MISSENSE && isDelete(variant);
+                return effect == PurpleCodingEffect.MISSENSE && isDelete(variant);
             case INFRAME_INSERTION:
-                return effect == CodingEffect.MISSENSE && isInsert(variant);
+                return effect == PurpleCodingEffect.MISSENSE && isInsert(variant);
             case MISSENSE:
-                return effect == CodingEffect.MISSENSE;
+                return effect == PurpleCodingEffect.MISSENSE;
             case ANY:
-                return effect == CodingEffect.MISSENSE || effect == CodingEffect.NONSENSE_OR_FRAMESHIFT || effect == CodingEffect.SPLICE;
+                return effect == PurpleCodingEffect.MISSENSE || effect == PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT
+                        || effect == PurpleCodingEffect.SPLICE;
             default: {
                 LOGGER.warn("Unrecognized mutation type filter: '{}'", applicableMutationType);
                 return false;
@@ -187,10 +189,10 @@ public class VariantEvidence {
     }
 
     private static boolean isInsert(@NotNull Variant variant) {
-        return variant.type() == VariantType.INDEL && variant.alt().length() > variant.ref().length();
+        return variant.type() == PurpleVariantType.INDEL && variant.alt().length() > variant.ref().length();
     }
 
     private static boolean isDelete(@NotNull Variant variant) {
-        return variant.type() == VariantType.INDEL && variant.alt().length() < variant.ref().length();
+        return variant.type() == PurpleVariantType.INDEL && variant.alt().length() < variant.ref().length();
     }
 }
