@@ -1,0 +1,51 @@
+{
+  "sampleId": "TEST",
+  "experimentDate": {
+    "year": 2022,
+    "month": 1,
+    "day": 20
+  },
+  "refGenomeVersion": "V37",
+  "purple": {
+    "fit": {
+      "hasReliableQuality": false,
+      "hasReliablePurity": false,
+      "purity": 0.1,
+      "ploidy": 2
+    },
+    "characteristics": {
+      "microsatelliteStatus": "MSS",
+      "tumorMutationalBurdenPerMb": 0,
+      "tumorMutationalBurdenStatus": "UNKNOWN",
+      "tumorMutationalLoad": 0,
+      "tumorMutationalLoadStatus": "UNKNOWN"
+    },
+    "somaticDrivers": [],
+    "germlineDrivers": null,
+    "allSomaticVariants": [],
+    "reportableGermlineVariants": null,
+    "allSomaticGainsLosses": []
+  },
+  "linx": {
+    "allStructuralVariants": [],
+    "allFusions": [],
+    "allBreakends": [],
+    "homozygousDisruptions": []
+  },
+  "virusInterpreter": {
+    "allViruses": []
+  },
+  "chord": {
+    "hrStatus": "HR_PROFICIENT"
+  },
+  "peach": [],
+  "cuppa": {
+    "predictions": [
+    ]
+  },
+  "lilac": {
+    "qc": "FAIL",
+    "alleles": [
+    ]
+  }
+}

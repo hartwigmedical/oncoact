@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.common.doid;
 
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.optionalJsonArray;
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.optionalJsonObject;
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.optionalString;
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.optionalStringList;
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.string;
-import static com.hartwig.oncoact.common.utils.json.JsonFunctions.stringList;
+import static com.hartwig.oncoact.common.utils.json.Json.optionalArray;
+import static com.hartwig.oncoact.common.utils.json.Json.optionalObject;
+import static com.hartwig.oncoact.common.utils.json.Json.optionalString;
+import static com.hartwig.oncoact.common.utils.json.Json.optionalStringList;
+import static com.hartwig.oncoact.common.utils.json.Json.string;
+import static com.hartwig.oncoact.common.utils.json.Json.stringList;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -97,7 +97,7 @@ public final class DiseaseOntology {
             nodes.add(ImmutableDoidNode.builder()
                     .doid(extractDoid(url))
                     .url(url)
-                    .doidMetadata(extractDoidMetadata(optionalJsonObject(nodeObject, "meta")))
+                    .doidMetadata(extractDoidMetadata(optionalObject(nodeObject, "meta")))
                     .type(optionalString(nodeObject, "type"))
                     .doidTerm(optionalString(nodeObject, "lbl"))
                     .build());
@@ -144,7 +144,7 @@ public final class DiseaseOntology {
         }
 
         ImmutableDoidGraphMetaData.Builder DoidGraphMetaDataBuilder = ImmutableDoidGraphMetaData.builder();
-        DoidGraphMetaDataBuilder.basicPropertyValues(extractBasicPropertyValues(optionalJsonArray(metaObject, "basicPropertyValues")));
+        DoidGraphMetaDataBuilder.basicPropertyValues(extractBasicPropertyValues(optionalArray(metaObject, "basicPropertyValues")));
         DoidGraphMetaDataBuilder.subsets(optionalStringList(metaObject, "subsets"));
         DoidGraphMetaDataBuilder.xrefs(xrefValList);
         DoidGraphMetaDataBuilder.version(optionalString(metaObject, "version"));
@@ -239,9 +239,9 @@ public final class DiseaseOntology {
         }
 
         ImmutableDoidMetadata.Builder doidMetadataBuilder = ImmutableDoidMetadata.builder();
-        doidMetadataBuilder.synonyms(extractDoidSynonyms(optionalJsonArray(metadataObject, "synonyms")));
-        doidMetadataBuilder.basicPropertyValues(extractBasicPropertyValues(optionalJsonArray(metadataObject, "basicPropertyValues")));
-        doidMetadataBuilder.doidDefinition(extractDoidDefinition(optionalJsonObject(metadataObject, "definition")));
+        doidMetadataBuilder.synonyms(extractDoidSynonyms(optionalArray(metadataObject, "synonyms")));
+        doidMetadataBuilder.basicPropertyValues(extractBasicPropertyValues(optionalArray(metadataObject, "basicPropertyValues")));
+        doidMetadataBuilder.doidDefinition(extractDoidDefinition(optionalObject(metadataObject, "definition")));
         doidMetadataBuilder.subsets(optionalStringList(metadataObject, "subsets"));
         doidMetadataBuilder.xrefs(xrefValList);
         return doidMetadataBuilder.build();
