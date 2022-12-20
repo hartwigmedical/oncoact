@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.protect.algo;
 
-import static com.hartwig.oncoact.common.protect.ProtectTestFactory.builder;
+import static com.hartwig.oncoact.protect.ProtectTestFactory.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,9 +10,9 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectTestFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
@@ -28,24 +28,21 @@ public class EvidenceConsolidationTest {
         Knowledgebase knowledgebase1 = Knowledgebase.VICC_CGI;
         Knowledgebase knowledgebase2 = Knowledgebase.VICC_CIVIC;
 
-        ProtectEvidence evidence1 =
-                builder().treatment(ImmutableTreatment.builder()
-                        .name(treatment1)
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("A"))
-                        .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase1))).build();
-        ProtectEvidence evidence2 =
-                builder().treatment(ImmutableTreatment.builder()
-                        .name(treatment1)
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("A"))
-                        .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
-        ProtectEvidence evidence3 =
-                builder().treatment(ImmutableTreatment.builder()
-                        .name(treatment2)
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("A"))
-                        .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
+        ProtectEvidence evidence1 = builder().treatment(ImmutableTreatment.builder()
+                .name(treatment1)
+                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
+                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase1))).build();
+        ProtectEvidence evidence2 = builder().treatment(ImmutableTreatment.builder()
+                .name(treatment1)
+                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
+                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
+        ProtectEvidence evidence3 = builder().treatment(ImmutableTreatment.builder()
+                .name(treatment2)
+                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
+                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .build()).sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase2))).build();
 
         List<ProtectEvidence> consolidated = EvidenceConsolidation.consolidate(Lists.newArrayList(evidence1, evidence2, evidence3));
 
@@ -73,7 +70,8 @@ public class EvidenceConsolidationTest {
     }
 
     @NotNull
-    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources, @NotNull Knowledgebase knowledgebaseToFind) {
+    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources,
+            @NotNull Knowledgebase knowledgebaseToFind) {
         for (KnowledgebaseSource source : sources) {
             if (source.name() == knowledgebaseToFind) {
                 return source;

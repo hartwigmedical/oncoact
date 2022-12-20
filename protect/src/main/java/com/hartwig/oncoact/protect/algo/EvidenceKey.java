@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

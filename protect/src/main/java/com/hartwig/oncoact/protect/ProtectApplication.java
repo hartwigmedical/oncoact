@@ -9,10 +9,8 @@ import com.hartwig.oncoact.common.doid.DiseaseOntology;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneFile;
-import com.hartwig.oncoact.common.orange.datamodel.OrangeRecord;
-import com.hartwig.oncoact.common.orange.serialization.OrangeJson;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidenceFile;
+import com.hartwig.oncoact.orange.datamodel.OrangeRecord;
+import com.hartwig.oncoact.orange.serialization.OrangeJson;
 import com.hartwig.oncoact.protect.algo.ProtectAlgo;
 import com.hartwig.oncoact.protect.serve.ServeRefGenome;
 import com.hartwig.serve.datamodel.ActionableEvents;
@@ -81,20 +79,12 @@ public class ProtectApplication {
     }
 
     @NotNull
-    public static List<DriverGene> readDriverGenesFromFile(@NotNull String driverGeneTsv) throws IOException {
-        LOGGER.info(" Reading driver genes from {}", driverGeneTsv);
-        List<DriverGene> driverGenes = DriverGeneFile.read(driverGeneTsv);
-        LOGGER.info("  Read {} driver gene entries", driverGenes.size());
-        return driverGenes;
-    }
-
-    @NotNull
     private static Set<String> patientTumorDoids(@NotNull ProtectConfig config, @NotNull DoidParents doidParentModel) {
         Set<String> result = Sets.newHashSet();
 
         Set<String> initialDoids = config.primaryTumorDoids();
         if (initialDoids.isEmpty()) {
-            LOGGER.warn("No doids provided for {}. Every treatment will be considered off-label.", config.tumorSampleId());
+            LOGGER.warn("No doids provided. Every treatment will be considered off-label.");
             return Sets.newHashSet();
         }
 

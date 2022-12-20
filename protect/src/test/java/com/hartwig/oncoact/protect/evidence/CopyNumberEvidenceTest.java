@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.protect.EvidenceType;
-import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.loader.GainLossTestFactory;
-import com.hartwig.oncoact.protect.ServeTestFactory;
-import com.hartwig.serve.datamodel.Knowledgebase;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
@@ -29,33 +28,33 @@ public class CopyNumberEvidenceTest {
         String geneAmp = "geneAmp";
         String geneDel = "geneDel";
         ActionableGene amp = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneAmp)
                 .event(GeneEvent.AMPLIFICATION)
-                .source(Knowledgebase.CKB)
                 .build();
         ActionableGene inactivation = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneDel)
                 .event(GeneEvent.INACTIVATION)
-                .source(Knowledgebase.CKB)
                 .build();
         ActionableGene fusion = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneAmp)
                 .event(GeneEvent.FUSION)
-                .source(Knowledgebase.CKB)
                 .build();
 
         CopyNumberEvidence copyNumberEvidence =
-                new CopyNumberEvidence(EvidenceTestFactory.create(), Lists.newArrayList(amp, inactivation, fusion));
+                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion));
 
-        GainLoss reportableAmp = GainLossTestFactory.createGainLoss(geneAmp, CopyNumberInterpretation.FULL_GAIN);
-        GainLoss reportableDel = GainLossTestFactory.createGainLoss(geneDel, CopyNumberInterpretation.FULL_LOSS);
-        GainLoss ampOnOtherGene = GainLossTestFactory.createGainLoss("other gene", CopyNumberInterpretation.PARTIAL_GAIN);
+        PurpleGainLoss reportableAmp =
+                TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(PurpleGainLossInterpretation.FULL_GAIN).build();
+        PurpleGainLoss reportableDel =
+                TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(PurpleGainLossInterpretation.FULL_LOSS).build();
+        PurpleGainLoss ampOnOtherGene =
+                TestPurpleFactory.gainLossBuilder().gene("other gene").interpretation(PurpleGainLossInterpretation.PARTIAL_GAIN).build();
 
-        List<GainLoss> reportableGainLosses = Lists.newArrayList(reportableAmp, reportableDel, ampOnOtherGene);
-        List<GainLoss> unreportedGainLosses = Lists.newArrayList();
+        Set<PurpleGainLoss> reportableGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
+        Set<PurpleGainLoss> unreportedGainLosses = Sets.newHashSet();
         List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableGainLosses, unreportedGainLosses);
 
         assertEquals(2, evidences.size());
@@ -63,12 +62,12 @@ public class CopyNumberEvidenceTest {
         ProtectEvidence ampEvidence = find(evidences, geneAmp);
         assertTrue(ampEvidence.reported());
         assertEquals(ampEvidence.sources().size(), 1);
-        assertEquals(EvidenceType.AMPLIFICATION, findByKnowledgebase(ampEvidence.sources(), Knowledgebase.CKB).evidenceType());
+        assertEquals(EvidenceType.AMPLIFICATION, ampEvidence.sources().iterator().next().evidenceType());
 
         ProtectEvidence delEvidence = find(evidences, geneDel);
         assertTrue(delEvidence.reported());
         assertEquals(delEvidence.sources().size(), 1);
-        assertEquals(EvidenceType.INACTIVATION, findByKnowledgebase(delEvidence.sources(), Knowledgebase.CKB).evidenceType());
+        assertEquals(EvidenceType.INACTIVATION, delEvidence.sources().iterator().next().evidenceType());
     }
 
     @NotNull
@@ -80,17 +79,5 @@ public class CopyNumberEvidenceTest {
         }
 
         throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
-    }
-
-    @NotNull
-    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources,
-            @NotNull Knowledgebase knowledgebaseToFind) {
-        for (KnowledgebaseSource source : sources) {
-            if (source.name() == knowledgebaseToFind) {
-                return source;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence from source: " + knowledgebaseToFind);
     }
 }

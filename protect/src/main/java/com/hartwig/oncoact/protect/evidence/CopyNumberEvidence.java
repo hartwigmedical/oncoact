@@ -1,13 +1,14 @@
 package com.hartwig.oncoact.protect.evidence;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.protect.EventGenerator;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
@@ -31,14 +32,15 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<GainLoss> reportableGainsLosses, @NotNull List<GainLoss> allGainsLosses) {
+    public List<ProtectEvidence> evidence(@NotNull Set<PurpleGainLoss> reportableGainLosses,
+            @NotNull Set<PurpleGainLoss> allGainLosses) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (GainLoss reportableGainLoss : reportableGainsLosses) {
+        for (PurpleGainLoss reportableGainLoss : reportableGainLosses) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (GainLoss gainLoss : allGainsLosses) {
-            if (!reportableGainsLosses.contains(gainLoss)) {
+        for (PurpleGainLoss gainLoss : allGainLosses) {
+            if (!reportableGainLosses.contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }
         }
@@ -47,7 +49,7 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull GainLoss gainLoss, boolean report) {
+    private List<ProtectEvidence> evidence(@NotNull PurpleGainLoss gainLoss, boolean report) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
@@ -56,8 +58,8 @@ public class CopyNumberEvidence {
                         .gene(gainLoss.gene())
                         .transcript(gainLoss.transcript())
                         .isCanonical(gainLoss.isCanonical())
-                        .event(EventGenerator.copyNumberEvent(gainLoss))
-                        .eventIsHighDriver(EvidenceDriverLikelihood.interpretCopyNumber())
+                        .event(EventGenerator.gainLossEvent(gainLoss))
+                        .eventIsHighDriver(EvidenceDriverLikelihood.interpretGainLoss())
                         .build();
                 result.add(evidence);
             }
@@ -66,18 +68,18 @@ public class CopyNumberEvidence {
         return result;
     }
 
-    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull GainLoss reportable) {
+    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull PurpleGainLoss reportable) {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:
-                return reportable.interpretation() == CopyNumberInterpretation.FULL_GAIN
-                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN;
+                return reportable.interpretation() == PurpleGainLossInterpretation.FULL_GAIN
+                        || reportable.interpretation() == PurpleGainLossInterpretation.PARTIAL_GAIN;
             case INACTIVATION:
             case DELETION:
             case UNDEREXPRESSION:
             case ANY_MUTATION:
-                return reportable.interpretation() == CopyNumberInterpretation.FULL_LOSS
-                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS;
+                return reportable.interpretation() == PurpleGainLossInterpretation.FULL_LOSS
+                        || reportable.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS;
             default:
                 throw new IllegalStateException(
                         "Actionable event found in copy number evidence that should not exist: " + actionable.event());

@@ -2,7 +2,7 @@ package com.hartwig.oncoact.protect.serve;
 
 import static org.junit.Assert.assertNotNull;
 
-import com.hartwig.oncoact.common.orange.datamodel.OrangeRefGenomeVersion;
+import com.hartwig.oncoact.orange.datamodel.OrangeRefGenomeVersion;
 
 import org.junit.Test;
 

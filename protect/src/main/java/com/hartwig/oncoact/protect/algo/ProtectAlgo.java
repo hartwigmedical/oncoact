@@ -1,19 +1,20 @@
 package com.hartwig.oncoact.protect.algo;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.datamodel.ReportableVariant;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.interpretation.ReportableVariantFactory;
-import com.hartwig.oncoact.common.orange.datamodel.OrangeRecord;
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleRecord;
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.common.linx.GeneDisruption;
+import com.hartwig.oncoact.common.purple.PurpleQCStatus;
+import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.interpretation.ReportableVariantFactory;
+import com.hartwig.oncoact.orange.datamodel.OrangeRecord;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleRecord;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.evidence.ChordEvidence;
 import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
 import com.hartwig.oncoact.protect.evidence.DisruptionEvidence;
@@ -29,7 +30,6 @@ import com.hartwig.serve.datamodel.ActionableEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ProtectAlgo {
 
@@ -102,46 +102,51 @@ public class ProtectAlgo {
     }
 
     @NotNull
-    public List<ProtectEvidence> run(@NotNull OrangeRecord orange) throws IOException {
+    public List<ProtectEvidence> run(@NotNull OrangeRecord orange) {
         LOGGER.info("Evidence extraction started");
 
-        List<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
-        List<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
+        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
+        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
 
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
-                orange.purple().somaticVariants());
+                orange.purple().allSomaticVariants());
         printExtraction("somatic and germline variants", variantEvidence);
 
         List<ProtectEvidence> copyNumberEvidence =
-                copyNumberEvidenceFactory.evidence(purpleData.reportableSomaticGainsLosses(), purpleData.allSomaticGainsLosses());
+                copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(), orange.purple().allSomaticGainsLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
-        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(linxData.homozygousDisruptions());
+        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().homozygousDisruptions());
         printExtraction("homozygous disruptions", disruptionEvidence);
 
-        List<ProtectEvidence> fusionEvidence = fusionEvidenceFactory.evidence(linxData.reportableFusions(), linxData.allFusions());
+        List<ProtectEvidence> fusionEvidence =
+                fusionEvidenceFactory.evidence(orange.linx().reportableFusions(), orange.linx().allFusions());
         printExtraction("fusions", fusionEvidence);
 
-        List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(purpleData);
+        List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics());
         printExtraction("purple signatures", purpleSignatureEvidence);
 
-        List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(virusInterpreterData);
+        List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter());
         printExtraction("viruses", virusEvidence);
 
-        List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(chordAnalysis);
+        List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(orange.chord());
         printExtraction("chord", chordEvidence);
 
-        List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(lilacData);
+        List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac());
         printExtraction("hla", hlaEvidence);
 
-        List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(purpleData.reportableGermlineVariants(),
-                purpleData.reportableSomaticVariants(),
-                purpleData.reportableSomaticGainsLosses(),
-                linxData.reportableFusions(),
-                linxData.homozygousDisruptions(),
-                linxData.reportableGeneDisruptions(),
-                purpleData.qc().status());
+        // TODO Implement conversion
+        Set<GeneDisruption> geneDisruptions = Sets.newHashSet();
+        // TODO Add QC Status to purple record
+        Set<PurpleQCStatus> qcStatus = Sets.newHashSet();
+        List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
+                reportableSomaticVariants,
+                orange.purple().reportableSomaticGainsLosses(),
+                orange.linx().reportableFusions(),
+                orange.linx().homozygousDisruptions(),
+                geneDisruptions,
+                qcStatus);
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();
@@ -177,30 +182,18 @@ public class ProtectAlgo {
     }
 
     @NotNull
-    private static List<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
-        return ReportableVariantFactory.toReportableSomaticVariants(filterReported(purple.somaticVariants()), purple.somaticDrivers());
-    }
-
-    @Nullable
-    private static List<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Set<PurpleVariant> germlineVariants = purple.germlineVariants();
-        if (germlineVariants == null) {
-            return null;
-        }
-
-        Set<PurpleVariant> reported = filterReported(germlineVariants);
-        return ReportableVariantFactory.toReportableGermlineVariants(reported, purple.germlineDrivers());
+    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
+        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
     }
 
     @NotNull
-    private static Set<PurpleVariant> filterReported(@NotNull Set<PurpleVariant> variants) {
-        Set<PurpleVariant> reported = Sets.newHashSet();
-        for (PurpleVariant variant : variants) {
-            if (variant.reported()) {
-                reported.add(variant);
-            }
+    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
+        Set<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
+        if (reportableGermlineVariants == null) {
+            return Sets.newHashSet();
         }
-        return reported;
+
+        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     private static void printExtraction(@NotNull String title, @NotNull List<ProtectEvidence> evidences) {

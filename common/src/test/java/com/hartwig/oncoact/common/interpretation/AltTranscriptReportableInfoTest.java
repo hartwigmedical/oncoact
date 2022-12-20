@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.interpretation.AltTranscriptReportableInfo;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;

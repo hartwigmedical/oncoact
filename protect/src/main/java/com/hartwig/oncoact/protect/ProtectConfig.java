@@ -6,14 +6,12 @@ import java.nio.file.Files;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.util.Strings;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,19 +56,10 @@ public interface ProtectConfig {
     String orangeJson();
 
     @NotNull
-    String tumorSampleId();
-
-    @Nullable
-    String referenceSampleId();
-
-    @NotNull
     Set<String> primaryTumorDoids();
 
     @NotNull
     String outputDir();
-
-    @NotNull
-    RefGenomeVersion refGenomeVersion();
 
     @NotNull
     String serveActionabilityDir();
@@ -82,48 +71,6 @@ public interface ProtectConfig {
     String driverGeneTsv();
 
     @NotNull
-    String purplePurityTsv();
-
-    @NotNull
-    String purpleQcFile();
-
-    @NotNull
-    String purpleGeneCopyNumberTsv();
-
-    @NotNull
-    String purpleSomaticDriverCatalogTsv();
-
-    @NotNull
-    String purpleGermlineDriverCatalogTsv();
-
-    @NotNull
-    String purpleSomaticVariantVcf();
-
-    @NotNull
-    String purpleGermlineVariantVcf();
-
-    @NotNull
-    String linxFusionTsv();
-
-    @NotNull
-    String linxBreakendTsv();
-
-    @NotNull
-    String linxDriverCatalogTsv();
-
-    @NotNull
-    String annotatedVirusTsv();
-
-    @NotNull
-    String chordPredictionTxt();
-
-    @NotNull
-    String lilacResultCsv();
-
-    @NotNull
-    String lilacQcCsv();
-
-    @NotNull
     static ProtectConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -131,28 +78,11 @@ public interface ProtectConfig {
 
         return ImmutableProtectConfig.builder()
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
-                .tumorSampleId(Strings.EMPTY)
-                .referenceSampleId(Strings.EMPTY)
                 .primaryTumorDoids(toStringSet(nonOptionalValue(cmd, PRIMARY_TUMOR_DOIDS), DOID_SEPARATOR))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
-                .refGenomeVersion(RefGenomeVersion.V37)
                 .serveActionabilityDir(nonOptionalDir(cmd, SERVE_ACTIONABILITY_DIRECTORY))
                 .doidJsonFile(nonOptionalFile(cmd, DOID_JSON))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
-                .purplePurityTsv(Strings.EMPTY)
-                .purpleQcFile(Strings.EMPTY)
-                .purpleGeneCopyNumberTsv(Strings.EMPTY)
-                .purpleSomaticDriverCatalogTsv(Strings.EMPTY)
-                .purpleGermlineDriverCatalogTsv(Strings.EMPTY)
-                .purpleSomaticVariantVcf(Strings.EMPTY)
-                .purpleGermlineVariantVcf(Strings.EMPTY)
-                .linxFusionTsv(Strings.EMPTY)
-                .linxBreakendTsv(Strings.EMPTY)
-                .linxDriverCatalogTsv(Strings.EMPTY)
-                .annotatedVirusTsv(Strings.EMPTY)
-                .chordPredictionTxt(Strings.EMPTY)
-                .lilacResultCsv(Strings.EMPTY)
-                .lilacQcCsv(Strings.EMPTY)
                 .build();
     }
 

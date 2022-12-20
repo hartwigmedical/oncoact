@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

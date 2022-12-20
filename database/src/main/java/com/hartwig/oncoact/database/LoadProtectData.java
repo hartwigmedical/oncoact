@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.database.dao.DatabaseAccess;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;

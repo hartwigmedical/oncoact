@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.EvidenceType;
-import com.hartwig.oncoact.common.protect.ImmutableKnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectTestFactory;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;

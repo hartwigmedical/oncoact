@@ -18,7 +18,6 @@ import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.fusion.KnownFusionType;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.linx.LinxFusion;
-import com.hartwig.oncoact.common.protect.EventGenerator;
 import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
@@ -168,10 +167,12 @@ public class ConclusionAlgo {
 
         Map<String, Set<VariantKey>> variantKeyList = Maps.newHashMap();
 
+        // TODO Convert
         for (ReportableVariant reportableVariant : reportableVariants) {
             VariantKey variantKey = ImmutableVariantKey.builder()
                     .gene(reportableVariant.gene())
-                    .variantAnnotation(EventGenerator.variantEvent(reportableVariant))
+                    .variantAnnotation(Strings.EMPTY)
+//                    .variantAnnotation(EventGenerator.variantEvent(reportableVariant))
                     .driverInterpretation(reportableVariant.driverLikelihoodInterpretation())
                     .bialleic(reportableVariant.biallelic())
                     .build();

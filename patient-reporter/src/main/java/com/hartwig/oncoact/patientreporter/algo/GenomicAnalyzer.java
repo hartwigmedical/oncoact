@@ -20,8 +20,6 @@ import com.hartwig.oncoact.common.linx.GeneDisruption;
 import com.hartwig.oncoact.common.linx.GeneDisruptionFactory;
 import com.hartwig.oncoact.common.linx.LinxData;
 import com.hartwig.oncoact.common.linx.LinxDataLoader;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.common.purple.loader.PurpleData;
 import com.hartwig.oncoact.common.purple.loader.PurpleDataLoader;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
@@ -35,6 +33,8 @@ import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemF
 import com.hartwig.oncoact.patientreporter.algo.orange.BreakendSelector;
 import com.hartwig.oncoact.patientreporter.algo.orange.LossOfHeterozygositySelector;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

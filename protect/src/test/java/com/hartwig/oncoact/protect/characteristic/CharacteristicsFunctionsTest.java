@@ -3,7 +3,7 @@ package com.hartwig.oncoact.protect.characteristic;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.hartwig.oncoact.protect.ServeTestFactory;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
@@ -16,7 +16,7 @@ public class CharacteristicsFunctionsTest {
     @Test
     public void canDetermineWhetherCharacteristicHasCutoff() {
         ActionableCharacteristic withoutCutoff = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .cutoffType(null)
                 .cutoff(null)
                 .build();
@@ -24,7 +24,7 @@ public class CharacteristicsFunctionsTest {
         assertFalse(CharacteristicsFunctions.hasExplicitCutoff(withoutCutoff));
 
         ActionableCharacteristic withCutoff = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(4D)
                 .build();
@@ -58,7 +58,7 @@ public class CharacteristicsFunctionsTest {
     @NotNull
     private static ActionableCharacteristic create(@NotNull TumorCharacteristicCutoffType cutoffType, double cutoff) {
         return ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .cutoffType(cutoffType)
                 .cutoff(cutoff)
                 .build();

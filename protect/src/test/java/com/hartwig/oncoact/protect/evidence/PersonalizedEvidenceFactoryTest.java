@@ -8,8 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.EvidenceType;
-import com.hartwig.oncoact.protect.ServeTestFactory;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.EvidenceDirection;
@@ -37,19 +37,19 @@ public class PersonalizedEvidenceFactoryTest {
 
     @Test
     public void canDetermineOnLabel() {
-        PersonalizedEvidenceFactory factoryOnLabelMatching = EvidenceTestFactory.create("162");
+        PersonalizedEvidenceFactory factoryOnLabelMatching = TestPersonalizedEvidenceFactory.create("162");
         ActionableHotspot hotspotOnLabelMatching = create("Cancer", "162");
         assertTrue(factoryOnLabelMatching.isOnLabel(hotspotOnLabelMatching.applicableCancerType(),
                 hotspotOnLabelMatching.blacklistCancerTypes(),
                 "treatment"));
 
-        PersonalizedEvidenceFactory factoryNotBlacklisted = EvidenceTestFactory.create("10283");
+        PersonalizedEvidenceFactory factoryNotBlacklisted = TestPersonalizedEvidenceFactory.create("10283");
         ActionableHotspot hotspotNotBlacklisted = create("prostate", "10283", "Breast", "0060081");
         assertTrue(factoryNotBlacklisted.isOnLabel(hotspotNotBlacklisted.applicableCancerType(),
                 hotspotNotBlacklisted.blacklistCancerTypes(),
                 "treatment"));
 
-        PersonalizedEvidenceFactory factoryBlacklisted = EvidenceTestFactory.create("10283");
+        PersonalizedEvidenceFactory factoryBlacklisted = TestPersonalizedEvidenceFactory.create("10283");
         ActionableHotspot hotspotBlacklisted = create("Cancer", "162", "Prostate", "10283");
         assertFalse(factoryBlacklisted.isOnLabel(hotspotBlacklisted.applicableCancerType(),
                 hotspotBlacklisted.blacklistCancerTypes(),
@@ -58,15 +58,15 @@ public class PersonalizedEvidenceFactoryTest {
 
     @Test
     public void canDetermineBlacklistedEvidence() {
-        PersonalizedEvidenceFactory factoryBlacklisted = EvidenceTestFactory.create("10283");
+        PersonalizedEvidenceFactory factoryBlacklisted = TestPersonalizedEvidenceFactory.create("10283");
         ActionableHotspot hotspotBlacklisted = create("Cancer", "162", "Prostate", "10283");
         assertTrue(factoryBlacklisted.isBlacklisted(hotspotBlacklisted.blacklistCancerTypes(), "treatment"));
 
-        PersonalizedEvidenceFactory factoryNotMatchWithBlacklisted = EvidenceTestFactory.create("0060081");
+        PersonalizedEvidenceFactory factoryNotMatchWithBlacklisted = TestPersonalizedEvidenceFactory.create("0060081");
         ActionableHotspot hotspotNotMatchWithBlacklisted = create("Cancer", "162", "Prostate", "10283");
         assertFalse(factoryNotMatchWithBlacklisted.isBlacklisted(hotspotNotMatchWithBlacklisted.blacklistCancerTypes(), "treatment"));
 
-        PersonalizedEvidenceFactory factoryNotBlacklisted = EvidenceTestFactory.create("10383");
+        PersonalizedEvidenceFactory factoryNotBlacklisted = TestPersonalizedEvidenceFactory.create("10383");
         ActionableHotspot hotspotNotBlacklisted = create("Cancer", "162");
         assertFalse(factoryNotBlacklisted.isBlacklisted(hotspotNotBlacklisted.blacklistCancerTypes(), "treatment"));
     }
@@ -74,40 +74,40 @@ public class PersonalizedEvidenceFactoryTest {
     @Test
     public void canDetermineEvidenceTypes() {
         assertEquals(EvidenceType.HOTSPOT_MUTATION,
-                PersonalizedEvidenceFactory.determineEvidenceType(ServeTestFactory.createTestActionableHotspot()));
+                PersonalizedEvidenceFactory.determineEvidenceType(TestServeFactory.createTestActionableHotspot()));
 
         ActionableRange range =
-                ImmutableActionableRange.builder().from(ServeTestFactory.createTestActionableRange()).build();
+                ImmutableActionableRange.builder().from(TestServeFactory.createTestActionableRange()).build();
         assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(range));
 
         ActionableGene gene = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .event(GeneEvent.INACTIVATION)
                 .build();
         assertEquals(EvidenceType.INACTIVATION, PersonalizedEvidenceFactory.determineEvidenceType(gene));
 
         ActionableGene amplification = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .event(GeneEvent.AMPLIFICATION)
                 .build();
         assertEquals(EvidenceType.AMPLIFICATION, PersonalizedEvidenceFactory.determineEvidenceType(amplification));
 
         ActionableGene overexpression = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .event(GeneEvent.OVEREXPRESSION)
                 .build();
         assertEquals(EvidenceType.OVER_EXPRESSION, PersonalizedEvidenceFactory.determineEvidenceType(overexpression));
 
         assertEquals(EvidenceType.FUSION_PAIR,
-                PersonalizedEvidenceFactory.determineEvidenceType(ServeTestFactory.createTestActionableFusion()));
+                PersonalizedEvidenceFactory.determineEvidenceType(TestServeFactory.createTestActionableFusion()));
 
         assertEquals(EvidenceType.SIGNATURE,
-                PersonalizedEvidenceFactory.determineEvidenceType(ServeTestFactory.createTestActionableCharacteristic()));
+                PersonalizedEvidenceFactory.determineEvidenceType(TestServeFactory.createTestActionableCharacteristic()));
     }
 
     @Test
     public void canDetermineEvidenceTypesFroAllGeneEvents() {
-        ActionableGene base = ServeTestFactory.createTestActionableGene();
+        ActionableGene base = TestServeFactory.createTestActionableGene();
         for (GeneEvent geneLevelEvent : GeneEvent.values()) {
             ActionableGene gene = ImmutableActionableGene.builder().from(base).event(geneLevelEvent).build();
             assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(gene));
@@ -116,7 +116,7 @@ public class PersonalizedEvidenceFactoryTest {
 
     @Test
     public void canDetermineEvidenceTypesForAllCharacteristics() {
-        ActionableCharacteristic base = ServeTestFactory.createTestActionableCharacteristic();
+        ActionableCharacteristic base = TestServeFactory.createTestActionableCharacteristic();
         for (TumorCharacteristicType type : TumorCharacteristicType.values()) {
             ActionableCharacteristic characteristic = ImmutableActionableCharacteristic.builder().from(base).type(type).build();
             assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(characteristic));
@@ -136,7 +136,7 @@ public class PersonalizedEvidenceFactoryTest {
             blacklist.add(ImmutableCancerType.builder().name(blacklistCancerType).doid(blacklistDoid).build());
         }
 
-        ActionableEvent event = ServeTestFactory.create(Knowledgebase.CKB,
+        ActionableEvent event = TestServeFactory.create(Knowledgebase.CKB,
                 "amp",
                 Sets.newHashSet(),
                 ImmutableTreatment.builder()

@@ -8,15 +8,15 @@ import com.hartwig.oncoact.common.chord.ChordStatus;
 import com.hartwig.oncoact.common.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.common.linx.GeneDisruption;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.common.linx.LinxFusion;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
+import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
 import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.linx.LinxFusion;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
 import com.hartwig.oncoact.common.virus.AnnotatedVirus;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

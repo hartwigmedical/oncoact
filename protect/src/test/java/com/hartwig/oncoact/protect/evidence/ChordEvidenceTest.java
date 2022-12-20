@@ -6,12 +6,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.chord.ChordData;
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.chord.ChordTestFactory;
-import com.hartwig.oncoact.common.chord.ImmutableChordData;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ServeTestFactory;
+import com.hartwig.oncoact.orange.datamodel.chord.ChordRecord;
+import com.hartwig.oncoact.orange.datamodel.chord.ChordStatus;
+import com.hartwig.oncoact.orange.datamodel.chord.TestChordFactory;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
@@ -25,26 +24,26 @@ public class ChordEvidenceTest {
     @Test
     public void canDetermineEvidenceForChord() {
         ActionableCharacteristic signature1 = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .build();
 
         ActionableCharacteristic signature2 = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD)
                 .build();
 
         ActionableCharacteristic signature3 = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(0.8)
                 .build();
 
         ChordEvidence chordEvidence =
-                new ChordEvidence(EvidenceTestFactory.create(), Lists.newArrayList(signature1, signature2, signature3));
+                new ChordEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(signature1, signature2, signature3));
 
-        ChordData hrDeficient = create(ChordStatus.HR_DEFICIENT, 0.5);
+        ChordRecord hrDeficient = create(ChordStatus.HR_DEFICIENT, 0.5);
         List<ProtectEvidence> evidence = chordEvidence.evidence(hrDeficient);
         assertEquals(1, evidence.size());
 
@@ -52,19 +51,15 @@ public class ChordEvidenceTest {
         assertTrue(evidence1.reported());
         assertEquals(ChordEvidence.HR_DEFICIENCY_EVENT, evidence1.event());
 
-        ChordData hrProficientWithHighScore = create(ChordStatus.HR_PROFICIENT, 0.85);
+        ChordRecord hrProficientWithHighScore = create(ChordStatus.HR_PROFICIENT, 0.85);
         assertEquals(1, chordEvidence.evidence(hrProficientWithHighScore).size());
 
-        ChordData hrProficientWithLowScore = create(ChordStatus.HR_PROFICIENT, 0.2);
+        ChordRecord hrProficientWithLowScore = create(ChordStatus.HR_PROFICIENT, 0.2);
         assertEquals(0, chordEvidence.evidence(hrProficientWithLowScore).size());
     }
 
     @NotNull
-    private static ChordData create(@NotNull ChordStatus status, double hrdValue) {
-        return ImmutableChordData.builder()
-                .from(ChordTestFactory.createMinimalTestChordAnalysis())
-                .hrStatus(status)
-                .hrdValue(hrdValue)
-                .build();
+    private static ChordRecord create(@NotNull ChordStatus status, double hrdValue) {
+        return TestChordFactory.builder().hrStatus(status).hrdValue(hrdValue).build();
     }
 }

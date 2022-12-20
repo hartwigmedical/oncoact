@@ -14,6 +14,7 @@
       "ploidy": 2
     },
     "characteristics": {
+      "microsatelliteIndelsPerMb": 0,
       "microsatelliteStatus": "MSS",
       "tumorMutationalBurdenPerMb": 0,
       "tumorMutationalBurdenStatus": "UNKNOWN",
@@ -23,19 +24,25 @@
     "somaticDrivers": [],
     "germlineDrivers": null,
     "allSomaticVariants": [],
+    "reportableSomaticVariants": [],
+    "allGermlineVariants": null,
     "reportableGermlineVariants": null,
-    "allSomaticGainsLosses": []
+    "allSomaticGainsLosses": [],
+    "reportableSomaticGainsLosses": []
   },
   "linx": {
     "allStructuralVariants": [],
     "allFusions": [],
+    "reportableFusions": [],
     "allBreakends": [],
     "homozygousDisruptions": []
   },
   "virusInterpreter": {
-    "allViruses": []
+    "allViruses": [],
+    "reportableViruses": []
   },
   "chord": {
+    "hrdValue": 0,
     "hrStatus": "HR_PROFICIENT"
   },
   "peach": [],

@@ -5,16 +5,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
-import com.hartwig.oncoact.common.virus.ImmutableVirusInterpreterData;
-import com.hartwig.oncoact.common.virus.VirusConstants;
-import com.hartwig.oncoact.common.virus.VirusInterpreterData;
-import com.hartwig.oncoact.common.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.common.virus.VirusTestFactory;
-import com.hartwig.oncoact.protect.ServeTestFactory;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.orange.datamodel.virus.ImmutableVirusInterpreterRecord;
+import com.hartwig.oncoact.orange.datamodel.virus.TestVirusInterpreterFactory;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusDriverLikelihood;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpretation;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterEntry;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterRecord;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -26,21 +28,21 @@ public class VirusEvidenceTest {
 
     @Test
     public void canDetermineEvidenceForViruses() {
-        VirusInterpreterData testData = createTestVirusInterpreterData();
+        VirusInterpreterRecord testRecord = createTestVirusInterpreterRecord();
 
         ActionableCharacteristic hpv = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .type(TumorCharacteristicType.HPV_POSITIVE)
                 .build();
 
         ActionableCharacteristic ebv = ImmutableActionableCharacteristic.builder()
-                .from(ServeTestFactory.createTestActionableCharacteristic())
+                .from(TestServeFactory.createTestActionableCharacteristic())
                 .type(TumorCharacteristicType.EBV_POSITIVE)
                 .build();
 
-        VirusEvidence virusEvidence = new VirusEvidence(EvidenceTestFactory.create(), Lists.newArrayList(hpv, ebv));
+        VirusEvidence virusEvidence = new VirusEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(hpv, ebv));
 
-        List<ProtectEvidence> evidences = virusEvidence.evidence(testData);
+        List<ProtectEvidence> evidences = virusEvidence.evidence(testRecord);
         assertEquals(2, evidences.size());
 
         // The test data has a reportable HPV virus
@@ -64,44 +66,45 @@ public class VirusEvidenceTest {
     }
 
     @NotNull
-    private static VirusInterpreterData createTestVirusInterpreterData() {
-        List<AnnotatedVirus> reportable = Lists.newArrayList();
-        reportable.add(VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation(VirusConstants.HPV.name())
+    private static VirusInterpreterRecord createTestVirusInterpreterRecord() {
+        Set<VirusInterpreterEntry> reportableViruses = Sets.newHashSet();
+        reportableViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(true)
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .interpretation(VirusInterpretation.HPV)
+                .driverLikelihood(VirusDriverLikelihood.HIGH)
                 .build());
-        reportable.add(VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation(VirusConstants.MCV.name())
+        reportableViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(true)
-                .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
+                .interpretation(VirusInterpretation.MCV)
+                .driverLikelihood(VirusDriverLikelihood.LOW)
                 .build());
-        reportable.add(VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation(VirusConstants.EBV.name())
+        reportableViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(true)
-                .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
+                .interpretation(VirusInterpretation.EBV)
+                .driverLikelihood(VirusDriverLikelihood.LOW)
                 .build());
-        reportable.add(VirusTestFactory.testAnnotatedVirusBuilder()
+        reportableViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(true)
-                .virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN)
+                .driverLikelihood(VirusDriverLikelihood.UNKNOWN)
                 .build());
 
-        List<AnnotatedVirus> unreported = Lists.newArrayList();
-        unreported.add(VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation(VirusConstants.EBV.name())
+        Set<VirusInterpreterEntry> allViruses = Sets.newHashSet();
+        allViruses.addAll(reportableViruses);
+        allViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(false)
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .interpretation(VirusInterpretation.EBV)
+                .driverLikelihood(VirusDriverLikelihood.HIGH)
                 .build());
-        unreported.add(VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation(VirusConstants.EBV.name())
+        allViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(false)
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .interpretation(VirusInterpretation.EBV)
+                .driverLikelihood(VirusDriverLikelihood.HIGH)
                 .build());
-        unreported.add(VirusTestFactory.testAnnotatedVirusBuilder()
+        allViruses.add(TestVirusInterpreterFactory.builder()
                 .reported(false)
-                .virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN)
+                .driverLikelihood(VirusDriverLikelihood.UNKNOWN)
                 .build());
 
-        return ImmutableVirusInterpreterData.builder().reportableViruses(reportable).unreportedViruses(unreported).build();
+        return ImmutableVirusInterpreterRecord.builder().reportableViruses(reportableViruses).allViruses(allViruses).build();
     }
 }

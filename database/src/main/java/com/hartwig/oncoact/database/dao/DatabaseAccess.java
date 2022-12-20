@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;

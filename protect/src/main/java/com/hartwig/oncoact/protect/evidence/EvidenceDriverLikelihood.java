@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import com.hartwig.oncoact.common.datamodel.DriverInterpretation;
-import com.hartwig.oncoact.common.linx.FusionLikelihoodType;
+import com.hartwig.oncoact.datamodel.DriverInterpretation;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxFusionDriverLikelihood;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ public final class EvidenceDriverLikelihood {
         }
     }
 
-    public static boolean interpretFusion(@NotNull FusionLikelihoodType likelihood) {
+    public static boolean interpretFusion(@NotNull LinxFusionDriverLikelihood likelihood) {
         switch (likelihood) {
             case HIGH:
                 return true;
@@ -34,7 +34,7 @@ public final class EvidenceDriverLikelihood {
         }
     }
 
-    public static boolean interpretCopyNumber() {
+    public static boolean interpretGainLoss() {
         // All loss/gains have a high driver likelihood
         return true;
     }

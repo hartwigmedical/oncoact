@@ -14,6 +14,7 @@
       "ploidy": 3.1
     },
     "characteristics": {
+      "microsatelliteIndelsPerMb": 0.1,
       "microsatelliteStatus": "MSS",
       "tumorMutationalBurdenPerMb": 13.713186428821267,
       "tumorMutationalBurdenStatus": "HIGH",
@@ -64,12 +65,94 @@
         },
         "otherImpacts": [],
         "hotspot": "NON_HOTSPOT",
+        "tumorDepth": {
+          "totalReadCount": 20,
+          "alleleReadCount": 10
+        },
         "reported": true,
         "adjustedCopyNumber": 3.02,
+        "minorAlleleCopyNumber": 0.4,
         "variantCopyNumber": 2.03,
         "biallelic": false,
+        "genotypeStatus": "UNKNOWN",
         "subclonalLikelihood": 0.0,
         "localPhaseSets": null
+      }
+    ],
+    "reportableSomaticVariants": [
+      {
+        "type": "SNP",
+        "gene": "SF3B1",
+        "chromosome": "2",
+        "position": 198266779,
+        "ref": "G",
+        "alt": "A",
+        "canonicalImpact": {
+          "transcript": "ENST00000335508",
+          "hgvsCodingImpact": "c.2153C\u003eT",
+          "hgvsProteinImpact": "p.Pro718Leu",
+          "affectedCodon": 2153,
+          "affectedExon": 12,
+          "spliceRegion": false,
+          "effects": [
+            "MISSENSE"
+          ],
+          "codingEffect": "MISSENSE"
+        },
+        "otherImpacts": [],
+        "hotspot": "NON_HOTSPOT",
+        "tumorDepth": {
+          "totalReadCount": 20,
+          "alleleReadCount": 10
+        },
+        "reported": true,
+        "adjustedCopyNumber": 3.02,
+        "minorAlleleCopyNumber": 0.4,
+        "variantCopyNumber": 2.03,
+        "biallelic": false,
+        "genotypeStatus": "UNKNOWN",
+        "subclonalLikelihood": 0.0,
+        "localPhaseSets": null
+      }
+    ],
+    "allGermlineVariants": [
+      {
+        "type": "SNP",
+        "gene": "BRCA1",
+        "chromosome": "17",
+        "position": 41209068,
+        "ref": "C",
+        "alt": "T",
+        "canonicalImpact": {
+          "transcript": "ENST00000471181",
+          "hgvsCodingImpact": "c.5340+1G>A",
+          "hgvsProteinImpact": "p.?",
+          "affectedCodon": null,
+          "affectedExon": null,
+          "spliceRegion": true,
+          "effects": [
+            "SPLICE_DONOR",
+            "INTRONIC"
+          ],
+          "codingEffect": "SPLICE"
+        },
+        "otherImpacts": [],
+        "hotspot": "HOTSPOT",
+        "tumorDepth": {
+          "totalReadCount": 30,
+          "alleleReadCount": 20
+        },
+        "reported": true,
+        "adjustedCopyNumber": 2.0,
+        "minorAlleleCopyNumber": 0.8,
+        "variantCopyNumber": 1.0,
+        "biallelic": false,
+        "genotypeStatus": "HET",
+        "subclonalLikelihood": 0.2,
+        "localPhaseSets": [
+          1,
+          2
+        ]
       }
     ],
     "reportableGermlineVariants": [
@@ -95,10 +178,16 @@
         },
         "otherImpacts": [],
         "hotspot": "HOTSPOT",
+        "tumorDepth": {
+          "totalReadCount": 30,
+          "alleleReadCount": 20
+        },
         "reported": true,
         "adjustedCopyNumber": 2.0,
+        "minorAlleleCopyNumber": 0.8,
         "variantCopyNumber": 1.0,
         "biallelic": false,
+        "genotypeStatus": "HET",
         "subclonalLikelihood": 0.2,
         "localPhaseSets": [
           1,
@@ -110,6 +199,18 @@
       {
         "interpretation": "FULL_LOSS",
         "gene": "SMAD4",
+        "transcript": "ENST00000591126",
+        "isCanonical": false,
+        "minCopies": 0,
+        "maxCopies": 1
+      }
+    ],
+    "reportableSomaticGainsLosses": [
+      {
+        "interpretation": "FULL_LOSS",
+        "gene": "SMAD4",
+        "transcript": "ENST00000591126",
+        "isCanonical": false,
         "minCopies": 0,
         "maxCopies": 1
       }
@@ -123,6 +224,19 @@
       }
     ],
     "allFusions": [
+      {
+        "reported": true,
+        "reportedType": "KNOWN_PAIR",
+        "likelihood": "HIGH",
+        "fusedExonUp": 1,
+        "fusedExonDown": 2,
+        "geneStart": "TMPRSS2",
+        "geneTranscriptStart": "ENST00000332149",
+        "geneEnd": "ETV4",
+        "geneTranscriptEnd": "ENST00000319349"
+      }
+    ],
+    "reportableFusions": [
       {
         "reported": true,
         "reportedType": "KNOWN_PAIR",
@@ -149,7 +263,9 @@
     ],
     "homozygousDisruptions": [
       {
-        "gene": "NF1"
+        "gene": "NF1",
+        "transcript": "ENST00000358273",
+        "isCanonical": true
       }
     ]
   },
@@ -171,9 +287,20 @@
         "reported": false,
         "virusDriverLikelihoodType": "LOW"
       }
+    ],
+    "reportableViruses": [
+      {
+        "name": "Human papillomavirus 16",
+        "qcStatus": "NO_ABNORMALITIES",
+        "integrations": 1,
+        "interpretation": "HPV",
+        "reported": true,
+        "virusDriverLikelihoodType": "HIGH"
+      }
     ]
   },
   "chord": {
+    "hrdValue": 0.01,
     "hrStatus": "HR_PROFICIENT"
   },
   "peach": [

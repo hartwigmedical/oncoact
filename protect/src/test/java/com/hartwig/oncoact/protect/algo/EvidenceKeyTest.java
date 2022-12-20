@@ -7,8 +7,8 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectTestFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 
 import org.junit.Test;

@@ -7,12 +7,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.common.protect.ImmutableProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantSource;
 import com.hartwig.oncoact.common.virus.AnnotatedVirus;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.immutables.value.internal.$guava$.annotations.$VisibleForTesting;
 import org.jetbrains.annotations.NotNull;

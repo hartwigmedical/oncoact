@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Iterables;
-import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

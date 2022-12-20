@@ -1,11 +1,12 @@
 package com.hartwig.oncoact.protect.evidence;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
@@ -30,23 +31,23 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<HomozygousDisruption> reportables) {
+    public List<ProtectEvidence> evidence(@NotNull Set<LinxHomozygousDisruption> homozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (HomozygousDisruption reportable : reportables) {
-            result.addAll(evidence(reportable));
+        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+            result.addAll(evidence(homozygousDisruption));
         }
         return result;
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull HomozygousDisruption reportable) {
+    private List<ProtectEvidence> evidence(@NotNull LinxHomozygousDisruption homozygousDisruption) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
-            if (actionable.gene().equals(reportable.gene())) {
+            if (actionable.gene().equals(homozygousDisruption.gene())) {
                 ProtectEvidence evidence = personalizedEvidenceFactory.somaticReportableEvidence(actionable)
-                        .gene(reportable.gene())
-                        .transcript(reportable.transcript())
-                        .isCanonical(reportable.isCanonical())
+                        .gene(homozygousDisruption.gene())
+                        .transcript(homozygousDisruption.transcript())
+                        .isCanonical(homozygousDisruption.isCanonical())
                         .event(HOMOZYGOUS_DISRUPTION_EVENT)
                         .eventIsHighDriver(true)
                         .build();

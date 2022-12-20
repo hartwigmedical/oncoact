@@ -5,16 +5,16 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.linx.GeneDisruption;
+import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.linx.ImmutableGeneDisruption;
 import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.protect.ImmutableProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
 import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
 import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;

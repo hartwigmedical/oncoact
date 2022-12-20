@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.chord.ChordData;
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.orange.datamodel.chord.ChordRecord;
+import com.hartwig.oncoact.orange.datamodel.chord.ChordStatus;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -31,7 +31,7 @@ public class ChordEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull ChordData chordAnalysis) {
+    public List<ProtectEvidence> evidence(@NotNull ChordRecord chordAnalysis) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableCharacteristic characteristic : actionableCharacteristics) {
             if (CharacteristicsFunctions.hasExplicitCutoff(characteristic)) {

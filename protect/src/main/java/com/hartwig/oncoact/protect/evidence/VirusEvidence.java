@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
-import com.hartwig.oncoact.common.virus.VirusConstants;
-import com.hartwig.oncoact.common.virus.VirusInterpreterData;
-import com.hartwig.oncoact.common.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusDriverLikelihood;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpretation;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterEntry;
+import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterRecord;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
@@ -28,15 +28,14 @@ public class VirusEvidence {
             @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableViruses = actionableCharacteristics.stream()
-                .filter(x -> x.type() == TumorCharacteristicType.HPV_POSITIVE
-                        || x.type() == TumorCharacteristicType.EBV_POSITIVE)
+                .filter(x -> x.type() == TumorCharacteristicType.HPV_POSITIVE || x.type() == TumorCharacteristicType.EBV_POSITIVE)
                 .collect(Collectors.toList());
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreterData) {
-        List<AnnotatedVirus> hpv = virusesWithInterpretation(virusInterpreterData, VirusConstants.HPV);
-        List<AnnotatedVirus> ebv = virusesWithInterpretation(virusInterpreterData, VirusConstants.EBV);
+    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterRecord virusInterpreter) {
+        List<VirusInterpreterEntry> hpv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.HPV);
+        List<VirusInterpreterEntry> ebv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.EBV);
 
         boolean reportHPV = hasReportedWithHighDriverLikelihood(hpv);
         boolean reportEBV = hasReportedWithHighDriverLikelihood(ebv);
@@ -71,9 +70,9 @@ public class VirusEvidence {
         return result;
     }
 
-    private static boolean hasReportedWithHighDriverLikelihood(@NotNull List<AnnotatedVirus> viruses) {
-        for (AnnotatedVirus virus : viruses) {
-            if (virus.reported() && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
+    private static boolean hasReportedWithHighDriverLikelihood(@NotNull List<VirusInterpreterEntry> viruses) {
+        for (VirusInterpreterEntry virus : viruses) {
+            if (virus.reported() && virus.driverLikelihood() == VirusDriverLikelihood.HIGH) {
                 return true;
             }
         }
@@ -82,19 +81,17 @@ public class VirusEvidence {
     }
 
     @NotNull
-    private static List<AnnotatedVirus> virusesWithInterpretation(@NotNull VirusInterpreterData virusInterpreterData,
-            @NotNull VirusConstants interpretationToInclude) {
-        List<AnnotatedVirus> virusesWithInterpretation = Lists.newArrayList();
-        for (AnnotatedVirus virus : virusInterpreterData.reportableViruses()) {
-            String interpretation = virus.interpretation();
-            if (interpretation != null && interpretation.equals(interpretationToInclude.name())) {
+    private static List<VirusInterpreterEntry> virusesWithInterpretation(@NotNull VirusInterpreterRecord virusInterpreter,
+            @NotNull VirusInterpretation interpretationToInclude) {
+        List<VirusInterpreterEntry> virusesWithInterpretation = Lists.newArrayList();
+        for (VirusInterpreterEntry virus : virusInterpreter.reportableViruses()) {
+            if (virus.interpretation() == interpretationToInclude) {
                 virusesWithInterpretation.add(virus);
             }
         }
 
-        for (AnnotatedVirus virus : virusInterpreterData.unreportedViruses()) {
-            String interpretation = virus.interpretation();
-            if (interpretation != null && interpretation.equals(interpretationToInclude.name())) {
+        for (VirusInterpreterEntry virus : virusInterpreter.allViruses()) {
+            if ((!virusInterpreter.reportableViruses().contains(virus) && virus.interpretation() == interpretationToInclude)) {
                 virusesWithInterpretation.add(virus);
             }
         }

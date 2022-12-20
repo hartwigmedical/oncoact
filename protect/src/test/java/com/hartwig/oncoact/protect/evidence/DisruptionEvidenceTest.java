@@ -4,21 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.protect.EvidenceType;
-import com.hartwig.oncoact.common.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ServeTestFactory;
-import com.hartwig.serve.datamodel.Knowledgebase;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.datamodel.linx.TestLinxFactory;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -32,39 +29,34 @@ public class DisruptionEvidenceTest {
         String geneUnder = "geneUnder";
 
         ActionableGene amp = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneAmp)
                 .event(GeneEvent.AMPLIFICATION)
-                .source(Knowledgebase.CKB)
                 .build();
         ActionableGene inactivation = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneInact)
                 .event(GeneEvent.INACTIVATION)
-                .source(Knowledgebase.CKB)
                 .build();
         ActionableGene deletion = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneDel)
                 .event(GeneEvent.DELETION)
-                .source(Knowledgebase.CKB)
                 .build();
-
         ActionableGene underexpression = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
+                .from(TestServeFactory.createTestActionableGene())
                 .gene(geneUnder)
                 .event(GeneEvent.UNDEREXPRESSION)
-                .source(Knowledgebase.CKB)
                 .build();
 
-        DisruptionEvidence disruptionEvidence =
-                new DisruptionEvidence(EvidenceTestFactory.create(), Lists.newArrayList(amp, inactivation, deletion, underexpression));
+        DisruptionEvidence disruptionEvidence = new DisruptionEvidence(TestPersonalizedEvidenceFactory.create(),
+                Lists.newArrayList(amp, inactivation, deletion, underexpression));
 
-        HomozygousDisruption matchAmp = create(geneAmp);
-        HomozygousDisruption matchInact = create(geneInact);
-        HomozygousDisruption nonMatch = create("other gene");
+        LinxHomozygousDisruption matchAmp = create(geneAmp);
+        LinxHomozygousDisruption matchInact = create(geneInact);
+        LinxHomozygousDisruption nonMatch = create("other gene");
 
-        List<ProtectEvidence> evidences = disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch));
+        List<ProtectEvidence> evidences = disruptionEvidence.evidence(Sets.newHashSet(matchAmp, matchInact, nonMatch));
 
         assertEquals(1, evidences.size());
         ProtectEvidence evidence = evidences.get(0);
@@ -73,28 +65,11 @@ public class DisruptionEvidenceTest {
         assertEquals(DisruptionEvidence.HOMOZYGOUS_DISRUPTION_EVENT, evidence.event());
 
         assertEquals(evidence.sources().size(), 1);
-        assertEquals(EvidenceType.INACTIVATION, findByKnowledgebase(evidence.sources(), Knowledgebase.CKB).evidenceType());
+        assertEquals(EvidenceType.INACTIVATION, evidence.sources().iterator().next().evidenceType());
     }
 
     @NotNull
-    private static HomozygousDisruption create(@NotNull String gene) {
-        return ImmutableHomozygousDisruption.builder()
-                .chromosome(Strings.EMPTY)
-                .chromosomeBand(Strings.EMPTY)
-                .gene(gene)
-                .transcript("123")
-                .isCanonical(true)
-                .build();
-    }
-
-    @NotNull
-    private static KnowledgebaseSource findByKnowledgebase(@NotNull Set<KnowledgebaseSource> sources, @NotNull Knowledgebase knowledgebaseToFind) {
-        for (KnowledgebaseSource source : sources) {
-            if (source.name() == knowledgebaseToFind) {
-                return source;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence from source: " + knowledgebaseToFind);
+    private static LinxHomozygousDisruption create(@NotNull String gene) {
+        return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 }

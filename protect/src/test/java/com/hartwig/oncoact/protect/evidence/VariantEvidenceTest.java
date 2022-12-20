@@ -5,26 +5,24 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.protect.EvidenceType;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.test.SomaticVariantTestFactory;
-import com.hartwig.oncoact.common.variant.CodingEffect;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
-import com.hartwig.oncoact.common.variant.SomaticVariant;
-import com.hartwig.oncoact.protect.ServeTestFactory;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
-import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
-import com.hartwig.serve.datamodel.range.ImmutableActionableRange;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -38,20 +36,14 @@ public class VariantEvidenceTest {
         String ref = "C";
         String alt = "T";
 
-        ActionableHotspot hotspot = ImmutableActionableHotspot.builder()
-                .from(ServeTestFactory.createTestActionableHotspot())
-                .chromosome(chromosome)
-                .position(position)
-                .ref(ref)
-                .alt(alt)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableHotspot hotspot = TestServeFactory.hotspotBuilder().chromosome(chromosome).position(position).ref(ref).alt(alt).build();
 
-        VariantEvidence variantEvidence =
-                new VariantEvidence(EvidenceTestFactory.create(), Lists.newArrayList(hotspot), Lists.newArrayList(), Lists.newArrayList());
+        VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
+                Lists.newArrayList(hotspot),
+                Lists.newArrayList(),
+                Lists.newArrayList());
 
-        ReportableVariant variantMatch = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantMatch = TestReportableVariantFactory.builder()
                 .gene("reportable")
                 .chromosome(chromosome)
                 .position(position)
@@ -59,8 +51,7 @@ public class VariantEvidenceTest {
                 .alt(alt)
                 .build();
 
-        ReportableVariant variantWrongPosition = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantWrongPosition = TestReportableVariantFactory.builder()
                 .gene("wrong position")
                 .chromosome(chromosome)
                 .position(position + 1)
@@ -68,8 +59,7 @@ public class VariantEvidenceTest {
                 .alt(alt)
                 .build();
 
-        ReportableVariant variantWrongAlt = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantWrongAlt = TestReportableVariantFactory.builder()
                 .gene("wrong alt")
                 .chromosome(chromosome)
                 .position(position)
@@ -77,12 +67,18 @@ public class VariantEvidenceTest {
                 .alt("G")
                 .build();
 
-        SomaticVariant unreportedMatch =
-                SomaticVariantTestFactory.builder().gene("unreported").chromosome(chromosome).position(position).ref(ref).alt(alt).build();
+        PurpleVariant unreportedMatch = TestPurpleFactory.variantBuilder()
+                .reported(false)
+                .gene("unreported")
+                .chromosome(chromosome)
+                .position(position)
+                .ref(ref)
+                .alt(alt)
+                .build();
 
-        List<ProtectEvidence> evidences = variantEvidence.evidence(Lists.newArrayList(variantMatch, variantWrongAlt, variantWrongPosition),
-                Lists.newArrayList(),
-                Lists.newArrayList(unreportedMatch));
+        List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
+                Sets.newHashSet(),
+                Sets.newHashSet(unreportedMatch));
 
         assertEquals(2, evidences.size());
 
@@ -104,8 +100,7 @@ public class VariantEvidenceTest {
         int end = 15;
         MutationType mutationType = MutationType.MISSENSE;
 
-        ActionableRange rangeHigh = ImmutableActionableRange.builder()
-                .from(ServeTestFactory.createTestActionableRange())
+        ActionableRange rangeHigh = TestServeFactory.rangeBuilder()
                 .gene("geneHigh")
                 .chromosome(chromosome)
                 .start(start)
@@ -114,8 +109,7 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeMedium = ImmutableActionableRange.builder()
-                .from(ServeTestFactory.createTestActionableRange())
+        ActionableRange rangeMedium = TestServeFactory.rangeBuilder()
                 .gene("geneMedium")
                 .chromosome(chromosome)
                 .start(start)
@@ -124,8 +118,7 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeLow = ImmutableActionableRange.builder()
-                .from(ServeTestFactory.createTestActionableRange())
+        ActionableRange rangeLow = TestServeFactory.rangeBuilder()
                 .gene("geneLow")
                 .chromosome(chromosome)
                 .start(start)
@@ -134,70 +127,64 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        VariantEvidence variantEvidence = new VariantEvidence(EvidenceTestFactory.create(),
+        VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
                 Lists.newArrayList(rangeHigh, rangeMedium, rangeLow),
                 Lists.newArrayList());
 
-        ReportableVariant variantMatchHigh = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantMatchHigh = TestReportableVariantFactory.builder()
                 .gene("geneHigh")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .driverLikelihood(0.9)
                 .build();
-        ReportableVariant variantMatchMedium = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantMatchMedium = TestReportableVariantFactory.builder()
                 .gene("geneMedium")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .driverLikelihood(0.5)
                 .build();
-        ReportableVariant variantMatchLow = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantMatchLow = TestReportableVariantFactory.builder()
                 .gene("geneLow")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .driverLikelihood(0.1)
                 .build();
-        ReportableVariant variantOutsideRange = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantOutsideRange = TestReportableVariantFactory.builder()
                 .gene("gene")
                 .chromosome(chromosome)
                 .position(start - 1)
                 .canonicalHgvsCodingImpact("outside range")
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .build();
-        ReportableVariant variantWrongGene = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantWrongGene = TestReportableVariantFactory.builder()
                 .gene("wrong gene")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("wrong gene")
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .build();
-        ReportableVariant variantWrongMutationType = ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
+        ReportableVariant variantWrongMutationType = TestReportableVariantFactory.builder()
                 .gene("gene")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("wrong mutation type")
-                .canonicalCodingEffect(CodingEffect.NONSENSE_OR_FRAMESHIFT)
+                .canonicalCodingEffect(PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT)
                 .build();
 
-        List<ReportableVariant> reportable = Lists.newArrayList(variantMatchHigh,
+        Set<ReportableVariant> reportable = Sets.newHashSet(variantMatchHigh,
                 variantMatchMedium,
                 variantMatchLow,
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Lists.newArrayList(), Lists.newArrayList());
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(3, evidences.size());
 
@@ -226,26 +213,14 @@ public class VariantEvidenceTest {
         String inactivatedGene = "gene2";
         String amplifiedGene = "gene3";
 
-        ActionableGene actionableGene1 = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
-                .gene(activatedGene)
-                .event(GeneEvent.ACTIVATION)
-                .source(Knowledgebase.CKB)
-                .build();
-        ActionableGene actionableGene2 = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
-                .gene(inactivatedGene)
-                .event(GeneEvent.INACTIVATION)
-                .source(Knowledgebase.CKB)
-                .build();
-        ActionableGene actionableGene3 = ImmutableActionableGene.builder()
-                .from(ServeTestFactory.createTestActionableGene())
-                .gene(amplifiedGene)
-                .event(GeneEvent.AMPLIFICATION)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene actionableGene1 =
+                TestServeFactory.geneBuilder().gene(activatedGene).event(GeneEvent.ACTIVATION).source(Knowledgebase.CKB).build();
+        ActionableGene actionableGene2 =
+                TestServeFactory.geneBuilder().gene(inactivatedGene).event(GeneEvent.INACTIVATION).source(Knowledgebase.CKB).build();
+        ActionableGene actionableGene3 =
+                TestServeFactory.geneBuilder().gene(amplifiedGene).event(GeneEvent.AMPLIFICATION).source(Knowledgebase.CKB).build();
 
-        VariantEvidence variantEvidence = new VariantEvidence(EvidenceTestFactory.create(),
+        VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList(actionableGene1, actionableGene2, actionableGene3));
@@ -255,16 +230,16 @@ public class VariantEvidenceTest {
         ReportableVariant driverOnAmplifiedGene = withGeneAndDriverLikelihood(amplifiedGene, 0D);
         ReportableVariant driverOnOtherGene = withGeneAndDriverLikelihood("other", 1D);
 
-        List<ReportableVariant> reportableVariants =
-                Lists.newArrayList(driverOnActivatedGene, passengerOnInactivatedGene, driverOnAmplifiedGene, driverOnOtherGene);
+        Set<ReportableVariant> reportableVariants =
+                Sets.newHashSet(driverOnActivatedGene, passengerOnInactivatedGene, driverOnAmplifiedGene, driverOnOtherGene);
 
-        List<SomaticVariant> unreportedVariants = Lists.newArrayList(SomaticVariantTestFactory.builder()
+        Set<PurpleVariant> unreportedVariants = Sets.newHashSet(TestPurpleFactory.variantBuilder()
                 .reported(false)
                 .gene(activatedGene)
-                .canonicalCodingEffect(CodingEffect.NONE)
+                .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().codingEffect(PurpleCodingEffect.NONE).build())
                 .build());
 
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Lists.newArrayList(), unreportedVariants);
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants);
 
         assertEquals(2, evidences.size());
 
@@ -292,9 +267,8 @@ public class VariantEvidenceTest {
 
     @NotNull
     private static ReportableVariant withGeneAndDriverLikelihood(@NotNull String gene, double driverLikelihood) {
-        return ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
-                .canonicalCodingEffect(CodingEffect.MISSENSE)
+        return TestReportableVariantFactory.builder()
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .gene(gene)
                 .driverLikelihood(driverLikelihood)
                 .build();

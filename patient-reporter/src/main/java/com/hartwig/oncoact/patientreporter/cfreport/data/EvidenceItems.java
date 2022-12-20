@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Paragraph;

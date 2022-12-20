@@ -1,20 +1,21 @@
 package com.hartwig.oncoact.protect.evidence;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.datamodel.DriverInterpretation;
-import com.hartwig.oncoact.common.datamodel.ReportableVariant;
-import com.hartwig.oncoact.common.datamodel.ReportableVariantSource;
-import com.hartwig.oncoact.common.interpretation.AltTranscriptReportableInfo;
-import com.hartwig.oncoact.common.interpretation.ReportableVariantFactory;
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.common.orange.datamodel.purple.PurpleVariantType;
-import com.hartwig.oncoact.common.orange.datamodel.purple.Variant;
-import com.hartwig.oncoact.common.protect.EventGenerator;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
+import com.hartwig.oncoact.datamodel.DriverInterpretation;
+import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.datamodel.ReportableVariantSource;
+import com.hartwig.oncoact.interpretation.AltTranscriptReportableInfo;
+import com.hartwig.oncoact.interpretation.ReportableVariantFactory;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantType;
+import com.hartwig.oncoact.orange.datamodel.purple.Variant;
+import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
@@ -52,10 +53,10 @@ public class VariantEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Iterable<ReportableVariant> germline, @NotNull Iterable<ReportableVariant> somatic,
-            @NotNull Iterable<PurpleVariant> allSomaticVariants) {
+    public List<ProtectEvidence> evidence(@NotNull Set<ReportableVariant> reportableGermline,
+            @NotNull Set<ReportableVariant> reportableSomatic, @NotNull Set<PurpleVariant> allSomaticVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
-        for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(germline, somatic)) {
+        for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant));
         }
 

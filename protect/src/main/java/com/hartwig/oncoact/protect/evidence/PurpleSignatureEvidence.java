@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.protect.ImmutableProtectEvidence;
-import com.hartwig.oncoact.common.protect.ProtectEvidence;
-import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
-import com.hartwig.oncoact.common.purple.loader.PurpleData;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleCharacteristics;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -43,33 +43,33 @@ public class PurpleSignatureEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull PurpleData purpleData) {
+    public List<ProtectEvidence> evidence(@NotNull PurpleCharacteristics characteristics) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableCharacteristic signature : actionableSignatures) {
             ProtectEvidence evidence;
             switch (signature.type()) {
                 case MICROSATELLITE_UNSTABLE: {
-                    evidence = evaluateMSI(signature, purpleData);
+                    evidence = evaluateMSI(signature, characteristics);
                     break;
                 }
                 case MICROSATELLITE_STABLE: {
-                    evidence = evaluateMSS(signature, purpleData);
+                    evidence = evaluateMSS(signature, characteristics);
                     break;
                 }
                 case HIGH_TUMOR_MUTATIONAL_LOAD: {
-                    evidence = evaluateHighTML(signature, purpleData);
+                    evidence = evaluateHighTML(signature, characteristics);
                     break;
                 }
                 case LOW_TUMOR_MUTATIONAL_LOAD: {
-                    evidence = evaluateLowTML(signature, purpleData);
+                    evidence = evaluateLowTML(signature, characteristics);
                     break;
                 }
                 case HIGH_TUMOR_MUTATIONAL_BURDEN: {
-                    evidence = evaluateHighTMB(signature, purpleData);
+                    evidence = evaluateHighTMB(signature, characteristics);
                     break;
                 }
                 case LOW_TUMOR_MUTATIONAL_BURDEN: {
-                    evidence = evaluateLowTMB(signature, purpleData);
+                    evidence = evaluateLowTMB(signature, characteristics);
                     break;
                 }
                 default: {
@@ -86,49 +86,53 @@ public class PurpleSignatureEvidence {
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.microsatelliteIndelsPerMb()) : purpleData.microsatelliteStatus() == MicrosatelliteStatus.MSI;
+    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
+                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
+                characteristics.microsatelliteIndelsPerMb())
+                : characteristics.microsatelliteStabilityStatus() == PurpleMicrosatelliteStatus.MSI;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.microsatelliteIndelsPerMb()) : purpleData.microsatelliteStatus() == MicrosatelliteStatus.MSS;
+    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
+                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
+                characteristics.microsatelliteIndelsPerMb())
+                : characteristics.microsatelliteStabilityStatus() == PurpleMicrosatelliteStatus.MSS;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateHighTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
+    private ProtectEvidence evaluateHighTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.tumorMutationalLoad()) : purpleData.tumorMutationalLoadStatus() == TumorMutationalStatus.HIGH;
+                characteristics.tumorMutationalLoad()) : characteristics.tumorMutationalLoadStatus() == PurpleTumorMutationalStatus.HIGH;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateLowTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
+    private ProtectEvidence evaluateLowTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.tumorMutationalLoad()) : purpleData.tumorMutationalLoadStatus() == TumorMutationalStatus.LOW;
+                characteristics.tumorMutationalLoad()) : characteristics.tumorMutationalLoadStatus() == PurpleTumorMutationalStatus.LOW;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
+    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.tumorMutationalBurdenPerMb()) : purpleData.tumorMutationalBurdenPerMb() >= DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurden()) : characteristics.tumorMutationalBurden() >= DEFAULT_HIGH_TMB_CUTOFF;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleData purpleData) {
+    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                purpleData.tumorMutationalBurdenPerMb()) : purpleData.tumorMutationalBurdenPerMb() < DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurden()) : characteristics.tumorMutationalBurden() < DEFAULT_HIGH_TMB_CUTOFF;
 
         return isMatch ? toEvidence(signature) : null;
     }
