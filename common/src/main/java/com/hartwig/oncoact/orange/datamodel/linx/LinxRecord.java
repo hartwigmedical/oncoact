@@ -17,7 +17,10 @@ public abstract class LinxRecord {
     public abstract Set<LinxHomozygousDisruption> homozygousDisruptions();
 
     @NotNull
-    public abstract Set<LinxBreakend> breakends();
+    public abstract Set<LinxBreakend> allBreakends();
+
+    @NotNull
+    public abstract Set<LinxBreakend> reportableBreakends();
 
     @NotNull
     public abstract Set<LinxFusion> allFusions();

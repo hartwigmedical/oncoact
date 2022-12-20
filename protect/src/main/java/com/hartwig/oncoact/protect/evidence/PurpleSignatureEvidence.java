@@ -140,7 +140,6 @@ public class PurpleSignatureEvidence {
     @NotNull
     private ProtectEvidence toEvidence(@NotNull ActionableCharacteristic signature) {
         ImmutableProtectEvidence.Builder builder;
-        // TODO: Figure out whether we want to report evidence on "absence of signatures".
         if (signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_LOAD
                 || signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_BURDEN
                 || signature.type() == TumorCharacteristicType.MICROSATELLITE_STABLE) {

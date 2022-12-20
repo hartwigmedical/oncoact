@@ -8,6 +8,11 @@
   "refGenomeVersion": "V37",
   "purple": {
     "fit": {
+      "qc": {
+        "status": [
+          "PASS"
+        ]
+      },
       "hasReliableQuality": true,
       "hasReliablePurity": false,
       "purity": 0.12,
@@ -250,6 +255,18 @@
       }
     ],
     "allBreakends": [
+      {
+        "reportedDisruption": false,
+        "svId": 1,
+        "gene": "NF1",
+        "type": "DUP",
+        "junctionCopyNumber": 1.1,
+        "undisruptedCopyNumber": 1.0,
+        "regionType": "EXONIC",
+        "codingType": "UTR_3P"
+      }
+    ],
+    "reportableBreakends": [
       {
         "reportedDisruption": false,
         "svId": 1,

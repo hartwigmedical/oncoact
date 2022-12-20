@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.wildtype.WildTypeFactory;
 import com.hartwig.oncoact.wildtype.WildTypeGene;
@@ -39,14 +39,14 @@ public class WildTypeEvidence {
     public List<ProtectEvidence> evidence(@NotNull Set<ReportableVariant> reportableGermlineVariants,
             @NotNull Set<ReportableVariant> reportableSomaticVariants, @NotNull Set<PurpleGainLoss> reportableSomaticGainsLosses,
             @NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
-            @NotNull Set<GeneDisruption> geneDisruptions, @NotNull Set<PurpleQCStatus> purpleQCStatus) {
+            @NotNull Set<LinxBreakend> reportableBreakends, @NotNull Set<PurpleQCStatus> purpleQCStatus) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         List<WildTypeGene> wildTypeGenes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                reportableBreakends,
                 driverGenes);
 
         List<WildTypeGene> wildTypeGenesFilter = WildTypeFactory.filterQCWildTypes(purpleQCStatus, wildTypeGenes);

@@ -11,11 +11,13 @@ import static com.hartwig.oncoact.common.utils.json.Json.nullableString;
 import static com.hartwig.oncoact.common.utils.json.Json.number;
 import static com.hartwig.oncoact.common.utils.json.Json.object;
 import static com.hartwig.oncoact.common.utils.json.Json.string;
+import static com.hartwig.oncoact.common.utils.json.Json.stringList;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -79,6 +81,7 @@ import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleRecord;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleTumorMutationalStatus;
@@ -148,12 +151,24 @@ public final class OrangeJson {
 
         @NotNull
         private static PurpleFit toPurpleFit(@NotNull JsonObject fit) {
+            JsonObject qc = object(fit, "qc");
+
             return ImmutablePurpleFit.builder()
+                    .qcStatus(toPurpleQCStatus(stringList(qc, "status")))
                     .hasReliableQuality(bool(fit, "hasReliableQuality"))
                     .hasReliablePurity(bool(fit, "hasReliablePurity"))
                     .purity(number(fit, "purity"))
                     .ploidy(number(fit, "ploidy"))
                     .build();
+        }
+
+        @NotNull
+        private static Set<PurpleQCStatus> toPurpleQCStatus(@NotNull List<String> statusEntries) {
+            Set<PurpleQCStatus> status = Sets.newHashSet();
+            for (String statusEntry : statusEntries) {
+                status.add(PurpleQCStatus.valueOf(statusEntry));
+            }
+            return status;
         }
 
         @NotNull
@@ -283,7 +298,8 @@ public final class OrangeJson {
             return ImmutableLinxRecord.builder()
                     .structuralVariants(toLinxStructuralVariants(array(linx, "allStructuralVariants")))
                     .homozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "homozygousDisruptions")))
-                    .breakends(toLinxBreakends(array(linx, "allBreakends")))
+                    .allBreakends(toLinxBreakends(array(linx, "allBreakends")))
+                    .reportableBreakends(toLinxBreakends(array(linx, "reportableBreakends")))
                     .allFusions(toLinxFusions(array(linx, "allFusions")))
                     .reportableFusions(toLinxFusions(array(linx, "reportableFusions")))
                     .build();

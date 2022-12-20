@@ -5,12 +5,12 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +32,7 @@ public final class WildTypeFactory {
     public static List<WildTypeGene> determineWildTypeGenes(@NotNull Set<ReportableVariant> reportableGermlineVariants,
             @NotNull Set<ReportableVariant> reportableSomaticVariants, @NotNull Set<PurpleGainLoss> reportableSomaticGainsLosses,
             @NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
-            @NotNull Set<GeneDisruption> reportableGeneDisruptions, @NotNull List<DriverGene> driverGenes) {
+            @NotNull Set<LinxBreakend> reportableBreakends, @NotNull List<DriverGene> driverGenes) {
         List<WildTypeGene> wildTypeGenes = Lists.newArrayList();
 
         for (DriverGene driverGene : driverGenes) {
@@ -71,15 +71,15 @@ public final class WildTypeFactory {
                 }
             }
 
-            boolean hasGeneDisruption = false;
-            for (GeneDisruption geneDisruption : reportableGeneDisruptions) {
-                if (driverGene.gene().equals(geneDisruption.gene())) {
-                    hasGeneDisruption = true;
+            boolean hasBreakend = false;
+            for (LinxBreakend breakend : reportableBreakends) {
+                if (driverGene.gene().equals(breakend.gene())) {
+                    hasBreakend = true;
                 }
             }
 
             if (!hasSomaticVariant && !hasGermlineVariant && !hasSomaticGainLoss && !hasFusion && !hasHomozygousDisruption
-                    && !hasGeneDisruption) {
+                    && !hasBreakend) {
                 wildTypeGenes.add(ImmutableWildTypeGene.builder().gene(driverGene.gene()).build());
             }
         }

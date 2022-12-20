@@ -12,6 +12,7 @@ import com.hartwig.oncoact.orange.datamodel.lilac.ImmutableLilacRecord;
 import com.hartwig.oncoact.orange.datamodel.lilac.LilacRecord;
 import com.hartwig.oncoact.orange.datamodel.lilac.TestLilacFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.ImmutableLinxRecord;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakendType;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusionDriverLikelihood;
@@ -172,6 +173,24 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static LinxRecord createTestLinxRecord() {
+        LinxBreakend breakend1 = TestLinxFactory.breakendBuilder()
+                .reported(true)
+                .svId(1)
+                .gene("RB1")
+                .type(LinxBreakendType.DEL)
+                .junctionCopyNumber(0.8)
+                .undisruptedCopyNumber(2.1)
+                .build();
+
+        LinxBreakend breakend2 = TestLinxFactory.breakendBuilder()
+                .reported(true)
+                .svId(1)
+                .gene("PTEN")
+                .type(LinxBreakendType.DEL)
+                .junctionCopyNumber(1D)
+                .undisruptedCopyNumber(1D)
+                .build();
+
         LinxFusion fusion = TestLinxFactory.fusionBuilder()
                 .reported(true)
                 .type(LinxFusionType.KNOWN_PAIR)
@@ -185,22 +204,8 @@ public final class TestOrangeFactory {
         return ImmutableLinxRecord.builder()
                 .addStructuralVariants(TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(1).build())
                 .addHomozygousDisruptions(TestLinxFactory.homozygousDisruptionBuilder().gene("TP53").build())
-                .addBreakends(TestLinxFactory.breakendBuilder()
-                        .reported(true)
-                        .svId(1)
-                        .gene("RB1")
-                        .type(LinxBreakendType.DEL)
-                        .junctionCopyNumber(0.8)
-                        .undisruptedCopyNumber(2.1)
-                        .build())
-                .addBreakends(TestLinxFactory.breakendBuilder()
-                        .reported(true)
-                        .svId(1)
-                        .gene("PTEN")
-                        .type(LinxBreakendType.DEL)
-                        .junctionCopyNumber(1D)
-                        .undisruptedCopyNumber(1D)
-                        .build())
+                .addAllBreakends(breakend1, breakend2)
+                .addReportableBreakends(breakend1, breakend2)
                 .addAllFusions(fusion)
                 .addReportableFusions(fusion)
                 .build();

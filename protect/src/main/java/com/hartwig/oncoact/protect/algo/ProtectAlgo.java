@@ -7,8 +7,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.doid.DoidParents;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
 import com.hartwig.oncoact.interpretation.ReportableVariantFactory;
 import com.hartwig.oncoact.orange.datamodel.OrangeRecord;
@@ -136,17 +134,13 @@ public class ProtectAlgo {
         List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac());
         printExtraction("hla", hlaEvidence);
 
-        // TODO Implement conversion
-        Set<GeneDisruption> geneDisruptions = Sets.newHashSet();
-        // TODO Add QC Status to purple record
-        Set<PurpleQCStatus> qcStatus = Sets.newHashSet();
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().reportableSomaticGainsLosses(),
                 orange.linx().reportableFusions(),
                 orange.linx().homozygousDisruptions(),
-                geneDisruptions,
-                qcStatus);
+                orange.linx().reportableBreakends(),
+                orange.purple().fit().qcStatus());
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();

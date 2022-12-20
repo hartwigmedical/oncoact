@@ -12,20 +12,19 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneGermlineReporting;
 import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGene;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
 import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.ImmutableLinxFusion;
+import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.datamodel.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
-import com.hartwig.oncoact.wildtype.WildTypeFactoryTest;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
@@ -58,9 +57,8 @@ public class WildTypeEvidenceTest {
         LinxHomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
 
-        // TODO Clean
-        GeneDisruption geneDisruption = WildTypeFactoryTest.createDisruption("MYC");
-        Set<GeneDisruption> geneDisruptions = Sets.newHashSet(geneDisruption);
+        LinxBreakend breakend = TestLinxFactory.breakendBuilder().gene("MYC").build();
+        Set<LinxBreakend> breakends = Sets.newHashSet(breakend);
 
         List<DriverGene> listDriverGenes =
                 createDriverMap(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
@@ -84,7 +82,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
 
         assertEquals(evidencesWildTypeSomaticVariant.size(), 0);
@@ -106,7 +104,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeGermlineVariant.size(), 0);
 
@@ -126,7 +124,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeCNV.size(), 0);
 
@@ -146,7 +144,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeFusion5.size(), 0);
 
@@ -166,7 +164,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeFusion3.size(), 0);
 
@@ -188,7 +186,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeHomozygousDisruption.size(), 0);
 
@@ -208,7 +206,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildTypeGeneDisruption.size(), 0);
 
@@ -228,7 +226,7 @@ public class WildTypeEvidenceTest {
                 reportableSomaticGainsLosses,
                 reportableFusions,
                 homozygousDisruptions,
-                geneDisruptions,
+                breakends,
                 purpleQCStatusSet);
         assertEquals(evidencesWildType.size(), 1);
     }

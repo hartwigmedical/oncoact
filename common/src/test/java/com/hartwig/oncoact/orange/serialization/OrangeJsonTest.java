@@ -38,6 +38,7 @@ import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleRecord;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
@@ -88,6 +89,8 @@ public class OrangeJsonTest {
     }
 
     private static void assertPurple(@NotNull PurpleRecord purple) {
+        assertEquals(1, purple.fit().qcStatus().size());
+        assertTrue(purple.fit().qcStatus().contains(PurpleQCStatus.PASS));
         assertTrue(purple.fit().hasReliableQuality());
         assertFalse(purple.fit().hasReliablePurity());
         assertEquals(0.12, purple.fit().purity(), EPSILON);
@@ -231,8 +234,8 @@ public class OrangeJsonTest {
         assertEquals("ENST00000358273", homozygousDisruption.transcript());
         assertTrue(homozygousDisruption.isCanonical());
 
-        assertEquals(1, linx.breakends().size());
-        LinxBreakend breakend = linx.breakends().iterator().next();
+        assertEquals(1, linx.allBreakends().size());
+        LinxBreakend breakend = linx.allBreakends().iterator().next();
         assertFalse(breakend.reported());
         assertEquals(1, breakend.svId());
         assertEquals("NF1", breakend.gene());
@@ -241,6 +244,9 @@ public class OrangeJsonTest {
         assertEquals(1.0, breakend.undisruptedCopyNumber(), EPSILON);
         assertEquals(LinxRegionType.EXONIC, breakend.regionType());
         assertEquals(LinxCodingType.UTR_3P, breakend.codingType());
+
+        assertEquals(1, linx.reportableBreakends().size());
+        assertEquals(breakend, linx.reportableBreakends().iterator().next());
 
         assertEquals(1, linx.allFusions().size());
         LinxFusion fusion = linx.allFusions().iterator().next();

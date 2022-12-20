@@ -8,6 +8,10 @@
   "refGenomeVersion": "V37",
   "purple": {
     "fit": {
+      "qc": {
+        "status": [
+        ]
+      },
       "hasReliableQuality": false,
       "hasReliablePurity": false,
       "purity": 0.1,
@@ -35,6 +39,7 @@
     "allFusions": [],
     "reportableFusions": [],
     "allBreakends": [],
+    "reportableBreakends": [],
     "homozygousDisruptions": []
   },
   "virusInterpreter": {
