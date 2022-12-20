@@ -68,18 +68,6 @@ class EvidenceKey {
         return treatment;
     }
 
-    @VisibleForTesting
-    @NotNull
-    Set<String> sourceTreatmentApproach() {
-        return sourceTreatmentApproach;
-    }
-
-    @VisibleForTesting
-    @NotNull
-    Set<String> relevantTreatmentApproach() {
-        return relevantTreatmentApproach;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
