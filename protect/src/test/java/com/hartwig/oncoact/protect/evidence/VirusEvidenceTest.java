@@ -18,7 +18,6 @@ import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,15 +29,8 @@ public class VirusEvidenceTest {
     public void canDetermineEvidenceForViruses() {
         VirusInterpreterRecord testRecord = createTestVirusInterpreterRecord();
 
-        ActionableCharacteristic hpv = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .type(TumorCharacteristicType.HPV_POSITIVE)
-                .build();
-
-        ActionableCharacteristic ebv = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .type(TumorCharacteristicType.EBV_POSITIVE)
-                .build();
+        ActionableCharacteristic hpv = TestServeFactory.characteristicBuilder().type(TumorCharacteristicType.HPV_POSITIVE).build();
+        ActionableCharacteristic ebv = TestServeFactory.characteristicBuilder().type(TumorCharacteristicType.EBV_POSITIVE).build();
 
         VirusEvidence virusEvidence = new VirusEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(hpv, ebv));
 
@@ -83,10 +75,7 @@ public class VirusEvidenceTest {
                 .interpretation(VirusInterpretation.EBV)
                 .driverLikelihood(VirusDriverLikelihood.LOW)
                 .build());
-        reportableViruses.add(TestVirusInterpreterFactory.builder()
-                .reported(true)
-                .driverLikelihood(VirusDriverLikelihood.UNKNOWN)
-                .build());
+        reportableViruses.add(TestVirusInterpreterFactory.builder().reported(true).driverLikelihood(VirusDriverLikelihood.UNKNOWN).build());
 
         Set<VirusInterpreterEntry> allViruses = Sets.newHashSet();
         allViruses.addAll(reportableViruses);
@@ -100,10 +89,7 @@ public class VirusEvidenceTest {
                 .interpretation(VirusInterpretation.EBV)
                 .driverLikelihood(VirusDriverLikelihood.HIGH)
                 .build());
-        allViruses.add(TestVirusInterpreterFactory.builder()
-                .reported(false)
-                .driverLikelihood(VirusDriverLikelihood.UNKNOWN)
-                .build());
+        allViruses.add(TestVirusInterpreterFactory.builder().reported(false).driverLikelihood(VirusDriverLikelihood.UNKNOWN).build());
 
         return ImmutableVirusInterpreterRecord.builder().reportableViruses(reportableViruses).allViruses(allViruses).build();
     }

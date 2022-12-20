@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,8 +22,8 @@ public class EvidenceReportingCurationTest {
         String gene1 = "any gene";
         String gene2 = "TP53";
 
-        ProtectEvidence evidence1 = ProtectTestFactory.builder().gene(gene1).reported(true).build();
-        ProtectEvidence evidence2 = ProtectTestFactory.builder().gene(gene2).reported(true).build();
+        ProtectEvidence evidence1 = TestProtectFactory.builder().gene(gene1).reported(true).build();
+        ProtectEvidence evidence2 = TestProtectFactory.builder().gene(gene2).reported(true).build();
 
         List<ProtectEvidence> evidence = EvidenceReportingCuration.applyReportingBlacklist(Lists.newArrayList(evidence1, evidence2));
         assertEquals(2, evidence.size());
@@ -38,7 +38,7 @@ public class EvidenceReportingCurationTest {
         String treatment1 = "Chemotherapy";
         String treatment2 = "Immunotherapy";
 
-        ProtectEvidence evidence1 = ProtectTestFactory.builder()
+        ProtectEvidence evidence1 = TestProtectFactory.builder()
                 .treatment(ImmutableTreatment.builder()
                         .name(treatment1)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
@@ -46,7 +46,7 @@ public class EvidenceReportingCurationTest {
                         .build())
                 .reported(true)
                 .build();
-        ProtectEvidence evidence2 = ProtectTestFactory.builder()
+        ProtectEvidence evidence2 = TestProtectFactory.builder()
                 .treatment(ImmutableTreatment.builder()
                         .name(treatment2)
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))

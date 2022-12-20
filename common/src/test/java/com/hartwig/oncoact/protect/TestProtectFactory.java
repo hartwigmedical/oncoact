@@ -9,9 +9,9 @@ import com.hartwig.serve.datamodel.Knowledgebase;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-public final class ProtectTestFactory {
+public final class TestProtectFactory {
 
-    private ProtectTestFactory() {
+    private TestProtectFactory() {
     }
 
     @NotNull
@@ -20,11 +20,7 @@ public final class ProtectTestFactory {
                 .event(Strings.EMPTY)
                 .germline(false)
                 .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name(Strings.EMPTY)
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
+                .treatment(ImmutableTreatment.builder().name(Strings.EMPTY).build())
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
@@ -35,7 +31,7 @@ public final class ProtectTestFactory {
     public static KnowledgebaseSource createSource(@NotNull Knowledgebase knowledgebase) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(knowledgebase)
-                .sourceEvent("any mutation")
+                .sourceEvent(Strings.EMPTY)
                 .evidenceType(EvidenceType.ANY_MUTATION)
                 .build();
     }

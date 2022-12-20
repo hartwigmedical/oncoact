@@ -16,7 +16,6 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -27,21 +26,9 @@ public class CopyNumberEvidenceTest {
     public void canDetermineCopyNumberEvidence() {
         String geneAmp = "geneAmp";
         String geneDel = "geneDel";
-        ActionableGene amp = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneAmp)
-                .event(GeneEvent.AMPLIFICATION)
-                .build();
-        ActionableGene inactivation = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneDel)
-                .event(GeneEvent.INACTIVATION)
-                .build();
-        ActionableGene fusion = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneAmp)
-                .event(GeneEvent.FUSION)
-                .build();
+        ActionableGene amp = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.AMPLIFICATION).build();
+        ActionableGene inactivation = TestServeFactory.geneBuilder().gene(geneDel).event(GeneEvent.INACTIVATION).build();
+        ActionableGene fusion = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.FUSION).build();
 
         CopyNumberEvidence copyNumberEvidence =
                 new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion));

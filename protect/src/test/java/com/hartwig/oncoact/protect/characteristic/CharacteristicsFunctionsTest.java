@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
 
 import org.jetbrains.annotations.NotNull;
@@ -15,19 +14,12 @@ public class CharacteristicsFunctionsTest {
 
     @Test
     public void canDetermineWhetherCharacteristicHasCutoff() {
-        ActionableCharacteristic withoutCutoff = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .cutoffType(null)
-                .cutoff(null)
-                .build();
+        ActionableCharacteristic withoutCutoff = TestServeFactory.characteristicBuilder().cutoffType(null).cutoff(null).build();
 
         assertFalse(CharacteristicsFunctions.hasExplicitCutoff(withoutCutoff));
 
-        ActionableCharacteristic withCutoff = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .cutoffType(TumorCharacteristicCutoffType.GREATER)
-                .cutoff(4D)
-                .build();
+        ActionableCharacteristic withCutoff =
+                TestServeFactory.characteristicBuilder().cutoffType(TumorCharacteristicCutoffType.GREATER).cutoff(4D).build();
 
         assertTrue(CharacteristicsFunctions.hasExplicitCutoff(withCutoff));
     }
@@ -57,10 +49,6 @@ public class CharacteristicsFunctionsTest {
 
     @NotNull
     private static ActionableCharacteristic create(@NotNull TumorCharacteristicCutoffType cutoffType, double cutoff) {
-        return ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .cutoffType(cutoffType)
-                .cutoff(cutoff)
-                .build();
+        return TestServeFactory.characteristicBuilder().cutoffType(cutoffType).cutoff(cutoff).build();
     }
 }

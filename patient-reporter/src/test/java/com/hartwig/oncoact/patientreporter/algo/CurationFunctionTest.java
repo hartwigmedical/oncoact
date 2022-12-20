@@ -22,7 +22,7 @@ import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
@@ -190,7 +190,7 @@ public class CurationFunctionTest {
 
     @NotNull
     public List<ProtectEvidence> evidence() {
-        ProtectEvidence evidence1 = ProtectTestFactory.builder()
+        ProtectEvidence evidence1 = TestProtectFactory.builder()
                 .gene("KRAS")
                 .isCanonical(false)
                 .event("amp")
@@ -212,7 +212,7 @@ public class CurationFunctionTest {
                         .build()))
                 .build();
 
-        ProtectEvidence evidence2 = ProtectTestFactory.builder()
+        ProtectEvidence evidence2 = TestProtectFactory.builder()
                 .gene("CDKN2A")
                 .isCanonical(true)
                 .event("amp")
@@ -234,7 +234,7 @@ public class CurationFunctionTest {
                         .build()))
                 .build();
 
-        ProtectEvidence evidence3 = ProtectTestFactory.builder()
+        ProtectEvidence evidence3 = TestProtectFactory.builder()
                 .gene("CDKN2A")
                 .isCanonical(false)
                 .event("amp")

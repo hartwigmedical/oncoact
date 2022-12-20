@@ -9,7 +9,7 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
@@ -21,7 +21,7 @@ public class ReportableEvidenceItemFactoryTest {
 
     @Test
     public void reportableFactoryWorksForTrivialCase() {
-        ProtectEvidence item1 = ProtectTestFactory.builder()
+        ProtectEvidence item1 = TestProtectFactory.builder()
                 .event("A")
                 .treatment(ImmutableTreatment.builder()
                         .name("A")
@@ -37,7 +37,7 @@ public class ReportableEvidenceItemFactoryTest {
                         .evidenceType(EvidenceType.AMPLIFICATION)
                         .build()))
                 .build();
-        ProtectEvidence item2 = ProtectTestFactory.builder()
+        ProtectEvidence item2 = TestProtectFactory.builder()
                 .event("A")
                 .treatment(ImmutableTreatment.builder()
                         .name("A")
@@ -53,7 +53,7 @@ public class ReportableEvidenceItemFactoryTest {
                         .evidenceType(EvidenceType.AMPLIFICATION)
                         .build()))
                 .build();
-        ProtectEvidence item3 = ProtectTestFactory.builder()
+        ProtectEvidence item3 = TestProtectFactory.builder()
                 .event("B")
                 .treatment(ImmutableTreatment.builder()
                         .name("B")
@@ -69,7 +69,7 @@ public class ReportableEvidenceItemFactoryTest {
                         .evidenceType(EvidenceType.AMPLIFICATION)
                         .build()))
                 .build();
-        ProtectEvidence item4 = ProtectTestFactory.builder()
+        ProtectEvidence item4 = TestProtectFactory.builder()
                 .event("C")
                 .treatment(ImmutableTreatment.builder()
                         .name("C")

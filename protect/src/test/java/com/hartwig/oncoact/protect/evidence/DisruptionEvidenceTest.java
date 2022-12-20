@@ -14,7 +14,6 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -28,26 +27,10 @@ public class DisruptionEvidenceTest {
         String geneDel = "geneDel";
         String geneUnder = "geneUnder";
 
-        ActionableGene amp = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneAmp)
-                .event(GeneEvent.AMPLIFICATION)
-                .build();
-        ActionableGene inactivation = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneInact)
-                .event(GeneEvent.INACTIVATION)
-                .build();
-        ActionableGene deletion = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneDel)
-                .event(GeneEvent.DELETION)
-                .build();
-        ActionableGene underexpression = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene(geneUnder)
-                .event(GeneEvent.UNDEREXPRESSION)
-                .build();
+        ActionableGene amp = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.AMPLIFICATION).build();
+        ActionableGene inactivation = TestServeFactory.geneBuilder().gene(geneInact).event(GeneEvent.INACTIVATION).build();
+        ActionableGene deletion = TestServeFactory.geneBuilder().gene(geneDel).event(GeneEvent.DELETION).build();
+        ActionableGene underexpression = TestServeFactory.geneBuilder().gene(geneUnder).event(GeneEvent.UNDEREXPRESSION).build();
 
         DisruptionEvidence disruptionEvidence = new DisruptionEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(amp, inactivation, deletion, underexpression));

@@ -19,7 +19,6 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
-import com.hartwig.serve.datamodel.fusion.ImmutableActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
@@ -196,8 +195,7 @@ public class FusionEvidenceTest {
         int minExonDown = 2;
         int maxExonDown = 4;
 
-        ActionableFusion fusion = ImmutableActionableFusion.builder()
-                .from(TestServeFactory.createTestActionableFusion())
+        ActionableFusion fusion = TestServeFactory.fusionBuilder()
                 .geneUp("EML4")
                 .minExonUp(minExonUp)
                 .maxExonUp(maxExonUp)

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;

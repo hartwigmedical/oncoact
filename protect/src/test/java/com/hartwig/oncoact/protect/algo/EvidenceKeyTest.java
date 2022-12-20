@@ -8,7 +8,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class EvidenceKeyTest {
     public void canCreateKeySet() {
         List<ProtectEvidence> evidences = Lists.newArrayList();
 
-        ProtectEvidence evidence1 = ProtectTestFactory.builder()
+        ProtectEvidence evidence1 = TestProtectFactory.builder()
                 .gene("gene 1")
                 .event("event 1")
                 .treatment(ImmutableTreatment.builder()
@@ -39,7 +39,7 @@ public class EvidenceKeyTest {
         assertEquals("event 1", key.event());
         assertEquals("treatment 1", key.treatment());
 
-        ProtectEvidence evidence2 = ProtectTestFactory.builder().gene(null).event("event 2").treatment(ImmutableTreatment.builder()
+        ProtectEvidence evidence2 = TestProtectFactory.builder().gene(null).event("event 2").treatment(ImmutableTreatment.builder()
                 .name("treatment 2")
                 .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                 .relevantTreatmentApproaches(Sets.newHashSet("A"))

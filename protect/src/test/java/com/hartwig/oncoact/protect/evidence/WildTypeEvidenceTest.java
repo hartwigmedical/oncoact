@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static com.hartwig.oncoact.common.drivercatalog.DriverCategory.TSG;
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -9,11 +7,10 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneGermlineReporting;
-import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGene;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
 import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
+import com.hartwig.oncoact.drivergene.DriverGene;
+import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
@@ -25,10 +22,8 @@ import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
-import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -60,19 +55,14 @@ public class WildTypeEvidenceTest {
         LinxBreakend breakend = TestLinxFactory.breakendBuilder().gene("MYC").build();
         Set<LinxBreakend> breakends = Sets.newHashSet(breakend);
 
-        List<DriverGene> listDriverGenes =
-                createDriverMap(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
+        List<DriverGene> driverGenes =
+                createDriverList(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
 
         //Test wild-type with somatic variant
-        ActionableGene wildTypeSomaticVariant = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("BRCA2")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeSomaticVariant = TestServeFactory.geneBuilder().gene("BRCA2").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceSomaticVariant =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeSomaticVariant), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeSomaticVariant), driverGenes);
 
         Set<PurpleQCStatus> purpleQCStatusSet = Sets.newHashSet();
         purpleQCStatusSet.add(PurpleQCStatus.PASS);
@@ -85,19 +75,13 @@ public class WildTypeEvidenceTest {
                 breakends,
                 purpleQCStatusSet);
 
-        assertEquals(evidencesWildTypeSomaticVariant.size(), 0);
+        assertEquals(0, evidencesWildTypeSomaticVariant.size());
 
         //Test wild-type with germline variant
-        ActionableGene wildTypeGermlineVariant = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("BRCA1")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeGermlineVariant = TestServeFactory.geneBuilder().gene("BRCA1").event(GeneEvent.WILD_TYPE).build();
 
-        WildTypeEvidence wildTypeEvidenceGermlineVariant = new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(),
-                Lists.newArrayList(wildTypeGermlineVariant),
-                listDriverGenes);
+        WildTypeEvidence wildTypeEvidenceGermlineVariant =
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeGermlineVariant), driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeGermlineVariant = wildTypeEvidenceGermlineVariant.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -106,18 +90,13 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeGermlineVariant.size(), 0);
+        assertEquals(0, evidencesWildTypeGermlineVariant.size());
 
         //Test wild-type with CNV
-        ActionableGene wildTypeCNV = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("APC")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeCNV = TestServeFactory.geneBuilder().gene("APC").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceCNV =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeCNV), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeCNV), driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeCNV = wildTypeEvidenceCNV.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -126,18 +105,13 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeCNV.size(), 0);
+        assertEquals(0, evidencesWildTypeCNV.size());
 
         //Test wild-type with fusion  5 prime
-        ActionableGene wildTypeFusion5 = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("BAG4")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeFusion5 = TestServeFactory.geneBuilder().gene("BAG4").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceFusion5 =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeFusion5), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeFusion5), driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeFusion5 = wildTypeEvidenceFusion5.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -146,18 +120,13 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeFusion5.size(), 0);
+        assertEquals(0, evidencesWildTypeFusion5.size());
 
         //Test wild-type with fusion  3 prime
-        ActionableGene wildTypeFusion3 = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("BAG4")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeFusion3 = TestServeFactory.geneBuilder().gene("BAG4").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceFusion3 =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeFusion3), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeFusion3), driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeFusion3 = wildTypeEvidenceFusion3.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -166,19 +135,14 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeFusion3.size(), 0);
+        assertEquals(0, evidencesWildTypeFusion3.size());
 
         //Test wild-type with homozygous disruption
-        ActionableGene wildTypeHomozygousDisruption = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("NRAS")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeHomozygousDisruption = TestServeFactory.geneBuilder().gene("NRAS").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceHomozygousDisruption = new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(wildTypeHomozygousDisruption),
-                listDriverGenes);
+                driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeHomozygousDisruption = wildTypeEvidenceHomozygousDisruption.evidence(
                 reportableGermlineVariant,
@@ -188,18 +152,13 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeHomozygousDisruption.size(), 0);
+        assertEquals(0, evidencesWildTypeHomozygousDisruption.size());
 
         //Test wild-type with gene disruption
-        ActionableGene wildTypeGeneDisruption = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("MYC")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildTypeGeneDisruption = TestServeFactory.geneBuilder().gene("MYC").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidenceGeneDisruption =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeGeneDisruption), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildTypeGeneDisruption), driverGenes);
 
         List<ProtectEvidence> evidencesWildTypeGeneDisruption = wildTypeEvidenceGeneDisruption.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -208,18 +167,13 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildTypeGeneDisruption.size(), 0);
+        assertEquals(0, evidencesWildTypeGeneDisruption.size());
 
         //Test calling wild type
-        ActionableGene wildType = ImmutableActionableGene.builder()
-                .from(TestServeFactory.createTestActionableGene())
-                .gene("EGFR")
-                .event(GeneEvent.WILD_TYPE)
-                .source(Knowledgebase.CKB)
-                .build();
+        ActionableGene wildType = TestServeFactory.geneBuilder().gene("EGFR").event(GeneEvent.WILD_TYPE).build();
 
         WildTypeEvidence wildTypeEvidence =
-                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildType), listDriverGenes);
+                new WildTypeEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(wildType), driverGenes);
 
         List<ProtectEvidence> evidencesWildType = wildTypeEvidence.evidence(reportableGermlineVariant,
                 reportableSomaticVariant,
@@ -228,11 +182,11 @@ public class WildTypeEvidenceTest {
                 homozygousDisruptions,
                 breakends,
                 purpleQCStatusSet);
-        assertEquals(evidencesWildType.size(), 1);
+        assertEquals(1, evidencesWildType.size());
     }
 
     @NotNull
-    private static List<DriverGene> createDriverMap(@NotNull List<String> genes) {
+    private static List<DriverGene> createDriverList(@NotNull List<String> genes) {
         List<DriverGene> driverGeneList = Lists.newArrayList();
         for (String gene : genes) {
             driverGeneList.add(createDriverGene(gene));
@@ -242,21 +196,7 @@ public class WildTypeEvidenceTest {
 
     @NotNull
     private static DriverGene createDriverGene(@NotNull String gene) {
-        return ImmutableDriverGene.builder()
-                .gene(gene)
-                .reportMissenseAndInframe(false)
-                .reportNonsenseAndFrameshift(false)
-                .reportSplice(false)
-                .reportDeletion(false)
-                .reportDisruption(true)
-                .reportAmplification(false)
-                .reportSomaticHotspot(false)
-                .reportGermlineVariant(DriverGeneGermlineReporting.NONE)
-                .reportGermlineHotspot(DriverGeneGermlineReporting.NONE)
-                .likelihoodType(TSG)
-                .reportGermlineDisruption(true)
-                .reportPGX(false)
-                .build();
+        return TestDriverGeneFactory.builder().gene(gene).build();
     }
 
     @NotNull

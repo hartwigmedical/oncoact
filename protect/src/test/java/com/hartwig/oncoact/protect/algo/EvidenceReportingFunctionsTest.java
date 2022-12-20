@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.protect.algo;
 
-import static com.hartwig.oncoact.protect.ProtectTestFactory.builder;
+import static com.hartwig.oncoact.protect.TestProtectFactory.builder;
 import static com.hartwig.oncoact.protect.algo.EvidenceReportingFunctions.highestReportableLevel;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +13,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectTestFactory;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
@@ -72,7 +72,7 @@ public class EvidenceReportingFunctionsTest {
                                 .relevantTreatmentApproaches(Sets.newHashSet("A"))
                                 .build())
                         .direction(EvidenceDirection.RESPONSIVE)
-                        .sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase)))
+                        .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build(),
                 ImmutableProtectEvidence.builder()
                         .from(ON_LABEL_RESPONSIVE_C)
@@ -82,7 +82,7 @@ public class EvidenceReportingFunctionsTest {
                                 .relevantTreatmentApproaches(Sets.newHashSet("A"))
                                 .build())
                         .direction(EvidenceDirection.RESPONSIVE)
-                        .sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase)))
+                        .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build(),
                 ImmutableProtectEvidence.builder()
                         .from(OFF_LABEL_RESPONSIVE_C)
@@ -92,7 +92,7 @@ public class EvidenceReportingFunctionsTest {
                                 .relevantTreatmentApproaches(Sets.newHashSet("A"))
                                 .build())
                         .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                        .sources(Sets.newHashSet(ProtectTestFactory.createSource(knowledgebase)))
+                        .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build());
     }
 
@@ -155,23 +155,23 @@ public class EvidenceReportingFunctionsTest {
         String event4 = "event4";
 
         ProtectEvidence evidence1 = builder().event(event1)
-                .sources(Sets.newHashSet(ProtectTestFactory.createSource(Knowledgebase.ICLUSION)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION)))
                 .reported(true)
                 .onLabel(true)
                 .build();
         ProtectEvidence evidence2 = builder().event(event2)
-                .sources(Sets.newHashSet(ProtectTestFactory.createSource(Knowledgebase.ICLUSION)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION)))
                 .reported(true)
                 .onLabel(false)
                 .build();
         ProtectEvidence evidence3 = builder().event(event3)
-                .sources(Sets.newHashSet(ProtectTestFactory.createSource(Knowledgebase.VICC_CGI)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.VICC_CGI)))
                 .reported(true)
                 .onLabel(false)
                 .build();
         ProtectEvidence evidence4 = builder().event(event4)
-                .sources(Sets.newHashSet(ProtectTestFactory.createSource(Knowledgebase.ICLUSION),
-                        ProtectTestFactory.createSource(Knowledgebase.VICC_CGI)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION),
+                        TestProtectFactory.createSource(Knowledgebase.VICC_CGI)))
                 .reported(true)
                 .onLabel(false)
                 .build();
@@ -212,7 +212,7 @@ public class EvidenceReportingFunctionsTest {
 
     @NotNull
     private static ProtectEvidence createTestEvidence(boolean onLabel, @NotNull EvidenceDirection direction, @NotNull EvidenceLevel level) {
-        return ProtectTestFactory.builder()
+        return TestProtectFactory.builder()
                 .onLabel(onLabel)
                 .level(level)
                 .direction(direction)
@@ -221,7 +221,7 @@ public class EvidenceReportingFunctionsTest {
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build())
-                .sources(Sets.newHashSet(ProtectTestFactory.createSource(Knowledgebase.CKB)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB)))
                 .build();
     }
 }

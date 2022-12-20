@@ -12,7 +12,6 @@ import com.hartwig.oncoact.orange.datamodel.chord.TestChordFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicCutoffType;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 
@@ -23,18 +22,13 @@ public class ChordEvidenceTest {
 
     @Test
     public void canDetermineEvidenceForChord() {
-        ActionableCharacteristic signature1 = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
-                .build();
+        ActionableCharacteristic signature1 =
+                TestServeFactory.characteristicBuilder().type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT).build();
 
-        ActionableCharacteristic signature2 = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
-                .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD)
-                .build();
+        ActionableCharacteristic signature2 =
+                TestServeFactory.characteristicBuilder().type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_LOAD).build();
 
-        ActionableCharacteristic signature3 = ImmutableActionableCharacteristic.builder()
-                .from(TestServeFactory.createTestActionableCharacteristic())
+        ActionableCharacteristic signature3 = TestServeFactory.characteristicBuilder()
                 .type(TumorCharacteristicType.HOMOLOGOUS_RECOMBINATION_DEFICIENT)
                 .cutoffType(TumorCharacteristicCutoffType.GREATER)
                 .cutoff(0.8)

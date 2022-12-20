@@ -7,10 +7,10 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneTestFactory;
 import com.hartwig.oncoact.datamodel.ReportableVariant;
 import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
+import com.hartwig.oncoact.drivergene.DriverGene;
+import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
@@ -37,7 +37,7 @@ public class WildTypeFactoryTest {
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("BRCA2"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BRCA2"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -61,7 +61,7 @@ public class WildTypeFactoryTest {
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("BRCA1"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BRCA1"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -86,7 +86,7 @@ public class WildTypeFactoryTest {
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("APC", "KRAS"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("APC", "KRAS"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -108,7 +108,7 @@ public class WildTypeFactoryTest {
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("BAG4"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BAG4"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -130,7 +130,7 @@ public class WildTypeFactoryTest {
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("BAG4"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BAG4"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -152,7 +152,7 @@ public class WildTypeFactoryTest {
         Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("NRAS"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("NRAS"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -175,7 +175,7 @@ public class WildTypeFactoryTest {
         LinxBreakend breakend = createBreakend("MYC");
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
 
-        List<DriverGene> driverGenes = createDriverMap(Lists.newArrayList("MYC"));
+        List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("MYC"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -213,7 +213,7 @@ public class WildTypeFactoryTest {
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
 
         List<DriverGene> driverGenes =
-                createDriverMap(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
+                createDriverList(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -251,7 +251,7 @@ public class WildTypeFactoryTest {
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
 
         List<DriverGene> driverGenes =
-                createDriverMap(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
+                createDriverList(Lists.newArrayList("BRCA1", "BRCA2", "APC", "KRAS", "BAG4", "FGFR1", "NRAS", "EGFR", "MYC"));
 
         List<WildTypeGene> wildTypes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -279,10 +279,10 @@ public class WildTypeFactoryTest {
     }
 
     @NotNull
-    private static List<DriverGene> createDriverMap(@NotNull List<String> genes) {
+    private static List<DriverGene> createDriverList(@NotNull List<String> genes) {
         List<DriverGene> driverGeneList = Lists.newArrayList();
         for (String gene : genes) {
-            driverGeneList.add(DriverGeneTestFactory.builder().gene(gene).build());
+            driverGeneList.add(TestDriverGeneFactory.builder().gene(gene).build());
         }
         return driverGeneList;
     }
