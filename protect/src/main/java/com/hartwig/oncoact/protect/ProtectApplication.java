@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.doid.DiseaseOntology;
-import com.hartwig.oncoact.common.doid.DoidParents;
+import com.hartwig.oncoact.doid.DiseaseOntology;
+import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.DriverGeneFile;
 import com.hartwig.oncoact.orange.datamodel.OrangeRecord;

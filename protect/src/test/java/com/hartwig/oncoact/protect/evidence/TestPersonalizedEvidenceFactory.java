@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.doid.DoidEdge;
-import com.hartwig.oncoact.common.doid.DoidParents;
-import com.hartwig.oncoact.common.doid.DoidParentsTest;
+import com.hartwig.oncoact.doid.DoidEdge;
+import com.hartwig.oncoact.doid.DoidParents;
+import com.hartwig.oncoact.doid.DoidParentsTest;
 
 import org.jetbrains.annotations.NotNull;
 

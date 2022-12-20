@@ -5,10 +5,8 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.doid.DoidParents;
-import com.hartwig.oncoact.datamodel.ReportableVariant;
+import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.interpretation.ReportableVariantFactory;
 import com.hartwig.oncoact.orange.datamodel.OrangeRecord;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleRecord;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
@@ -23,6 +21,8 @@ import com.hartwig.oncoact.protect.evidence.PurpleSignatureEvidence;
 import com.hartwig.oncoact.protect.evidence.VariantEvidence;
 import com.hartwig.oncoact.protect.evidence.VirusEvidence;
 import com.hartwig.oncoact.protect.evidence.WildTypeEvidence;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.serve.datamodel.ActionableEvents;
 
 import org.apache.logging.log4j.LogManager;

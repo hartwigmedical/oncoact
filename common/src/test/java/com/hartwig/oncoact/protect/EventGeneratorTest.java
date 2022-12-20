@@ -3,8 +3,6 @@ package com.hartwig.oncoact.protect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.hartwig.oncoact.datamodel.ReportableVariant;
-import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.orange.datamodel.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
@@ -13,6 +11,8 @@ import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.datamodel.purple.Variant;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;

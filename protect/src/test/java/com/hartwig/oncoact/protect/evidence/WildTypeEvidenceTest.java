@@ -7,8 +7,6 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.datamodel.ReportableVariant;
-import com.hartwig.oncoact.datamodel.TestReportableVariantFactory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.oncoact.orange.datamodel.linx.ImmutableLinxFusion;
@@ -22,6 +20,8 @@ import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 

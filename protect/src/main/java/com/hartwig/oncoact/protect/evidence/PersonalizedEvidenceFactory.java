@@ -4,7 +4,7 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.doid.DoidParents;
+import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
