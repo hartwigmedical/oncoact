@@ -8,9 +8,9 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;

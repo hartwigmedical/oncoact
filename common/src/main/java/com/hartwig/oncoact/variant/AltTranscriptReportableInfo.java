@@ -5,7 +5,7 @@ import java.util.StringJoiner;
 
 import javax.annotation.Nullable;
 
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.util.Strings;

@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.orange.linx.LinxBreakend;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.wildtype.WildTypeFactory;

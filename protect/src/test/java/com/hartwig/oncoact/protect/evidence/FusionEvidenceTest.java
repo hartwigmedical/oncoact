@@ -9,10 +9,10 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.datamodel.linx.ImmutableLinxFusion;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusionType;
-import com.hartwig.oncoact.orange.datamodel.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.linx.ImmutableLinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxFusionType;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;

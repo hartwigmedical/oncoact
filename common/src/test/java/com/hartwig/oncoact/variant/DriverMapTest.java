@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.datamodel.purple.ImmutablePurpleDriver;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriver;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriverType;
-import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.purple.ImmutablePurpleDriver;
+import com.hartwig.oncoact.orange.purple.PurpleDriver;
+import com.hartwig.oncoact.orange.purple.PurpleDriverType;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;

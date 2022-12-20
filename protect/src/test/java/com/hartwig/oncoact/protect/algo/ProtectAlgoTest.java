@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.doid.DoidParents;
-import com.hartwig.oncoact.orange.datamodel.TestOrangeFactory;
+import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ImmutableActionableEvents;
 

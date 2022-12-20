@@ -4,12 +4,12 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.Variant;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.orange.purple.Variant;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfo;
 import com.hartwig.oncoact.variant.ReportableVariant;
 

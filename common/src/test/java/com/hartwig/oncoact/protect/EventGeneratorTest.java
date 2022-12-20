@@ -3,14 +3,14 @@ package com.hartwig.oncoact.protect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusion;
-import com.hartwig.oncoact.orange.datamodel.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
-import com.hartwig.oncoact.orange.datamodel.purple.Variant;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.purple.Variant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 

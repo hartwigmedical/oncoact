@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriver;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriverType;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleDriver;
+import com.hartwig.oncoact.orange.purple.PurpleDriverType;
+import com.hartwig.oncoact.orange.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;

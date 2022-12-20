@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.datamodel.chord.ChordRecord;
-import com.hartwig.oncoact.orange.datamodel.chord.ChordStatus;
+import com.hartwig.oncoact.orange.chord.ChordRecord;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;

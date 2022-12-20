@@ -5,10 +5,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantType;
-import com.hartwig.oncoact.orange.datamodel.purple.Variant;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.purple.PurpleVariantType;
+import com.hartwig.oncoact.orange.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfo;

@@ -3,7 +3,7 @@ package com.hartwig.oncoact.variant;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriver;
+import com.hartwig.oncoact.orange.purple.PurpleDriver;
 
 import org.jetbrains.annotations.NotNull;
 

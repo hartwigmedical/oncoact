@@ -3,7 +3,7 @@ package com.hartwig.oncoact.protect.evidence;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.hartwig.oncoact.orange.datamodel.linx.LinxFusionDriverLikelihood;
+import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 
 import org.junit.Test;

@@ -9,12 +9,12 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.datamodel.virus.ImmutableVirusInterpreterRecord;
-import com.hartwig.oncoact.orange.datamodel.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusDriverLikelihood;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpretation;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterEntry;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterRecord;
+import com.hartwig.oncoact.orange.virus.ImmutableVirusInterpreterRecord;
+import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
+import com.hartwig.oncoact.orange.virus.VirusDriverLikelihood;
+import com.hartwig.oncoact.orange.virus.VirusInterpretation;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;

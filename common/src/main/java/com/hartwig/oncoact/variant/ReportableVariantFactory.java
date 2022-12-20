@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriver;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleDriverType;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleTranscriptImpact;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.orange.purple.PurpleDriver;
+import com.hartwig.oncoact.orange.purple.PurpleDriverType;
+import com.hartwig.oncoact.orange.purple.PurpleTranscriptImpact;
+import com.hartwig.oncoact.orange.purple.PurpleVariant;
+import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

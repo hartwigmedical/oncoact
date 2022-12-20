@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusDriverLikelihood;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpretation;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterEntry;
-import com.hartwig.oncoact.orange.datamodel.virus.VirusInterpreterRecord;
+import com.hartwig.oncoact.orange.virus.VirusDriverLikelihood;
+import com.hartwig.oncoact.orange.virus.VirusInterpretation;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;

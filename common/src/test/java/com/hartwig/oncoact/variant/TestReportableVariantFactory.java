@@ -1,9 +1,9 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleHotspotType;
-import com.hartwig.oncoact.orange.datamodel.purple.PurpleVariantType;
+import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
+import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
+import com.hartwig.oncoact.orange.purple.PurpleVariantType;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

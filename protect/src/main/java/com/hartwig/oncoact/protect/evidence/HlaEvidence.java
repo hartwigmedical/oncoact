@@ -3,8 +3,8 @@ package com.hartwig.oncoact.protect.evidence;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.datamodel.lilac.LilacHlaAllele;
-import com.hartwig.oncoact.orange.datamodel.lilac.LilacRecord;
+import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
+import com.hartwig.oncoact.orange.lilac.LilacRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 
