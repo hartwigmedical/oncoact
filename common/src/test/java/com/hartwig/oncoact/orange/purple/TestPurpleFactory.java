@@ -18,8 +18,8 @@ public final class TestPurpleFactory {
     public static ImmutablePurpleCharacteristics.Builder characteristicsBuilder() {
         return ImmutablePurpleCharacteristics.builder()
                 .microsatelliteIndelsPerMb(0D)
-                .microsatelliteStabilityStatus(PurpleMicrosatelliteStatus.UNKNOWN)
-                .tumorMutationalBurden(0D)
+                .microsatelliteStatus(PurpleMicrosatelliteStatus.UNKNOWN)
+                .tumorMutationalBurdenPerMb(0D)
                 .tumorMutationalBurdenStatus(PurpleTumorMutationalStatus.UNKNOWN)
                 .tumorMutationalLoad(0)
                 .tumorMutationalLoadStatus(PurpleTumorMutationalStatus.UNKNOWN);

@@ -163,8 +163,8 @@ public final class TestOrangeFactory {
     private static PurpleCharacteristics createTestPurpleCharacteristics() {
         return TestPurpleFactory.characteristicsBuilder()
                 .microsatelliteIndelsPerMb(0.1)
-                .microsatelliteStabilityStatus(PurpleMicrosatelliteStatus.MSS)
-                .tumorMutationalBurden(13D)
+                .microsatelliteStatus(PurpleMicrosatelliteStatus.MSS)
+                .tumorMutationalBurdenPerMb(13D)
                 .tumorMutationalBurdenStatus(PurpleTumorMutationalStatus.HIGH)
                 .tumorMutationalLoad(189)
                 .tumorMutationalLoadStatus(PurpleTumorMutationalStatus.HIGH)

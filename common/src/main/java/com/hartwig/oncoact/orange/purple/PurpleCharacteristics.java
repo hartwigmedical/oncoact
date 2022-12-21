@@ -11,9 +11,9 @@ public abstract class PurpleCharacteristics {
     public abstract double microsatelliteIndelsPerMb();
 
     @NotNull
-    public abstract PurpleMicrosatelliteStatus microsatelliteStabilityStatus();
+    public abstract PurpleMicrosatelliteStatus microsatelliteStatus();
 
-    public abstract double tumorMutationalBurden();
+    public abstract double tumorMutationalBurdenPerMb();
 
     @NotNull
     public abstract PurpleTumorMutationalStatus tumorMutationalBurdenStatus();

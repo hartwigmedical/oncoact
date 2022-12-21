@@ -90,7 +90,7 @@ public class PurpleSignatureEvidence {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
                 ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb())
-                : characteristics.microsatelliteStabilityStatus() == PurpleMicrosatelliteStatus.MSI;
+                : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI;
 
         return isMatch ? toEvidence(signature) : null;
     }
@@ -100,7 +100,7 @@ public class PurpleSignatureEvidence {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
                 ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb())
-                : characteristics.microsatelliteStabilityStatus() == PurpleMicrosatelliteStatus.MSS;
+                : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSS;
 
         return isMatch ? toEvidence(signature) : null;
     }
@@ -124,7 +124,7 @@ public class PurpleSignatureEvidence {
     @Nullable
     private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurden()) : characteristics.tumorMutationalBurden() >= DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenPerMb() >= DEFAULT_HIGH_TMB_CUTOFF;
 
         return isMatch ? toEvidence(signature) : null;
     }
@@ -132,7 +132,7 @@ public class PurpleSignatureEvidence {
     @Nullable
     private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurden()) : characteristics.tumorMutationalBurden() < DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenPerMb() < DEFAULT_HIGH_TMB_CUTOFF;
 
         return isMatch ? toEvidence(signature) : null;
     }

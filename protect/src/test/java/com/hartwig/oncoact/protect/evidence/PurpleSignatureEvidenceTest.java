@@ -186,10 +186,10 @@ public class PurpleSignatureEvidenceTest {
             double tumorMutationalBurden) {
         return TestPurpleFactory.characteristicsBuilder()
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
-                .microsatelliteStabilityStatus(msStatus)
+                .microsatelliteStatus(msStatus)
+                .tumorMutationalBurdenPerMb(tumorMutationalBurden)
                 .tumorMutationalLoad(tumorMutationalLoad)
                 .tumorMutationalLoadStatus(tmlStatus)
-                .tumorMutationalBurden(tumorMutationalBurden)
                 .build();
     }
 }

@@ -172,8 +172,8 @@ public final class OrangeJson {
         private static PurpleCharacteristics toPurpleCharacteristics(@NotNull JsonObject characteristics) {
             return ImmutablePurpleCharacteristics.builder()
                     .microsatelliteIndelsPerMb(number(characteristics, "microsatelliteIndelsPerMb"))
-                    .microsatelliteStabilityStatus(PurpleMicrosatelliteStatus.valueOf(string(characteristics, "microsatelliteStatus")))
-                    .tumorMutationalBurden(number(characteristics, "tumorMutationalBurdenPerMb"))
+                    .microsatelliteStatus(PurpleMicrosatelliteStatus.valueOf(string(characteristics, "microsatelliteStatus")))
+                    .tumorMutationalBurdenPerMb(number(characteristics, "tumorMutationalBurdenPerMb"))
                     .tumorMutationalBurdenStatus(PurpleTumorMutationalStatus.valueOf(string(characteristics,
                             "tumorMutationalBurdenStatus")))
                     .tumorMutationalLoad(integer(characteristics, "tumorMutationalLoad"))

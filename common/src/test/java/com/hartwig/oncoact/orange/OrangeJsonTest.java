@@ -95,8 +95,8 @@ public class OrangeJsonTest {
         assertEquals(3.1, purple.fit().ploidy(), EPSILON);
 
         assertEquals(0.1, purple.characteristics().microsatelliteIndelsPerMb(), EPSILON);
-        assertEquals(PurpleMicrosatelliteStatus.MSS, purple.characteristics().microsatelliteStabilityStatus());
-        assertEquals(13.71, purple.characteristics().tumorMutationalBurden(), EPSILON);
+        assertEquals(PurpleMicrosatelliteStatus.MSS, purple.characteristics().microsatelliteStatus());
+        assertEquals(13.71, purple.characteristics().tumorMutationalBurdenPerMb(), EPSILON);
         assertEquals(PurpleTumorMutationalStatus.HIGH, purple.characteristics().tumorMutationalBurdenStatus());
         assertEquals(185, purple.characteristics().tumorMutationalLoad());
         assertEquals(PurpleTumorMutationalStatus.HIGH, purple.characteristics().tumorMutationalLoadStatus());
