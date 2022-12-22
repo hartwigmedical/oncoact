@@ -152,8 +152,8 @@ public final class OrangeJson {
 
             return ImmutablePurpleFit.builder()
                     .qcStatus(toPurpleQCStatus(stringList(qc, "status")))
-                    .hasReliableQuality(bool(fit, "hasReliableQuality"))
-                    .hasReliablePurity(bool(fit, "hasReliablePurity"))
+                    .hasSufficientQuality(bool(fit, "hasSufficientQuality"))
+                    .containsTumorCells(bool(fit, "containsTumorCells"))
                     .purity(number(fit, "purity"))
                     .ploidy(number(fit, "ploidy"))
                     .build();

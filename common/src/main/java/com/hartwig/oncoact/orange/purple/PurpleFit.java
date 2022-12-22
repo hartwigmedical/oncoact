@@ -13,9 +13,9 @@ public abstract class PurpleFit {
     @NotNull
     public abstract Set<PurpleQCStatus> qcStatus();
 
-    public abstract boolean hasReliableQuality();
+    public abstract boolean hasSufficientQuality();
 
-    public abstract boolean hasReliablePurity();
+    public abstract boolean containsTumorCells();
 
     public abstract double purity();
 
