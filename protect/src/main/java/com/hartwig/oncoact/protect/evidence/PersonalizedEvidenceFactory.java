@@ -105,9 +105,9 @@ public class PersonalizedEvidenceFactory {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())
-                .sourceUrls(actionable.sourceUrls())
+                .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
                 .evidenceType(determineEvidenceType(actionable))
-                .evidenceUrls(actionable.evidenceUrls())
+                .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
                 .build();
     }
 

@@ -28,11 +28,15 @@ public final class TestProtectFactory {
     }
 
     @NotNull
-    public static KnowledgebaseSource createSource(@NotNull Knowledgebase knowledgebase) {
+    public static ImmutableKnowledgebaseSource.Builder sourceBuilder() {
         return ImmutableKnowledgebaseSource.builder()
-                .name(knowledgebase)
+                .name(Knowledgebase.UNKNOWN)
                 .sourceEvent(Strings.EMPTY)
-                .evidenceType(EvidenceType.ANY_MUTATION)
-                .build();
+                .evidenceType(EvidenceType.ANY_MUTATION);
+    }
+
+    @NotNull
+    public static KnowledgebaseSource createSource(@NotNull Knowledgebase knowledgebase) {
+        return sourceBuilder().name(knowledgebase).build();
     }
 }

@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.EvidenceComparator;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.KnowledgebaseSourceComparator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.Knowledgebase;
@@ -38,13 +39,20 @@ public final class EvidenceReportingFunctions {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         for (ProtectEvidence evidence : evidences) {
+            List<KnowledgebaseSource> knowledgebaseSourceSort = Lists.newArrayList(evidence.sources());
+            knowledgebaseSourceSort.sort(new KnowledgebaseSourceComparator());
+
             if (evidence.reported()) {
                 result.add(ImmutableProtectEvidence.builder()
                         .from(evidence)
                         .reported(meetsMaxReportableLevelForKnowledgebases(evidence))
+                        .sources(knowledgebaseSourceSort)
                         .build());
             } else {
-                result.add(evidence);
+                result.add(ImmutableProtectEvidence.builder()
+                        .from(evidence)
+                        .sources(knowledgebaseSourceSort)
+                        .build());
             }
         }
         return result;
