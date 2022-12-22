@@ -20,13 +20,13 @@ public enum EvidenceType {
     WILD_TYPE("Wild-type"),
     HLA("hla");
 
-    private final String mDisplay;
+    private final String display;
 
     EvidenceType(@NotNull final String display) {
-        mDisplay = display;
+        this.display = display;
     }
 
     public String display() {
-        return mDisplay;
+        return display;
     }
 }
