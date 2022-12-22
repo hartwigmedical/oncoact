@@ -75,6 +75,7 @@ import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -375,14 +376,14 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String soureEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType,
-            @NotNull Set<String> evidenceUrls) {
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer rank,
+            @NotNull Set<String> evidenceurls) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(source)
                 .sourceEvent(soureEvent)
                 .sourceUrls(sourceUrls)
                 .evidenceType(protectEvidenceType)
-                .evidenceUrls(evidenceUrls)
+                .evidenceUrls(evidenceurls)
                 .build();
     }
 
@@ -410,6 +411,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -432,6 +434,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -454,11 +457,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -481,6 +486,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -503,11 +509,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808"))))
                 .build());
 
@@ -530,6 +538,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"))))
                 .build());
 
@@ -552,6 +561,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25672916"))))
                 .build());
         return evidenceItemsOnLabel;
@@ -581,6 +591,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/11087"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -603,6 +614,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10560"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -625,6 +637,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -647,6 +660,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/4866"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -669,6 +683,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/15589"),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -691,11 +706,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF ACTIVATING MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.ACTIVATION,
+                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "BRAF V600",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.CODON_MUTATION,
+                                600,
                                 Sets.newHashSet())))
                 .build());
 
@@ -718,6 +735,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet("https://trial-eye.com/hmf/11284"),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet())))
                 .build());
 
@@ -740,6 +758,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/14995"),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -762,11 +781,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "PTEN INACTIVATION MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.INACTIVATION,
+                                null,
                                 Sets.newHashSet())))
                 .build());
         return trialsOnLabel;
@@ -797,6 +818,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19571295", "http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -819,6 +841,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
                 .build());
 
@@ -841,6 +864,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
@@ -848,6 +872,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19884556",
@@ -873,6 +898,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/27729313"))))
                 .build());
 
@@ -895,6 +921,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -917,6 +944,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -939,6 +967,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -961,6 +990,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
@@ -968,11 +998,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600",
                                 Sets.newHashSet(),
                                 EvidenceType.CODON_MUTATION,
+                                600,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320"))))
                 .build());
 
@@ -995,6 +1027,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22492957"))))
                 .build());
 
@@ -1017,6 +1050,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
                 .build());
 
@@ -1039,6 +1073,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/26287849"))))
                 .build());
 
@@ -1061,11 +1096,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN oncogenic mutation",
                                 Sets.newHashSet(),
                                 EvidenceType.ANY_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703", "http://www.ncbi.nlm.nih.gov/pubmed/19398573")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "PTEN deletion",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19398573"))))
                 .build());
@@ -1089,6 +1126,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703"))))
                 .build());
 
@@ -1111,6 +1149,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23989949"))))
                 .build());
 
@@ -1133,6 +1172,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25300346"))))
                 .build());
 
@@ -1155,11 +1195,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334"))))
                 .build());
         return evidenceItemsOffLabel;
@@ -1167,8 +1209,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static List<ReportableVariant> createCOLO829SomaticVariants(boolean forceCDKN2AVariantToBeGermline) {
-        ReportableVariant variant1 =
-                ImmutableReportableVariant.builder()
+        ReportableVariant variant1 = ImmutableReportableVariant.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
                 .transcript("ENST00000288602")
@@ -1232,7 +1273,7 @@ public final class ExampleAnalysisTestFactory {
 
         ReportableVariant variant3 = ImmutableReportableVariant.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
-                .gene("CDKN2A (p14Arf)")
+                .gene("CDKN2A (p14ARF)")
                 .transcript("ENST00000579755")
                 .isCanonical(false)
                 .chromosome("9")

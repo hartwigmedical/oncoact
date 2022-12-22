@@ -195,6 +195,10 @@ public final class ReportResources {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
+    public static Style tableTitleStyle() {
+        return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
+    }
+
     @NotNull
     private static PdfFont createFontFromProgram(@NotNull FontProgram program) {
         return PdfFontFactory.createFont(program, PdfEncodings.IDENTITY_H);

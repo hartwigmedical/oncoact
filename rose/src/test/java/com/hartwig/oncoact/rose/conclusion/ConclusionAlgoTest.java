@@ -377,7 +377,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.16, true, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- low purity (16%)");
+        assertEquals(conclusion.get(0), "- low purity (16%)\n");
     }
 
     @Test
@@ -405,7 +405,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.3, false, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- unreliable");
+        assertEquals(conclusion.get(0), "- unreliable\n");
     }
 
     @Test

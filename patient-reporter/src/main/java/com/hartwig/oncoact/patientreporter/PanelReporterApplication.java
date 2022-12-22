@@ -17,7 +17,6 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -77,7 +76,7 @@ public class PanelReporterApplication {
 
     private void generatePanelAnalysedReport(@NotNull SampleMetadata sampleMetadata) throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        PanelReport report = reporter.run(sampleMetadata,
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(sampleMetadata,
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),

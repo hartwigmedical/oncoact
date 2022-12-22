@@ -17,14 +17,14 @@ import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.common.peach.PeachGenotype;
 import com.hartwig.oncoact.common.peach.PeachGenotypeFile;
 import com.hartwig.oncoact.common.pipeline.PipelineVersionFile;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.common.purple.PurityContext;
 import com.hartwig.oncoact.common.purple.PurityContextFile;
-import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
+import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
+import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.LogManager;

@@ -81,7 +81,7 @@ public final class OutputFileUtil {
     }
 
     @NotNull
-    public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
+    public static String generateOutputFileNameForJsonPanel(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report) {
         String filePrefix =
                 report.sampleReport().sampleNameForReport() + "_" + report.sampleReport().tumorSampleBarcode() + "_oncopanel";
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;

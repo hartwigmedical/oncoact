@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.common.collect.Sets;
 
@@ -12,9 +13,11 @@ public class SummaryChapterTest {
 
     @Test
     public void canSortSummaryOfGenesCorrectly() {
-        Set<String> genes = Sets.newHashSet("A", "C", "B");
-        Set<String> sortedGenes = SummaryChapter.sortGenes(genes);
+        Set<String> genesDisplay = new TreeSet<String>();
+        genesDisplay.add("A");
+        genesDisplay.add("C");
+        genesDisplay.add("B");
         Set<String> correctGenes = Sets.newHashSet("A", "B", "C");
-        assertEquals(correctGenes, sortedGenes);
+        assertEquals(correctGenes, genesDisplay);
     }
 }

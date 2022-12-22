@@ -6,10 +6,10 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
+import com.hartwig.oncoact.common.purple.ChromosomeArm;
 import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.ChromosomeArm;
 import com.hartwig.oncoact.common.purple.loader.ImmutableCnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
 import com.hartwig.oncoact.common.utils.DataUtil;

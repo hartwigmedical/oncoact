@@ -36,14 +36,14 @@ public class PatientReporterApplication {
     public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
 
     // Uncomment this line when generating an example report using CFReportWriterTest
-    //                    public static final String VERSION = "7.26";
+    //                public static final String VERSION = "7.26";
 
     public static void main(@NotNull String[] args) throws IOException {
         LOGGER.info("Running patient reporter v{}", VERSION);
 
         Options options = PatientReporterConfig.createOptions();
 
-        PatientReporterConfig config;
+        PatientReporterConfig config = null;
         try {
             config = PatientReporterConfig.createConfig(new DefaultParser().parse(options, args));
         } catch (ParseException exception) {
@@ -92,6 +92,7 @@ public class PatientReporterApplication {
             LOGGER.debug("Updating reporting db and writing report data");
 
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
+
 
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());
 

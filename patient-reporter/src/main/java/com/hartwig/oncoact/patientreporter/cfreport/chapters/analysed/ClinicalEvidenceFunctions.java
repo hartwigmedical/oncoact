@@ -37,7 +37,7 @@ public class ClinicalEvidenceFunctions {
     private static final String TREATMENT_DELIMITER = " + ";
 
     private static final String RESPONSE_SYMBOL = "\u25B2";
-    private static final String RESISTANT_SYMBOL = "\u25BC";
+    private static final String RESISTENT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
 
     private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
@@ -134,7 +134,7 @@ public class ClinicalEvidenceFunctions {
 
     private static boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
             @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
-        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
+        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet().stream().collect(Collectors.toSet()));
         boolean hasEvidence = false;
         for (String treatment : sortedTreatments) {
             List<ProtectEvidence> evidences = treatmentMap.get(treatment);
@@ -156,7 +156,9 @@ public class ClinicalEvidenceFunctions {
                     Set<String> evidenceUrls = Sets.newHashSet();
 
                     for (KnowledgebaseSource source : responsive.sources()) {
-                        evidenceUrls.addAll(source.evidenceUrls());
+                        for (String url : source.evidenceUrls()) {
+                            evidenceUrls.add(url);
+                        }
 
                         if (source.sourceUrls().size() >= 1) {
                             sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
@@ -179,7 +181,7 @@ public class ClinicalEvidenceFunctions {
                         }
 
                         if (RESISTANT_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistent = TableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(ReportResources.resistentStyle());
+                            cellResistent = TableUtil.createTransparentCell(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle());
                         }
 
                         if (RESPONSE_DIRECTIONS.contains(responsive.direction())) {
@@ -225,18 +227,19 @@ public class ClinicalEvidenceFunctions {
     private static String determineEvidenceType(@NotNull KnowledgebaseSource source) {
         String evidenceRank = Strings.EMPTY;
         String evidenceSource = source.evidenceType().display();
-        // TODO Consider handling missing range rank.
+
+        // TODO Review in context of having no more range rank.
 //        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
 //            evidenceRank = String.valueOf(source.rangeRank());
 //        }
-//
-//        String evidenceMerged;
-//        if (!evidenceRank.isEmpty()) {
-//            evidenceMerged = evidenceSource + " " + evidenceRank;
-//        } else {
-//            evidenceMerged = evidenceSource;
-//        }
-        return evidenceSource;
+
+        String evidenceMerged;
+        if (!evidenceRank.isEmpty()) {
+            evidenceMerged = evidenceSource + " " + evidenceRank;
+        } else {
+            evidenceMerged = evidenceSource;
+        }
+        return evidenceMerged;
     }
 
     @NotNull
@@ -284,7 +287,7 @@ public class ClinicalEvidenceFunctions {
     public static Paragraph noteGlossaryTerms() {
         return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(ReportResources.responseStyle()))
                 .add(" ) means that the evidence is responsive. The symbol ( ")
-                .add(new Text(RESISTANT_SYMBOL).addStyle(ReportResources.resistentStyle()))
+                .add(new Text(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle()))
                 .add(" ) means that the evidence is resistant. The abbreviation ( ")
                 .add(new Text(PREDICTED_SYMBOL).addStyle(ReportResources.predictedStyle()))
                 .add(" mentioned after the level of evidence) indicates the evidence is predicted "

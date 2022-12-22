@@ -2,10 +2,11 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
+import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,9 +31,9 @@ public final class HomozygousDisruptions {
 
     @NotNull
     public static Set<String> disruptedGenes(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
-        Set<String> genes = Sets.newHashSet();
+        Set<String> genes = new TreeSet<String>();
         for (HomozygousDisruption disruption : homozygousDisruptions) {
-            genes.add(disruption.gene());
+            genes.add(CurationFunction.curateGeneNamePdf(disruption.gene()));
         }
         return genes;
     }

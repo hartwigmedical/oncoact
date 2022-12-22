@@ -5,16 +5,22 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.common.collect.Maps;
+import com.hartwig.oncoact.common.chord.ChordStatus;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.linx.LinxFusion;
 import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
+import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.virus.AnnotatedVirus;
 import com.hartwig.oncoact.common.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.common.xml.KeyXML;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
+import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.util.Strings;
@@ -27,6 +33,7 @@ public class XMLFactory {
 
     @NotNull
     public static ReportXML generateXMLData(@NotNull AnalysedPatientReport report) {
+        boolean hasReliablePurity = report.genomicAnalysis().hasReliablePurity();
         Map<String, KeyXML> mapXml = Maps.newHashMap();
         mapXml.put("itemVrbAanvrager", ImmutableKeyXML.builder().keyPath("VrbAanvrager").valuePath(Map.of("value", Strings.EMPTY)).build());
         mapXml.put("itemVrbAanvragerAnders",
@@ -69,7 +76,7 @@ public class XMLFactory {
         mapXml.put("itemWgsTumorPurity",
                 ImmutableKeyXML.builder()
                         .keyPath("WgsTumorPurity")
-                        .valuePath(Map.of("value", String.valueOf(report.genomicAnalysis().impliedPurity())))
+                        .valuePath(Map.of("value", DataUtil.formatPercentage(report.genomicAnalysis().impliedPurity())))
                         .build());
         mapXml.put("itemWgsGemTuPloid",
                 ImmutableKeyXML.builder()
@@ -77,7 +84,7 @@ public class XMLFactory {
                         .valuePath(Map.of("value", String.valueOf(report.genomicAnalysis().averageTumorPloidy())))
                         .build());
 
-        String cupAnalyse;
+        String cupAnalyse = null;
         if (report.molecularTissueOriginReporting() == null) {
             cupAnalyse = null;
         } else if (report.molecularTissueOriginReporting().interpretLikelihood() == null) {
@@ -88,16 +95,14 @@ public class XMLFactory {
         }
         mapXml.put("itemWgsCupAnalyse",
                 ImmutableKeyXML.builder()
-                        .keyPath("wgsCupAnalyse")
+                        .keyPath("WgsCupAnalyse")
                         .valuePath(cupAnalyse == null ? null : Map.of("value", cupAnalyse))
                         .build());
 
         String disclaimer = Strings.EMPTY;
-        disclaimer += report.genomicAnalysis().hasReliablePurity()
-                ? Strings.EMPTY
-                : "Due to the lower tumor purity potential "
-                        + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
-                        + "considered with caution.";
+        disclaimer += report.genomicAnalysis().hasReliablePurity() ? Strings.EMPTY : "Due to the lower tumor purity potential "
+                + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
+                + "considered with caution.";
         disclaimer += !report.specialRemark().isEmpty() ? report.specialRemark() : Strings.EMPTY;
         mapXml.put("itemWgsDisclaimerTonen",
                 ImmutableKeyXML.builder().keyPath("WgsDisclaimerTonen").valuePath(Map.of("value", disclaimer)).build());
@@ -109,9 +114,9 @@ public class XMLFactory {
                         .build());
         mapXml.put("itemWgsKlinInter", ImmutableKeyXML.builder().keyPath("WgsKlinInter").valuePath(Map.of("value", Strings.EMPTY)).build());
 
-        addReportableVariantsToXML(report.genomicAnalysis().reportableVariants(), mapXml);
-        addGainLossesToXML(report.genomicAnalysis().gainsAndLosses(), report.genomicAnalysis().cnPerChromosome(), mapXml);
-        addFusionsToXML(report.genomicAnalysis().geneFusions(), mapXml);
+        addReportableVariantsToXML(report.genomicAnalysis().reportableVariants(), mapXml, hasReliablePurity);
+        addGainLossesToXML(report.genomicAnalysis().gainsAndLosses(), report.genomicAnalysis().cnPerChromosome(), mapXml, hasReliablePurity);
+        addFusionToXML(report.genomicAnalysis().geneFusions(), mapXml, hasReliablePurity);
 
         mapXml.put("importwgs.wgsms.line[1]msscore",
                 ImmutableKeyXML.builder()
@@ -141,7 +146,8 @@ public class XMLFactory {
         mapXml.put("importwgs.wgsms.line[1]horesco",
                 ImmutableKeyXML.builder()
                         .keyPath("importwgs.wgsms.line[1]horesco")
-                        .valuePath(Map.of("value", Double.toString(report.genomicAnalysis().hrdValue())))
+                        .valuePath(Map.of("value",
+                                report.genomicAnalysis().hrdStatus().display().equals(ChordStatus.CANNOT_BE_DETERMINED.toString()) ? "N/A" : Double.toString(report.genomicAnalysis().hrdValue())))
                         .build());
         mapXml.put("importwgs.wgsms.line[1]horestu",
                 ImmutableKeyXML.builder()
@@ -150,9 +156,10 @@ public class XMLFactory {
                         .build());
 
         addHomozygousDisruptionsToXML(report.genomicAnalysis().homozygousDisruptions(), mapXml);
-        addVirusesToXML(report.genomicAnalysis().reportableViruses(), mapXml);
+        addVirussesToXML(report.genomicAnalysis().reportableViruses(), mapXml);
 
-        TreeMap<String, KeyXML> sorted = new TreeMap<>(mapXml);
+        TreeMap<String, KeyXML> sorted = new TreeMap<>();
+        sorted.putAll(mapXml);
 
         List<ImportWGSXML> importWGSXML = Lists.newArrayList();
         importWGSXML.add(ImmutableImportWGSXML.builder().item(sorted.values()).build());
@@ -170,9 +177,9 @@ public class XMLFactory {
     }
 
     public static void addGainLossesToXML(@NotNull List<GainLoss> gainLosses, @NotNull List<CnPerChromosomeArmData> chromosomeArmData,
-            @NotNull Map<String, KeyXML> mapXml) {
+            @NotNull Map<String, KeyXML> mapXml, boolean hasReliablePurity) {
         int count = 1;
-        for (GainLoss gainLoss : gainLosses) {
+        for (GainLoss gainLoss : GainsAndLosses.sort(gainLosses)) {
             mapXml.put("item[" + count + "importwgs.wgscnv.line[" + count + "]chr",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgscnv.line[" + count + "]chr")
@@ -196,7 +203,7 @@ public class XMLFactory {
             mapXml.put("item[" + count + "importwgs.wgscnv.line[" + count + "]copies",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgscnv.line[" + count + "]copies")
-                            .valuePath(Map.of("value", Double.toString(gainLoss.maxCopies())))
+                            .valuePath(Map.of("value", hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : DataUtil.NA_STRING))
                             .build());
             mapXml.put("item[" + count + "importwgs.wgscnv.line[" + count + "]charmco",
                     ImmutableKeyXML.builder()
@@ -210,7 +217,7 @@ public class XMLFactory {
     public static void addHomozygousDisruptionsToXML(@NotNull List<HomozygousDisruption> homozygousDisruptions,
             @NotNull Map<String, KeyXML> mapXml) {
         int count = 1;
-        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             mapXml.put("item[" + count + "importwgs.wgshzy.line[" + count + "]gen",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgshzy.line[" + count + "]gen")
@@ -231,9 +238,9 @@ public class XMLFactory {
     }
 
     public static void addReportableVariantsToXML(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull Map<String, KeyXML> mapXml) {
+            @NotNull Map<String, KeyXML> mapXml, boolean hasReliablePurity) {
         int count = 1;
-        for (ReportableVariant reportableVariant : reportableVariants) {
+        for (ReportableVariant reportableVariant : SomaticVariants.sort(reportableVariants)) {
             mapXml.put("item[" + count + "importwgs.wgsgene.line[" + count + "]name",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgsgene.line[" + count + "]name")
@@ -262,7 +269,7 @@ public class XMLFactory {
             mapXml.put("item[" + count + "importwgs.wgsgene.line[" + count + "]copie",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgsgene.line[" + count + "]copie")
-                            .valuePath(Map.of("value", Double.toString(reportableVariant.totalCopyNumber())))
+                            .valuePath(Map.of("value", SomaticVariants.copyNumberString(reportableVariant.totalCopyNumber(), hasReliablePurity)))
                             .build());
             mapXml.put("item[" + count + "importwgs.wgsgene.line[" + count + "]tvaf",
                     ImmutableKeyXML.builder()
@@ -291,7 +298,7 @@ public class XMLFactory {
         }
     }
 
-    public static void addVirusesToXML(@NotNull List<AnnotatedVirus> annotatedVirusList, @NotNull Map<String, KeyXML> mapXml) {
+    public static void addVirussesToXML(@NotNull List<AnnotatedVirus> annotatedVirusList, @NotNull Map<String, KeyXML> mapXml) {
         int count = 1;
         for (AnnotatedVirus virus : annotatedVirusList) {
             mapXml.put("item[" + count + "importwgs.wgsvrs.line[" + count + "]name",
@@ -303,9 +310,9 @@ public class XMLFactory {
         }
     }
 
-    public static void addFusionsToXML(@NotNull List<LinxFusion> linxFusions, @NotNull Map<String, KeyXML> mapXml) {
+    public static void addFusionToXML(@NotNull List<LinxFusion> linxFusions, @NotNull Map<String, KeyXML> mapXml, boolean hasReliablePurity) {
         int count = 1;
-        for (LinxFusion fusion : linxFusions) {
+        for (LinxFusion fusion : GeneFusions.sort(linxFusions)) {
             mapXml.put("item[" + count + "importwgs.wgsfusie.line[" + count + "]name",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgsfusie.line[" + count + "]name")
@@ -344,7 +351,7 @@ public class XMLFactory {
             mapXml.put("item[" + count + "importwgs.wgsfusie.line[" + count + "]tuco",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgsfusie.line[" + count + "]tuco")
-                            .valuePath(Map.of("value", Double.toString(fusion.junctionCopyNumber())))
+                            .valuePath(Map.of("value", GeneUtil.copyNumberToString(fusion.junctionCopyNumber(), hasReliablePurity)))
                             .build());
             mapXml.put("item[" + count + "importwgs.wgsfusie.line[" + count + "]fufra",
                     ImmutableKeyXML.builder()
