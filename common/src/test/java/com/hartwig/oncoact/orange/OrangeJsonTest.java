@@ -252,9 +252,11 @@ public class OrangeJsonTest {
         assertEquals(LinxFusionType.KNOWN_PAIR, fusion.type());
         assertEquals("TMPRSS2", fusion.geneStart());
         assertEquals("ENST00000332149", fusion.geneTranscriptStart());
+        assertEquals("Exon 1", fusion.geneContextStart());
         assertEquals(1, fusion.fusedExonUp());
         assertEquals("ETV4", fusion.geneEnd());
         assertEquals("ENST00000319349", fusion.geneTranscriptEnd());
+        assertEquals("Exon 2", fusion.geneContextEnd());
         assertEquals(2, fusion.fusedExonDown());
         assertEquals(LinxFusionDriverLikelihood.HIGH, fusion.driverLikelihood());
 

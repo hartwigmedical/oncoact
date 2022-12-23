@@ -3,8 +3,8 @@ package com.hartwig.oncoact.rose;
 import java.io.IOException;
 
 import com.hartwig.oncoact.common.rose.ActionabilityConclusion;
-import com.hartwig.oncoact.rose.conclusion.ConclusionAlgo;
 import com.hartwig.oncoact.common.rose.RoseConclusionFile;
+import com.hartwig.oncoact.rose.conclusion.ConclusionAlgo;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -46,15 +46,12 @@ public class RoseApplication {
     }
 
     public void run() throws IOException {
-        LOGGER.info("Running ROSE algo on sample {})", config.tumorSampleId());
+        RoseAlgo algo = RoseAlgo.build(config.actionabilityDatabaseTsv(), config.driverGeneTsv());
+        RoseData rose = algo.run(config);
 
-        RoseAlgo algo = RoseAlgo.build(config.actionabilityDatabaseTsv(),
-                config.driverGeneTsv(), config.refGenomeVersion());
-        RoseData roseData = algo.run(config);
+        ActionabilityConclusion actionabilityConclusion = ConclusionAlgo.generateConclusion(rose);
 
-        ActionabilityConclusion actionabilityConclusion = ConclusionAlgo.generateConclusion(roseData);
-
-        String filename = RoseConclusionFile.generateFilename(config.outputDir(), config.tumorSampleId());
+        String filename = RoseConclusionFile.generateFilename(config.outputDir(), rose.orange().sampleId());
         LOGGER.info("Writing actionability conclusion to file: {}", filename);
         RoseConclusionFile.write(filename, actionabilityConclusion);
     }

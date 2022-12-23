@@ -38,9 +38,11 @@ public final class TestLinxFactory {
                 .type(LinxFusionType.NONE)
                 .geneStart(Strings.EMPTY)
                 .geneTranscriptStart(Strings.EMPTY)
+                .geneContextStart(Strings.EMPTY)
                 .fusedExonUp(0)
                 .geneEnd(Strings.EMPTY)
                 .geneTranscriptEnd(Strings.EMPTY)
+                .geneContextEnd(Strings.EMPTY)
                 .fusedExonDown(0)
                 .driverLikelihood(LinxFusionDriverLikelihood.LOW);
     }

@@ -237,8 +237,10 @@
         "fusedExonDown": 2,
         "geneStart": "TMPRSS2",
         "geneTranscriptStart": "ENST00000332149",
+        "geneContextStart": "Exon 1",
         "geneEnd": "ETV4",
-        "geneTranscriptEnd": "ENST00000319349"
+        "geneTranscriptEnd": "ENST00000319349",
+        "geneContextEnd": "Exon 2"
       }
     ],
     "reportableFusions": [
@@ -250,8 +252,10 @@
         "fusedExonDown": 2,
         "geneStart": "TMPRSS2",
         "geneTranscriptStart": "ENST00000332149",
+        "geneContextStart": "Exon 1",
         "geneEnd": "ETV4",
-        "geneTranscriptEnd": "ENST00000319349"
+        "geneTranscriptEnd": "ENST00000319349",
+        "geneContextEnd": "Exon 2"
       }
     ],
     "allBreakends": [

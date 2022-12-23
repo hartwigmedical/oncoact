@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.rose.conclusion;
 
-import static com.hartwig.oncoact.common.drivercatalog.DriverCategory.ONCO;
-import static com.hartwig.oncoact.common.drivercatalog.DriverCategory.TSG;
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
@@ -12,43 +9,32 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.chord.ChordData;
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.chord.ChordTestFactory;
-import com.hartwig.oncoact.common.chord.ImmutableChordData;
-import com.hartwig.oncoact.common.cuppa.interpretation.CuppaPrediction;
-import com.hartwig.oncoact.common.cuppa.interpretation.ImmutableCuppaPrediction;
-import com.hartwig.oncoact.common.drivercatalog.DriverCatalogTestFactory;
-import com.hartwig.oncoact.common.drivercatalog.DriverCategory;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
-import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneGermlineReporting;
-import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGene;
-import com.hartwig.oncoact.common.fusion.KnownFusionType;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableLinxFusion;
-import com.hartwig.oncoact.common.linx.LinxFusion;
-import com.hartwig.oncoact.common.linx.LinxTestFactory;
-import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
-import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.loader.GainLossTestFactory;
-import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
-import com.hartwig.oncoact.common.test.SomaticVariantTestFactory;
-import com.hartwig.oncoact.common.variant.CodingEffect;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantFactory;
-import com.hartwig.oncoact.common.variant.SomaticVariant;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
-import com.hartwig.oncoact.common.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.common.virus.VirusTestFactory;
+import com.hartwig.oncoact.drivergene.DriverCategory;
+import com.hartwig.oncoact.drivergene.DriverGene;
+import com.hartwig.oncoact.drivergene.GermlineReportingMode;
+import com.hartwig.oncoact.drivergene.ImmutableDriverGene;
+import com.hartwig.oncoact.orange.chord.ChordRecord;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
+import com.hartwig.oncoact.orange.chord.TestChordFactory;
+import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
+import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
+import com.hartwig.oncoact.orange.virus.VirusDriverLikelihood;
+import com.hartwig.oncoact.orange.virus.VirusInterpretation;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
 import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.Condition;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityEntry;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.TypeAlteration;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantFactory;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +53,7 @@ public class ConclusionAlgoTest {
                 Condition.OTHER,
                 "Molecular Tissue of Origin classifier: XXXX.");
 
-        CuppaPrediction cuppaPrediction = ImmutableCuppaPrediction.builder().cancerType("Melanoma").likelihood(0.996).build();
+        CuppaPrediction cuppaPrediction = TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.996).build();
 
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
@@ -87,7 +73,7 @@ public class ConclusionAlgoTest {
                 Condition.OTHER,
                 "Molecular Tissue of Origin classifier: Inconclusive (highest likelihood: xxx - xx%).");
 
-        CuppaPrediction cuppaPrediction = ImmutableCuppaPrediction.builder().cancerType("Melanoma").likelihood(0.45).build();
+        CuppaPrediction cuppaPrediction = TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.45).build();
 
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
@@ -107,7 +93,7 @@ public class ConclusionAlgoTest {
                 Condition.OTHER,
                 "Molecular Tissue of Origin classifier: Inconclusive (highest likelihood: xxx - xx%).");
 
-        CuppaPrediction cuppaPrediction = ImmutableCuppaPrediction.builder().cancerType("Melanoma").likelihood(0.601).build();
+        CuppaPrediction cuppaPrediction = TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.601).build();
 
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
@@ -120,7 +106,7 @@ public class ConclusionAlgoTest {
         List<ReportableVariant> reportableVariants = canGenerateVariants();
         Map<String, DriverGene> driverGenesMap = Maps.newHashMap();
         driverGenesMap.put("CHEK2", createDriverGene("CHEK2", DriverCategory.TSG));
-        driverGenesMap.put("APC", createDriverGene("APC", ONCO));
+        driverGenesMap.put("APC", createDriverGene("APC", DriverCategory.ONCO));
         driverGenesMap.put("BRCA2", createDriverGene("BRCA2", DriverCategory.TSG));
         driverGenesMap.put("BRCA1", createDriverGene("BRCA1", DriverCategory.TSG));
 
@@ -147,11 +133,7 @@ public class ConclusionAlgoTest {
                 Condition.OTHER,
                 "not biallelic");
 
-        ChordData analysis = ImmutableChordData.builder()
-                .from(ChordTestFactory.createMinimalTestChordAnalysis())
-                .hrdValue(0.8)
-                .hrStatus(ChordStatus.HR_DEFICIENT)
-                .build();
+        ChordRecord analysis = TestChordFactory.builder().hrdValue(0.8).hrStatus(ChordStatus.HR_DEFICIENT).build();
 
         ConclusionAlgo.generateVariantConclusion(conclusion,
                 reportableVariants,
@@ -163,15 +145,15 @@ public class ConclusionAlgoTest {
                 analysis);
         assertEquals(4, conclusion.size());
         // TODO Fix
-//        assertEquals(conclusion.get(0), "- APC (p.Val600Arg) APC");
-//        assertEquals(conclusion.get(1), "- CHEK2 (c.123A>C splice) CHEK2 not biallelic");
-//        assertEquals(conclusion.get(2), "- BRCA1 (p.Val600Arg,p.Val602Arg) BRCA1");
-//        assertEquals(conclusion.get(3), "- BRCA2 (c.1235A>C splice) BRCA2");
+        //        assertEquals(conclusion.get(0), "- APC (p.Val600Arg) APC");
+        //        assertEquals(conclusion.get(1), "- CHEK2 (c.123A>C splice) CHEK2 not biallelic");
+        //        assertEquals(conclusion.get(2), "- BRCA1 (p.Val600Arg,p.Val602Arg) BRCA1");
+        //        assertEquals(conclusion.get(3), "- BRCA2 (c.1235A>C splice) BRCA2");
     }
 
     @Test
     public void canGenerateCNVConclusion() {
-        List<GainLoss> gainLosse = gainloss();
+        List<PurpleGainLoss> gainLoss = createTestGainsLosses();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = Maps.newHashMap();
 
@@ -180,7 +162,7 @@ public class ConclusionAlgoTest {
         actionabilityMap = testActionabilityMap(actionabilityMap, "CDKN2A", TypeAlteration.LOSS, "CDKN2A", Condition.ALWAYS, "CDKN2A");
         actionabilityMap = testActionabilityMap(actionabilityMap, "EGFR", TypeAlteration.LOSS, "EGFR", Condition.ALWAYS, "EGFR");
 
-        ConclusionAlgo.generateCNVConclusion(conclusion, gainLosse, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateCNVConclusion(conclusion, gainLoss, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
         assertEquals(4, conclusion.size());
         assertEquals(conclusion.get(0), "- BRAF (copies: 4) BRAF");
         assertEquals(conclusion.get(1), "- KRAS (copies: 8) KRAS");
@@ -226,7 +208,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateVirusConclusion() {
-        List<AnnotatedVirus> annotatedVirus = annotatedVirus();
+        List<AnnotatedVirus> annotatedVirus = createTestVirusInterpreterEntries();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = Maps.newHashMap();
 
@@ -549,8 +531,8 @@ public class ConclusionAlgoTest {
                 .reportDisruption(true)
                 .reportAmplification(false)
                 .reportSomaticHotspot(false)
-                .reportGermlineVariant(DriverGeneGermlineReporting.NONE)
-                .reportGermlineHotspot(DriverGeneGermlineReporting.NONE)
+                .reportGermlineVariant(GermlineReportingMode.NONE)
+                .reportGermlineHotspot(GermlineReportingMode.NONE)
                 .likelihoodType(likelihoodMethod)
                 .reportGermlineDisruption(true)
                 .reportPGX(false)
@@ -558,47 +540,52 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    public List<GainLoss> gainloss() {
-        GainLoss gainLoss1 = ImmutableGainLoss.builder()
-                .from(GainLossTestFactory.createGainLoss("BRAF", CopyNumberInterpretation.FULL_GAIN))
+    private static Set<PurpleGainLoss> createTestGainsLosses() {
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
+                .gene("BRAF")
+                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
                 .minCopies(4)
                 .maxCopies(4)
                 .build();
-        GainLoss gainLoss2 = ImmutableGainLoss.builder()
-                .from(GainLossTestFactory.createGainLoss("KRAS", CopyNumberInterpretation.PARTIAL_GAIN))
+        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
+                .gene("KRAS")
+                .interpretation(PurpleGainLossInterpretation.PARTIAL_GAIN)
                 .minCopies(3)
                 .maxCopies(8)
                 .build();
-        GainLoss gainLoss3 = ImmutableGainLoss.builder()
-                .from(GainLossTestFactory.createGainLoss("CDKN2A", CopyNumberInterpretation.FULL_LOSS))
+        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
+                .gene("CDKN2A")
+                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
-        GainLoss gainLoss4 = ImmutableGainLoss.builder()
-                .from(GainLossTestFactory.createGainLoss("EGFR", CopyNumberInterpretation.PARTIAL_LOSS))
+        PurpleGainLoss gainLoss4 = TestPurpleFactory.gainLossBuilder()
+                .gene("EGFR")
+                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
                 .minCopies(0)
                 .maxCopies(3)
                 .build();
-        return Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3, gainLoss4);
+        return Sets.newHashSet(gainLoss1, gainLoss2, gainLoss3, gainLoss4);
     }
 
     @NotNull
-    public List<AnnotatedVirus> annotatedVirus() {
-        List<AnnotatedVirus> annotatedVirus = Lists.newArrayList();
-        AnnotatedVirus virus1 = VirusTestFactory.testAnnotatedVirusBuilder().interpretation("EBV").build();
-        AnnotatedVirus virus2 = VirusTestFactory.testAnnotatedVirusBuilder().interpretation("HPV").build();
-        AnnotatedVirus virus3 = VirusTestFactory.testAnnotatedVirusBuilder()
-                .interpretation("MCV")
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+    private static Set<VirusInterpreterEntry> createTestVirusInterpreterEntries() {
+        Set<VirusInterpreterEntry> virusEntries = Sets.newHashSet();
+        VirusInterpreterEntry virus1 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.EBV).build();
+        VirusInterpreterEntry virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).build();
+        VirusInterpreterEntry virus3 = TestVirusInterpreterFactory.builder()
+                .interpretation(VirusInterpretation.MCV)
+                .driverLikelihood(VirusDriverLikelihood.HIGH)
                 .build();
-        annotatedVirus.add(virus1);
-        annotatedVirus.add(virus2);
-        annotatedVirus.add(virus3);
-        return annotatedVirus;
+
+        virusEntries.add(virus1);
+        virusEntries.add(virus2);
+        virusEntries.add(virus3);
+        return virusEntries;
     }
 
     @NotNull
-    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return ImmutableHomozygousDisruption.builder()
                 .chromosome(Strings.EMPTY)
                 .chromosomeBand(Strings.EMPTY)
