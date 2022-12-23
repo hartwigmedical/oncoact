@@ -34,5 +34,4 @@ public class TypeAlterationTest {
     public void hasUnknownType() {
         TypeAlteration.toType("ABC");
     }
-
 }

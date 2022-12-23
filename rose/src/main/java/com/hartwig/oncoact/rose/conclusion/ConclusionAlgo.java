@@ -20,6 +20,7 @@ import com.hartwig.oncoact.orange.chord.ChordRecord;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
 import com.hartwig.oncoact.orange.cuppa.CuppaRecord;
+import com.hartwig.oncoact.orange.cuppa.ImmutableCuppaPrediction;
 import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxFusionType;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
@@ -43,10 +44,14 @@ import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 
 import org.apache.commons.compress.utils.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-public class ConclusionAlgo {
+public final class ConclusionAlgo {
+
+    private static final Logger LOGGER = LogManager.getLogger(ConclusionAlgo.class);
 
     private static final Set<LinxFusionType> FUSION_TYPES = Sets.newHashSet(LinxFusionType.PROMISCUOUS_3,
             LinxFusionType.PROMISCUOUS_5,
@@ -58,6 +63,9 @@ public class ConclusionAlgo {
     private static final DecimalFormat DOUBLE_DECIMAL_FORMAT = decimalFormat("#.##");
     private static final double TMB_CUTOFF = 10;
     private static final double PURITY_CUTOFF = 0.195;
+
+    private ConclusionAlgo() {
+    }
 
     @NotNull
     public static ActionabilityConclusion generateConclusion(@NotNull RoseData rose) {
@@ -163,8 +171,10 @@ public class ConclusionAlgo {
         }
 
         if (best == null) {
-            throw new IllegalStateException("No best CUPPA prediction found!");
+            LOGGER.warn("No best CUPPA prediction found");
+            return ImmutableCuppaPrediction.builder().cancerType("Unknown").likelihood(0D).build();
         }
+
         return best;
     }
 
@@ -236,11 +246,12 @@ public class ConclusionAlgo {
                 }
                 oncogenic.add("variant");
 
+                DriverGene driverGene = driverGenesMap.get(key.gene());
                 if (keyMap.getKey().equals("KRAS") && key.variantAnnotation().equals("p.Gly12Cys")) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION_KRAS_G12C;
-                } else if (driverGenesMap.get(key.gene()).likelihoodType().equals(DriverCategory.ONCO)) {
+                } else if (driverGene != null && driverGene.likelihoodType() == DriverCategory.ONCO) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION;
-                } else if (driverGenesMap.get(key.gene()).likelihoodType().equals(DriverCategory.TSG)) {
+                } else if (driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG) {
                     alteration = TypeAlteration.INACTIVATION;
                 }
 
@@ -256,7 +267,8 @@ public class ConclusionAlgo {
                         actionable.add("variant");
                     }
 
-                    if (driverGenesMap.get(keyMap.getKey()).likelihoodType().equals(DriverCategory.TSG)
+                    DriverGene driverGene = driverGenesMap.get(keyMap.getKey());
+                    if ((driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG)
                             && variantMerging.toString().split(",").length == 1) {
                         if (!keyMap.getValue().iterator().next().biallelic()) {
                             ActionabilityKey keyBiallelic =
@@ -335,9 +347,8 @@ public class ConclusionAlgo {
         for (LinxFusion fusion : reportableFusions) {
             oncogenic.add("fusion");
 
-            if ((fusion.type() == LinxFusionType.EXON_DEL_DUP) && fusion.geneStart().equals("EGFR") && (
-                    fusion.fusedExonUp() == 25 && fusion.fusedExonDown() == 14) || (fusion.fusedExonUp() == 26
-                    && fusion.fusedExonDown() == 18)) {
+            if ((fusion.type() == LinxFusionType.EXON_DEL_DUP) && fusion.geneStart().equals("EGFR") && (fusion.fusedExonUp() == 25
+                    && fusion.fusedExonDown() == 14) || (fusion.fusedExonUp() == 26 && fusion.fusedExonDown() == 18)) {
                 ActionabilityKey keyFusion = ImmutableActionabilityKey.builder()
                         .match(fusion.geneStart())
                         .type(TypeAlteration.KINASE_DOMAIN_DUPLICATION)
@@ -379,7 +390,8 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
+    @VisibleForTesting
+    static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
             @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
@@ -397,34 +409,34 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateVirusConclusion(@NotNull List<String> conclusion, @NotNull Set<VirusInterpreterEntry> reportableViruses,
+    @VisibleForTesting
+    static void generateVirusConclusion(@NotNull List<String> conclusion, @NotNull Set<VirusInterpreterEntry> reportableViruses,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
-
-        for (VirusInterpreterEntry annotatedVirus : reportableViruses) {
+        for (VirusInterpreterEntry virus : reportableViruses) {
             oncogenic.add("virus");
 
             ActionabilityKey keyVirus = ImmutableActionabilityKey.builder()
-                    .match(annotatedVirus.interpretation() != null ? annotatedVirus.interpretation().toString() : Strings.EMPTY)
+                    .match(virus.interpretation() != null ? virus.interpretation().toString() : Strings.EMPTY)
                     .type(TypeAlteration.POSITIVE)
                     .build();
             ActionabilityEntry entry = actionabilityMap.get(keyVirus);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add("- " + annotatedVirus.interpretation() + " " + entry.conclusion());
+                conclusion.add("- " + virus.interpretation() + " " + entry.conclusion());
                 actionable.add("virus");
             } else if (entry == null) {
-                if (annotatedVirus.interpretation() != null && (annotatedVirus.driverLikelihood() == VirusDriverLikelihood.LOW
-                        || annotatedVirus.driverLikelihood() == VirusDriverLikelihood.HIGH)) {
-                    conclusion.add("- " + annotatedVirus.interpretation() + " positive");
+                if (virus.interpretation() != null && (virus.driverLikelihood() == VirusDriverLikelihood.LOW
+                        || virus.driverLikelihood() == VirusDriverLikelihood.HIGH)) {
+                    conclusion.add("- " + virus.interpretation() + " positive");
                 }
             }
         }
     }
 
-    public static void generateHrdConclusion(@NotNull List<String> conclusion, @NotNull ChordRecord chord,
+    @VisibleForTesting
+    static void generateHrdConclusion(@NotNull List<String> conclusion, @NotNull ChordRecord chord,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable, @NotNull Set<String> HRD) {
-
         if (chord.hrStatus() == ChordStatus.HR_DEFICIENT) {
             ActionabilityKey keyHRD = ImmutableActionabilityKey.builder().match("HRD").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyHRD);
@@ -445,10 +457,10 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateMSIConclusion(@NotNull List<String> conclusion, @NotNull PurpleMicrosatelliteStatus microsatelliteStatus,
+    @VisibleForTesting
+    static void generateMSIConclusion(@NotNull List<String> conclusion, @NotNull PurpleMicrosatelliteStatus microsatelliteStatus,
             double microsatelliteMb, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
-
         if (microsatelliteStatus == PurpleMicrosatelliteStatus.MSI) {
             ActionabilityKey keyMSI = ImmutableActionabilityKey.builder().match("MSI").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyMSI);
@@ -460,10 +472,10 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateTMLConclusion(@NotNull List<String> conclusion, @NotNull PurpleTumorMutationalStatus tumorMutationalStatus,
+    @VisibleForTesting
+    static void generateTMLConclusion(@NotNull List<String> conclusion, @NotNull PurpleTumorMutationalStatus tumorMutationalStatus,
             int tumorMutationalLoad, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
-
         if (tumorMutationalStatus == PurpleTumorMutationalStatus.HIGH) {
             ActionabilityKey keyTML = ImmutableActionabilityKey.builder().match("High-TML").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTML);
@@ -475,10 +487,10 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateTMBConclusion(@NotNull List<String> conclusion, double tumorMutationalBurden,
+    @VisibleForTesting
+    static void generateTMBConclusion(@NotNull List<String> conclusion, double tumorMutationalBurden,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
-
         if (tumorMutationalBurden >= TMB_CUTOFF) {
             ActionabilityKey keyTMB = ImmutableActionabilityKey.builder().match("High-TMB").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTMB);
@@ -490,7 +502,8 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generatePurityConclusion(@NotNull List<String> conclusion, double purity, boolean containsTumorCells,
+    @VisibleForTesting
+    static void generatePurityConclusion(@NotNull List<String> conclusion, double purity, boolean containsTumorCells,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
         if (!containsTumorCells) {
             ActionabilityKey keyReliable =
@@ -510,10 +523,9 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateTotalResults(@NotNull List<String> conclusion,
-            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-            @NotNull Set<String> actionable) {
-
+    @VisibleForTesting
+    static void generateTotalResults(@NotNull List<String> conclusion, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
+            @NotNull Set<String> oncogenic, @NotNull Set<String> actionable) {
         if (oncogenic.size() == 0) {
             ActionabilityKey keyOncogenic =
                     ImmutableActionabilityKey.builder().match("NO_ONCOGENIC").type(TypeAlteration.NO_ONCOGENIC).build();
@@ -532,8 +544,8 @@ public class ConclusionAlgo {
         }
     }
 
-    public static void generateFindings(@NotNull List<String> conclusion,
-            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
+    @VisibleForTesting
+    static void generateFindings(@NotNull List<String> conclusion, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
         ActionabilityKey keyOncogenic = ImmutableActionabilityKey.builder().match("FINDINGS").type(TypeAlteration.FINDINGS).build();
 
         ActionabilityEntry entry = actionabilityMap.get(keyOncogenic);
@@ -543,7 +555,7 @@ public class ConclusionAlgo {
     }
 
     @NotNull
-    public static DecimalFormat decimalFormat(@NotNull String format) {
+    private static DecimalFormat decimalFormat(@NotNull String format) {
         // To make sure every decimal format uses a dot as separator rather than a comma.
         return new DecimalFormat(format, DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     }
