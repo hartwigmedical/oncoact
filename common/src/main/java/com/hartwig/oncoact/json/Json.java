@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.utils.json;
+package com.hartwig.oncoact.json;
 
 import java.time.LocalDate;
 import java.util.List;

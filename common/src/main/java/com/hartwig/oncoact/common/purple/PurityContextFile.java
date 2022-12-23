@@ -13,7 +13,7 @@ import java.util.StringJoiner;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -132,7 +132,7 @@ public final class PurityContextFile
 
         List<String> lines = Files.readAllLines(new File(filePath).toPath());
 
-        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(lines.get(0), DELIMITER);
+        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFields(lines.get(0), DELIMITER);
         String[] values = lines.get(1).split(DELIMITER, -1);
 
         ImmutablePurityContext.Builder builder = ImmutablePurityContext.builder();

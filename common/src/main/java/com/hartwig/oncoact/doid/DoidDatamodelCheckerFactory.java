@@ -3,7 +3,7 @@ package com.hartwig.oncoact.doid;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.utils.json.JsonDatamodelChecker;
+import com.hartwig.oncoact.json.JsonDatamodelChecker;
 
 import org.jetbrains.annotations.NotNull;
 

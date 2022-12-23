@@ -21,7 +21,6 @@ import com.hartwig.oncoact.common.lims.hospital.ImmutableHospitalContactData;
 import com.hartwig.oncoact.common.peach.ImmutablePeachGenotype;
 import com.hartwig.oncoact.common.peach.PeachGenotype;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.ImmutableSampleMetadata;
@@ -42,6 +41,7 @@ import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

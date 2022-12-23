@@ -10,7 +10,6 @@ import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.linx.LinxFusion;
 import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.virus.AnnotatedVirus;
 import com.hartwig.oncoact.common.xml.ImmutableKeyXML;
@@ -21,6 +20,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.util.Strings;

@@ -56,7 +56,7 @@ public class RoseAlgo {
 
     @NotNull
     public RoseData run(@NotNull RoseConfig config) throws IOException {
-        LOGGER.info("Loading ORANGE data from {}", config.orangeJson());
+        LOGGER.info("Loading ORANGE file from {}", config.orangeJson());
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
         return ImmutableRoseData.builder()

@@ -10,7 +10,7 @@ import java.util.Set;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.genome.chromosome.GermlineAberration;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 

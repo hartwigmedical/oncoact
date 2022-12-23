@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.hla;
 
 import static com.hartwig.oncoact.common.hla.LilacAllele.DELIMITER;
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public abstract class LilacQcData
     {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
 
-        final Map<String,Integer> fieldsIndexMap = createFieldsIndexMap(lines.get(0), DELIMITER);
+        final Map<String,Integer> fieldsIndexMap = createFields(lines.get(0), DELIMITER);
 
         String[] values = lines.get(1).split(DELIMITER);
 

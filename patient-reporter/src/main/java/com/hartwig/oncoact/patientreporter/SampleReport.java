@@ -7,7 +7,7 @@ import com.hartwig.oncoact.common.lims.Lims;
 import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.common.lims.hospital.HospitalContactData;
-import com.hartwig.oncoact.common.utils.DataUtil;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;
 import org.immutables.value.Value;

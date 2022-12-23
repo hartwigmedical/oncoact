@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -104,7 +104,7 @@ public final class GeneCopyNumberFile
     @VisibleForTesting
     static List<GeneCopyNumber> fromLines(final List<String> lines)
     {
-        final Map<String, Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(lines.get(0), PurpleCommon.DELIMITER);
+        final Map<String, Integer> fieldsIndexMap = FileReaderUtils.createFields(lines.get(0), PurpleCommon.DELIMITER);
         lines.remove(0);
 
         int chrIndex = fieldsIndexMap.get("chromosome");

@@ -1,13 +1,13 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
 import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.util.DataUtil;
 import com.itextpdf.io.IOException;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;

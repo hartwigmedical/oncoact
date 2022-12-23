@@ -12,7 +12,7 @@ import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
 import com.hartwig.oncoact.common.purple.loader.ImmutableCnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
-import com.hartwig.oncoact.common.utils.DataUtil;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

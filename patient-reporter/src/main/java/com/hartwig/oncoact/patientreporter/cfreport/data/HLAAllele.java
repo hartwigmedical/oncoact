@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.common.hla.HlaReporting;
-import com.hartwig.oncoact.common.utils.DataUtil;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.jetbrains.annotations.NotNull;
 

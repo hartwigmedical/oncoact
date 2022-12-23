@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.doid;
 
-import static com.hartwig.oncoact.common.utils.json.Json.optionalArray;
-import static com.hartwig.oncoact.common.utils.json.Json.optionalObject;
-import static com.hartwig.oncoact.common.utils.json.Json.optionalString;
-import static com.hartwig.oncoact.common.utils.json.Json.optionalStringList;
-import static com.hartwig.oncoact.common.utils.json.Json.string;
-import static com.hartwig.oncoact.common.utils.json.Json.stringList;
+import static com.hartwig.oncoact.json.Json.optionalArray;
+import static com.hartwig.oncoact.json.Json.optionalObject;
+import static com.hartwig.oncoact.json.Json.optionalString;
+import static com.hartwig.oncoact.json.Json.optionalStringList;
+import static com.hartwig.oncoact.json.Json.string;
+import static com.hartwig.oncoact.json.Json.stringList;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import com.hartwig.oncoact.common.utils.json.JsonDatamodelChecker;
+import com.hartwig.oncoact.json.JsonDatamodelChecker;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

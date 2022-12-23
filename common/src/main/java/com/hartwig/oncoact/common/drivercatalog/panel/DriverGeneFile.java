@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.drivercatalog.DriverCategory;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public final class DriverGeneFile
         List<DriverGene> driverGenes = Lists.newArrayList();
 
         String header = lines.get(0);
-        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(header, DELIMITER);
+        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFields(header, DELIMITER);
         lines.remove(0);
 
         int geneIndex = fieldsIndexMap.get("gene");

@@ -1,17 +1,17 @@
 package com.hartwig.oncoact.orange;
 
-import static com.hartwig.oncoact.common.utils.json.Json.array;
-import static com.hartwig.oncoact.common.utils.json.Json.bool;
-import static com.hartwig.oncoact.common.utils.json.Json.date;
-import static com.hartwig.oncoact.common.utils.json.Json.integer;
-import static com.hartwig.oncoact.common.utils.json.Json.nullableArray;
-import static com.hartwig.oncoact.common.utils.json.Json.nullableInteger;
-import static com.hartwig.oncoact.common.utils.json.Json.nullableIntegerList;
-import static com.hartwig.oncoact.common.utils.json.Json.nullableString;
-import static com.hartwig.oncoact.common.utils.json.Json.number;
-import static com.hartwig.oncoact.common.utils.json.Json.object;
-import static com.hartwig.oncoact.common.utils.json.Json.string;
-import static com.hartwig.oncoact.common.utils.json.Json.stringList;
+import static com.hartwig.oncoact.json.Json.array;
+import static com.hartwig.oncoact.json.Json.bool;
+import static com.hartwig.oncoact.json.Json.date;
+import static com.hartwig.oncoact.json.Json.integer;
+import static com.hartwig.oncoact.json.Json.nullableArray;
+import static com.hartwig.oncoact.json.Json.nullableInteger;
+import static com.hartwig.oncoact.json.Json.nullableIntegerList;
+import static com.hartwig.oncoact.json.Json.nullableString;
+import static com.hartwig.oncoact.json.Json.number;
+import static com.hartwig.oncoact.json.Json.object;
+import static com.hartwig.oncoact.json.Json.string;
+import static com.hartwig.oncoact.json.Json.stringList;
 
 import java.io.File;
 import java.io.IOException;

@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +42,7 @@ public final class FittedPurityRangeFile
         List<String> lines = Files.readAllLines(new File(filePath).toPath());
 
         String header = lines.get(0);
-        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(header, PurpleCommon.DELIMITER);
+        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFields(header, PurpleCommon.DELIMITER);
         lines.remove(0);
 
         for(String line : lines)

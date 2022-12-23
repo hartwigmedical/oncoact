@@ -10,13 +10,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.oncoact.common.linx.HomozygousDisruption;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.common.variant.DriverInterpretation;
 import com.hartwig.oncoact.common.variant.Hotspot;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.impact.VariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
 import com.hartwig.oncoact.patientreporter.util.Genes;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

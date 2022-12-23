@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.variant;
 
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.utils.DataUtil;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

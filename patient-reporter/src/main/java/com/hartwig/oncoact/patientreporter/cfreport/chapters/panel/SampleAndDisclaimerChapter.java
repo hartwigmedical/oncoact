@@ -1,12 +1,12 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.panel;
 
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
+import com.hartwig.oncoact.util.DataUtil;
 import com.itextpdf.io.IOException;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;

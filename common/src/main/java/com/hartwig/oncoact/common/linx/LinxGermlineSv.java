@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.linx;
 
 import static com.hartwig.oncoact.common.purple.PurpleCommon.DELIMITER;
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.File;
 import java.io.IOException;
@@ -179,7 +179,7 @@ public final class LinxGermlineSv
 
     static List<LinxGermlineSv> fromLines(final List<String> lines)
     {
-        final Map<String, Integer> fieldsIndexMap = createFieldsIndexMap(lines.get(0), DELIMITER);
+        final Map<String, Integer> fieldsIndexMap = createFields(lines.get(0), DELIMITER);
         lines.remove(0);
 
         List<LinxGermlineSv> deletions = Lists.newArrayList();

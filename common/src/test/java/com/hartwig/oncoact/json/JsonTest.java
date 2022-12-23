@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.utils.json;
+package com.hartwig.oncoact.json;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

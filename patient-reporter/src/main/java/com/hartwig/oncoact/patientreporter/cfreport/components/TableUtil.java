@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.common.utils.DataUtil;
+import com.hartwig.oncoact.util.DataUtil;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;

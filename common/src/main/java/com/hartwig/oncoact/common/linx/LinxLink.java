@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.linx;
 
 import static com.hartwig.oncoact.common.linx.LinxCluster.DELIMITER;
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,7 +70,7 @@ public abstract class LinxLink
     private static List<LinxLink> fromLines(final List<String> lines)
     {
         String header = lines.get(0);
-        Map<String,Integer> fieldsIndexMap = createFieldsIndexMap(header, DELIMITER);
+        Map<String,Integer> fieldsIndexMap = createFields(header, DELIMITER);
         lines.remove(0);
 
         List<LinxLink> links = Lists.newArrayList();

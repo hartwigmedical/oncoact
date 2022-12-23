@@ -10,8 +10,8 @@ import com.hartwig.oncoact.common.purple.ChromosomeArm;
 import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.jetbrains.annotations.NotNull;
 

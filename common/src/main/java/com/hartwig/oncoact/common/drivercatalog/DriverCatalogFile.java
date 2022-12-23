@@ -12,7 +12,7 @@ import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -110,7 +110,7 @@ public final class DriverCatalogFile
         List<DriverCatalog> drivers = Lists.newArrayList();
 
         String header = lines.get(0);
-        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(header, DELIMITER);
+        Map<String,Integer> fieldsIndexMap = FileReaderUtils.createFields(header, DELIMITER);
         lines.remove(0);
 
         for(String line : lines)

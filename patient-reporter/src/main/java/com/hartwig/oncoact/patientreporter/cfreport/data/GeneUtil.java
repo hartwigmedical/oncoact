@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -130,7 +130,7 @@ public final class GermlineDeletion
 
     static List<GermlineDeletion> fromLines(final List<String> lines)
     {
-        final Map<String, Integer> fieldsIndexMap = FileReaderUtils.createFieldsIndexMap(lines.get(0), DELIMITER);
+        final Map<String, Integer> fieldsIndexMap = FileReaderUtils.createFields(lines.get(0), DELIMITER);
         lines.remove(0);
 
         List<GermlineDeletion> deletions = Lists.newArrayList();

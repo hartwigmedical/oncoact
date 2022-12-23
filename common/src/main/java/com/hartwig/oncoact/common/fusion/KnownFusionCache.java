@@ -11,8 +11,8 @@ import java.util.StringJoiner;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.utils.FileReaderUtils;
 import com.hartwig.oncoact.common.utils.sv.StartEndIterator;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -246,7 +246,7 @@ public class KnownFusionCache
                 return false;
             }
 
-            final Map<String,Integer> fieldIndexMap = FileReaderUtils.createFieldsIndexMap(fileContents.get(0), FILE_DELIMITER);
+            final Map<String,Integer> fieldIndexMap = FileReaderUtils.createFields(fileContents.get(0), FILE_DELIMITER);
             fileContents.remove(0);
 
             for(String data : fileContents)

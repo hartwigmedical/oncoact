@@ -11,7 +11,7 @@ import static com.hartwig.oncoact.common.cuppa.ClassifierType.ALT_SJ_COHORT;
 import static com.hartwig.oncoact.common.cuppa.ClassifierType.EXPRESSION_PAIRWISE;
 import static com.hartwig.oncoact.common.cuppa.ClassifierType.GENOMIC_POSITION_COHORT;
 import static com.hartwig.oncoact.common.cuppa.ClassifierType.SNV_96_PAIRWISE;
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -98,7 +98,7 @@ public class CuppaDataFile
         BufferedReader fileReader = new BufferedReader(new FileReader(filename));
 
         String line = fileReader.readLine();
-        final Map<String, Integer> fieldsMap = createFieldsIndexMap(line, DELIMITER);
+        final Map<String, Integer> fieldsMap = createFields(line, DELIMITER);
 
         int categoryIndex = fieldsMap.get(FLD_CATEGORY);
         int resultTypeIndex = fieldsMap.get(FLD_RESULT_TYPE);

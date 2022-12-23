@@ -9,7 +9,6 @@ import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFile;
 import com.hartwig.oncoact.common.lims.Lims;
 import com.hartwig.oncoact.common.lims.LimsFactory;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
@@ -17,6 +16,7 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
+import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;

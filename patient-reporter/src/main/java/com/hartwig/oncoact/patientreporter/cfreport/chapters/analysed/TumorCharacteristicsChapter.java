@@ -4,7 +4,6 @@ import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 
 import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.utils.DataUtil;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -18,6 +17,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.HrDeficiency;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MicroSatelliteStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalLoad;
+import com.hartwig.oncoact.util.DataUtil;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.Document;

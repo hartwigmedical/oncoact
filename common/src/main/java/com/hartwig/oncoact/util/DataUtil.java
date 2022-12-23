@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.utils;
+package com.hartwig.oncoact.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

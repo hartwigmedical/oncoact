@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.common.linx;
 
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public abstract class LinxCluster
         final String header = lines.get(0);
         lines.remove(0);
 
-        final Map<String,Integer> fieldsIndexMap = createFieldsIndexMap(header,DELIMITER);
+        final Map<String,Integer> fieldsIndexMap = createFields(header,DELIMITER);
 
         List<LinxCluster> clusters = Lists.newArrayList();
 

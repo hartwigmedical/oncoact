@@ -2,7 +2,7 @@ package com.hartwig.oncoact.common.chord;
 
 import static java.lang.String.format;
 
-import static com.hartwig.oncoact.common.utils.FileReaderUtils.createFieldsIndexMap;
+import static com.hartwig.oncoact.io.FileReaderUtils.createFields;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public final class ChordDataFile
         if(lines.size() != 2)
             throw new IOException(format("invalid chord file(%s), expected 2 lines containing header and data", filePath));
 
-        Map<String,Integer> fieldsIndexMap = createFieldsIndexMap(lines.get(0), DELIM);
+        Map<String,Integer> fieldsIndexMap = createFields(lines.get(0), DELIM);
         String[] values = lines.get(1).split(DELIM, -1);
 
         String statusRemarks = values.length >= 8 && fieldsIndexMap.containsKey(FLD_REMARKS_STATUS) ? values[fieldsIndexMap.get(FLD_REMARKS_STATUS)] : "";
