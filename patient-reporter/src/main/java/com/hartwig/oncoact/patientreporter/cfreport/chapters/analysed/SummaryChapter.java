@@ -7,11 +7,11 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.hla.HlaReporting;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.peach.PeachGenotype;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
+import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -228,13 +228,15 @@ public class SummaryChapter implements ReportChapter {
 
         Style dataStyle = hasReliablePurity ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
 
-        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus().display() + " ("
+        // TODO evaluate display
+        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " ("
                 + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalLoad()) + " mut/genome)" : DataUtil.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational load").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalLoadString).addStyle(dataStyle)));
 
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().display() + " ("
+        // TODO evaluate display
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " ("
                 + DOUBLE_DECIMAL_FORMAT.format(analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : DataUtil.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(ReportResources.bodyTextStyle())));
@@ -243,9 +245,10 @@ public class SummaryChapter implements ReportChapter {
         String hrdString;
         Style hrdStyle;
 
+        // TODO evaluate display
         if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
                 || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus().display() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + " signature)";
+            hrdString = analysis().hrdStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + " signature)";
             hrdStyle = ReportResources.dataHighlightStyle();
         } else {
             hrdString = DataUtil.NA_STRING;
@@ -339,10 +342,10 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Gene fusions").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createGeneSetCell(fusionGenes));
 
-        MicrosatelliteStatus microSatelliteStabilityString =
-                analysis().hasReliablePurity() ? analysis().microsatelliteStatus() : MicrosatelliteStatus.UNKNOWN;
-        if (microSatelliteStabilityString == MicrosatelliteStatus.MSI) {
-            Set<String> genesDisplay = SomaticVariants.determineMSIgenes(analysis().reportableVariants(),
+        PurpleMicrosatelliteStatus microSatelliteStabilityString =
+                analysis().hasReliablePurity() ? analysis().microsatelliteStatus() : PurpleMicrosatelliteStatus.UNKNOWN;
+        if (microSatelliteStabilityString == PurpleMicrosatelliteStatus.MSI) {
+            Set<String> genesDisplay = SomaticVariants.determineMSIGenes(analysis().reportableVariants(),
                     analysis().gainsAndLosses(),
                     analysis().homozygousDisruptions());
             table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
@@ -352,7 +355,7 @@ public class SummaryChapter implements ReportChapter {
 
         ChordStatus hrdStatus = analysis().hasReliablePurity() ? analysis().hrdStatus() : ChordStatus.UNKNOWN;
         if (hrdStatus == ChordStatus.HR_DEFICIENT) {
-            Set<String> genesDisplay = SomaticVariants.determineHRDgenes(analysis().reportableVariants(),
+            Set<String> genesDisplay = SomaticVariants.determineHRDGenes(analysis().reportableVariants(),
                     analysis().gainsAndLosses(),
                     analysis().homozygousDisruptions());
             table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
@@ -383,7 +386,7 @@ public class SummaryChapter implements ReportChapter {
 
                 Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet().stream().collect(Collectors.toSet()));
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                    List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
+                    List<PeachEntry> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
 
                     Set<String> function = Sets.newHashSet();
                     int count = pharmacogeneticsGenotypeList.size();

@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.common.genome.region;
 
+import com.hartwig.oncoact.genome.GenomeRegion;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface TranscriptRegion extends GenomeRegion {

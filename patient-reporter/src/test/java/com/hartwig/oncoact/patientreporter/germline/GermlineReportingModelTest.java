@@ -7,12 +7,12 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantSource;
 import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
 import com.hartwig.oncoact.common.variant.VariantType;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 

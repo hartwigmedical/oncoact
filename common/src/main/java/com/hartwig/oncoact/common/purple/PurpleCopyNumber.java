@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.purple;
 
-import com.hartwig.oncoact.common.genome.region.GenomeRegion;
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.genome.GenomeRegion;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

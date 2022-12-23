@@ -17,9 +17,9 @@ import java.util.Map;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortTestFactory;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 

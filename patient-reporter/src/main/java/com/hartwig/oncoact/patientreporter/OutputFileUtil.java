@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter;
 
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 

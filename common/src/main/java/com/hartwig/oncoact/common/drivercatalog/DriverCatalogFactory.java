@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.common.drivercatalog.dnds.DndsDriverImpactLikelihood;
 import com.hartwig.oncoact.common.purple.GeneCopyNumber;
-import com.hartwig.oncoact.common.utils.Doubles;
 import com.hartwig.oncoact.common.variant.SomaticVariant;
 import com.hartwig.oncoact.common.variant.VariantType;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.apache.commons.math3.distribution.PoissonDistribution;
 import org.jetbrains.annotations.NotNull;

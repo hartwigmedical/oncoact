@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.common.genome.chromosome;
 
+import com.hartwig.oncoact.genome.Chromosome;
+
 import org.jetbrains.annotations.NotNull;
 
 public enum MitochondrialChromosome implements Chromosome {

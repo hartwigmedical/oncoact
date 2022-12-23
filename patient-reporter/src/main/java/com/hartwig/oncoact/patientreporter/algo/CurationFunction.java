@@ -5,16 +5,16 @@ import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableGeneDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
+import com.hartwig.oncoact.disruption.GeneDisruption;
+import com.hartwig.oncoact.disruption.ImmutableGeneDisruption;
+import com.hartwig.oncoact.orange.linx.ImmutableLinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.purple.ImmutablePurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.variant.ImmutableReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -48,8 +48,6 @@ public final class CurationFunction {
     static List<ProtectEvidence> curateEvidence(@NotNull List<ProtectEvidence> tumorSpecificEvidences) {
         List<ProtectEvidence> curateTumorSpecificEvidences = Lists.newArrayList();
         for (ProtectEvidence evidence : tumorSpecificEvidences) {
-
-
             if (evidence.gene() != null && evidence.isCanonical() != null) {
                 if (evidence.gene().equals(GENE_CDKN2A) && evidence.isCanonical()) {
                     curateTumorSpecificEvidences.add(ImmutableProtectEvidence.builder().from(evidence).gene(GENE_CDKN2A_CANONICAL).build());
@@ -113,13 +111,13 @@ public final class CurationFunction {
 
     @NotNull
     @VisibleForTesting
-    static List<GainLoss> curateGainsAndLosses(@NotNull List<GainLoss> gainsAndLosses) {
-        List<GainLoss> curateGainsAndLosses = Lists.newArrayList();
-        for (GainLoss gainLoss : gainsAndLosses) {
+    static List<PurpleGainLoss> curateGainsAndLosses(@NotNull List<PurpleGainLoss> gainsAndLosses) {
+        List<PurpleGainLoss> curateGainsAndLosses = Lists.newArrayList();
+        for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (gainLoss.gene().equals(GENE_CDKN2A) && gainLoss.isCanonical()) {
-                curateGainsAndLosses.add(ImmutableGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_CANONICAL).build());
+                curateGainsAndLosses.add(ImmutablePurpleGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_CANONICAL).build());
             } else if (gainLoss.gene().equals(GENE_CDKN2A) && !gainLoss.isCanonical()) {
-                curateGainsAndLosses.add(ImmutableGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_NON_CANONICAL).build());
+                curateGainsAndLosses.add(ImmutablePurpleGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_NON_CANONICAL).build());
             } else {
                 curateGainsAndLosses.add(gainLoss);
             }
@@ -136,10 +134,7 @@ public final class CurationFunction {
             if (disruption.gene().equals(GENE_CDKN2A) && disruption.isCanonical()) {
                 curateGeneDisruptions.add(ImmutableGeneDisruption.builder().from(disruption).gene(GENE_CDKN2A_CANONICAL).build());
             } else if (disruption.gene().equals(GENE_CDKN2A) && !disruption.isCanonical()) {
-                curateGeneDisruptions.add(ImmutableGeneDisruption.builder()
-                        .from(disruption)
-                        .gene(GENE_CDKN2A_NON_CANONICAL)
-                        .build());
+                curateGeneDisruptions.add(ImmutableGeneDisruption.builder().from(disruption).gene(GENE_CDKN2A_NON_CANONICAL).build());
             } else {
                 curateGeneDisruptions.add(disruption);
             }
@@ -149,17 +144,16 @@ public final class CurationFunction {
 
     @NotNull
     @VisibleForTesting
-    static List<HomozygousDisruption> curateHomozygousDisruptions(
-            @NotNull List<HomozygousDisruption> homozygousDisruptions) {
-        List<HomozygousDisruption> curateHomozygousDisruptions = Lists.newArrayList();
-        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+    static List<LinxHomozygousDisruption> curateHomozygousDisruptions(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
+        List<LinxHomozygousDisruption> curateHomozygousDisruptions = Lists.newArrayList();
+        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (homozygousDisruption.gene().equals(GENE_CDKN2A) && homozygousDisruption.isCanonical()) {
-                curateHomozygousDisruptions.add(ImmutableHomozygousDisruption.builder()
+                curateHomozygousDisruptions.add(ImmutableLinxHomozygousDisruption.builder()
                         .from(homozygousDisruption)
                         .gene(GENE_CDKN2A_CANONICAL)
                         .build());
             } else if (homozygousDisruption.gene().equals(GENE_CDKN2A) && !homozygousDisruption.isCanonical()) {
-                curateHomozygousDisruptions.add(ImmutableHomozygousDisruption.builder()
+                curateHomozygousDisruptions.add(ImmutableLinxHomozygousDisruption.builder()
                         .from(homozygousDisruption)
                         .gene(GENE_CDKN2A_NON_CANONICAL)
                         .build());

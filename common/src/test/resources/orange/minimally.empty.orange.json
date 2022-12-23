@@ -31,6 +31,8 @@
     "reportableSomaticVariants": [],
     "allGermlineVariants": null,
     "reportableGermlineVariants": null,
+    "allSomaticCopyNumbers": [],
+    "allSomaticGeneCopyNumbers": [],
     "allSomaticGainsLosses": [],
     "reportableSomaticGainsLosses": []
   },

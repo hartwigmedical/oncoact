@@ -2,12 +2,12 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.hartwig.oncoact.common.fusion.KnownFusionType;
-import com.hartwig.oncoact.common.linx.FusionLikelihoodType;
-import com.hartwig.oncoact.common.linx.LinxFusion;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
+import com.hartwig.oncoact.orange.linx.LinxFusionType;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
@@ -23,8 +23,8 @@ public final class GeneFusions {
     }
 
     @NotNull
-    public static Cell fusionContentType(@NotNull String reportType, @NotNull String geneName, @NotNull String transcript) {
-        if (reportType.equals(KnownFusionType.IG_PROMISCUOUS.name()) || reportType.equals(KnownFusionType.IG_KNOWN_PAIR.name())) {
+    public static Cell fusionContentType(@NotNull LinxFusionType type, @NotNull String geneName, @NotNull String transcript) {
+        if (type.equals(LinxFusionType.IG_PROMISCUOUS) || type.equals(LinxFusionType.IG_KNOWN_PAIR)) {
             if (geneName.startsWith("@IG")) {
                 return TableUtil.createContentCell(new Paragraph(transcript));
             } else {
@@ -42,22 +42,21 @@ public final class GeneFusions {
     @NotNull
     public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
         return fusions.stream().sorted((fusion1, fusion2) -> {
-            if (fusion1.likelihood() == fusion2.likelihood()) {
+            if (fusion1.driverLikelihood() == fusion2.driverLikelihood()) {
                 if (fusion1.geneStart().equals(fusion2.geneStart())) {
                     return fusion1.geneEnd().compareTo(fusion2.geneEnd());
                 } else {
                     return fusion1.geneStart().compareTo(fusion2.geneStart());
                 }
             } else {
-                return fusion1.likelihood() == FusionLikelihoodType.HIGH ? -1 : 1;
+                return fusion1.driverLikelihood() == LinxFusionDriverLikelihood.HIGH ? -1 : 1;
             }
         }).collect(Collectors.toList());
     }
 
     @NotNull
     public static Set<String> uniqueGeneFusions(@NotNull List<LinxFusion> fusions) {
-
-        Set<String> genes = new TreeSet<String>();
+        Set<String> genes = Sets.newTreeSet();
         for (LinxFusion fusion : fusions) {
             genes.add(name(fusion));
         }
@@ -75,25 +74,25 @@ public final class GeneFusions {
     }
 
     @NotNull
-    public static String displayStr(final String knownTypeStr) {
-        if (knownTypeStr.equals(KnownFusionType.NONE.toString())) {
+    public static String displayStr(@NotNull LinxFusionType type) {
+        if (type.equals(LinxFusionType.NONE)) {
             return "None";
-        } else if (knownTypeStr.equals(KnownFusionType.KNOWN_PAIR.toString())) {
+        } else if (type.equals(LinxFusionType.KNOWN_PAIR)) {
             return "Known pair";
-        } else if (knownTypeStr.equals(KnownFusionType.PROMISCUOUS_5.toString())) {
+        } else if (type.equals(LinxFusionType.PROMISCUOUS_5)) {
             return "5' Promiscuous";
-        } else if (knownTypeStr.equals(KnownFusionType.PROMISCUOUS_3.toString())) {
+        } else if (type.equals(LinxFusionType.PROMISCUOUS_3)) {
             return "3' Promiscuous";
-        } else if (knownTypeStr.equals(KnownFusionType.IG_KNOWN_PAIR.toString())) {
+        } else if (type.equals(LinxFusionType.IG_KNOWN_PAIR)) {
             return "IG known pair";
-        } else if (knownTypeStr.equals(KnownFusionType.IG_PROMISCUOUS.toString())) {
+        } else if (type.equals(LinxFusionType.IG_PROMISCUOUS)) {
             return "IG promiscuous";
-        } else if (knownTypeStr.equals(KnownFusionType.EXON_DEL_DUP.toString())) {
+        } else if (type.equals(LinxFusionType.EXON_DEL_DUP)) {
             return "Exon del dup";
-        } else if (knownTypeStr.equals(KnownFusionType.PROMISCUOUS_BOTH)) {
+        } else if (type.equals(LinxFusionType.PROMISCUOUS_BOTH)) {
             return "5' and 3' Promiscuous";
         } else {
-            return knownTypeStr;
+            return type.toString();
         }
     }
 }

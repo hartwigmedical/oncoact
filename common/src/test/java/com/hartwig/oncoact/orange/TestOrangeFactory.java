@@ -25,6 +25,7 @@ import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleRecord;
 import com.hartwig.oncoact.orange.purple.PurpleCharacteristics;
 import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleDriverType;
 import com.hartwig.oncoact.orange.purple.PurpleFit;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
@@ -114,6 +115,9 @@ public final class TestOrangeFactory {
                         .build())
                 .build();
 
+        PurpleCopyNumber copyNumber =
+                TestPurpleFactory.copyNumberBuilder().chromosome("1").start(10).end(20).averageTumorCopyNumber(2.1).build();
+
         PurpleGainLoss gain = TestPurpleFactory.gainLossBuilder()
                 .gene("MYC")
                 .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
@@ -149,6 +153,7 @@ public final class TestOrangeFactory {
                         .build())
                 .addAllSomaticVariants(variant)
                 .addReportableSomaticVariants(variant)
+                .addAllSomaticCopyNumbers(copyNumber)
                 .addAllSomaticGainsLosses(gain, loss)
                 .addReportableSomaticGainsLosses(gain, loss)
                 .build();

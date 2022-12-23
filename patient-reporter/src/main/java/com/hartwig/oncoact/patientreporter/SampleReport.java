@@ -3,10 +3,10 @@ package com.hartwig.oncoact.patientreporter;
 import java.time.LocalDate;
 
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.common.lims.hospital.HospitalContactData;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.hospital.HospitalContactData;
 import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;
@@ -15,8 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class SampleReport {
 
     @NotNull

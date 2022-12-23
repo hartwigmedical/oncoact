@@ -9,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class PanelReport implements com.hartwig.oncoact.patientreporter.PanelReport {
 
     @Override
@@ -25,7 +24,7 @@ public abstract class PanelReport implements com.hartwig.oncoact.patientreporter
     public abstract String pipelineVersion();
 
     @NotNull
-    public abstract String  VCFFilename();
+    public abstract String VCFFilename();
 
     @Override
     @NotNull

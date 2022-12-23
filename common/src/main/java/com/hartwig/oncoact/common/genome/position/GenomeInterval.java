@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.common.genome.position;
 
+import com.hartwig.oncoact.genome.GenomePosition;
+
 import org.jetbrains.annotations.Nullable;
 
 public interface GenomeInterval extends GenomePosition {

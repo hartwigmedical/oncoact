@@ -61,20 +61,24 @@ import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleAllelicDepth;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleCharacteristics;
+import com.hartwig.oncoact.orange.purple.ImmutablePurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleDriver;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleFit;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.ImmutablePurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleRecord;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleVariant;
 import com.hartwig.oncoact.orange.purple.PurpleAllelicDepth;
 import com.hartwig.oncoact.orange.purple.PurpleCharacteristics;
 import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleDriver;
 import com.hartwig.oncoact.orange.purple.PurpleDriverType;
 import com.hartwig.oncoact.orange.purple.PurpleFit;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
@@ -141,6 +145,8 @@ public final class OrangeJson {
                     .reportableSomaticVariants(toPurpleVariants(array(purple, "reportableSomaticVariants")))
                     .allGermlineVariants(toPurpleVariants(nullableArray(purple, "allGermlineVariants")))
                     .reportableGermlineVariants(toPurpleVariants(nullableArray(purple, "reportableGermlineVariants")))
+                    .allSomaticCopyNumbers(toPurpleCopyNumbers(array(purple, "allSomaticCopyNumbers")))
+                    .allSomaticGeneCopyNumbers(toPurpleGeneCopyNumbers(array(purple, "allSomaticGeneCopyNumbers")))
                     .allSomaticGainsLosses(toPurpleGainsLosses(array(purple, "allSomaticGainsLosses")))
                     .reportableSomaticGainsLosses(toPurpleGainsLosses(array(purple, "reportableSomaticGainsLosses")))
                     .build();
@@ -274,6 +280,37 @@ public final class OrangeJson {
         }
 
         @NotNull
+        private static Set<PurpleCopyNumber> toPurpleCopyNumbers(@NotNull JsonArray copyNumberArray) {
+            Set<PurpleCopyNumber> copyNumbers = Sets.newHashSet();
+            for (JsonElement element : copyNumberArray) {
+                JsonObject copyNumber = element.getAsJsonObject();
+                copyNumbers.add(ImmutablePurpleCopyNumber.builder()
+                        .chromosome(string(copyNumber, "chromosome"))
+                        .start(integer(copyNumber, "start"))
+                        .end(integer(copyNumber, "end"))
+                        .averageTumorCopyNumber(number(copyNumber, "averageTumorCopyNumber"))
+                        .build());
+            }
+            return copyNumbers;
+        }
+
+        @NotNull
+        private static Set<PurpleGeneCopyNumber> toPurpleGeneCopyNumbers(@NotNull JsonArray geneCopyNumberArray) {
+            Set<PurpleGeneCopyNumber> geneCopyNumbers = Sets.newHashSet();
+            for (JsonElement element : geneCopyNumberArray) {
+                JsonObject geneCopyNumber = element.getAsJsonObject();
+                geneCopyNumbers.add(ImmutablePurpleGeneCopyNumber.builder()
+                        .gene(string(geneCopyNumber, "geneName"))
+                        .chromosome(string(geneCopyNumber, "chromosome"))
+                        .chromosomeBand(string(geneCopyNumber, "chromosomeBand"))
+                        .minCopyNumber(number(geneCopyNumber, "minCopyNumber"))
+                        .minMinorAlleleCopyNumber(number(geneCopyNumber, "minMinorAlleleCopyNumber"))
+                        .build());
+            }
+            return geneCopyNumbers;
+        }
+
+        @NotNull
         private static Set<PurpleGainLoss> toPurpleGainsLosses(@NotNull JsonArray gainLossArray) {
             Set<PurpleGainLoss> gainsLosses = Sets.newHashSet();
             for (JsonElement element : gainLossArray) {
@@ -336,11 +373,22 @@ public final class OrangeJson {
                 JsonObject breakend = element.getAsJsonObject();
                 breakends.add(ImmutableLinxBreakend.builder()
                         .reported(bool(breakend, "reportedDisruption"))
+                        .disruptive(bool(breakend, "disruptive"))
                         .svId(integer(breakend, "svId"))
                         .gene(string(breakend, "gene"))
+                        .chromosome(string(breakend, "chromosome"))
+                        .chrBand(string(breakend, "chrBand"))
+                        .transcriptId(string(breakend, "transcriptId"))
+                        .canonical(bool(breakend, "canonical"))
                         .type(LinxBreakendType.valueOf(string(breakend, "type")))
                         .junctionCopyNumber(number(breakend, "junctionCopyNumber"))
                         .undisruptedCopyNumber(number(breakend, "undisruptedCopyNumber"))
+                        .nextSpliceExonRank(integer(breakend, "nextSpliceExonRank"))
+                        .exonUp(integer(breakend, "exonUp"))
+                        .exonDown(integer(breakend, "exonDown"))
+                        .geneOrientation(string(breakend, "geneOrientation"))
+                        .orientation(integer(breakend, "orientation"))
+                        .strand(integer(breakend, "strand"))
                         .regionType(LinxRegionType.valueOf(string(breakend, "regionType")))
                         .codingType(LinxCodingType.valueOf(string(breakend, "codingType")))
                         .build());
@@ -438,6 +486,7 @@ public final class OrangeJson {
                         .somaticMissense(number(allele, "somaticMissense"))
                         .somaticNonsenseOrFrameshift(number(allele, "somaticNonsenseOrFrameshift"))
                         .somaticSplice(number(allele, "somaticSplice"))
+                        .somaticSynonymous(number(allele, "somaticSynonymous"))
                         .somaticInframeIndel(number(allele, "somaticInframeIndel"))
                         .build());
             }

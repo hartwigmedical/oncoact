@@ -4,27 +4,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.LinxFusion;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
-import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
-import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.disruption.GeneDisruption;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.oncoact.orange.purple.PurpleTumorMutationalStatus;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class GenomicAnalysis {
 
     public abstract Set<PurpleQCStatus> purpleQCStatus();
@@ -55,12 +54,12 @@ public abstract class GenomicAnalysis {
     public abstract double microsatelliteIndelsPerMb();
 
     @NotNull
-    public abstract MicrosatelliteStatus microsatelliteStatus();
+    public abstract PurpleMicrosatelliteStatus microsatelliteStatus();
 
     public abstract int tumorMutationalLoad();
 
     @NotNull
-    public abstract TumorMutationalStatus tumorMutationalLoadStatus();
+    public abstract PurpleTumorMutationalStatus tumorMutationalLoadStatus();
 
     public abstract double tumorMutationalBurden();
 
@@ -70,7 +69,7 @@ public abstract class GenomicAnalysis {
     public abstract ChordStatus hrdStatus();
 
     @NotNull
-    public abstract List<GainLoss> gainsAndLosses();
+    public abstract List<PurpleGainLoss> gainsAndLosses();
 
     @NotNull
     public abstract List<CnPerChromosomeArmData> cnPerChromosome();
@@ -82,10 +81,10 @@ public abstract class GenomicAnalysis {
     public abstract List<GeneDisruption> geneDisruptions();
 
     @NotNull
-    public abstract List<HomozygousDisruption> homozygousDisruptions();
+    public abstract List<LinxHomozygousDisruption> homozygousDisruptions();
 
     @NotNull
-    public abstract List<AnnotatedVirus> reportableViruses();
+    public abstract List<VirusInterpreterEntry> reportableViruses();
 
     @NotNull
     public abstract HlaAllelesReportingData hlaAlleles();

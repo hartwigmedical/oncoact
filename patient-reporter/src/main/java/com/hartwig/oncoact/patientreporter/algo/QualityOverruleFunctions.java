@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.common.hla.HlaReporting;
-import com.hartwig.oncoact.common.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.common.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
+import com.hartwig.oncoact.hla.ImmutableHlaReporting;
+import com.hartwig.oncoact.variant.ImmutableReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.jetbrains.annotations.NotNull;
 

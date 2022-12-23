@@ -18,13 +18,13 @@ import com.hartwig.oncoact.common.cuppa.interpretation.CuppaPrediction;
 import com.hartwig.oncoact.common.cuppa.interpretation.CuppaPredictionFactory;
 import com.hartwig.oncoact.common.cuppa.interpretation.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.common.cuppa.interpretation.MolecularTissueOriginReportingFactory;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.common.peach.PeachGenotype;
 import com.hartwig.oncoact.common.peach.PeachGenotypeFile;
 import com.hartwig.oncoact.common.pipeline.PipelineVersionFile;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantSource;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
@@ -111,9 +111,9 @@ public class AnalysedPatientReporter {
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
         for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
             if (pharmacogeneticsGenotypesMap.containsKey(pharmacogeneticsGenotype.gene())) {
-                List<PeachGenotype> curent = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
-                curent.add(pharmacogeneticsGenotype);
-                pharmacogeneticsGenotypesMap.put(pharmacogeneticsGenotype.gene(), curent);
+                List<PeachGenotype> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
+                current.add(pharmacogeneticsGenotype);
+                pharmacogeneticsGenotypesMap.put(pharmacogeneticsGenotype.gene(), current);
             } else {
                 pharmacogeneticsGenotypesMap.put(pharmacogeneticsGenotype.gene(), Lists.newArrayList(pharmacogeneticsGenotype));
             }

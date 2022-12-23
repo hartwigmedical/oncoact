@@ -65,7 +65,7 @@ public class SomaticVariantsTest {
 
         List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(create("PMS2"));
 
-        assertEquals(4, SomaticVariants.determineMSIgenes(variants, gainLosses, homozygousDisruption).size());
+        assertEquals(4, SomaticVariants.determineMSIGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class SomaticVariantsTest {
         List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(create("RAD51C"));
 
 
-        assertEquals(4, SomaticVariants.determineHRDgenes(variants, gainLosses, homozygousDisruption).size());
+        assertEquals(4, SomaticVariants.determineHRDGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @NotNull

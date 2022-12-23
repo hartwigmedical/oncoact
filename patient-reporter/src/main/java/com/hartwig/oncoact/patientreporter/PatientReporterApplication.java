@@ -7,8 +7,8 @@ import java.util.List;
 
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFile;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.lims.LimsFactory;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -36,7 +36,7 @@ public class PatientReporterApplication {
     public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
 
     // Uncomment this line when generating an example report using CFReportWriterTest
-    //                public static final String VERSION = "7.26";
+    //                public static final String VERSION = "8.0";
 
     public static void main(@NotNull String[] args) throws IOException {
         LOGGER.info("Running patient reporter v{}", VERSION);
@@ -49,7 +49,7 @@ public class PatientReporterApplication {
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PatientReporter", options);
-            throw new IllegalArgumentException("Unexpected error, check inputs");
+            System.exit(1);
         }
 
         new PatientReporterApplication(config, DataUtil.formatDate(LocalDate.now())).run();

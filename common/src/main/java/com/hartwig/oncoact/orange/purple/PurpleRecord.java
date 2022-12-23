@@ -35,6 +35,12 @@ public abstract class PurpleRecord {
     public abstract Set<PurpleVariant> reportableGermlineVariants();
 
     @NotNull
+    public abstract Set<PurpleCopyNumber> allSomaticCopyNumbers();
+
+    @NotNull
+    public abstract Set<PurpleGeneCopyNumber> allSomaticGeneCopyNumbers();
+
+    @NotNull
     public abstract Set<PurpleGainLoss> allSomaticGainsLosses();
 
     @NotNull

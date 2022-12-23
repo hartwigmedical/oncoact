@@ -5,11 +5,11 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
-import com.hartwig.oncoact.common.purple.ChromosomeArm;
-import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
-import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.genome.ChromosomeArm;
+import com.hartwig.oncoact.genome.HumanChromosome;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
 import com.hartwig.oncoact.util.DataUtil;
 
@@ -21,7 +21,7 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static List<GainLoss> sort(@NotNull List<GainLoss> gainsAndLosses) {
+    public static List<PurpleGainLoss> sort(@NotNull List<PurpleGainLoss> gainsAndLosses) {
         return gainsAndLosses.stream().sorted((gainLoss1, gainLoss2) -> {
             String location1 = GeneUtil.zeroPrefixed(gainLoss1.chromosome() + gainLoss1.chromosomeBand());
             String location2 = GeneUtil.zeroPrefixed(gainLoss2.chromosome() + gainLoss2.chromosomeBand());
@@ -35,11 +35,11 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static Set<String> amplifiedGenes(@NotNull List<GainLoss> reportableGainLosses) {
+    public static Set<String> amplifiedGenes(@NotNull List<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = new TreeSet<String>();
-        for (GainLoss gainLoss : reportableGainLosses) {
-            if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_GAIN
-                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN) {
+        for (PurpleGainLoss gainLoss : reportableGainLosses) {
+            if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_GAIN
+                    || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_GAIN) {
                 genes.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
             }
         }
@@ -47,11 +47,11 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static Set<String> lostGenes(@NotNull List<GainLoss> reportableGainLosses) {
+    public static Set<String> lostGenes(@NotNull List<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = new TreeSet<String>();
-        for (GainLoss gainLoss : reportableGainLosses) {
-            if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS
-                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS) {
+        for (PurpleGainLoss gainLoss : reportableGainLosses) {
+            if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS
+                    || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS) {
                 genes.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
             }
         }
@@ -60,7 +60,7 @@ public final class GainsAndLosses {
 
     @NotNull
     public static String chromosomeArmCopyNumber(@NotNull List<CnPerChromosomeArmData> cnPerChromosomeData,
-            @NotNull GainLoss gainLoss) {
+            @NotNull PurpleGainLoss gainLoss) {
         ChromosomeArm chromosomeArm;
         if (gainLoss.chromosomeBand().startsWith("p")) {
             chromosomeArm = ChromosomeArm.P_ARM;

@@ -2,6 +2,8 @@ package com.hartwig.oncoact.common.linx;
 
 import java.util.List;
 
+import com.hartwig.oncoact.disruption.GeneDisruption;
+
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

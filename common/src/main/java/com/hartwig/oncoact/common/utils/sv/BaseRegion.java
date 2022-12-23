@@ -3,7 +3,7 @@ package com.hartwig.oncoact.common.utils.sv;
 import static com.hartwig.oncoact.common.utils.sv.StartEndIterator.SE_END;
 import static com.hartwig.oncoact.common.utils.sv.StartEndIterator.SE_START;
 
-import com.hartwig.oncoact.common.genome.region.GenomeRegion;
+import com.hartwig.oncoact.genome.GenomeRegion;
 
 import org.jetbrains.annotations.NotNull;
 

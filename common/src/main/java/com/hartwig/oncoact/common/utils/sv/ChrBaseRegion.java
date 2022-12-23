@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
-import com.hartwig.oncoact.common.genome.region.GenomeRegion;
+import com.hartwig.oncoact.genome.GenomeRegion;
+import com.hartwig.oncoact.genome.HumanChromosome;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;

@@ -12,10 +12,10 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.common.drivercatalog.DriverImpact;
-import com.hartwig.oncoact.common.genome.position.GenomePosition;
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
 import com.hartwig.oncoact.common.variant.impact.VariantImpact;
 import com.hartwig.oncoact.common.variant.impact.VariantImpactSerialiser;
+import com.hartwig.oncoact.genome.GenomePosition;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

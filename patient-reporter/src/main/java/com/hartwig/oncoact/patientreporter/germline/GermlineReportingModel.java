@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +47,7 @@ public class GermlineReportingModel {
                 return false;
             }
             case ONLY_GERMLINE_HOM: {
-                return germlineVariant.genotypeStatus() == GenotypeStatus.HOM_ALT || germlineGenesWithIndependentHits.contains(
+                return germlineVariant.genotypeStatus() == PurpleGenotypeStatus.HOM_ALT || germlineGenesWithIndependentHits.contains(
                         germlineVariant.gene());
             }
             case ONLY_SPECIFIC_VARIANT: {

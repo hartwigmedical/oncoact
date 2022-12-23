@@ -6,27 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.chord.ChordData;
-import com.hartwig.oncoact.common.chord.ChordDataFile;
-import com.hartwig.oncoact.common.fusion.KnownFusionCache;
-import com.hartwig.oncoact.common.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.common.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.common.hla.LilacSummaryData;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.linx.GeneDisruptionFactory;
-import com.hartwig.oncoact.common.linx.LinxData;
-import com.hartwig.oncoact.common.linx.LinxDataLoader;
-import com.hartwig.oncoact.common.purple.loader.PurpleData;
-import com.hartwig.oncoact.common.purple.loader.PurpleDataLoader;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantFactory;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.virus.VirusInterpreterData;
-import com.hartwig.oncoact.common.virus.VirusInterpreterDataLoader;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
+import com.hartwig.oncoact.disruption.GeneDisruption;
+import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
+import com.hartwig.oncoact.genome.RefGenomeCoordinates;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
+import com.hartwig.oncoact.knownfusion.KnownFusionCache;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.orange.OrangeJson;
+import com.hartwig.oncoact.orange.OrangeRecord;
+import com.hartwig.oncoact.orange.OrangeRefGenomeVersion;
+import com.hartwig.oncoact.orange.purple.PurpleRecord;
+import com.hartwig.oncoact.orange.purple.PurpleVariant;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
@@ -35,6 +32,9 @@ import com.hartwig.oncoact.patientreporter.algo.orange.LossOfHeterozygositySelec
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantFactory;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,91 +55,90 @@ public class GenomicAnalyzer {
     @NotNull
     public GenomicAnalysis run(@NotNull String tumorSampleId, @Nullable String referenceSampleId, @NotNull PatientReporterConfig config,
             @NotNull LimsGermlineReportingLevel germlineReportingLevel, @NotNull KnownFusionCache knownFusionCache) throws IOException {
-        PurpleData purpleData = PurpleDataLoader.load(tumorSampleId,
-                referenceSampleId,
-                null,
-                config.purpleQcFile(),
-                config.purplePurityTsv(),
-                config.purpleSomaticDriverCatalogTsv(),
-                config.purpleSomaticVariantVcf(),
-                config.purpleGermlineDriverCatalogTsv(),
-                config.purpleGermlineVariantVcf(),
-                config.purpleGeneCopyNumberTsv(),
-                config.purpleSomaticCopyNumberTsv(),
-                null,
-                config.refGenomeVersion());
-
-        LinxData linxData = LinxDataLoader.load(config.linxSvsTsv(),
-                config.linxFusionTsv(),
-                config.linxBreakendTsv(),
-                config.linxDriverCatalogTsv(),
-                null,
-                null);
+        OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
         List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(BreakendSelector.selectInterestingUnreportedBreakends(linxData.allBreakends(),
-                        linxData.reportableFusions(),
-                        knownFusionCache), linxData.allStructuralVariants());
+                GeneDisruptionFactory.convert(BreakendSelector.selectInterestingUnreportedBreakends(orange.linx().allBreakends(),
+                        orange.linx().reportableFusions(),
+                        knownFusionCache), orange.linx().structuralVariants());
 
-        List<GeneDisruption> reportableGeneDisruptions = Lists.newArrayList();
-        reportableGeneDisruptions.addAll(linxData.reportableGeneDisruptions());
+        List<GeneDisruption> reportableGeneDisruptions =
+                GeneDisruptionFactory.convert(orange.linx().reportableBreakends(), orange.linx().structuralVariants());
         reportableGeneDisruptions.addAll(additionalSuspectBreakends);
 
-        ChordData chordAnalysis = ChordDataFile.read(config.chordPredictionTxt(), true);
-
         List<LohGenesReporting> suspectGeneCopyNumbersHRDWithLOH =
-                LossOfHeterozygositySelector.selectHRDGenesWithLOH(purpleData.allSomaticGeneCopyNumbers(), chordAnalysis.hrStatus());
+                LossOfHeterozygositySelector.selectHRDGenesWithLOH(orange.purple().allSomaticGeneCopyNumbers(), orange.chord().hrStatus());
         LOGGER.info(" Found an additional {} suspect gene copy numbers HRD with LOH", suspectGeneCopyNumbersHRDWithLOH.size());
 
         List<LohGenesReporting> suspectGeneCopyNumbersMSIWithLOH =
-                LossOfHeterozygositySelector.selectMSIGenesWithLOH(purpleData.allSomaticGeneCopyNumbers(),
-                        purpleData.microsatelliteStatus());
+                LossOfHeterozygositySelector.selectMSIGenesWithLOH(orange.purple().allSomaticGeneCopyNumbers(),
+                        orange.purple().characteristics().microsatelliteStatus());
         LOGGER.info(" Found an additional {} suspect gene copy numbers MSI with LOH", suspectGeneCopyNumbersMSIWithLOH.size());
 
-        VirusInterpreterData virusInterpreterData = VirusInterpreterDataLoader.load(config.annotatedVirusTsv());
-
+        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
+        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
         List<ReportableVariant> reportableVariants =
-                ReportableVariantFactory.mergeVariantLists(purpleData.reportableGermlineVariants(), purpleData.reportableSomaticVariants());
+                ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
                 determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
 
-        LilacSummaryData lilacSummaryData = LilacSummaryData.load(config.lilacQcCsv(), config.lilacResultCsv());
-        HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(lilacSummaryData, purpleData.hasReliablePurity());
+        HlaAllelesReportingData hlaReportingData =
+                HlaAllelesReportingFactory.convertToReportData(orange.lilac(), orange.purple().fit().containsTumorCells());
 
         List<ProtectEvidence> reportableEvidenceItems = extractReportableEvidenceItems(config.protectEvidenceTsv());
         List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidenceItems);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidenceItems);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidenceItems);
 
+        RefGenomeCoordinates refGenomeCoordinates =
+                orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
+        List<CnPerChromosomeArmData> copyNumberPerChromosome =
+                CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
+
         return ImmutableGenomicAnalysis.builder()
-                .purpleQCStatus(purpleData.qc().status())
-                .impliedPurity(purpleData.purity())
-                .hasReliablePurity(purpleData.hasReliablePurity())
-                .hasReliableQuality(purpleData.hasReliableQuality())
-                .averageTumorPloidy(purpleData.ploidy())
+                .purpleQCStatus(orange.purple().fit().qcStatus())
+                .impliedPurity(orange.purple().fit().purity())
+                .hasReliablePurity(orange.purple().fit().containsTumorCells())
+                .hasReliableQuality(orange.purple().fit().hasSufficientQuality())
+                .averageTumorPloidy(orange.purple().fit().ploidy())
                 .tumorSpecificEvidence(nonTrialsOnLabel)
                 .clinicalTrials(trialsOnLabel)
                 .offLabelEvidence(nonTrialsOffLabel)
                 .reportableVariants(reportableVariants)
                 .notifyGermlineStatusPerVariant(notifyGermlineStatusPerVariant)
-                .microsatelliteIndelsPerMb(purpleData.microsatelliteIndelsPerMb())
-                .microsatelliteStatus(purpleData.microsatelliteStatus())
-                .tumorMutationalLoad(purpleData.tumorMutationalLoad())
-                .tumorMutationalLoadStatus(purpleData.tumorMutationalLoadStatus())
-                .tumorMutationalBurden(purpleData.tumorMutationalBurdenPerMb())
-                .hrdValue(chordAnalysis.hrdValue())
-                .hrdStatus(chordAnalysis.hrStatus())
-                .gainsAndLosses(purpleData.reportableSomaticGainsLosses())
-                .cnPerChromosome(purpleData.copyNumberPerChromosome())
-                .geneFusions(linxData.reportableFusions())
+                .microsatelliteIndelsPerMb(orange.purple().characteristics().microsatelliteIndelsPerMb())
+                .microsatelliteStatus(orange.purple().characteristics().microsatelliteStatus())
+                .tumorMutationalLoad(orange.purple().characteristics().tumorMutationalLoad())
+                .tumorMutationalLoadStatus(orange.purple().characteristics().tumorMutationalLoadStatus())
+                .tumorMutationalBurden(orange.purple().characteristics().tumorMutationalBurdenPerMb())
+                .hrdValue(orange.chord().hrdValue())
+                .hrdStatus(orange.chord().hrStatus())
+                .gainsAndLosses(orange.purple().reportableSomaticGainsLosses())
+                .cnPerChromosome(copyNumberPerChromosome)
+                .geneFusions(orange.linx().reportableFusions())
                 .geneDisruptions(reportableGeneDisruptions)
-                .homozygousDisruptions(linxData.homozygousDisruptions())
-                .reportableViruses(virusInterpreterData.reportableViruses())
+                .homozygousDisruptions(orange.linx().homozygousDisruptions())
+                .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .hlaAlleles(hlaReportingData)
                 .suspectGeneCopyNumbersHRDWithLOH(suspectGeneCopyNumbersHRDWithLOH)
                 .suspectGeneCopyNumbersMSIWithLOH(suspectGeneCopyNumbersMSIWithLOH)
                 .build();
+    }
+
+    @NotNull
+    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
+        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
+    }
+
+    @NotNull
+    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
+        Set<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
+        if (reportableGermlineVariants == null) {
+            return Sets.newHashSet();
+        }
+
+        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     @NotNull
@@ -166,7 +165,8 @@ public class GenomicAnalyzer {
         return notifyGermlineStatusPerVariant;
     }
 
-    public static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
+    @VisibleForTesting
+    static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
             @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {

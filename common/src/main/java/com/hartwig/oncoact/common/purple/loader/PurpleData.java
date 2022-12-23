@@ -2,14 +2,15 @@ package com.hartwig.oncoact.common.purple.loader;
 
 import java.util.List;
 
-import com.hartwig.oncoact.common.purple.PurpleQC;
-import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
+import com.hartwig.oncoact.common.purple.FittedPurityMethod;
 import com.hartwig.oncoact.common.purple.GeneCopyNumber;
 import com.hartwig.oncoact.common.purple.GermlineDeletion;
-import com.hartwig.oncoact.common.purple.FittedPurityMethod;
+import com.hartwig.oncoact.common.purple.PurpleQC;
+import com.hartwig.oncoact.common.purple.TumorMutationalStatus;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.SomaticVariant;
 import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

@@ -8,7 +8,10 @@ import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LohGenes {
+public final class LohGenes {
+
+    private LohGenes() {
+    }
 
     @NotNull
     public static List<LohGenesReporting> sort(@NotNull List<LohGenesReporting> lohGenes) {

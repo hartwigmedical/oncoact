@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.orange.purple;
 
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,6 +62,21 @@ public final class TestPurpleFactory {
                 .hgvsProteinImpact(Strings.EMPTY)
                 .spliceRegion(false)
                 .codingEffect(PurpleCodingEffect.UNDEFINED);
+    }
+
+    @NotNull
+    public static ImmutablePurpleCopyNumber.Builder copyNumberBuilder() {
+        return ImmutablePurpleCopyNumber.builder().chromosome(Strings.EMPTY).start(0).end(0).averageTumorCopyNumber(0D);
+    }
+
+    @NotNull
+    public static ImmutablePurpleGeneCopyNumber.Builder geneCopyNumberBuilder() {
+        return ImmutablePurpleGeneCopyNumber.builder()
+                .gene(Strings.EMPTY)
+                .chromosome(Strings.EMPTY)
+                .chromosomeBand(Strings.EMPTY)
+                .minCopyNumber(0D)
+                .minMinorAlleleCopyNumber(0D);
     }
 
     @NotNull

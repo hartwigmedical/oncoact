@@ -7,8 +7,8 @@ import java.util.List;
 
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFile;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.lims.LimsFactory;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;

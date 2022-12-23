@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.common.drivercatalog.dnds;
 
-import com.hartwig.oncoact.common.genome.position.GenomePosition;
 import com.hartwig.oncoact.common.variant.CodingEffect;
+import com.hartwig.oncoact.genome.GenomePosition;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

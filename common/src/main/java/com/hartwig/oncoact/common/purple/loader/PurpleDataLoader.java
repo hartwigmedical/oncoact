@@ -21,21 +21,22 @@ import com.hartwig.oncoact.common.drivercatalog.panel.DriverGeneGermlineReportin
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGenePanel;
 import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.ImmutableDriverGenePanel;
-import com.hartwig.oncoact.common.genome.refgenome.RefGenomeCoordinates;
 import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
-import com.hartwig.oncoact.common.purple.PurpleQCFile;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
-import com.hartwig.oncoact.common.purple.PurpleCopyNumberFile;
 import com.hartwig.oncoact.common.purple.GeneCopyNumber;
 import com.hartwig.oncoact.common.purple.GeneCopyNumberFile;
 import com.hartwig.oncoact.common.purple.GermlineDeletion;
 import com.hartwig.oncoact.common.purple.PurityContext;
 import com.hartwig.oncoact.common.purple.PurityContextFile;
+import com.hartwig.oncoact.common.purple.PurpleCommon;
+import com.hartwig.oncoact.common.purple.PurpleCopyNumberFile;
+import com.hartwig.oncoact.common.purple.PurpleQCFile;
+import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.common.variant.SomaticVariant;
 import com.hartwig.oncoact.common.variant.SomaticVariantFactory;
-import com.hartwig.oncoact.common.purple.PurpleCommon;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.genome.RefGenomeCoordinates;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -102,7 +103,6 @@ public final class PurpleDataLoader
         {
             RefGenomeCoordinates refGenomeCoordinates =
                     refGenomeVersion == RefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
-            copyNumberPerChromosome = CnPerChromosomeFactory.generate(copyNumberTsv, refGenomeCoordinates);
             LOGGER.debug(" Generated chromosomal arm copy numbers from {}", copyNumberTsv);
         }
 

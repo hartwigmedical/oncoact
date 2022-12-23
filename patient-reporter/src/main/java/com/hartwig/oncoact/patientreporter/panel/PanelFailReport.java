@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class PanelFailReport implements PanelReport {
 
     @Override
@@ -23,7 +22,7 @@ public abstract class PanelFailReport implements PanelReport {
     public abstract String qsFormNumber();
 
     @NotNull
-    public abstract PanelFailReason  panelFailReason();
+    public abstract PanelFailReason panelFailReason();
 
     @Override
     @NotNull

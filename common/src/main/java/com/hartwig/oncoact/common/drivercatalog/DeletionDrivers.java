@@ -9,11 +9,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGene;
 import com.hartwig.oncoact.common.drivercatalog.panel.DriverGenePanel;
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
 import com.hartwig.oncoact.common.purple.GeneCopyNumber;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
 import com.hartwig.oncoact.common.purple.SegmentSupport;
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.genome.HumanChromosome;
+import com.hartwig.oncoact.util.Doubles;
 
 public class DeletionDrivers
 {

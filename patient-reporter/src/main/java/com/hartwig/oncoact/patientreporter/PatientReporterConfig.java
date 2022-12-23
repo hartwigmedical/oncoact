@@ -34,7 +34,6 @@ public interface PatientReporterConfig {
     String KNOWN_FUSION_FILE = "known_fusion_file";
     String PRIMARY_TUMOR_TSV = "primary_tumor_tsv";
     String LIMS_DIRECTORY = "lims_dir";
-    String PEACH_GENOTYPE_TSV = "peach_genotype_tsv";
 
     String RVA_LOGO = "rva_logo";
     String COMPANY_LOGO = "company_logo";
@@ -51,6 +50,7 @@ public interface PatientReporterConfig {
     String QC_FAIL_REASON = "qc_fail_reason";
 
     // Params specific for actual patient reports
+    String ORANGE_JSON = "orange_json";
     String PURPLE_PURITY_TSV = "purple_purity_tsv"; // Also used for certain QC fail reports in case deep WGS is available.
     String PURPLE_QC_FILE = "purple_qc_file"; // Also used for certain QC fail reports in case deep WGS is available.
     String PURPLE_SOMATIC_DRIVER_CATALOG_TSV = "purple_somatic_driver_catalog_tsv";
@@ -77,7 +77,6 @@ public interface PatientReporterConfig {
 
     // Resources used for generating an analysed patient report
     String GERMLINE_REPORTING_TSV = "germline_reporting_tsv";
-    String SAMPLE_SUMMARY_TSV = "sample_summary_tsv";
     String SAMPLE_SPECIAL_REMARK_TSV = "sample_special_remark_tsv";
 
     // Some additional optional params and flags
@@ -99,15 +98,14 @@ public interface PatientReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(TUMOR_SAMPLE_ID, true, "The sample ID for which a patient report will be generated.");
+        options.addOption(TUMOR_SAMPLE_ID, true, "The tumor sample ID for which a report is generated.");
         options.addOption(TUMOR_SAMPLE_BARCODE, true, "The sample barcode for which a patient report will be generated.");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
-        options.addOption(KNOWN_FUSION_FILE, true, "Path to the known fusion file.");
 
+        options.addOption(KNOWN_FUSION_FILE, true, "Path to the known fusion file.");
         options.addOption(PRIMARY_TUMOR_TSV, true, "Path towards the (curated) primary tumor TSV.");
         options.addOption(LIMS_DIRECTORY, true, "Path towards the directory holding the LIMS data");
-        options.addOption(PEACH_GENOTYPE_TSV, true, "Path towards the peach genotype TSV.");
 
         options.addOption(RVA_LOGO, true, "Path towards an image file containing the RVA logo.");
         options.addOption(COMPANY_LOGO, true, "Path towards an image file containing the company logo.");
@@ -121,6 +119,7 @@ public interface PatientReporterConfig {
         options.addOption(QC_FAIL, false, "If set, generates a qc-fail report.");
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
 
+        options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(PURPLE_PURITY_TSV, true, "Path towards the purple purity TSV.");
         options.addOption(PURPLE_QC_FILE, true, "Path towards the purple qc file.");
         options.addOption(PURPLE_SOMATIC_DRIVER_CATALOG_TSV, true, "Path towards the purple somatic driver catalog TSV.");
@@ -153,10 +152,10 @@ public interface PatientReporterConfig {
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
-        options.addOption(SAMPLE_NAME_FOR_REPORT, true, String.format("Sample name used for printing on the report and for report file name. By default use value of %s.", TUMOR_SAMPLE_ID));
+        options.addOption(SAMPLE_NAME_FOR_REPORT, true, "Sample name used for printing on the report and for report file name.");
         options.addOption(ALLOW_DEFAULT_COHORT_CONFIG, false, "If provided, use a default cohort config if for this sample no cohort is configured in LIMS.");
 
-        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is requierde");
+        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
         options.addOption(EXPECTED_PIPELINE_VERSION, true, "String of the expected pipeline version");
         options.addOption(OVERRIDE_PIPELINE_VERSION, false, "if set, the check for pipeline version is overridden");
@@ -194,9 +193,6 @@ public interface PatientReporterConfig {
     String limsDir();
 
     @NotNull
-    String peachGenotypeTsv();
-
-    @NotNull
     String rvaLogo();
 
     @NotNull
@@ -212,6 +208,9 @@ public interface PatientReporterConfig {
 
     @Nullable
     QCFailReason qcFailReason();
+
+    @NotNull
+    String orangeJson();
 
     @NotNull
     String purplePurityTsv();
@@ -330,6 +329,7 @@ public interface PatientReporterConfig {
         }
 
         String pipelineVersion = null;
+        String orangeJson = Strings.EMPTY;
         String purplePurityTsv = Strings.EMPTY;
         String purpleQcFile = Strings.EMPTY;
         String purpleSomaticDriverCatalogTsv = Strings.EMPTY;
@@ -347,7 +347,6 @@ public interface PatientReporterConfig {
         String cuppaResultCsv = Strings.EMPTY;
         String cuppaPlot = Strings.EMPTY;
         String annotatedVirusTsv = Strings.EMPTY;
-        String peachGenotypeTsv = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
         String lilacResultCsv = Strings.EMPTY;
         String lilacQcCsv = Strings.EMPTY;
@@ -362,14 +361,15 @@ public interface PatientReporterConfig {
             if (requirePipelineVersion) {
                 pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
             }
+            orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
             purplePurityTsv = nonOptionalFile(cmd, PURPLE_PURITY_TSV);
             purpleQcFile = nonOptionalFile(cmd, PURPLE_QC_FILE);
-            peachGenotypeTsv = nonOptionalFile(cmd, PEACH_GENOTYPE_TSV);
         } else if (!isQCFail) {
             if (requirePipelineVersion) {
                 pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
             }
 
+            orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
             purplePurityTsv = nonOptionalFile(cmd, PURPLE_PURITY_TSV);
             purpleQcFile = nonOptionalFile(cmd, PURPLE_QC_FILE);
             purpleSomaticDriverCatalogTsv = nonOptionalFile(cmd, PURPLE_SOMATIC_DRIVER_CATALOG_TSV);
@@ -387,7 +387,6 @@ public interface PatientReporterConfig {
             cuppaResultCsv = nonOptionalFile(cmd, CUPPA_RESULT_CSV);
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
             annotatedVirusTsv = nonOptionalFile(cmd, ANNOTATED_VIRUS_TSV);
-            peachGenotypeTsv = nonOptionalFile(cmd, PEACH_GENOTYPE_TSV);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
             lilacQcCsv = nonOptionalFile(cmd, LILAC_QC_CSV);
             lilacResultCsv = nonOptionalFile(cmd, LILAC_RESULT_CSV);
@@ -417,6 +416,7 @@ public interface PatientReporterConfig {
                 .udiDi(nonOptionalValue(cmd, UDI_DI))
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
+                .orangeJson(orangeJson)
                 .purplePurityTsv(purplePurityTsv)
                 .purpleQcFile(purpleQcFile)
                 .purpleSomaticDriverCatalogTsv(purpleSomaticDriverCatalogTsv)
@@ -434,7 +434,6 @@ public interface PatientReporterConfig {
                 .cuppaResultCsv(cuppaResultCsv)
                 .cuppaPlot(cuppaPlot)
                 .annotatedVirusTsv(annotatedVirusTsv)
-                .peachGenotypeTsv(peachGenotypeTsv)
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .lilacResultCsv(lilacResultCsv)
                 .lilacQcCsv(lilacQcCsv)

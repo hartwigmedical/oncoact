@@ -3,11 +3,11 @@ package com.hartwig.oncoact.patientreporter.algo.orange;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.fusion.KnownFusionCache;
-import com.hartwig.oncoact.common.fusion.KnownFusionData;
-import com.hartwig.oncoact.common.fusion.KnownFusionType;
-import com.hartwig.oncoact.common.linx.LinxBreakend;
-import com.hartwig.oncoact.common.linx.LinxFusion;
+import com.hartwig.oncoact.knownfusion.KnownFusionCache;
+import com.hartwig.oncoact.knownfusion.KnownFusionData;
+import com.hartwig.oncoact.knownfusion.KnownFusionType;
+import com.hartwig.oncoact.orange.linx.LinxBreakend;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +21,11 @@ public final class BreakendSelector {
     }
 
     @NotNull
-    public static List<LinxBreakend> selectInterestingUnreportedBreakends(@NotNull List<LinxBreakend> allBreakends,
-            @NotNull List<LinxFusion> reportableFusions, @NotNull KnownFusionCache knownFusionCache) {
+    public static List<LinxBreakend> selectInterestingUnreportedBreakends(@NotNull Iterable<LinxBreakend> allBreakends,
+            @NotNull Iterable<LinxFusion> reportableFusions, @NotNull KnownFusionCache knownFusionCache) {
         List<LinxBreakend> interestingUnreportedBreakends = Lists.newArrayList();
         for (LinxBreakend breakend : allBreakends) {
-            if (!breakend.reportedDisruption() && breakend.disruptive()) {
+            if (!breakend.reported() && breakend.disruptive()) {
                 if (isUnreportedBreakInPromiscuousExonRange(knownFusionCache, reportableFusions, breakend)) {
                     interestingUnreportedBreakends.add(breakend);
                 }
@@ -35,11 +35,11 @@ public final class BreakendSelector {
     }
 
     private static boolean isUnreportedBreakInPromiscuousExonRange(@NotNull KnownFusionCache knownFusionCache,
-            @NotNull List<LinxFusion> reportableFusions, @NotNull LinxBreakend breakend) {
+            @NotNull Iterable<LinxFusion> reportableFusions, @NotNull LinxBreakend breakend) {
         int nextExon = breakend.nextSpliceExonRank();
 
         KnownFusionData three =
-                findByThreeGene(knownFusionCache.getDataByType(KnownFusionType.PROMISCUOUS_3), breakend.gene(), breakend.transcriptId());
+                findByThreeGene(knownFusionCache.fusionsByType(KnownFusionType.PROMISCUOUS_3), breakend.gene(), breakend.transcriptId());
         if (three != null) {
             boolean hasReportableFusion = hasReportableThreeFusion(reportableFusions, breakend.gene(), nextExon);
             boolean hasDownstreamOrientation = breakend.geneOrientation().equals(DOWNSTREAM_ORIENTATION);
@@ -50,7 +50,7 @@ public final class BreakendSelector {
         }
 
         KnownFusionData five =
-                findByFiveGene(knownFusionCache.getDataByType(KnownFusionType.PROMISCUOUS_5), breakend.gene(), breakend.transcriptId());
+                findByFiveGene(knownFusionCache.fusionsByType(KnownFusionType.PROMISCUOUS_5), breakend.gene(), breakend.transcriptId());
         if (five != null) {
             boolean hasReportableFusion = hasReportableFiveFusion(reportableFusions, breakend.gene(), nextExon);
             boolean hasUpstreamOrientation = breakend.geneOrientation().equals(UPSTREAM_ORIENTATION);
@@ -67,7 +67,7 @@ public final class BreakendSelector {
         return exon >= exonRange[0] && exon <= exonRange[1];
     }
 
-    private static boolean hasReportableFiveFusion(@NotNull List<LinxFusion> reportableFusions, @NotNull String gene, int exon) {
+    private static boolean hasReportableFiveFusion(@NotNull Iterable<LinxFusion> reportableFusions, @NotNull String gene, int exon) {
         for (LinxFusion fusion : reportableFusions) {
             if (fusion.geneStart().equals(gene) && fusion.fusedExonUp() == exon) {
                 return true;
@@ -76,7 +76,7 @@ public final class BreakendSelector {
         return false;
     }
 
-    private static boolean hasReportableThreeFusion(@NotNull List<LinxFusion> reportableFusions, @NotNull String gene, int exon) {
+    private static boolean hasReportableThreeFusion(@NotNull Iterable<LinxFusion> reportableFusions, @NotNull String gene, int exon) {
         for (LinxFusion fusion : reportableFusions) {
             if (fusion.geneEnd().equals(gene) && fusion.fusedExonDown() == exon) {
                 return true;
@@ -86,10 +86,10 @@ public final class BreakendSelector {
     }
 
     @Nullable
-    private static KnownFusionData findByFiveGene(@NotNull List<KnownFusionData> knownFusions, @NotNull String geneToFind,
+    private static KnownFusionData findByFiveGene(@NotNull Iterable<KnownFusionData> knownFusions, @NotNull String geneToFind,
             @NotNull String transcriptToFind) {
         for (KnownFusionData knownFusion : knownFusions) {
-            if (knownFusion.FiveGene.equals(geneToFind) && knownFusion.specificExonsTransName().equals(transcriptToFind)) {
+            if (knownFusion.fiveGene().equals(geneToFind) && knownFusion.specificExonsTransName().equals(transcriptToFind)) {
                 return knownFusion;
             }
         }
@@ -97,10 +97,10 @@ public final class BreakendSelector {
     }
 
     @Nullable
-    private static KnownFusionData findByThreeGene(@NotNull List<KnownFusionData> knownFusions, @NotNull String geneToFind,
+    private static KnownFusionData findByThreeGene(@NotNull Iterable<KnownFusionData> knownFusions, @NotNull String geneToFind,
             @NotNull String transcriptToFind) {
         for (KnownFusionData knownFusion : knownFusions) {
-            if (knownFusion.ThreeGene.equals(geneToFind) && knownFusion.specificExonsTransName().equals(transcriptToFind)) {
+            if (knownFusion.threeGene().equals(geneToFind) && knownFusion.specificExonsTransName().equals(transcriptToFind)) {
                 return knownFusion;
             }
         }

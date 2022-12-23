@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

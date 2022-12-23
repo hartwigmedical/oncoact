@@ -9,13 +9,13 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.common.variant.CodingEffect;
 import com.hartwig.oncoact.common.variant.Hotspot;
 import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantSource;
 import com.hartwig.oncoact.common.variant.VariantType;
+import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 

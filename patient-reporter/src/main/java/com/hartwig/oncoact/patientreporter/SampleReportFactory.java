@@ -3,10 +3,10 @@ package com.hartwig.oncoact.patientreporter;
 import java.time.LocalDate;
 
 import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.lims.LimsChecker;
-import com.hartwig.oncoact.common.lims.cohort.ImmutableLimsCohortConfig;
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.lims.LimsChecker;
+import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortConfig;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

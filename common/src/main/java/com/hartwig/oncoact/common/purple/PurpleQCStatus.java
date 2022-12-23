@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.genome.chromosome.GermlineAberration;
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.jetbrains.annotations.NotNull;
 

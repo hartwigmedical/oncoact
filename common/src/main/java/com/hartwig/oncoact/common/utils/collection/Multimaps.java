@@ -5,10 +5,10 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.hartwig.oncoact.common.genome.chromosome.Chromosome;
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
-import com.hartwig.oncoact.common.genome.position.GenomePosition;
-import com.hartwig.oncoact.common.genome.region.GenomeRegion;
+import com.hartwig.oncoact.genome.Chromosome;
+import com.hartwig.oncoact.genome.GenomePosition;
+import com.hartwig.oncoact.genome.GenomeRegion;
+import com.hartwig.oncoact.genome.HumanChromosome;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import com.hartwig.oncoact.disruption.GeneDisruption;
+
 import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,8 +64,7 @@ public final class LinxDataLoader
         }
 
         List<LinxBreakend> allBreakends = LinxBreakend.read(linxBreakendTsv);
-        List<GeneDisruption> reportableGeneDisruptions =
-                GeneDisruptionFactory.convert(selectReportable(allBreakends), allStructuralVariants);
+        List<GeneDisruption> reportableGeneDisruptions =Lists.newArrayList();
         LOGGER.debug(" Generated {} reportable disruptions based on {} reportable breakends",
                 reportableGeneDisruptions.size(),
                 allBreakends.size());

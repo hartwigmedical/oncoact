@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.common.purple;
 
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.util.Doubles;
 
 public enum TumorMutationalStatus
 {

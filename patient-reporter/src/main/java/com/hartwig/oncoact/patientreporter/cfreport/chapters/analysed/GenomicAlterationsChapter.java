@@ -7,18 +7,16 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.common.hla.HlaReporting;
-import com.hartwig.oncoact.common.lims.Lims;
-import com.hartwig.oncoact.common.linx.GeneDisruption;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.LinxFusion;
-import com.hartwig.oncoact.common.peach.PeachGenotype;
-import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.disruption.GeneDisruption;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.lims.Lims;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -40,6 +38,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
 import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
@@ -100,7 +99,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
         if (genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT) {
             reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersHRDWithLOH(), "HRD"));
         }
-        if (genomicAnalysis.microsatelliteStatus() == MicrosatelliteStatus.MSI) {
+        if (genomicAnalysis.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI) {
             reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersMSIWithLOH(), "MSI"));
         }
         reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
@@ -240,7 +239,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createGainsAndLossesTable(@NotNull List<GainLoss> gainsAndLosses, boolean hasReliablePurity,
+    private static Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
             @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
         String title = "Tumor specific gains & losses";
         if (gainsAndLosses.isEmpty()) {
@@ -254,8 +253,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         TableUtil.createHeaderCell("Chromosome arm copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        List<GainLoss> sortedGainsAndLosses = GainsAndLosses.sort(gainsAndLosses);
-        for (GainLoss gainLoss : sortedGainsAndLosses) {
+        List<PurpleGainLoss> sortedGainsAndLosses = GainsAndLosses.sort(gainsAndLosses);
+        for (PurpleGainLoss gainLoss : sortedGainsAndLosses) {
             contentTable.addCell(TableUtil.createContentCell(gainLoss.chromosome()));
             contentTable.addCell(TableUtil.createContentCell(gainLoss.chromosomeBand()));
             contentTable.addCell(TableUtil.createContentCell(gainLoss.gene()));
@@ -272,7 +271,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createHomozygousDisruptionsTable(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
+    private static Table createHomozygousDisruptionsTable(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
         String title = "Tumor specific homozygous disruptions";
         String subtitle = "Complete loss of wild type allele";
         if (homozygousDisruptions.isEmpty()) {
@@ -284,7 +283,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         TableUtil.createHeaderCell("Gene") },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
+        for (LinxHomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.chromosome()));
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.chromosomeBand()));
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.gene()));
@@ -341,16 +340,16 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         for (LinxFusion fusion : GeneFusions.sort(fusions)) {
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.name(fusion)));
-            contentTable.addCell(TableUtil.createContentCell(GeneFusions.displayStr(fusion.reportedType()))
+            contentTable.addCell(TableUtil.createContentCell(GeneFusions.displayStr(fusion.type()))
                     .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(GeneFusions.fusionContentType(fusion.reportedType(), fusion.geneStart(), fusion.geneTranscriptStart()));
-            contentTable.addCell(GeneFusions.fusionContentType(fusion.reportedType(), fusion.geneEnd(), fusion.geneTranscriptEnd()));
+            contentTable.addCell(GeneFusions.fusionContentType(fusion.type(), fusion.geneStart(), fusion.geneTranscriptStart()));
+            contentTable.addCell(GeneFusions.fusionContentType(fusion.type(), fusion.geneEnd(), fusion.geneTranscriptEnd()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextStart()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextEnd()));
             contentTable.addCell(TableUtil.createContentCell(GeneUtil.copyNumberToString(fusion.junctionCopyNumber(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(fusion.phased().displayStr()).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(fusion.likelihood().displayStr()).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(TableUtil.createContentCell(fusion.driverLikelihood().displayStr()).setTextAlignment(TextAlignment.CENTER));
         }
 
         return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
@@ -443,7 +442,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createVirusTable(@NotNull List<AnnotatedVirus> viruses, boolean reportViralPresence) {
+    private static Table createVirusTable(@NotNull List<VirusInterpreterEntry> viruses, boolean reportViralPresence) {
         String title = "Tumor specific viral insertions";
 
         if (!reportViralPresence) {
@@ -462,13 +461,13 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             TableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
-            for (AnnotatedVirus virus : viruses) {
+            for (VirusInterpreterEntry virus : viruses) {
                 contentTable.addCell(TableUtil.createContentCell(virus.name()));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.createIntegrationSiteString(virus.integrations()))
                         .setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.createViralCoverageString(virus.percentageCovered()))
                         .setTextAlignment(TextAlignment.CENTER));
-                contentTable.addCell(TableUtil.createContentCell(virus.virusDriverLikelihoodType().display())
+                contentTable.addCell(TableUtil.createContentCell(virus.driverLikelihood().display())
                         .setTextAlignment(TextAlignment.CENTER));
             }
 

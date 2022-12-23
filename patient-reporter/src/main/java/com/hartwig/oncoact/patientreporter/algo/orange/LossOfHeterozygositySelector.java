@@ -3,10 +3,9 @@ package com.hartwig.oncoact.patientreporter.algo.orange;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.chord.ChordStatus;
-import com.hartwig.oncoact.common.purple.GeneCopyNumber;
-import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableLohGenesReporting;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
+import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 
@@ -22,18 +21,18 @@ public class LossOfHeterozygositySelector {
     }
 
     @NotNull
-    public static List<LohGenesReporting> selectMSIGenesWithLOH(@NotNull List<GeneCopyNumber> allSomaticGeneCopyNumbers,
-            @NotNull MicrosatelliteStatus microsatelliteStatus) {
+    public static List<LohGenesReporting> selectMSIGenesWithLOH(@NotNull Iterable<PurpleGeneCopyNumber> allSomaticGeneCopyNumbers,
+            @NotNull PurpleMicrosatelliteStatus microsatelliteStatus) {
         List<LohGenesReporting> suspectGeneCopyNumbersWithLOH = Lists.newArrayList();
-        for (GeneCopyNumber geneCopyNumber : allSomaticGeneCopyNumbers) {
+        for (PurpleGeneCopyNumber geneCopyNumber : allSomaticGeneCopyNumbers) {
             if (hasLOH(geneCopyNumber)) {
                 boolean isRelevantMSI =
-                        Genes.MSI_GENES.contains(geneCopyNumber.geneName()) && microsatelliteStatus == MicrosatelliteStatus.MSI;
+                        Genes.MSI_GENES.contains(geneCopyNumber.gene()) && microsatelliteStatus == PurpleMicrosatelliteStatus.MSI;
 
                 if (isRelevantMSI) {
                     suspectGeneCopyNumbersWithLOH.add(ImmutableLohGenesReporting.builder()
                             .location(geneCopyNumber.chromosome() + geneCopyNumber.chromosomeBand())
-                            .gene(geneCopyNumber.geneName())
+                            .gene(geneCopyNumber.gene())
                             .minorAlleleCopies(round(geneCopyNumber.minMinorAlleleCopyNumber()))
                             .tumorCopies(round(geneCopyNumber.minCopyNumber()))
                             .build());
@@ -44,17 +43,17 @@ public class LossOfHeterozygositySelector {
     }
 
     @NotNull
-    public static List<LohGenesReporting> selectHRDGenesWithLOH(@NotNull List<GeneCopyNumber> allSomaticGeneCopyNumbers,
+    public static List<LohGenesReporting> selectHRDGenesWithLOH(@NotNull Iterable<PurpleGeneCopyNumber> allSomaticGeneCopyNumbers,
             @NotNull ChordStatus chordStatus) {
         List<LohGenesReporting> suspectGeneCopyNumbersWithLOH = Lists.newArrayList();
-        for (GeneCopyNumber geneCopyNumber : allSomaticGeneCopyNumbers) {
+        for (PurpleGeneCopyNumber geneCopyNumber : allSomaticGeneCopyNumbers) {
             if (hasLOH(geneCopyNumber)) {
-                boolean isRelevantHRD = Genes.HRD_GENES.contains(geneCopyNumber.geneName()) && chordStatus == ChordStatus.HR_DEFICIENT;
+                boolean isRelevantHRD = Genes.HRD_GENES.contains(geneCopyNumber.gene()) && chordStatus == ChordStatus.HR_DEFICIENT;
 
                 if (isRelevantHRD) {
                     suspectGeneCopyNumbersWithLOH.add(ImmutableLohGenesReporting.builder()
                             .location(geneCopyNumber.chromosome() + geneCopyNumber.chromosomeBand())
-                            .gene(geneCopyNumber.geneName())
+                            .gene(geneCopyNumber.gene())
                             .minorAlleleCopies(round(geneCopyNumber.minMinorAlleleCopyNumber()))
                             .tumorCopies(round(geneCopyNumber.minCopyNumber()))
                             .build());
@@ -64,7 +63,7 @@ public class LossOfHeterozygositySelector {
         return suspectGeneCopyNumbersWithLOH;
     }
 
-    private static boolean hasLOH(@NotNull GeneCopyNumber geneCopyNumber) {
+    private static boolean hasLOH(@NotNull PurpleGeneCopyNumber geneCopyNumber) {
         return geneCopyNumber.minMinorAlleleCopyNumber() < 0.5 && geneCopyNumber.minCopyNumber() > 0.5;
     }
 }

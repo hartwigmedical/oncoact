@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterApplication;

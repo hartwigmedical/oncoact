@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.common.variant.filter;
 
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
+import com.hartwig.oncoact.genome.HumanChromosome;
 
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.variantcontext.filter.VariantContextFilter;

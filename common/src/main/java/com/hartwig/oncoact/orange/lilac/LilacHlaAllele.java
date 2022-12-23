@@ -13,11 +13,14 @@ public abstract class LilacHlaAllele {
 
     public abstract double tumorCopyNumber();
 
+
     public abstract double somaticMissense();
 
     public abstract double somaticNonsenseOrFrameshift();
 
     public abstract double somaticSplice();
+
+    public abstract double somaticSynonymous();
 
     public abstract double somaticInframeIndel();
 }

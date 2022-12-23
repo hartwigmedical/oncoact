@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.genome.chromosome.HumanChromosome;
-import com.hartwig.oncoact.common.purple.ChromosomeArm;
-import com.hartwig.oncoact.common.purple.loader.CnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
 import com.hartwig.oncoact.common.purple.loader.GainLoss;
 import com.hartwig.oncoact.common.purple.loader.ImmutableCnPerChromosomeArmData;
 import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.genome.ChromosomeArm;
+import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;

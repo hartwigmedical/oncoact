@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import com.hartwig.oncoact.common.lims.Lims;
+import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;

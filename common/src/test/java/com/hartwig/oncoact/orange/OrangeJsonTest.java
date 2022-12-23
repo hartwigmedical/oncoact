@@ -29,10 +29,12 @@ import com.hartwig.oncoact.orange.linx.LinxStructuralVariant;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
 import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleDriver;
 import com.hartwig.oncoact.orange.purple.PurpleDriverType;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
@@ -185,6 +187,21 @@ public class OrangeJsonTest {
         assertEquals(1, purple.reportableGermlineVariants().size());
         assertEquals(germlineVariant, purple.reportableGermlineVariants().iterator().next());
 
+        assertEquals(1, purple.allSomaticCopyNumbers().size());
+        PurpleCopyNumber copyNumber = purple.allSomaticCopyNumbers().iterator().next();
+        assertEquals("1", copyNumber.chromosome());
+        assertEquals(10, copyNumber.start());
+        assertEquals(20, copyNumber.end());
+        assertEquals(4.1, copyNumber.averageTumorCopyNumber(), EPSILON);
+
+        assertEquals(1, purple.allSomaticGeneCopyNumbers().size());
+        PurpleGeneCopyNumber geneCopyNumber = purple.allSomaticGeneCopyNumbers().iterator().next();
+        assertEquals("gene", geneCopyNumber.gene());
+        assertEquals("12", geneCopyNumber.chromosome());
+        assertEquals("p13", geneCopyNumber.chromosomeBand());
+        assertEquals(1.2, geneCopyNumber.minCopyNumber(), EPSILON);
+        assertEquals(0.4, geneCopyNumber.minMinorAlleleCopyNumber(), EPSILON);
+
         assertEquals(1, purple.allSomaticGainsLosses().size());
         PurpleGainLoss gainLoss = purple.allSomaticGainsLosses().iterator().next();
         assertEquals("SMAD4", gainLoss.gene());
@@ -235,11 +252,21 @@ public class OrangeJsonTest {
         assertEquals(1, linx.allBreakends().size());
         LinxBreakend breakend = linx.allBreakends().iterator().next();
         assertFalse(breakend.reported());
+        assertFalse(breakend.disruptive());
         assertEquals(1, breakend.svId());
         assertEquals("NF1", breakend.gene());
+        assertEquals("1", breakend.chromosome());
+        assertEquals("p12", breakend.chrBand());
+        assertEquals("trans", breakend.transcriptId());
         assertEquals(LinxBreakendType.DUP, breakend.type());
         assertEquals(1.1, breakend.junctionCopyNumber(), EPSILON);
         assertEquals(1.0, breakend.undisruptedCopyNumber(), EPSILON);
+        assertEquals(-1, breakend.nextSpliceExonRank());
+        assertEquals(1, breakend.exonUp());
+        assertEquals(2, breakend.exonDown());
+        assertEquals("Upstream", breakend.geneOrientation());
+        assertEquals(-1, breakend.orientation());
+        assertEquals(-1, breakend.strand());
         assertEquals(LinxRegionType.EXONIC, breakend.regionType());
         assertEquals(LinxCodingType.UTR_3P, breakend.codingType());
 
@@ -320,6 +347,7 @@ public class OrangeJsonTest {
         assertEquals(5.0, allele.somaticMissense(), EPSILON);
         assertEquals(4.0, allele.somaticNonsenseOrFrameshift(), EPSILON);
         assertEquals(3.0, allele.somaticSplice(), EPSILON);
+        assertEquals(0.4, allele.somaticSynonymous(), EPSILON);
         assertEquals(1.0, allele.somaticInframeIndel(), EPSILON);
     }
 

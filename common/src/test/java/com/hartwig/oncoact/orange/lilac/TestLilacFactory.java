@@ -13,9 +13,10 @@ public final class TestLilacFactory {
         return ImmutableLilacHlaAllele.builder()
                 .allele(Strings.EMPTY)
                 .tumorCopyNumber(0D)
-                .somaticMissense(0)
-                .somaticNonsenseOrFrameshift(0)
-                .somaticSplice(0)
-                .somaticInframeIndel(0);
+                .somaticMissense(0D)
+                .somaticNonsenseOrFrameshift(0D)
+                .somaticSplice(0D)
+                .somaticSynonymous(0D)
+                .somaticInframeIndel(0D);
     }
 }

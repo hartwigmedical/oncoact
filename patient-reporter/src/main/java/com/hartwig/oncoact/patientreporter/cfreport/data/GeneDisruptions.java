@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.hartwig.oncoact.common.linx.GeneDisruption;
+import com.hartwig.oncoact.disruption.GeneDisruption;
 
 import org.jetbrains.annotations.NotNull;
 

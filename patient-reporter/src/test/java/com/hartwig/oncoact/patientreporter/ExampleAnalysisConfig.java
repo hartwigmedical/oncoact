@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.common.lims.cohort.LimsCohortTestFactory;
+import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
+import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

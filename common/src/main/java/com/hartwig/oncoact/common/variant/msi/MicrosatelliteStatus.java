@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.common.variant.msi;
 
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.jetbrains.annotations.NotNull;
 

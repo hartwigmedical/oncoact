@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.common.variant;
 
-import com.hartwig.oncoact.common.genome.position.GenomePosition;
+import com.hartwig.oncoact.genome.GenomePosition;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -22,11 +22,22 @@ public final class TestLinxFactory {
     public static ImmutableLinxBreakend.Builder breakendBuilder() {
         return ImmutableLinxBreakend.builder()
                 .reported(true)
+                .disruptive(false)
                 .svId(0)
                 .gene(Strings.EMPTY)
+                .chromosome(Strings.EMPTY)
+                .chrBand(Strings.EMPTY)
+                .transcriptId(Strings.EMPTY)
+                .canonical(false)
                 .type(LinxBreakendType.BND)
                 .junctionCopyNumber(0D)
                 .undisruptedCopyNumber(0D)
+                .nextSpliceExonRank(0)
+                .exonUp(0)
+                .exonDown(0)
+                .geneOrientation(Strings.EMPTY)
+                .orientation(0)
+                .strand(0)
                 .regionType(LinxRegionType.INTRONIC)
                 .codingType(LinxCodingType.NON_CODING);
     }

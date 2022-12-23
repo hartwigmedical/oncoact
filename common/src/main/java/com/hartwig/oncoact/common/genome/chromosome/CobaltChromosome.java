@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.common.genome.chromosome;
 
-import com.hartwig.oncoact.common.utils.Doubles;
+import com.hartwig.oncoact.genome.Chromosome;
+import com.hartwig.oncoact.util.Doubles;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
