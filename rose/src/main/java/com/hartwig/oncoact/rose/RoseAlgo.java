@@ -25,7 +25,7 @@ public class RoseAlgo {
 
     @NotNull
     public static RoseAlgo build(@NotNull String actionabilityDatabaseTsv, @NotNull String driverGeneTsv) throws IOException {
-        List<ActionabilityEntry> actionabilityEntry = ActionabilityFileReader.read(actionabilityDatabaseTsv);
+        List<ActionabilityEntry> actionabilityEntry = readActionabilityEntries(actionabilityDatabaseTsv);
         List<DriverGene> driverGenes = readDriverGenesFromFile(driverGeneTsv);
 
         return new RoseAlgo(actionabilityEntry, driverGenes);
@@ -46,7 +46,17 @@ public class RoseAlgo {
     }
 
     @NotNull
+    private static List<ActionabilityEntry> readActionabilityEntries(@NotNull String actionabilityDatabaseTsv) throws IOException {
+        LOGGER.info(" Reading actionability database from {}", actionabilityDatabaseTsv);
+        List<ActionabilityEntry> entries = ActionabilityFileReader.read(actionabilityDatabaseTsv);
+        LOGGER.info("  Read {} actionability entries", entries.size());
+
+        return entries;
+    }
+
+    @NotNull
     public RoseData run(@NotNull RoseConfig config) throws IOException {
+        LOGGER.info("Loading ORANGE data from {}", config.orangeJson());
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
         return ImmutableRoseData.builder()

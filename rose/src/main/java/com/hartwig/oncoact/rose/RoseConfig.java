@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.rose;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.cli.CommandLine;
@@ -59,7 +58,7 @@ public interface RoseConfig {
     String driverGeneTsv();
 
     @NotNull
-    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
+    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
         }
