@@ -23,7 +23,6 @@ import com.hartwig.oncoact.common.peach.PeachGenotype;
 import com.hartwig.oncoact.common.peach.PeachGenotypeFile;
 import com.hartwig.oncoact.common.pipeline.PipelineVersionFile;
 import com.hartwig.oncoact.common.purple.PurpleQCStatus;
-import com.hartwig.oncoact.common.rose.RoseConclusionFile;
 import com.hartwig.oncoact.common.variant.ReportableVariant;
 import com.hartwig.oncoact.common.variant.ReportableVariantSource;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
@@ -33,6 +32,7 @@ import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
+import com.hartwig.oncoact.rose.RoseConclusionFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

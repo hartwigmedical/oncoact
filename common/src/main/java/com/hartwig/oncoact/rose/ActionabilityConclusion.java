@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.rose;
+package com.hartwig.oncoact.rose;
 
 import java.util.List;
 
@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class ActionabilityConclusion {
 
     @NotNull

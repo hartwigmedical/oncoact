@@ -2,8 +2,6 @@ package com.hartwig.oncoact.rose;
 
 import java.io.IOException;
 
-import com.hartwig.oncoact.common.rose.ActionabilityConclusion;
-import com.hartwig.oncoact.common.rose.RoseConclusionFile;
 import com.hartwig.oncoact.rose.conclusion.ConclusionAlgo;
 
 import org.apache.commons.cli.DefaultParser;

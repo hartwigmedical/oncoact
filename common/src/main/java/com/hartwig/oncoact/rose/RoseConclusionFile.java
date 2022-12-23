@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.rose;
+package com.hartwig.oncoact.rose;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-public class RoseConclusionFile {
+public final class RoseConclusionFile {
+
     private static final Logger LOGGER = LogManager.getLogger(RoseConclusionFile.class);
 
     private static final String EXTENSION = ".rose.tsv";
@@ -27,7 +28,7 @@ public class RoseConclusionFile {
 
     @NotNull
     public static String read(@NotNull String file) throws IOException {
-        LOGGER.info("Reading ROSE clinical conslusion {}", file);
+        LOGGER.info("Reading ROSE clinical conclusion {}", file);
         String conclusion = Strings.EMPTY;
         List<String> lines = Files.readAllLines(new File(file).toPath());
 
@@ -37,14 +38,9 @@ public class RoseConclusionFile {
         return conclusion;
     }
 
-
-    public static void write(@NotNull String file, @NotNull ActionabilityConclusion actionabilityConclusion)
-            throws IOException {
-
+    public static void write(@NotNull String file, @NotNull ActionabilityConclusion actionabilityConclusion) throws IOException {
         List<String> lines = Lists.newArrayList();
-        for (String conclusion : actionabilityConclusion.conclusion()) {
-            lines.add(conclusion);
-        }
+        lines.addAll(actionabilityConclusion.conclusion());
         Files.write(new File(file).toPath(), lines);
     }
 }

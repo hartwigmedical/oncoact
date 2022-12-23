@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.rose;
+package com.hartwig.oncoact.rose;
 
 import static org.junit.Assert.assertEquals;
 
