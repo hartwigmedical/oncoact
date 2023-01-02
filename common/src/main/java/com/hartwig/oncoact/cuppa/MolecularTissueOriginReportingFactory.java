@@ -14,7 +14,7 @@ public class MolecularTissueOriginReportingFactory {
     @NotNull
     public static MolecularTissueOriginReporting create(@NotNull CuppaPrediction bestPrediction) {
         double likelihood = bestPrediction.likelihood();
-        String cancerType = curatedTumorLocation(bestPrediction.cancerType());
+        String cancerType = curateCancerType(bestPrediction.cancerType());
         String interpretCancerType = interpretTumorLocation(likelihood, cancerType);
         Double interpretLikelihood = likelihood >= 0.8 ? likelihood : null;
 
@@ -27,7 +27,7 @@ public class MolecularTissueOriginReportingFactory {
     }
 
     @NotNull
-    public static String curatedTumorLocation(@NotNull String cancerType) {
+    private static String curateCancerType(@NotNull String cancerType) {
         if (cancerType.equals("Uterus: Endometrium")) {
             cancerType = "Endometrium";
         } else if (cancerType.equals("Colorectum/Appendix/SmallIntestine")) {
@@ -37,7 +37,7 @@ public class MolecularTissueOriginReportingFactory {
     }
 
     @NotNull
-    public static String interpretTumorLocation(double likelihood, @NotNull String cancerType) {
+    private static String interpretTumorLocation(double likelihood, @NotNull String cancerType) {
         // our cut-off is 80% likelihood. When this is below 80% then the results is inconclusive
         String interpretCancerType;
         if (likelihood <= 0.8) {

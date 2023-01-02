@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.copynumber;
 
-import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
 
 import org.immutables.value.Value;

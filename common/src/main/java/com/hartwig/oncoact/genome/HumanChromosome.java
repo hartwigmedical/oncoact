@@ -2,63 +2,39 @@ package com.hartwig.oncoact.genome;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum HumanChromosome implements Chromosome {
-    _1(true, false),
-    _2(true, false),
-    _3(true, false),
-    _4(true, false),
-    _5(true, false),
-    _6(true, false),
-    _7(true, false),
-    _8(true, false),
-    _9(true, false),
-    _10(true, false),
-    _11(true, false),
-    _12(true, false),
-    _13(true, false),
-    _14(true, false),
-    _15(true, false),
-    _16(true, false),
-    _17(true, false),
-    _18(true, false),
-    _19(true, false),
-    _20(true, false),
-    _21(true, false),
-    _22(true, false),
-    _X(false, true),
-    _Y(false, true);
+public enum HumanChromosome {
+    _1,
+    _2,
+    _3,
+    _4,
+    _5,
+    _6,
+    _7,
+    _8,
+    _9,
+    _10,
+    _11,
+    _12,
+    _13,
+    _14,
+    _15,
+    _16,
+    _17,
+    _18,
+    _19,
+    _20,
+    _21,
+    _22,
+    _X,
+    _Y;
 
     private static final String CHR_PREFIX = "chr";
 
-    private final boolean isAutosome;
-    private final boolean isAllosome;
     @NotNull
     private final String name;
 
-    HumanChromosome(final boolean isAutosome, boolean isAllosome) {
-        this.isAutosome = isAutosome;
-        this.isAllosome = isAllosome;
+    HumanChromosome() {
         this.name = name().substring(1).intern();
-    }
-
-    @Override
-    public boolean isAutosome() {
-        return isAutosome;
-    }
-
-    @Override
-    public boolean isAllosome() {
-        return isAllosome;
-    }
-
-    @NotNull
-    public static Chromosome valueOf(@NotNull GenomePosition position) {
-        return fromString(position.chromosome());
-    }
-
-    @NotNull
-    public static Chromosome valueOf(@NotNull GenomeRegion region) {
-        return fromString(region.chromosome());
     }
 
     @NotNull
@@ -71,9 +47,9 @@ public enum HumanChromosome implements Chromosome {
     }
 
     public static boolean contains(@NotNull String chromosome) {
-        final String trimmedContig = stripChrPrefix(chromosome);
+        String trimmedContig = stripChrPrefix(chromosome);
         if (isNumeric(trimmedContig)) {
-            final int integerContig = Integer.parseInt(trimmedContig);
+            int integerContig = Integer.parseInt(trimmedContig);
             return integerContig >= 1 && integerContig <= 22;
         }
 

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.genome.RefGenomeCoordinates;
 import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;

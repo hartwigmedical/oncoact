@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;

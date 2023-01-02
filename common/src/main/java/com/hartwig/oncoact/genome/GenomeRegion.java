@@ -28,21 +28,7 @@ public interface GenomeRegion extends Comparable<GenomeRegion> {
         return ContigComparator.INSTANCE.compare(chromosome(), other.chromosome());
     }
 
-    default boolean contains(@NotNull GenomePosition position) {
-        return chromosome().equals(position.chromosome()) && start() <= position.position() && end() >= position.position();
-    }
-
     default boolean overlaps(@NotNull GenomeRegion other) {
         return other.chromosome().equals(chromosome()) && other.end() > start() && other.start() < end();
-    }
-
-    default int overlappingBases(@NotNull GenomeRegion other) {
-        if (!chromosome().equals(other.chromosome())) {
-            return 0;
-        }
-
-        int minEnd = Math.min(end(), other.end());
-        int maxStart = Math.max(start(), other.start());
-        return Math.max(0, 1 + minEnd - maxStart);
     }
 }

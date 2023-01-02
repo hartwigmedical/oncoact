@@ -5,16 +5,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
-public interface DoidEdge {
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+public abstract class DoidEdge {
 
     @NotNull
-    String subject();
+    public abstract String subject();
 
     @NotNull
-    String object();
+    public abstract String object();
 
     @NotNull
-    String predicate();
+    public abstract String predicate();
 }

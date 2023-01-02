@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.ImmutableCnPerChromosomeArmData;
-import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
