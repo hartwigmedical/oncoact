@@ -23,7 +23,7 @@ public final class SampleReportFactory {
 
     @Nullable
     public static String interpretRefBarcode(@Nullable String refSampleBarcode) {
-        String interpretRefSampleBarcode = Strings.EMPTY;
+        String interpretRefSampleBarcode;
         if (refSampleBarcode != null) {
             if (refSampleBarcode.contains("-")) {
                 interpretRefSampleBarcode = refSampleBarcode.split("-")[0];
@@ -53,7 +53,7 @@ public final class SampleReportFactory {
 
         if (interpretRefSampleBarcode != null && refSampleId != null) {
             if (!interpretRefSampleBarcode.equals(refSampleId) || !tumorSampleBarcode.equals(tumorSampleId)) {
-                // Don't need to check for anonymised runs
+                // Don't need to check for anonymized runs
                 lims.validateSampleBarcodeCombination(interpretRefSampleBarcode, refSampleId, tumorSampleBarcode, tumorSampleId);
             }
 

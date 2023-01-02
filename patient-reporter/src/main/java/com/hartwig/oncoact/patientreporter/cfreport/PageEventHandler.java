@@ -46,7 +46,7 @@ class PageEventHandler implements IEventHandler {
         if (documentEvent.getType().equals(PdfDocumentEvent.START_PAGE)) {
             PdfPage page = documentEvent.getPage();
 
-            header.renderHeader(chapterTitle, pdfTitle, firstPageOfChapter, page, patientReport.isWGSreport());
+            header.renderHeader(chapterTitle, pdfTitle, firstPageOfChapter, page, patientReport.isWGSReport());
             if (firstPageOfChapter) {
                 firstPageOfChapter = false;
 

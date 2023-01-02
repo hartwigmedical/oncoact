@@ -13,17 +13,14 @@ import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PanelReporter {
 
-    private static final Logger LOGGER = LogManager.getLogger(PanelReporter.class);
-
     @NotNull
     private final QCFailPanelReportData reportData;
+    @NotNull
     private final String reportDate;
 
     public PanelReporter(@NotNull final QCFailPanelReportData reportData, @NotNull final String reportDate) {
@@ -36,7 +33,6 @@ public class PanelReporter {
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
             @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
             boolean allowDefaultCohortConfig) throws IOException {
-
         String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
         PatientPrimaryTumor patientPrimaryTumor =
@@ -68,7 +64,7 @@ public class PanelReporter {
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .reportDate(reportDate)
-                .isWGSreport(false)
+                .isWGSReport(false)
                 .build();
     }
 }

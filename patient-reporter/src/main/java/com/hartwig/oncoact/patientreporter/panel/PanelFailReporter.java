@@ -8,19 +8,15 @@ import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PanelFailReporter {
 
-    private static final Logger LOGGER = LogManager.getLogger(QCFailReporter.class);
-
     @NotNull
     private final QCFailPanelReportData reportData;
+    @NotNull
     private final String reportDate;
 
     public PanelFailReporter(@NotNull final QCFailPanelReportData reportData, @NotNull final String reportDate) {
@@ -54,7 +50,7 @@ public class PanelFailReporter {
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .reportDate(reportDate)
-                .isWGSreport(false)
+                .isWGSReport(false)
                 .panelFailReason(reason)
                 .build();
     }

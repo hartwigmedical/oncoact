@@ -404,7 +404,7 @@ public class CFReportWriterTest {
                 .signaturePath(testReportData.signaturePath())
                 .logoCompanyPath(testReportData.logoCompanyPath())
                 .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSreport(false)
+                .isWGSReport(false)
                 .comments("This is a test report")
                 .build();
 
@@ -429,7 +429,7 @@ public class CFReportWriterTest {
                 .signaturePath(testReportData.signaturePath())
                 .logoCompanyPath(testReportData.logoCompanyPath())
                 .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSreport(false)
+                .isWGSReport(false)
                 .comments("This is a test report")
                 .build();
 
@@ -530,7 +530,7 @@ public class CFReportWriterTest {
                 .pharmacogeneticsGenotypes(createTestPharmacogeneticsGenotypes())
                 .purpleQC(Sets.newHashSet(purpleQCStatus))
                 .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSreport(true)
+                .isWGSReport(true)
                 .build();
 
         String filename = testReportFilePath(patientReport);

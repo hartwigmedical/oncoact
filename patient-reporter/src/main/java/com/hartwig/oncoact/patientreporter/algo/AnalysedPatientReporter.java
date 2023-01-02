@@ -138,7 +138,7 @@ public class AnalysedPatientReporter {
                 .udiDi(reportData.udiDi())
                 .pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap)
                 .reportDate(reportDate)
-                .isWGSreport(true)
+                .isWGSReport(true)
                 .build();
 
         printReportState(report);

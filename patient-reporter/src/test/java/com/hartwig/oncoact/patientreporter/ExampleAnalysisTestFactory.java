@@ -220,7 +220,7 @@ public final class ExampleAnalysisTestFactory {
                 .pipelineVersion(pipelineVersion)
                 .pharmacogeneticsGenotypes(pharmacogeneticsGenotypes)
                 .reportDate(reportDate)
-                .isWGSreport(true)
+                .isWGSReport(true)
                 .build();
     }
 

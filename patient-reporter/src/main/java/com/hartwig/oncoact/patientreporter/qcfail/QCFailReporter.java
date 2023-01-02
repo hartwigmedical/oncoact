@@ -115,7 +115,7 @@ public class QCFailReporter {
                 .pharmacogeneticsGenotypes(pharmacogeneticsMap)
                 .purpleQC(purpleQc)
                 .reportDate(reportDate)
-                .isWGSreport(true)
+                .isWGSReport(true)
                 .build();
     }
 }
