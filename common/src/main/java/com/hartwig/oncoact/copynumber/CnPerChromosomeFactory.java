@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.genome.GenomeRegion;
 import com.hartwig.oncoact.genome.HumanChromosome;
-import com.hartwig.oncoact.genome.ImmutableGenomeRegionImpl;
+import com.hartwig.oncoact.genome.ImmutableGenomeRegion;
 import com.hartwig.oncoact.genome.RefGenomeCoordinates;
 import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 
@@ -32,10 +32,10 @@ public final class CnPerChromosomeFactory {
                 for (PurpleCopyNumber purpleCopyNumber : copyNumbers) {
                     HumanChromosome copyNumberChromosome = HumanChromosome.fromString(purpleCopyNumber.chromosome());
 
-                    if (copyNumberChromosome.equals(chromosome) && arm.overlaps(purpleCopyNumber)) {
+                    if (copyNumberChromosome.equals(chromosome) && overlaps(arm, purpleCopyNumber)) {
                         double copyNumber = purpleCopyNumber.averageTumorCopyNumber();
-                        int totalLengthSegment = purpleCopyNumber.bases();
-                        copyNumberArm += (copyNumber * totalLengthSegment) / arm.bases();
+                        int totalLengthSegment = bases(purpleCopyNumber);
+                        copyNumberArm += (copyNumber * totalLengthSegment) / bases(arm);
                     }
                 }
 
@@ -63,7 +63,7 @@ public final class CnPerChromosomeFactory {
         GenomeRegion partBeforeCentromere = createGenomeRegion(chromosome.toString(), 1, centromerePos);
         GenomeRegion partAfterCentromere = createGenomeRegion(chromosome.toString(), centromerePos + 1, chrLength);
 
-        if (partBeforeCentromere.bases() < partAfterCentromere.bases()) {
+        if (bases(partBeforeCentromere) < bases(partAfterCentromere)) {
             chromosomeArmGenomeRegionMap.put(ChromosomeArm.P_ARM, partBeforeCentromere);
             chromosomeArmGenomeRegionMap.put(ChromosomeArm.Q_ARM, partAfterCentromere);
         } else {
@@ -75,6 +75,23 @@ public final class CnPerChromosomeFactory {
 
     @NotNull
     private static GenomeRegion createGenomeRegion(@NotNull String chromosome, int start, int end) {
-        return ImmutableGenomeRegionImpl.builder().chromosome(chromosome).start(start).end(end).build();
+        return ImmutableGenomeRegion.builder().chromosome(chromosome).start(start).end(end).build();
+    }
+
+    private static boolean overlaps(@NotNull GenomeRegion region, @NotNull PurpleCopyNumber purpleCopyNumber) {
+        return purpleCopyNumber.chromosome().equals(region.chromosome()) && purpleCopyNumber.end() > region.start()
+                && purpleCopyNumber.start() < region.end();
+    }
+
+    private static int bases(@NotNull GenomeRegion region) {
+        return bases(region.start(), region.end());
+    }
+
+    private static int bases(@NotNull PurpleCopyNumber purpleCopyNumber) {
+        return bases(purpleCopyNumber.start(), purpleCopyNumber.end());
+    }
+
+    private static int bases(int start, int end) {
+        return 1 + end - start;
     }
 }
