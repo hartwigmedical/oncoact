@@ -103,7 +103,7 @@ public final class ReportResources {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style resistentStyle() {
+    public static Style resistantStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_RED);
     }
 
@@ -193,10 +193,6 @@ public final class ReportResources {
 
     public static Style urlStyle() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLUE);
-    }
-
-    public static Style tableTitleStyle() {
-        return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
     @NotNull

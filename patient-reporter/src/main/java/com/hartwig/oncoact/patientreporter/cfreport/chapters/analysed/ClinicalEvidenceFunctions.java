@@ -37,7 +37,7 @@ public class ClinicalEvidenceFunctions {
     private static final String TREATMENT_DELIMITER = " + ";
 
     private static final String RESPONSE_SYMBOL = "\u25B2";
-    private static final String RESISTENT_SYMBOL = "\u25BC";
+    private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
 
     private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
@@ -178,7 +178,7 @@ public class ClinicalEvidenceFunctions {
                         }
 
                         if (RESISTANT_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistant = TableUtil.createTransparentCell(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle());
+                            cellResistant = TableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(ReportResources.resistantStyle());
                         }
 
                         if (RESPONSE_DIRECTIONS.contains(responsive.direction())) {
@@ -284,7 +284,7 @@ public class ClinicalEvidenceFunctions {
     public static Paragraph noteGlossaryTerms() {
         return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(ReportResources.responseStyle()))
                 .add(" ) means that the evidence is responsive. The symbol ( ")
-                .add(new Text(RESISTENT_SYMBOL).addStyle(ReportResources.resistentStyle()))
+                .add(new Text(RESISTANT_SYMBOL).addStyle(ReportResources.resistantStyle()))
                 .add(" ) means that the evidence is resistant. The abbreviation ( ")
                 .add(new Text(PREDICTED_SYMBOL).addStyle(ReportResources.predictedStyle()))
                 .add(" mentioned after the level of evidence) indicates the evidence is predicted "

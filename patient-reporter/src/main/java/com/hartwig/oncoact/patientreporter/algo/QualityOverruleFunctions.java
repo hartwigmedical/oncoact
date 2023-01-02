@@ -47,7 +47,7 @@ public final class QualityOverruleFunctions {
             newNotifyPerVariant.put(overruled.variant(), overruled.notifyVariant());
         }
 
-        HlaAllelesReportingData hlaAllelesReportingData = overuleHla(genomicAnalysis.hlaAlleles(), genomicAnalysis.hasReliablePurity());
+        HlaAllelesReportingData hlaAllelesReportingData = overruleHla(genomicAnalysis.hlaAlleles(), genomicAnalysis.hasReliablePurity());
 
         return ImmutableGenomicAnalysis.builder()
                 .from(genomicAnalysis)
@@ -91,7 +91,8 @@ public final class QualityOverruleFunctions {
     }
 
     @NotNull
-    private static HlaAllelesReportingData overuleHla(@NotNull HlaAllelesReportingData hlaAllelesReportingData, boolean hasReliablePurity) {
+    private static HlaAllelesReportingData overruleHla(@NotNull HlaAllelesReportingData hlaAllelesReportingData,
+            boolean hasReliablePurity) {
         Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
 
         Set<String> hlaAlleles = Sets.newTreeSet(hlaAllelesReportingData.hlaAllelesReporting().keySet());

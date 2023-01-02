@@ -104,7 +104,7 @@ public class ExplanationChapter implements ReportChapter {
                         "Any gene with less than 0.5 copies along the entire canonical transcript is reported as a full loss.",
                         "Any gene where only a part along the canonical transcript has less than 0.5 copies is reported "
                                 + "as a partial loss.",
-                        "Any gene with more copies than 3 times the average tumor ploidy along the entire canonical transcript is reporte "
+                        "Any gene with more copies than 3 times the average tumor ploidy along the entire canonical transcript is reported "
                                 + " as a full gain.",
                         "Any gene where only a part of the canonical transcript has more copies than 3 times the average tumor ploidy "
                                 + "is reported as a partial gain.", })));
@@ -143,7 +143,7 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on reported HLA Alleles")));
 
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[] { "Virusses will be reported if they are present in our reporting database as "
+                .add(createContentDiv(new String[] { "Viruses will be reported if they are present in our reporting database as "
                         + "clinically relevant (HPV, MCV, HBV, EBV and HHV-8) and DNA integration for the virus can be detected. "
                         + "If the virus is clinically relevant and no DNA integration is found, the following conditions must be met:\n"
                         + "- Percentage covered of the viral genome is >90%\n"

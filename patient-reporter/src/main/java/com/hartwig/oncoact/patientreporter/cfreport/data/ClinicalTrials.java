@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public final class ClinicalTrials {
@@ -30,19 +28,5 @@ public final class ClinicalTrials {
             acronyms.add(trial.treatment().name());
         }
         return acronyms.size();
-    }
-
-    @NotNull
-    public static String createLinkiClusion(@NotNull ProtectEvidence evidence) {
-        String link = Strings.EMPTY;
-        for (KnowledgebaseSource source: evidence.sources()) {
-            for (String url : source.sourceUrls()) {
-                if (url.contains("trial-eye")) {
-                    link = url;
-                }
-            }
-        }
-        //We assume iClusion has one link
-        return link;
     }
 }

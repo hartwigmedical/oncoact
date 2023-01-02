@@ -86,7 +86,7 @@ public interface PanelReporterConfig {
         options.addOption(SAMPLE_NAME_FOR_REPORT, true, String.format("Sample name used for printing on the report and for report file name. By default use value of %s.", TUMOR_SAMPLE_ID));
         options.addOption(ALLOW_DEFAULT_COHORT_CONFIG, false, "If provided, use a default cohort config if for this sample no cohort is configured in LIMS.");
 
-        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is requierde");
+        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
         options.addOption(EXPECTED_PIPELINE_VERSION, true, "String of the expected pipeline version");
         options.addOption(OVERRIDE_PIPELINE_VERSION, false, "if set, the check for pipeline version is overridden");

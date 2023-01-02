@@ -104,7 +104,7 @@ public class Lims {
     }
 
     @NotNull
-    public String tumorReceicedSampleId(@NotNull String sampleBarcode) {
+    public String tumorReceivedSampleId(@NotNull String sampleBarcode) {
         LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
         return sampleData != null ? sampleData.receivedSampleId() : NOT_AVAILABLE_STRING;
     }

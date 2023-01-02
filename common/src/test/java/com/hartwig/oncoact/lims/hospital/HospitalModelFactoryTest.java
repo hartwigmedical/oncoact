@@ -36,7 +36,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactCPCT() throws IOException {
         Map<String, HospitalPersons> hospitalContactCPCT =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_cpct.tsv", 2, "CPCT");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_cpct.tsv", 2);
 
         assertEquals(2, hospitalContactCPCT.size());
 
@@ -54,7 +54,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactDRUP() throws IOException {
         Map<String, HospitalPersons> hospitalContactDRUP =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_drup.tsv", 2, "DRUP");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_drup.tsv", 2);
         assertEquals(2, hospitalContactDRUP.size());
 
         HospitalPersons drup1 = hospitalContactDRUP.get("01");
@@ -71,7 +71,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactWIDE() throws IOException {
         Map<String, HospitalPersons> hospitalContactWIDE =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_wide.tsv", 4, "WIDE");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_wide.tsv", 4);
         assertEquals(2, hospitalContactWIDE.size());
 
         HospitalPersons wide1 = hospitalContactWIDE.get("01");
@@ -88,7 +88,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactCOREDB() throws IOException {
         Map<String, HospitalPersons> hospitalContactCOREDB =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_coredb.tsv", 4, "COREDB");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_coredb.tsv", 4);
         assertEquals(1, hospitalContactCOREDB.size());
 
         HospitalPersons coredb01 = hospitalContactCOREDB.get("01");
@@ -100,7 +100,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactACTIN() throws IOException {
         Map<String, HospitalPersons> hospitalContactACTIN =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_actin.tsv", 2, "ACTIN");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_actin.tsv", 2);
         assertEquals(1, hospitalContactACTIN.size());
 
         HospitalPersons actin2 = hospitalContactACTIN.get("02");
@@ -112,7 +112,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactGLOW() throws IOException {
         Map<String, HospitalPersons> hospitalContactGLOW =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_glow.tsv", 2, "GLOW");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_glow.tsv", 2);
         assertEquals(1, hospitalContactGLOW.size());
 
         HospitalPersons glow1 = hospitalContactGLOW.get("02");
@@ -124,7 +124,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactOPTIC() throws IOException {
         Map<String, HospitalPersons> hospitalContactOPTIC =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_optic.tsv", 2, "OPTIC");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_optic.tsv", 2);
         assertEquals(1, hospitalContactOPTIC.size());
 
         HospitalPersons optic1 = hospitalContactOPTIC.get("02");
@@ -136,7 +136,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactSHERPA() throws IOException {
         Map<String, HospitalPersons> hospitalContactSHERPA =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_sherpa.tsv", 2, "SHERPA");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_sherpa.tsv", 2);
         assertEquals(1, hospitalContactSHERPA.size());
 
         HospitalPersons sherpa = hospitalContactSHERPA.get("02");
@@ -148,7 +148,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactGENAYA() throws IOException {
         Map<String, HospitalPersons> hospitalContactGENAYA =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_genaya.tsv", 4, "GENAYA");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_genaya.tsv", 4);
         assertEquals(1, hospitalContactGENAYA.size());
 
         HospitalPersons genaya = hospitalContactGENAYA.get("01");
@@ -159,7 +159,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactOMIC() throws IOException {
         Map<String, HospitalPersons> hospitalContactOMIC =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_omic.tsv", 2, "OMIC");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_omic.tsv", 2);
         assertEquals(1, hospitalContactOMIC.size());
 
         HospitalPersons omic = hospitalContactOMIC.get("01");
@@ -171,7 +171,7 @@ public class HospitalModelFactoryTest {
     @Test
     public void canReadHospitalContactTARGTO() throws IOException {
         Map<String, HospitalPersons> hospitalContactTARGTO =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_targto.tsv", 4, "TARGTO");
+                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_targto.tsv", 4);
         assertEquals(1, hospitalContactTARGTO.size());
 
         HospitalPersons targto = hospitalContactTARGTO.get("01");

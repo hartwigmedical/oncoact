@@ -21,10 +21,12 @@ public class AnalysedPatientReporterTest {
     private static final String REF_SAMPLE_ID = "reference";
     private static final String TUMOR_SAMPLE_ID = "sample";
 
+    private static final String REPORT_DATE = Formats.formatDate(LocalDate.now());
+
     @Test
     public void canRunOnRunDirectory() throws IOException {
-        AnalysedPatientReporter reporter = new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData(),
-                Formats.formatDate(LocalDate.now()));
+        AnalysedPatientReporter reporter =
+                new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData(), REPORT_DATE);
         PatientReporterConfig config = PatientReporterTestFactory.createTestReporterConfig();
 
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
@@ -43,8 +45,7 @@ public class AnalysedPatientReporterTest {
         double purityCorrect = 0.40;
         boolean hasReliablePurityCorrect = true;
 
-        assertEquals(QsFormNumber.FOR_080.display(),
-                AnalysedPatientReporter.determineForNumber(hasReliablePurityCorrect, purityCorrect));
+        assertEquals(QsFormNumber.FOR_080.display(), AnalysedPatientReporter.determineForNumber(hasReliablePurityCorrect, purityCorrect));
 
         double purityNotCorrect = 0.10;
         boolean hasReliablePurityNotCorrect = false;

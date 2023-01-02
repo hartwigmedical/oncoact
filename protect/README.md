@@ -144,7 +144,7 @@ The list of sources contains the following information per source:
   - Improve the promiscuous fusion matching to match only the evidence of that gene if a fusion with that gene is reported either in 5' or 3'
     position matching on the reported type defined
 - [2.2](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v2.2)
-  - Fixed bug in hotspot matching in case everything matches except for the alt (eg V600K against V600R).
+  - Fixed bug in hotspot matching in case everything matches except for the alt (e.g. V600K against V600R).
   - Add consolidation for no benefit evidence.
   - Add support for matching evidence for low TML, low TMB and MSS (reported always false)
 - [2.1](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v2.1)
@@ -156,7 +156,7 @@ The list of sources contains the following information per source:
 - [2.0](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v2.0)
    - New datamodel supporting evidence types, range ranks and explicit genes. 
    - Support for virus interpreter v1.2
-   - Responsive and resistant directions are grouped when selecting highest level evidence for reporting
+   - Responsive and resistant directions are grouped when selecting the highest level evidence for reporting
 - [1.9](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v1.9)
   - A release that is technically compatible with SERVE v1.8
 - [1.8](https://github.com/hartwigmedical/hmftools/releases/tag/protect-v1.8)

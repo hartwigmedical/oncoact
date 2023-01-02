@@ -42,7 +42,7 @@ public final class HospitalModelFactory {
     private static final int HOSPITAL_PERSONS_REQUESTER_NAME_COLUMN = 2;
     private static final int HOSPITAL_PERSONS_REQUESTER_EMAIL_COLUMN = 3;
 
-    private static final int HOSPITAL_PERSONS_FIELD_COUNT_CPCT= 2;
+    private static final int HOSPITAL_PERSONS_FIELD_COUNT_CPCT = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_DRUP = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_WIDE = 4;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_COREDB = 4;
@@ -83,27 +83,27 @@ public final class HospitalModelFactory {
 
         Map<String, HospitalAddress> hospitalAddressMap = readFromHospitalAddressTsv(hospitalAddressTsv);
         Map<String, HospitalPersons> hospitalPersonsCPCT =
-                readFromHospitalPersonsTsv(hospitalPersonsCPCTTsv, HOSPITAL_PERSONS_FIELD_COUNT_CPCT, "CPCT");
+                readFromHospitalPersonsTsv(hospitalPersonsCPCTTsv, HOSPITAL_PERSONS_FIELD_COUNT_CPCT);
         Map<String, HospitalPersons> hospitalPersonsDRUP =
-                readFromHospitalPersonsTsv(hospitalPersonsDRUPTsv, HOSPITAL_PERSONS_FIELD_COUNT_DRUP, "DRUP");
+                readFromHospitalPersonsTsv(hospitalPersonsDRUPTsv, HOSPITAL_PERSONS_FIELD_COUNT_DRUP);
         Map<String, HospitalPersons> hospitalPersonsWIDE =
-                readFromHospitalPersonsTsv(hospitalPersonsWIDETsv, HOSPITAL_PERSONS_FIELD_COUNT_WIDE, "WIDE");
+                readFromHospitalPersonsTsv(hospitalPersonsWIDETsv, HOSPITAL_PERSONS_FIELD_COUNT_WIDE);
         Map<String, HospitalPersons> hospitalPersonsCOREDB =
-                readFromHospitalPersonsTsv(hospitalPersonsCOREDBTsv, HOSPITAL_PERSONS_FIELD_COUNT_COREDB, "COREDB");
+                readFromHospitalPersonsTsv(hospitalPersonsCOREDBTsv, HOSPITAL_PERSONS_FIELD_COUNT_COREDB);
         Map<String, HospitalPersons> hospitalPersonsACTIN =
-                readFromHospitalPersonsTsv(hospitalPersonsACTINTsv, HOSPITAL_PERSONS_FIELD_COUNT_ACTIN, "ACTIN");
+                readFromHospitalPersonsTsv(hospitalPersonsACTINTsv, HOSPITAL_PERSONS_FIELD_COUNT_ACTIN);
         Map<String, HospitalPersons> hospitalPersonsGLOW =
-                readFromHospitalPersonsTsv(hospitalPersonsGLOWTsv, HOSPITAL_PERSONS_FIELD_COUNT_GLOW, "GLOW");
+                readFromHospitalPersonsTsv(hospitalPersonsGLOWTsv, HOSPITAL_PERSONS_FIELD_COUNT_GLOW);
         Map<String, HospitalPersons> hospitalPersonsOPTIC =
-                readFromHospitalPersonsTsv(hospitalPersonsOPTICTsv, HOSPITAL_PERSONS_FIELD_COUNT_OPTIC, "OPTIC");
+                readFromHospitalPersonsTsv(hospitalPersonsOPTICTsv, HOSPITAL_PERSONS_FIELD_COUNT_OPTIC);
         Map<String, HospitalPersons> hospitalPersonsSHERPA =
-                readFromHospitalPersonsTsv(hospitalPersonsSHERPATsv, HOSPITAL_PERSONS_FIELD_COUNT_SHERPA, "SHERPA");
+                readFromHospitalPersonsTsv(hospitalPersonsSHERPATsv, HOSPITAL_PERSONS_FIELD_COUNT_SHERPA);
         Map<String, HospitalPersons> hospitalPersonsGENAYA =
-                readFromHospitalPersonsTsv(hospitalPersonsGENAYATsv, HOSPITAL_PERSONS_FIELD_COUNT_GENAYA, "GENAYA");
+                readFromHospitalPersonsTsv(hospitalPersonsGENAYATsv, HOSPITAL_PERSONS_FIELD_COUNT_GENAYA);
         Map<String, HospitalPersons> hospitalPersonsOmic =
-                readFromHospitalPersonsTsv(hospitalPersonsOmicTsv, HOSPITAL_PERSONS_FIELD_COUNT_OMIC, "OMIC");
+                readFromHospitalPersonsTsv(hospitalPersonsOmicTsv, HOSPITAL_PERSONS_FIELD_COUNT_OMIC);
         Map<String, HospitalPersons> hospitalPersonsTargto =
-                readFromHospitalPersonsTsv(hospitalPersonsTargtoTsv, HOSPITAL_PERSONS_FIELD_COUNT_TARGTO, "TARGTO");
+                readFromHospitalPersonsTsv(hospitalPersonsTargtoTsv, HOSPITAL_PERSONS_FIELD_COUNT_TARGTO);
         Map<String, String> sampleHospitalMapping = readFromSampleToHospitalMappingTsv(sampleHospitalMappingTsv);
 
         HospitalModel hospitalModel = ImmutableHospitalModel.builder()
@@ -152,8 +152,8 @@ public final class HospitalModelFactory {
 
     @NotNull
     @VisibleForTesting
-    static Map<String, HospitalPersons> readFromHospitalPersonsTsv(@NotNull String hospitalPersonsTsv, int expectedFieldCount,
-            @NotNull String cohort) throws IOException {
+    static Map<String, HospitalPersons> readFromHospitalPersonsTsv(@NotNull String hospitalPersonsTsv, int expectedFieldCount)
+            throws IOException {
         Map<String, HospitalPersons> hospitalPersonsMap = Maps.newHashMap();
         List<String> lines = Files.readAllLines(new File(hospitalPersonsTsv).toPath());
 
@@ -164,9 +164,7 @@ public final class HospitalModelFactory {
                 String requesterEmail = parts.length > 2 ? parts[HOSPITAL_PERSONS_REQUESTER_EMAIL_COLUMN] : null;
 
                 HospitalPersons hospitalPersons = ImmutableHospitalPersons.builder()
-                        .hospitalPI(parts[HOSPITAL_PERSONS_PI_COLUMN].isEmpty()
-                                ? requesterName
-                                : parts[HOSPITAL_PERSONS_PI_COLUMN])
+                        .hospitalPI(parts[HOSPITAL_PERSONS_PI_COLUMN].isEmpty() ? requesterName : parts[HOSPITAL_PERSONS_PI_COLUMN])
                         .requesterName(requesterName)
                         .requesterEmail(requesterEmail)
                         .build();

@@ -62,7 +62,7 @@ public final class EvidenceItems {
                 }
             }
 
-            return treatments.size() + " (" + joiner.toString() + ")";
+            return treatments.size() + " (" + joiner + ")";
         }
     }
 

@@ -20,6 +20,8 @@ import org.jooq.InsertValuesStep20;
 @SuppressWarnings("rawtypes")
 class ProtectDAO {
 
+    private static final int DB_BATCH_INSERT_SIZE = 1000;
+
     private static final String TREATMENT_APPROACH_DELIMITER = ",";
 
     @NotNull
@@ -33,7 +35,7 @@ class ProtectDAO {
         deleteEvidenceForSample(sample);
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
-        for (List<ProtectEvidence> batch : Iterables.partition(evidence, DatabaseUtil.DB_BATCH_INSERT_SIZE)) {
+        for (List<ProtectEvidence> batch : Iterables.partition(evidence, DB_BATCH_INSERT_SIZE)) {
             InsertValuesStep20 inserter = context.insertInto(PROTECT,
                     PROTECT.SAMPLEID,
                     PROTECT.GENE,
@@ -73,6 +75,7 @@ class ProtectDAO {
                 evidenceUrlJoiner.add(evidenceUrl);
             }
 
+            //noinspection unchecked,ResultOfMethodCallIgnored
             inserter.values(sample,
                     evidence.gene(),
                     evidence.transcript(),
@@ -97,7 +100,7 @@ class ProtectDAO {
     }
 
     @Nullable
-    public static String treatmentApproachToString(@NotNull Set<String> treatmentApproaches) {
+    private static String treatmentApproachToString(@NotNull Set<String> treatmentApproaches) {
         StringJoiner joiner = new StringJoiner(TREATMENT_APPROACH_DELIMITER);
         for (String url : treatmentApproaches) {
             joiner.add(url);

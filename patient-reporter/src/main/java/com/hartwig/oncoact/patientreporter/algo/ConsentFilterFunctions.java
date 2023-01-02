@@ -91,7 +91,7 @@ public final class ConsentFilterFunctions {
         List<ProtectEvidence> filtered = Lists.newArrayList();
         for (ProtectEvidence evidence : evidences) {
             if (evidence.germline() && germlineReportingLevel != LimsGermlineReportingLevel.NO_REPORTING) {
-                // We always overwrite to somatic in evidence since we are not sure we notify about the actual variant.
+                // We always overwrite to somatic in evidence since we are not sure that we notify about the actual variant.
                 filtered.add(ImmutableProtectEvidence.builder().from(evidence).germline(false).build());
             } else if (!evidence.germline()) {
                 filtered.add(evidence);

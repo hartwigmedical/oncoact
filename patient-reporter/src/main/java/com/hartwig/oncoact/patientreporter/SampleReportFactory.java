@@ -45,7 +45,7 @@ public final class SampleReportFactory {
         String refSampleId = sampleMetadata.refSampleId();
         String tumorSampleBarcode = sampleMetadata.tumorSampleBarcode();
         String tumorSampleId = sampleMetadata.tumorSampleId();
-        String tumorReceivedSampleId = lims.tumorReceicedSampleId(tumorSampleBarcode);
+        String tumorReceivedSampleId = lims.tumorReceivedSampleId(tumorSampleBarcode);
         String referenceReceivedSampleId =
                 interpretRefSampleBarcode != null ? lims.referenceTumorSampleId(interpretRefSampleBarcode) : null;
 

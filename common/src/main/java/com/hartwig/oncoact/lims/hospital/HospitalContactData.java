@@ -12,11 +12,11 @@ public abstract class HospitalContactData {
     @NotNull
     public abstract String hospitalPI();
 
-    // A requester is generally only defined in context of a specific submission (CORE etc). Otherwise NOT_AVAILABLE
+    // A requester is generally only defined in context of a specific submission (CORE etc.). Otherwise NOT_AVAILABLE
     @NotNull
     public abstract String requesterName();
 
-    // A requester is generally only defined in context of a specific submission (CORE etc). Otherwise NOT_AVAILABLE
+    // A requester is generally only defined in context of a specific submission (CORE etc.). Otherwise NOT_AVAILABLE
     @NotNull
     public abstract String requesterEmail();
 

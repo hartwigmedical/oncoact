@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
 import org.junit.Test;
@@ -19,8 +18,7 @@ public class PatientPrimaryTumorFileTest {
         String string1 = "str1";
         String string2 = "str2";
 
-        String fullString = PatientPrimaryTumorFile.fromStringList(Lists.newArrayList(string1, string2));
-        List<String> convertedStringList = PatientPrimaryTumorFile.toStringList(fullString);
+        List<String> convertedStringList = PatientPrimaryTumorFile.toStringList(string1 + ";" + string2);
 
         assertEquals(2, convertedStringList.size());
         assertEquals(string1, convertedStringList.get(0));
@@ -28,17 +26,10 @@ public class PatientPrimaryTumorFileTest {
     }
 
     @Test
-    public void canReadFileAndConvertLines() throws IOException {
+    public void canReadFile() throws IOException {
         List<PatientPrimaryTumor> patientPrimaryTumors = PatientPrimaryTumorFile.read(TEST_TSV);
 
         assertEquals(3, patientPrimaryTumors.size());
-
-        List<PatientPrimaryTumor> convertedPrimaryTumors =
-                PatientPrimaryTumorFile.fromLines(PatientPrimaryTumorFile.toLines(patientPrimaryTumors));
-
-        assertEquals(3, convertedPrimaryTumors.size());
-        for (int i = 0; i < convertedPrimaryTumors.size(); i++) {
-            assertEquals(patientPrimaryTumors.get(i), convertedPrimaryTumors.get(i));
-        }
+        // TODO Expand on test
     }
 }

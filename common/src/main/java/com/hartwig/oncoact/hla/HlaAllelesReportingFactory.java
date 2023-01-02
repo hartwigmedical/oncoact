@@ -82,9 +82,9 @@ public final class HlaAllelesReportingFactory {
 
         for (HlaReporting hlaReporting : lilacReportingList) {
             if (hlaAlleleMap.containsKey(hlaReporting.hlaAllele().gene())) {
-                List<HlaReporting> curent = hlaAlleleMap.get(hlaReporting.hlaAllele().gene());
-                curent.add(hlaReporting);
-                hlaAlleleMap.put(hlaReporting.hlaAllele().gene(), curent);
+                List<HlaReporting> current = hlaAlleleMap.get(hlaReporting.hlaAllele().gene());
+                current.add(hlaReporting);
+                hlaAlleleMap.put(hlaReporting.hlaAllele().gene(), current);
             } else {
                 hlaAlleleMap.put(hlaReporting.hlaAllele().gene(), Lists.newArrayList(hlaReporting));
             }

@@ -4,18 +4,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.knownfusion.KnownFusionCache;
+import com.hartwig.oncoact.knownfusion.TestKnownFusionFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.orange.OrangeRecord;
+import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
-import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
+import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
+import com.hartwig.oncoact.patientreporter.germline.TestGermlineReportingModelFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
@@ -27,16 +26,20 @@ import org.junit.Test;
 public class GenomicAnalyzerTest {
 
     @Test
-    public void canRunOnExampleData() throws IOException {
-        AnalysedReportData testReportData = PatientReporterTestFactory.loadTestAnalysedReportData();
+    public void canRunOnExampleData() {
+        GermlineReportingModel testGermlineReportingModel = TestGermlineReportingModelFactory.createEmpty();
+        KnownFusionCache testKnownFusionCache = TestKnownFusionFactory.createEmptyCache();
+        GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel, testKnownFusionCache);
 
-        GenomicAnalyzer analyzer = new GenomicAnalyzer(testReportData.germlineReportingModel(), testReportData.knownFusionCache());
+        List<ProtectEvidence> noEvidences = Lists.newArrayList();
 
-        PatientReporterConfig config = PatientReporterTestFactory.createTestReporterConfig();
-        OrangeRecord orange = OrangeJson.read(config.orangeJson());
-        List<ProtectEvidence> evidences = ProtectEvidenceFile.read(config.protectEvidenceTsv());
+        assertNotNull(analyzer.run(TestOrangeFactory.createMinimalTestOrangeRecord(),
+                noEvidences,
+                LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION));
 
-        assertNotNull(analyzer.run(orange, evidences, LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION));
+        assertNotNull(analyzer.run(TestOrangeFactory.createProperTestOrangeRecord(),
+                noEvidences,
+                LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION));
     }
 
     @Test
@@ -53,9 +56,9 @@ public class GenomicAnalyzerTest {
     }
 
     @NotNull
-    private static List<ReportableVariant> createTestReportableVariants(@NotNull String gene1, @NotNull PurpleGenotypeStatus genotypeStatus1,
-            @Nullable Integer localPhaseSet1, @NotNull String gene2, @NotNull PurpleGenotypeStatus genotypeStatus2,
-            @Nullable Integer localPhaseSet2) {
+    private static List<ReportableVariant> createTestReportableVariants(@NotNull String gene1,
+            @NotNull PurpleGenotypeStatus genotypeStatus1, @Nullable Integer localPhaseSet1, @NotNull String gene2,
+            @NotNull PurpleGenotypeStatus genotypeStatus2, @Nullable Integer localPhaseSet2) {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.GERMLINE)
                 .gene(gene1)
