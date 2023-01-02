@@ -6,7 +6,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
@@ -66,9 +66,9 @@ public class QCFailChapter implements ReportChapter {
 
     @NotNull
     private static Div createFailReasonDiv(@NotNull QCFailReason failReason) {
-        String reason = DataUtil.NA_STRING;
-        String explanation = DataUtil.NA_STRING;
-        String explanationDetail = DataUtil.NA_STRING;
+        String reason = Formats.NA_STRING;
+        String explanation = Formats.NA_STRING;
+        String explanationDetail = Formats.NA_STRING;
 
         switch (failReason.type()) {
             case LOW_QUALITY_BIOPSY: {

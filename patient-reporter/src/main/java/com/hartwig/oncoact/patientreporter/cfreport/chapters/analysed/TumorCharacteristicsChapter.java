@@ -19,7 +19,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.HrDeficiency;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalLoad;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.Document;
@@ -77,7 +77,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         String hrDeficiencyLabel =
-                hasReliablePurity ? chordStatusString(hrdStatus) + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : DataUtil.NA_STRING;
+                hasReliablePurity ? chordStatusString(hrdStatus) + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
 
         String hrdUnreliableFootnote = "* HRD score can not be determined reliably when a tumor is microsatellite unstable "
                 + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
@@ -86,7 +86,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
         if (!isHrdReliable) {
             displayFootNote = true;
-            hrDeficiencyLabel = DataUtil.NA_STRING + "*";
+            hrDeficiencyLabel = Formats.NA_STRING + "*";
         }
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
@@ -112,7 +112,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         double microSatelliteStability = genomicAnalysis.microsatelliteIndelsPerMb();
         String microSatelliteStabilityString =
                 hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + DOUBLE_DECIMAL_FORMAT.format(
-                        genomicAnalysis.microsatelliteIndelsPerMb()) : DataUtil.NA_STRING;
+                        genomicAnalysis.microsatelliteIndelsPerMb()) : Formats.NA_STRING;
 
         BarChart satelliteChart =
                 new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
@@ -142,7 +142,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
         String tmlStatus = tumorMutationalStatusString(genomicAnalysis.tumorMutationalLoadStatus());
 
-        String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : DataUtil.NA_STRING;
+        String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false);
         mutationalLoadChart.enabled(hasReliablePurity);
@@ -168,7 +168,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         double mutationalBurden = genomicAnalysis.tumorMutationalBurden();
         String mutationalBurdenString =
-                hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb" : DataUtil.NA_STRING;
+                hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb" : Formats.NA_STRING;
         BarChart mutationalBurdenChart =
                 new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, "Low", "High", false);
         mutationalBurdenChart.enabled(hasReliablePurity);

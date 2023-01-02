@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.ImmutableCnPerChromosomeArmData;
-import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class GainsAndLossesTest {
         String chromosome = "1";
 
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString(chromosome))
+                .chromosome(Chromosome.fromString(chromosome))
                 .chromosomeArm(ChromosomeArm.P_ARM)
                 .copyNumber(1.123)
                 .build());
@@ -37,7 +37,7 @@ public class GainsAndLossesTest {
         List<CnPerChromosomeArmData> cnPerChromosome = Lists.newArrayList();
         String chromosome = "4";
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString(chromosome))
+                .chromosome(Chromosome.fromString(chromosome))
                 .chromosomeArm(ChromosomeArm.Q_ARM)
                 .copyNumber(4.51)
                 .build());
@@ -49,41 +49,41 @@ public class GainsAndLossesTest {
     public void crashOnCopyNumberDifferentChromosomes() {
         List<CnPerChromosomeArmData> cnPerChromosome = Lists.newArrayList();
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString("1"))
+                .chromosome(Chromosome.fromString("1"))
                 .chromosomeArm(ChromosomeArm.P_ARM)
                 .copyNumber(1.123)
                 .build());
 
-        assertEquals(DataUtil.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("2", "p.12")));
+        assertEquals(Formats.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("2", "p.12")));
     }
 
     @Test
     public void crashOnCopyNumberUnknownArms() {
         List<CnPerChromosomeArmData> cnPerChromosome = Lists.newArrayList();
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString("1"))
+                .chromosome(Chromosome.fromString("1"))
                 .chromosomeArm(ChromosomeArm.UNKNOWN)
                 .copyNumber(2.34)
                 .build());
-        assertEquals(DataUtil.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("1", "p.12")));
+        assertEquals(Formats.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("1", "p.12")));
     }
 
     @Test
     public void crashOnCopyNumberDifferentArms() {
         List<CnPerChromosomeArmData> cnPerChromosome = Lists.newArrayList();
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString("1"))
+                .chromosome(Chromosome.fromString("1"))
                 .chromosomeArm(ChromosomeArm.Q_ARM)
                 .copyNumber(2.34)
                 .build());
-        assertEquals(DataUtil.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("1", "p.12")));
+        assertEquals(Formats.NA_STRING, GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, createGainLoss("1", "p.12")));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void crashOnDetermineCopyNumberWeirdArm() {
         List<CnPerChromosomeArmData> cnPerChromosome = Lists.newArrayList();
         cnPerChromosome.add(ImmutableCnPerChromosomeArmData.builder()
-                .chromosome(HumanChromosome.fromString("1"))
+                .chromosome(Chromosome.fromString("1"))
                 .chromosomeArm(ChromosomeArm.Q_ARM)
                 .copyNumber(1.123)
                 .build());

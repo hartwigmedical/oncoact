@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
@@ -17,12 +18,11 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
 
-import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,7 +76,7 @@ public class XMLFactory {
         mapXml.put("itemWgsTumorPurity",
                 ImmutableKeyXML.builder()
                         .keyPath("WgsTumorPurity")
-                        .valuePath(Map.of("value", DataUtil.formatPercentage(report.genomicAnalysis().impliedPurity())))
+                        .valuePath(Map.of("value", Formats.formatPercentage(report.genomicAnalysis().impliedPurity())))
                         .build());
         mapXml.put("itemWgsGemTuPloid",
                 ImmutableKeyXML.builder()
@@ -84,7 +84,7 @@ public class XMLFactory {
                         .valuePath(Map.of("value", String.valueOf(report.genomicAnalysis().averageTumorPloidy())))
                         .build());
 
-        String cupAnalyse = null;
+        String cupAnalyse;
         if (report.molecularTissueOriginReporting() == null) {
             cupAnalyse = null;
         } else if (report.molecularTissueOriginReporting().interpretLikelihood() == null) {
@@ -209,7 +209,7 @@ public class XMLFactory {
             mapXml.put("item[" + count + "importwgs.wgscnv.line[" + count + "]copies",
                     ImmutableKeyXML.builder()
                             .keyPath("importwgs.wgscnv.line[" + count + "]copies")
-                            .valuePath(Map.of("value", hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : DataUtil.NA_STRING))
+                            .valuePath(Map.of("value", hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : Formats.NA_STRING))
                             .build());
             mapXml.put("item[" + count + "importwgs.wgscnv.line[" + count + "]charmco",
                     ImmutableKeyXML.builder()

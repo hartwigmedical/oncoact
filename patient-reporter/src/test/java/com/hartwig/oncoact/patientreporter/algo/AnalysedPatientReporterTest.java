@@ -11,7 +11,7 @@ import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class AnalysedPatientReporterTest {
     @Test
     public void canRunOnRunDirectory() throws IOException {
         AnalysedPatientReporter reporter = new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData(),
-                DataUtil.formatDate(LocalDate.now()));
+                Formats.formatDate(LocalDate.now()));
         PatientReporterConfig config = PatientReporterTestFactory.createTestReporterConfig();
 
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()

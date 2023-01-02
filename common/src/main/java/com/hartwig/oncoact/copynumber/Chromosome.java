@@ -1,8 +1,8 @@
-package com.hartwig.oncoact.genome;
+package com.hartwig.oncoact.copynumber;
 
 import org.jetbrains.annotations.NotNull;
 
-public enum HumanChromosome {
+public enum Chromosome {
     _1,
     _2,
     _3,
@@ -31,19 +31,12 @@ public enum HumanChromosome {
     private static final String CHR_PREFIX = "chr";
 
     @NotNull
-    private final String name;
-
-    HumanChromosome() {
-        this.name = name().substring(1).intern();
-    }
-
-    @NotNull
-    public static HumanChromosome fromString(@NotNull String chromosome) {
+    public static Chromosome fromString(@NotNull String chromosome) {
         if (chromosome.toLowerCase().startsWith("chr")) {
-            return HumanChromosome.valueOf("_" + chromosome.substring(3));
+            return Chromosome.valueOf("_" + chromosome.substring(3));
         }
 
-        return HumanChromosome.valueOf("_" + chromosome);
+        return Chromosome.valueOf("_" + chromosome);
     }
 
     public static boolean contains(@NotNull String chromosome) {
@@ -56,11 +49,6 @@ public enum HumanChromosome {
         return trimmedContig.equals("X") || trimmedContig.equals("Y");
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
     private static boolean isNumeric(@NotNull String str) {
         for (int i = 0; i < str.length(); i++) {
             if (!Character.isDigit(str.charAt(i))) {
@@ -68,24 +56,6 @@ public enum HumanChromosome {
             }
         }
         return true;
-    }
-
-    public static int chromosomeRank(final String chromosome) {
-        String chrTrimmed = stripChrPrefix(chromosome);
-
-        if (chrTrimmed.equalsIgnoreCase("X")) {
-            return 23;
-        } else if (chrTrimmed.equalsIgnoreCase("Y")) {
-            return 24;
-        } else if (chrTrimmed.equalsIgnoreCase("MT") || chrTrimmed.equalsIgnoreCase("M")) {
-            return 25;
-        } else {
-            try {
-                return Integer.parseInt(chrTrimmed);
-            } catch (NumberFormatException e) {
-                return -1;
-            }
-        }
     }
 
     @NotNull

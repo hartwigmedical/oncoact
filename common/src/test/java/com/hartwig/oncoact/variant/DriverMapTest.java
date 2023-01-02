@@ -26,7 +26,7 @@ public class DriverMapTest {
         PurpleDriver driver3 = mutationBuilder().gene(gene2).transcript("transcript 3").build();
         List<PurpleDriver> drivers = Lists.newArrayList(driver1, driver2, driver3);
 
-        Map<DriverKey, PurpleDriver> driverMap = DriverMap.toDriverMap(drivers);
+        Map<DriverKey, PurpleDriver> driverMap = DriverMap.create(drivers);
 
         assertEquals(driver1, driverMap.get(DriverKey.create(gene1, "transcript 1")));
         assertEquals(driver2, driverMap.get(DriverKey.create(gene1, "transcript 2")));

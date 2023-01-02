@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.genome;
+package com.hartwig.oncoact.util;
 
 import static org.junit.Assert.assertEquals;
 

@@ -19,7 +19,7 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -52,7 +52,7 @@ public class PatientReporterApplication {
             System.exit(1);
         }
 
-        new PatientReporterApplication(config, DataUtil.formatDate(LocalDate.now())).run();
+        new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 
     @NotNull

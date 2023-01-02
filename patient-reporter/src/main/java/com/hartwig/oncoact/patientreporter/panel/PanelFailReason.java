@@ -2,34 +2,29 @@ package com.hartwig.oncoact.patientreporter.panel;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public enum PanelFailReason {
-    PANEL_FAILURE("insufficient_dna_panel", false, QsFormNumber.FOR_345);
+
+    PANEL_FAILURE("insufficient_dna_panel", QsFormNumber.FOR_345);
 
     @NotNull
     private final String identifier;
-    private final boolean deepWGSDataAvailable;
     @NotNull
     private final QsFormNumber qsFormNumber;
 
-    PanelFailReason(@NotNull final String identifier, final boolean deepWGSDataAvailable, @NotNull QsFormNumber qsFormNumber) {
+    PanelFailReason(@NotNull final String identifier, @NotNull final QsFormNumber qsFormNumber) {
         this.identifier = identifier;
-        this.deepWGSDataAvailable = deepWGSDataAvailable;
         this.qsFormNumber = qsFormNumber;
     }
 
     @NotNull
     public String identifier() {
         return identifier;
-    }
-
-    public boolean isDeepWGSDataAvailable() {
-        return deepWGSDataAvailable;
     }
 
     @NotNull

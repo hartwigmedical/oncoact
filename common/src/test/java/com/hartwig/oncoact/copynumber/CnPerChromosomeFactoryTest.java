@@ -4,12 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import com.hartwig.oncoact.genome.HumanChromosome;
-import com.hartwig.oncoact.genome.RefGenomeCoordinates;
+import com.google.common.collect.Lists;
 import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -40,17 +38,17 @@ public class CnPerChromosomeFactoryTest {
 
         assertEquals(2, cnPerChromosomeArm.size());
         CnPerChromosomeArmData cnPerChromosomeArmData1 =
-                findByChromosomeAndArm(cnPerChromosomeArm, HumanChromosome._1, ChromosomeArm.P_ARM);
+                findByChromosomeAndArm(cnPerChromosomeArm, Chromosome._1, ChromosomeArm.P_ARM);
         assertEquals(2D, cnPerChromosomeArmData1.copyNumber(), EPSILON);
 
         CnPerChromosomeArmData cnPerChromosomeArmData2 =
-                findByChromosomeAndArm(cnPerChromosomeArm, HumanChromosome._1, ChromosomeArm.Q_ARM);
+                findByChromosomeAndArm(cnPerChromosomeArm, Chromosome._1, ChromosomeArm.Q_ARM);
         assertEquals(5.35312, cnPerChromosomeArmData2.copyNumber(), EPSILON);
     }
 
     @NotNull
     private static CnPerChromosomeArmData findByChromosomeAndArm(@NotNull List<CnPerChromosomeArmData> dataList,
-            @NotNull HumanChromosome chromosome, @NotNull ChromosomeArm arm) {
+            @NotNull Chromosome chromosome, @NotNull ChromosomeArm arm) {
         for (CnPerChromosomeArmData data : dataList) {
             if (data.chromosome() == chromosome && data.chromosomeArm() == arm) {
                 return data;

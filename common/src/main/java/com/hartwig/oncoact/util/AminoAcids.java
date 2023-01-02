@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.genome;
+package com.hartwig.oncoact.util;
 
 import java.util.Map;
 

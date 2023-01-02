@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public final class LimsCohortModelFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(LimsCohortModelFactory.class);
+
     private static final String DELIMITER = "\t";
 
     private LimsCohortModelFactory() {

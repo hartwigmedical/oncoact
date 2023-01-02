@@ -41,7 +41,7 @@ import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -403,7 +403,7 @@ public class CFReportWriterTest {
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
                 .logoCompanyPath(testReportData.logoCompanyPath())
-                .reportDate(DataUtil.formatDate(LocalDate.now()))
+                .reportDate(Formats.formatDate(LocalDate.now()))
                 .isWGSreport(false)
                 .comments("This is a test report")
                 .build();
@@ -428,7 +428,7 @@ public class CFReportWriterTest {
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
                 .logoCompanyPath(testReportData.logoCompanyPath())
-                .reportDate(DataUtil.formatDate(LocalDate.now()))
+                .reportDate(Formats.formatDate(LocalDate.now()))
                 .isWGSreport(false)
                 .comments("This is a test report")
                 .build();
@@ -529,7 +529,7 @@ public class CFReportWriterTest {
                 .udiDi(UDI_DI)
                 .pharmacogeneticsGenotypes(createTestPharmacogeneticsGenotypes())
                 .purpleQC(Sets.newHashSet(purpleQCStatus))
-                .reportDate(DataUtil.formatDate(LocalDate.now()))
+                .reportDate(Formats.formatDate(LocalDate.now()))
                 .isWGSreport(true)
                 .build();
 

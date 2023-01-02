@@ -11,7 +11,7 @@ import com.hartwig.oncoact.orange.purple.PurpleVariantType;
 import com.hartwig.oncoact.orange.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.variant.AltTranscriptReportableInfo;
+import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -160,7 +160,7 @@ public class VariantEvidence {
             ReportableVariant reportable = (ReportableVariant) variant;
             effect = reportable.isCanonical()
                     ? reportable.canonicalCodingEffect()
-                    : AltTranscriptReportableInfo.firstOtherCodingEffect(reportable.otherReportedEffects());
+                    : AltTranscriptReportableInfoFunctions.firstOtherCodingEffect(reportable.otherReportedEffects());
         } else {
             PurpleVariant purple = (PurpleVariant) variant;
             effect = purple.canonicalImpact().codingEffect();

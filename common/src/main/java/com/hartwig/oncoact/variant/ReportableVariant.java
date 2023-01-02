@@ -5,6 +5,7 @@ import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.purple.PurpleVariantType;
 import com.hartwig.oncoact.orange.purple.Variant;
+import com.hartwig.oncoact.util.Formats;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -83,7 +84,7 @@ public abstract class ReportableVariant implements Variant {
     @Value.Derived
     public String tVAF() {
         double vaf = alleleCopyNumber() / totalCopyNumber();
-        return DataUtil.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
+        return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
     }
 
     @NotNull

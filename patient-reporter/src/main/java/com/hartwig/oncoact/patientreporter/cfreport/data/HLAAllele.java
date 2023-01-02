@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +24,11 @@ public final class HLAAllele {
 
     @NotNull
     public static String copyNumberStringTumor(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : DataUtil.NA_STRING;
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     @NotNull
     public static String copyNumberStringGermline(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : DataUtil.NA_STRING;
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 }

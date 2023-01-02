@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.clinical.ImmutablePatientPrimaryTumor;
+import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.ImmutableCnPerChromosomeArmData;
@@ -20,7 +21,6 @@ import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
@@ -61,11 +61,11 @@ import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.protect.EvidenceType;
-import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.protect.TestProtectFactory;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
@@ -101,7 +101,7 @@ public final class ExampleAnalysisTestFactory {
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
         ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
-        String reportDate = DataUtil.formatDate(LocalDate.now());
+        String reportDate = Formats.formatDate(LocalDate.now());
         double impliedPurityPercentage = MathUtil.mapPercentage(config.impliedTumorPurity(), TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
 
         ReportData reportData = PatientReporterTestFactory.loadTestReportData();
@@ -136,7 +136,7 @@ public final class ExampleAnalysisTestFactory {
                 + "and indicating potential benefit of mTOR/PI3K inhibitors\n"
                 + " - high mutational burden (mutational load (ML) of 180, tumor mutation burden (TMB) of 13.6) that is "
                 + "potentially associated with an increased response rate to checkpoint inhibitor immunotherapy\n"
-                + "Due to the lower tumor purity (" + DataUtil.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
+                + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
                 + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
 
         String summaryWithGermline = "Melanoma sample showing:\n"
@@ -263,7 +263,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull HumanChromosome chromosome,
+    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
             @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
@@ -271,53 +271,53 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     public static List<CnPerChromosomeArmData> extractCnPerChromosome() {
         List<CnPerChromosomeArmData> cnPerChromosomeArm = Lists.newArrayList();
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("1"), ChromosomeArm.P_ARM, 2.577279278488992));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("1"), ChromosomeArm.Q_ARM, 3.923555406796647));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("2"), ChromosomeArm.P_ARM, 3.017299967841595));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("2"), ChromosomeArm.Q_ARM, 3.02120002022585));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("3"), ChromosomeArm.P_ARM, 3.5911825173202274));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("3"), ChromosomeArm.Q_ARM, 4.000879324279213));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("4"), ChromosomeArm.P_ARM, 2.0210999604946176));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("4"), ChromosomeArm.Q_ARM, 3.84538439455249));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("5"), ChromosomeArm.P_ARM, 2.0000481443928493));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("5"), ChromosomeArm.Q_ARM, 2.0096989688505156));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("6"), ChromosomeArm.P_ARM, 3.847943829939073));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("6"), ChromosomeArm.Q_ARM, 2.913192227059896));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("7"), ChromosomeArm.P_ARM, 4.0246200936217384));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("7"), ChromosomeArm.Q_ARM, 4.172712568077476));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("8"), ChromosomeArm.P_ARM, 3.3325999264957695));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("8"), ChromosomeArm.Q_ARM, 3.3429530044399343));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("9"), ChromosomeArm.P_ARM, 2.7291755500808623));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("9"), ChromosomeArm.Q_ARM, 3.6992000400581495));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("10"), ChromosomeArm.P_ARM, 2.500979668565291));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("10"), ChromosomeArm.Q_ARM, 2.0071004137917052));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("11"), ChromosomeArm.P_ARM, 3.1661436985048503));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("11"), ChromosomeArm.Q_ARM, 2.9098638260285616));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("12"), ChromosomeArm.P_ARM, 3.0115999171651855));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("12"), ChromosomeArm.Q_ARM, 3.0031553296330964));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("13"), ChromosomeArm.P_ARM, 3.1564998196285714));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("13"), ChromosomeArm.Q_ARM, 3.146714774779385));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("14"), ChromosomeArm.P_ARM, 3.014099827765714));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("14"), ChromosomeArm.Q_ARM, 3.0138727282866444));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("15"), ChromosomeArm.P_ARM, 3.7023997998702702));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("15"), ChromosomeArm.Q_ARM, 2.5465950447637473));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("16"), ChromosomeArm.P_ARM, 3.191969293780255));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("16"), ChromosomeArm.Q_ARM, 1.989521251230779));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("17"), ChromosomeArm.P_ARM, 2.9938998740100473));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("17"), ChromosomeArm.Q_ARM, 3.0477000530660465));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("18"), ChromosomeArm.P_ARM, 2.370931614063123));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("18"), ChromosomeArm.Q_ARM, 2.8490432529511334));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("19"), ChromosomeArm.P_ARM, 2.8890213317794795));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("19"), ChromosomeArm.Q_ARM, 2.934100089054606));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("20"), ChromosomeArm.P_ARM, 4.013880853952209));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("20"), ChromosomeArm.Q_ARM, 4.0086125804931285));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("21"), ChromosomeArm.P_ARM, 2.991999766033014));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("21"), ChromosomeArm.Q_ARM, 2.9982181161009325));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("22"), ChromosomeArm.P_ARM, 3.9915997247172412));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("22"), ChromosomeArm.Q_ARM, 3.983474946385728));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("X"), ChromosomeArm.P_ARM, 1.9496150872949336));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("X"), ChromosomeArm.Q_ARM, 1.9547000205458256));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(HumanChromosome.fromString("Y"), ChromosomeArm.P_ARM, 0.23189998001646422));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("1"), ChromosomeArm.P_ARM, 2.577279278488992));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("1"), ChromosomeArm.Q_ARM, 3.923555406796647));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("2"), ChromosomeArm.P_ARM, 3.017299967841595));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("2"), ChromosomeArm.Q_ARM, 3.02120002022585));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.P_ARM, 3.5911825173202274));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.Q_ARM, 4.000879324279213));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("4"), ChromosomeArm.P_ARM, 2.0210999604946176));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("4"), ChromosomeArm.Q_ARM, 3.84538439455249));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("5"), ChromosomeArm.P_ARM, 2.0000481443928493));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("5"), ChromosomeArm.Q_ARM, 2.0096989688505156));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("6"), ChromosomeArm.P_ARM, 3.847943829939073));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("6"), ChromosomeArm.Q_ARM, 2.913192227059896));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("7"), ChromosomeArm.P_ARM, 4.0246200936217384));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("7"), ChromosomeArm.Q_ARM, 4.172712568077476));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("8"), ChromosomeArm.P_ARM, 3.3325999264957695));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("8"), ChromosomeArm.Q_ARM, 3.3429530044399343));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("9"), ChromosomeArm.P_ARM, 2.7291755500808623));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("9"), ChromosomeArm.Q_ARM, 3.6992000400581495));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("10"), ChromosomeArm.P_ARM, 2.500979668565291));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("10"), ChromosomeArm.Q_ARM, 2.0071004137917052));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("11"), ChromosomeArm.P_ARM, 3.1661436985048503));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("11"), ChromosomeArm.Q_ARM, 2.9098638260285616));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("12"), ChromosomeArm.P_ARM, 3.0115999171651855));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("12"), ChromosomeArm.Q_ARM, 3.0031553296330964));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("13"), ChromosomeArm.P_ARM, 3.1564998196285714));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("13"), ChromosomeArm.Q_ARM, 3.146714774779385));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("14"), ChromosomeArm.P_ARM, 3.014099827765714));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("14"), ChromosomeArm.Q_ARM, 3.0138727282866444));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("15"), ChromosomeArm.P_ARM, 3.7023997998702702));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("15"), ChromosomeArm.Q_ARM, 2.5465950447637473));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("16"), ChromosomeArm.P_ARM, 3.191969293780255));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("16"), ChromosomeArm.Q_ARM, 1.989521251230779));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("17"), ChromosomeArm.P_ARM, 2.9938998740100473));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("17"), ChromosomeArm.Q_ARM, 3.0477000530660465));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("18"), ChromosomeArm.P_ARM, 2.370931614063123));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("18"), ChromosomeArm.Q_ARM, 2.8490432529511334));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("19"), ChromosomeArm.P_ARM, 2.8890213317794795));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("19"), ChromosomeArm.Q_ARM, 2.934100089054606));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("20"), ChromosomeArm.P_ARM, 4.013880853952209));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("20"), ChromosomeArm.Q_ARM, 4.0086125804931285));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("21"), ChromosomeArm.P_ARM, 2.991999766033014));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("21"), ChromosomeArm.Q_ARM, 2.9982181161009325));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("22"), ChromosomeArm.P_ARM, 3.9915997247172412));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("22"), ChromosomeArm.Q_ARM, 3.983474946385728));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("X"), ChromosomeArm.P_ARM, 1.9496150872949336));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("X"), ChromosomeArm.Q_ARM, 1.9547000205458256));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("Y"), ChromosomeArm.P_ARM, 0.23189998001646422));
         return cnPerChromosomeArm;
     }
 
@@ -380,7 +380,7 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
             @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
-        return ImmutableKnowledgebaseSource.builder()
+        return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
                 .sourceUrls(sourceUrls)
@@ -393,7 +393,7 @@ public final class ExampleAnalysisTestFactory {
     private static List<ProtectEvidence> createCOLO829TumorSpecificEvidence() {
         List<ProtectEvidence> evidenceItemsOnLabel = Lists.newArrayList();
 
-        ImmutableProtectEvidence.Builder onLabelBuilder = ImmutableProtectEvidence.builder().onLabel(true).reported(true);
+        ImmutableProtectEvidence.Builder onLabelBuilder = TestProtectFactory.builder().onLabel(true).reported(true);
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
                 .transcript("ENST00000288602")
                 .isCanonical(true)
@@ -563,7 +563,7 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     private static List<ProtectEvidence> createCOLO829ClinicalTrials() {
         List<ProtectEvidence> trialsOnLabel = Lists.newArrayList();
-        ImmutableProtectEvidence.Builder trialBuilder = ImmutableProtectEvidence.builder().onLabel(true).reported(true);
+        ImmutableProtectEvidence.Builder trialBuilder = TestProtectFactory.builder().onLabel(true).reported(true);
 
         trialsOnLabel.add(trialBuilder.gene(null)
                 .transcript(null)
@@ -779,7 +779,7 @@ public final class ExampleAnalysisTestFactory {
     private static List<ProtectEvidence> createCOLO829OffLabelEvidence() {
         List<ProtectEvidence> evidenceItemsOffLabel = Lists.newArrayList();
 
-        ImmutableProtectEvidence.Builder offLabelBuilder = ImmutableProtectEvidence.builder().onLabel(false).reported(true);
+        ImmutableProtectEvidence.Builder offLabelBuilder = TestProtectFactory.builder().onLabel(false).reported(true);
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
                 .transcript("ENST00000288602")

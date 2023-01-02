@@ -6,15 +6,19 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class PanelQCFailChapter implements ReportChapter {
+
+    private static final Logger LOGGER = LogManager.getLogger(PanelQCFailChapter.class);
 
     private static final String TITLE_REPORT = "Oncopanel Result Report Failed";
 
@@ -63,9 +67,9 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @NotNull
     private static Div createFailReasonDiv(@NotNull PanelFailReason failReason) {
-        String reason = DataUtil.NA_STRING;
-        String explanation = DataUtil.NA_STRING;
-        String explanationDetail = DataUtil.NA_STRING;
+        String reason = Formats.NA_STRING;
+        String explanation = Formats.NA_STRING;
+        String explanationDetail = Formats.NA_STRING;
 
         switch (failReason) {
             case PANEL_FAILURE: {
@@ -75,6 +79,8 @@ public class PanelQCFailChapter implements ReportChapter {
                 explanationDetail =
                         "Sequencing could not be performed due to insufficient DNA.";
                 break;
+            } default: {
+                LOGGER.warn("Unexpected fail reason: {}", failReason);
             }
         }
 

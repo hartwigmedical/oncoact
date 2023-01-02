@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.genome;
+package com.hartwig.oncoact.copynumber;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -19,45 +19,45 @@ public enum RefGenomeCoordinates {
     private static final String FIELD_SEPARATOR = "\t";
 
     @NotNull
-    private final Map<HumanChromosome, Integer> lengths;
+    private final Map<Chromosome, Integer> lengths;
     @NotNull
-    private final Map<HumanChromosome, Integer> centromeres;
+    private final Map<Chromosome, Integer> centromeres;
 
-    RefGenomeCoordinates(@NotNull final Map<HumanChromosome, Integer> lengths, @NotNull final Map<HumanChromosome, Integer> centromeres) {
+    RefGenomeCoordinates(@NotNull final Map<Chromosome, Integer> lengths, @NotNull final Map<Chromosome, Integer> centromeres) {
         this.lengths = lengths;
         this.centromeres = centromeres;
     }
 
     @NotNull
-    public Map<HumanChromosome, Integer> lengths() {
+    public Map<Chromosome, Integer> lengths() {
         return lengths;
     }
 
     @NotNull
-    public Map<HumanChromosome, Integer> centromeres() {
+    public Map<Chromosome, Integer> centromeres() {
         return centromeres;
     }
 
     public int length(@NotNull String chromosome) {
-        if (!HumanChromosome.contains(chromosome)) {
+        if (!Chromosome.contains(chromosome)) {
             return 0;
         }
 
-        return lengths.get(HumanChromosome.fromString(chromosome));
+        return lengths.get(Chromosome.fromString(chromosome));
     }
 
     @NotNull
-    private static Map<HumanChromosome, Integer> fromResource(@NotNull String resource) {
+    private static Map<Chromosome, Integer> fromResource(@NotNull String resource) {
         InputStream inputStream = RefGenomeCoordinates.class.getResourceAsStream("/refgenome/" + resource);
         return fromLines(new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList()));
     }
 
     @NotNull
-    private static Map<HumanChromosome, Integer> fromLines(@NotNull List<String> lines) {
-        Map<HumanChromosome, Integer> result = Maps.newHashMap();
+    private static Map<Chromosome, Integer> fromLines(@NotNull List<String> lines) {
+        Map<Chromosome, Integer> result = Maps.newHashMap();
         for (String line : lines) {
             String[] values = line.split(FIELD_SEPARATOR);
-            result.put(HumanChromosome.fromString(values[0]), Integer.valueOf(values[1]));
+            result.put(Chromosome.fromString(values[0]), Integer.valueOf(values[1]));
         }
 
         return result;

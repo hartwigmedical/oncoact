@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.genome;
+package com.hartwig.oncoact.copynumber;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class GenomeRegion {
 
     @NotNull
-    public abstract String chromosome();
+    public abstract Chromosome chromosome();
 
     public abstract int start();
 

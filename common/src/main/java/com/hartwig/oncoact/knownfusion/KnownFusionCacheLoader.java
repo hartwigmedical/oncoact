@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.io.FileReaderUtils;
+import com.hartwig.oncoact.util.FileReader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public final class KnownFusionCacheLoader {
 
         List<KnownFusionData> knownFusions = Lists.newArrayList();
 
-        Map<String, Integer> fields = FileReaderUtils.createFields(lines.get(0), FIELD_DELIMITER);
+        Map<String, Integer> fields = FileReader.createFields(lines.get(0), FIELD_DELIMITER);
 
         for (String line : lines.subList(1, lines.size())) {
             knownFusions.add(fromLine(line, fields));

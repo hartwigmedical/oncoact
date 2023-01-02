@@ -7,7 +7,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.EvidenceType;
-import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
@@ -15,7 +14,6 @@ import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
-import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
 public class ClinicalTrialFactoryTest {
@@ -26,18 +24,12 @@ public class ClinicalTrialFactoryTest {
                 .event("event")
                 .germline(false)
                 .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("acronym")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
+                .treatment(ImmutableTreatment.builder().name("acronym").build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Sets.newHashSet(ImmutableKnowledgebaseSource.builder()
+                .sources(Sets.newHashSet(TestProtectFactory.sourceBuilder()
                         .name(Knowledgebase.ICLUSION)
-                        .sourceEvent(Strings.EMPTY)
-                        .sourceUrls(Sets.newHashSet())
                         .evidenceType(EvidenceType.AMPLIFICATION)
                         .build()))
                 .build();

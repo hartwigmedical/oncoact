@@ -13,7 +13,7 @@ public final class DriverMap {
     }
 
     @NotNull
-    public static Map<DriverKey, PurpleDriver> toDriverMap(@NotNull Iterable<PurpleDriver> drivers) {
+    public static Map<DriverKey, PurpleDriver> create(@NotNull Iterable<PurpleDriver> drivers) {
         Map<DriverKey, PurpleDriver> map = Maps.newHashMap();
         for (PurpleDriver driver : drivers) {
             DriverKey key = DriverKey.create(driver.gene(), driver.transcript());

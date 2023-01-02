@@ -5,13 +5,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -72,13 +72,13 @@ public final class GainsAndLosses {
 
         Double copyNumber = null;
         for (CnPerChromosomeArmData cnPerChromosome : cnPerChromosomeData) {
-            if (HumanChromosome.fromString(gainLoss.chromosome()) == cnPerChromosome.chromosome()
+            if (Chromosome.fromString(gainLoss.chromosome()) == cnPerChromosome.chromosome()
                     && chromosomeArm == cnPerChromosome.chromosomeArm()) {
                 copyNumber = cnPerChromosome.copyNumber();
             }
         }
 
-        return copyNumber != null ? String.valueOf(Math.round(Math.max(0, copyNumber))) : DataUtil.NA_STRING;
+        return copyNumber != null ? String.valueOf(Math.round(Math.max(0, copyNumber))) : Formats.NA_STRING;
     }
 
     @NotNull

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.drivergene.DriverCategory;
@@ -38,12 +39,11 @@ import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.Condition;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.TypeAlteration;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 
-import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -185,7 +185,7 @@ public final class ConclusionAlgo {
     @VisibleForTesting
     static void generateCUPPAConclusion(@NotNull List<String> conclusion, @NotNull CuppaPrediction bestPrediction,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
-        String likelihoodPercentage = DataUtil.formatPercentageDigit(bestPrediction.likelihood());
+        String likelihoodPercentage = Formats.formatPercentageDigit(bestPrediction.likelihood());
         if (bestPrediction.likelihood() < 0.8) {
             ActionabilityKey keyCuppaInconclusive =
                     ImmutableActionabilityKey.builder().match("CUPPA_INCONCLUSIVE").type(TypeAlteration.CUPPA_INCONCLUSIVE).build();
@@ -518,7 +518,7 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyPurity);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add("- " + entry.conclusion().replace("XX%", DataUtil.formatPercentageRound(purity)) + "\n");
+                conclusion.add("- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
             }
         }
     }

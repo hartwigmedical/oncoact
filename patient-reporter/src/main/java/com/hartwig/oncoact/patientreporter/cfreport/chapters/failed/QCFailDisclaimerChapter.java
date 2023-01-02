@@ -7,7 +7,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailType;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
@@ -136,7 +136,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph resultsAreObtainedBetweenDates() {
         String earliestArrivalDate = failReport.sampleReport().earliestArrivalDate();
         return createContentParagraphTwice("The results in this report have been obtained between ",
-                earliestArrivalDate != null ? earliestArrivalDate : DataUtil.NA_STRING,
+                earliestArrivalDate != null ? earliestArrivalDate : Formats.NA_STRING,
                 " and ",
                 failReport.reportDate());
     }
@@ -144,7 +144,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                DataUtil.formatDate(failReport.sampleReport().tumorArrivalDate()),
+                Formats.formatDate(failReport.sampleReport().tumorArrivalDate()),
                 " with barcode ",
                 failReport.sampleReport().tumorReceivedSampleId());
     }
@@ -152,9 +152,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
-                DataUtil.formatDate(failReport.sampleReport().refArrivalDate()),
+                Formats.formatDate(failReport.sampleReport().refArrivalDate()),
                 " with barcode ",
-                DataUtil.formatNullableString(failReport.sampleReport().referenceReceivedSampleId()));
+                Formats.formatNullableString(failReport.sampleReport().referenceReceivedSampleId()));
     }
 
     @NotNull

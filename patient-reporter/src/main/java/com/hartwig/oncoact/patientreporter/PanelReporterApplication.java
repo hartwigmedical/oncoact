@@ -16,7 +16,7 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -40,7 +40,7 @@ public class PanelReporterApplication {
 
         Options options = PanelReporterConfig.createOptions();
 
-        PanelReporterConfig config = null;
+        PanelReporterConfig config;
         try {
             config = PanelReporterConfig.createConfig(new DefaultParser().parse(options, args));
         } catch (ParseException exception) {
@@ -49,7 +49,7 @@ public class PanelReporterApplication {
             throw new IllegalArgumentException("Unexpected error, check inputs");
         }
 
-        new PanelReporterApplication(config, DataUtil.formatDate(LocalDate.now())).run();
+        new PanelReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 
     @NotNull

@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class DataUtil {
+public final class Formats {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
     private static final DecimalFormat PERCENTAGE_FORMAT = new DecimalFormat("#'%'");
@@ -18,7 +18,7 @@ public final class DataUtil {
     public static final String NONE_STRING = "NONE";
     public static final String NA_STRING = "N/A";
 
-    private DataUtil() {
+    private Formats() {
     }
 
     @NotNull

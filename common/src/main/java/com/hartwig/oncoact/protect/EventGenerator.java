@@ -10,7 +10,7 @@ import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleVariant;
 import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.orange.purple.Variant;
-import com.hartwig.oncoact.variant.AltTranscriptReportableInfo;
+import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,10 +62,10 @@ public final class EventGenerator {
 
     @NotNull
     private static String nonCanonicalVariantEvent(@NotNull ReportableVariant variant) {
-        return toVariantEvent(AltTranscriptReportableInfo.firstOtherHgvsProteinImpact(variant.otherReportedEffects()),
-                AltTranscriptReportableInfo.firstOtherHgvsCodingImpact(variant.otherReportedEffects()),
-                AltTranscriptReportableInfo.firstOtherEffects(variant.otherReportedEffects()),
-                AltTranscriptReportableInfo.firstOtherCodingEffect(variant.otherReportedEffects()));
+        return toVariantEvent(AltTranscriptReportableInfoFunctions.firstOtherHgvsProteinImpact(variant.otherReportedEffects()),
+                AltTranscriptReportableInfoFunctions.firstOtherHgvsCodingImpact(variant.otherReportedEffects()),
+                AltTranscriptReportableInfoFunctions.firstOtherEffects(variant.otherReportedEffects()),
+                AltTranscriptReportableInfoFunctions.firstOtherCodingEffect(variant.otherReportedEffects()));
     }
 
     @NotNull

@@ -39,5 +39,4 @@ public class DriverGeneFileTest {
 
         throw new IllegalStateException("Could not find driver gene for gene: " + geneToFind);
     }
-
 }

@@ -37,7 +37,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.Pharmacogenetics;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
@@ -118,7 +118,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         double impliedPurityPercentage = MathUtil.mapPercentage(purity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
         renderTumorPurity(hasReliablePurity,
-                DataUtil.formatPercentage(impliedPurityPercentage),
+                Formats.formatPercentage(impliedPurityPercentage),
                 purity,
                 TumorPurity.RANGE_MIN,
                 TumorPurity.RANGE_MAX,
@@ -126,7 +126,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         String copyNumber = GeneUtil.copyNumberToString(ploidy, hasReliablePurity);
         contentTable.addCell(TableUtil.createContentCell("Average tumor ploidy"));
-        if (copyNumber.equals(DataUtil.NA_STRING)) {
+        if (copyNumber.equals(Formats.NA_STRING)) {
             contentTable.addCell(TableUtil.createContentCell(copyNumber).setTextAlignment(TextAlignment.CENTER));
         } else {
             contentTable.addCell(TableUtil.createContentCellPurityPloidy(copyNumber).setTextAlignment(TextAlignment.CENTER));
@@ -259,9 +259,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createContentCell(gainLoss.chromosomeBand()));
             contentTable.addCell(TableUtil.createContentCell(gainLoss.gene()));
             contentTable.addCell(TableUtil.createContentCell(GainsAndLosses.interpretation(gainLoss)));
-            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.minCopies()) : DataUtil.NA_STRING)
+            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.minCopies()) : Formats.NA_STRING)
                     .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : DataUtil.NA_STRING)
+            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : Formats.NA_STRING)
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, gainLoss))
                     .setTextAlignment(TextAlignment.CENTER));

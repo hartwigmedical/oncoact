@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.Cell;
@@ -79,7 +79,7 @@ public final class TableUtil {
         Table table = TableUtil.createReportContentTable(new float[] { 1 }, new Cell[] { headerCell }, contentWide);
         table.setKeepTogether(true);
         table.setMarginBottom(tableBottomMargin);
-        table.addCell(TableUtil.createDisabledContentCell(new Paragraph(DataUtil.NONE_STRING)));
+        table.addCell(TableUtil.createDisabledContentCell(new Paragraph(Formats.NONE_STRING)));
 
         return table;
     }

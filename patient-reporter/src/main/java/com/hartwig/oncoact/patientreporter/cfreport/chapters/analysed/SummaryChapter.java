@@ -30,7 +30,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Cell;
@@ -125,7 +125,7 @@ public class SummaryChapter implements ReportChapter {
             } else if (analysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
                 double impliedPurityPercentage =
                         MathUtil.mapPercentage(analysis().impliedPurity(), TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
-                clinicalConclusion = "Due to the lower sensitivity (" + DataUtil.formatPercentage(impliedPurityPercentage) + ") "
+                clinicalConclusion = "Due to the lower sensitivity (" + Formats.formatPercentage(impliedPurityPercentage) + ") "
                         + "of this test potential (subclonal) DNA aberrations might not have been detected using this test. " + ""
                         + "This result should therefore be considered with caution.\n" + sentence;
             }
@@ -199,7 +199,7 @@ public class SummaryChapter implements ReportChapter {
         double impliedPurity = analysis().impliedPurity();
         double impliedPurityPercentage = MathUtil.mapPercentage(impliedPurity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
         renderTumorPurity(hasReliablePurity,
-                DataUtil.formatPercentage(impliedPurityPercentage),
+                Formats.formatPercentage(impliedPurityPercentage),
                 impliedPurity,
                 TumorPurity.RANGE_MIN,
                 TumorPurity.RANGE_MAX,
@@ -207,13 +207,13 @@ public class SummaryChapter implements ReportChapter {
 
         String cuppaPrediction = Strings.EMPTY;
         if (patientReport.molecularTissueOriginReporting() == null) {
-            cuppaPrediction = DataUtil.NA_STRING;
+            cuppaPrediction = Formats.NA_STRING;
         } else if (patientReport.molecularTissueOriginReporting() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
             if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
                 cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
             } else {
                 cuppaPrediction =
-                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + DataUtil.formatPercentageDigit(
+                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + Formats.formatPercentageDigit(
                                 patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
             }
         }
@@ -229,14 +229,14 @@ public class SummaryChapter implements ReportChapter {
 
         // TODO evaluate display
         String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " (" + SINGLE_DECIMAL_FORMAT.format(
-                analysis().tumorMutationalLoad()) + " mut/genome)" : DataUtil.NA_STRING;
+                analysis().tumorMutationalLoad()) + " mut/genome)" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational load").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalLoadString).addStyle(dataStyle)));
 
         // TODO evaluate display
         String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(
-                analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : DataUtil.NA_STRING;
+                analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(microSatelliteStabilityString).addStyle(dataStyle)));
@@ -250,7 +250,7 @@ public class SummaryChapter implements ReportChapter {
             hrdString = analysis().hrdStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + " signature)";
             hrdStyle = ReportResources.dataHighlightStyle();
         } else {
-            hrdString = DataUtil.NA_STRING;
+            hrdString = Formats.NA_STRING;
             hrdStyle = ReportResources.dataHighlightNaStyle();
         }
 
@@ -273,13 +273,13 @@ public class SummaryChapter implements ReportChapter {
         String virusSummary;
         Style style;
         if (reportViralPresence && virus.size() == 0) {
-            virusSummary = DataUtil.NONE_STRING;
+            virusSummary = Formats.NONE_STRING;
             style = ReportResources.dataHighlightNaStyle();
         } else if (reportViralPresence && virus.size() > 0) {
             virusSummary = String.join(", ", virus);
             style = ReportResources.dataHighlightStyle();
         } else {
-            virusSummary = DataUtil.NA_STRING;
+            virusSummary = Formats.NA_STRING;
             style = ReportResources.dataHighlightNaStyle();
         }
 
@@ -509,7 +509,7 @@ public class SummaryChapter implements ReportChapter {
 
     @NotNull
     private static Cell createGeneSetCell(@NotNull Set<String> genes) {
-        String geneString = (genes.size() > 0) ? String.join(", ", genes) : DataUtil.NONE_STRING;
+        String geneString = (genes.size() > 0) ? String.join(", ", genes) : Formats.NONE_STRING;
 
         Style style = (genes.size() > 0) ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
 
@@ -529,7 +529,7 @@ public class SummaryChapter implements ReportChapter {
             treatmentText = String.format("%d | %s %s", eventCount, treatmentCount, treatmentsName);
             style = ReportResources.dataHighlightStyle();
         } else {
-            treatmentText = DataUtil.NONE_STRING;
+            treatmentText = Formats.NONE_STRING;
             style = ReportResources.dataHighlightNaStyle();
         }
 
@@ -544,7 +544,7 @@ public class SummaryChapter implements ReportChapter {
             treatmentText = String.format("%d | %d %s", eventCount, treatmentCount, treatmentsName);
             style = ReportResources.dataHighlightStyle();
         } else {
-            treatmentText = DataUtil.NONE_STRING;
+            treatmentText = Formats.NONE_STRING;
             style = ReportResources.dataHighlightNaStyle();
         }
 

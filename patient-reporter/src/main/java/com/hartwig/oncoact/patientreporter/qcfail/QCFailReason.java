@@ -2,9 +2,9 @@ package com.hartwig.oncoact.patientreporter.qcfail;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

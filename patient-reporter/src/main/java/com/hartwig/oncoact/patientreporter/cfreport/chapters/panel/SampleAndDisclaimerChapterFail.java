@@ -6,7 +6,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -68,12 +68,12 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
         String earliestArrivalDate = sampleReport.earliestArrivalDate();
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
-                DataUtil.formatNullableString(earliestArrivalDate),
+                Formats.formatNullableString(earliestArrivalDate),
                 " and ",
                 report.reportDate()));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                DataUtil.formatDate(sampleReport.tumorArrivalDate()),
+                Formats.formatDate(sampleReport.tumorArrivalDate()),
                 " with barcode ",
                 sampleReport.tumorReceivedSampleId()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));

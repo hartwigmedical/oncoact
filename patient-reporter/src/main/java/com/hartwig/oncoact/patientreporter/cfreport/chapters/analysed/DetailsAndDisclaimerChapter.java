@@ -7,7 +7,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
@@ -75,18 +75,18 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         String earliestArrivalDate = sampleReport.earliestArrivalDate();
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
-                DataUtil.formatNullableString(earliestArrivalDate),
+                Formats.formatNullableString(earliestArrivalDate),
                 " and ",
                 patientReport.reportDate()));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                DataUtil.formatDate(sampleReport.tumorArrivalDate()),
+                Formats.formatDate(sampleReport.tumorArrivalDate()),
                 " with barcode ",
                 sampleReport.tumorReceivedSampleId()));
         div.add(createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
-                DataUtil.formatDate(sampleReport.refArrivalDate()),
+                Formats.formatDate(sampleReport.refArrivalDate()),
                 " with barcode ",
-                DataUtil.formatNullableString(sampleReport.referenceReceivedSampleId())));
+                Formats.formatNullableString(sampleReport.referenceReceivedSampleId())));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
         div.add(createContentParagraph("This experiment is performed according to lab procedures: ", sampleReport.labProcedures()));
         String whoVerified = "This report was generated " + patientReport.user();

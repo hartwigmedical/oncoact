@@ -46,7 +46,7 @@ public final class ReportableVariantFactory {
     @NotNull
     private static Set<ReportableVariant> toReportableVariants(@NotNull Iterable<PurpleVariant> variants,
             @NotNull Iterable<PurpleDriver> drivers, @NotNull ReportableVariantSource source) {
-        Map<DriverKey, PurpleDriver> driverMap = DriverMap.toDriverMap(drivers);
+        Map<DriverKey, PurpleDriver> driverMap = DriverMap.create(drivers);
         Set<ReportableVariant> reportableVariants = Sets.newHashSet();
 
         for (PurpleVariant variant : variants) {
@@ -153,7 +153,7 @@ public final class ReportableVariantFactory {
                 .position(variant.position())
                 .ref(variant.ref())
                 .alt(variant.alt())
-                .otherReportedEffects(toOtherReportedEffects(variant.otherImpacts()))
+                .otherReportedEffects(AltTranscriptReportableInfoFactory.serialize(variant.otherImpacts()))
                 .canonicalTranscript(variant.canonicalImpact().transcript())
                 .canonicalEffect(concatEffects(variant.canonicalImpact().effects()))
                 .canonicalCodingEffect(variant.canonicalImpact().codingEffect())
@@ -172,20 +172,7 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    private static String toOtherReportedEffects(@NotNull Set<PurpleTranscriptImpact> otherImpacts) {
-        StringJoiner joiner = new StringJoiner(AltTranscriptReportableInfo.VAR_IMPACT_OTHER_REPORT_DELIM);
-        for (PurpleTranscriptImpact otherImpact : otherImpacts) {
-            joiner.add(AltTranscriptReportableInfo.serialise(otherImpact.transcript(),
-                    otherImpact.hgvsCodingImpact(),
-                    otherImpact.hgvsProteinImpact(),
-                    concatEffects(otherImpact.effects()),
-                    otherImpact.codingEffect()));
-        }
-        return joiner.toString();
-    }
-
-    @NotNull
-    private static String concatEffects(@NotNull Set<PurpleVariantEffect> effects) {
+    private static String concatEffects(@NotNull Iterable<PurpleVariantEffect> effects) {
         StringJoiner joiner = new StringJoiner("&");
         for (PurpleVariantEffect effect : effects) {
             joiner.add(effect.toString().toLowerCase());

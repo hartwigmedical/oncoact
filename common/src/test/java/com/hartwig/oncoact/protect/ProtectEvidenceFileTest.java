@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class ProtectEvidenceFileTest {
 
-    private static final String EVIDENCE_TSV = Resources.getResource("protect/example.tsv").getPath();
+    private static final String EVIDENCE_TSV = Resources.getResource("protect/sample.protect.tsv").getPath();
 
     @Test
     public void canReadProtectEvidenceFile() throws IOException {
@@ -85,7 +85,7 @@ public class ProtectEvidenceFileTest {
     public void canConvertSourcesBackAndForth() {
         Set<KnowledgebaseSource> sources = Sets.newHashSet();
 
-        sources.add(ImmutableKnowledgebaseSource.builder()
+        sources.add(TestProtectFactory.sourceBuilder()
                 .name(Knowledgebase.VICC_CGI)
                 .sourceEvent("event 1")
                 .sourceUrls(Sets.newHashSet("url1", "url2", "url3"))
@@ -93,13 +93,13 @@ public class ProtectEvidenceFileTest {
                 .evidenceUrls(Sets.newHashSet("url4", "url5", "url6"))
                 .build());
 
-        sources.add(ImmutableKnowledgebaseSource.builder()
+        sources.add(TestProtectFactory.sourceBuilder()
                 .name(Knowledgebase.VICC_CIVIC)
                 .sourceEvent("event 2")
                 .evidenceType(EvidenceType.HOTSPOT_MUTATION)
                 .build());
 
-        sources.add(ImmutableKnowledgebaseSource.builder()
+        sources.add(TestProtectFactory.sourceBuilder()
                 .name(Knowledgebase.VICC_JAX)
                 .sourceEvent("event 3")
                 .evidenceType(EvidenceType.HOTSPOT_MUTATION)

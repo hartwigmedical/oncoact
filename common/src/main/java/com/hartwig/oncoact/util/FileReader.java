@@ -1,15 +1,14 @@
-package com.hartwig.oncoact.io;
+package com.hartwig.oncoact.util;
 
-import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class FileReaderUtils {
+public final class FileReader {
 
-    private FileReaderUtils() {
+    private FileReader() {
     }
 
     @NotNull
@@ -23,17 +22,4 @@ public final class FileReaderUtils {
 
         return fieldsIndexMap;
     }
-
-    // TODO Remove
-    public static String getValue(final List<String> lines, final String field, final String defaultValue, final String delimiter) {
-        for (String line : lines) {
-            String[] values = line.split(delimiter, -1);
-            if (values[0].equals(field)) {
-                return values[1];
-            }
-        }
-
-        return defaultValue;
-    }
-
 }

@@ -40,8 +40,6 @@ public class Lims {
     @NotNull
     private final Set<String> samplesWithoutSamplingDate;
     @NotNull
-    private final Set<String> patientsWithoutCuratedPrimaryTumor;
-    @NotNull
     private final Set<String> blacklistedPatients;
 
     public Lims(@NotNull final LimsCohortModel limsCohortModel, @NotNull final HospitalModel hospitalModel,
@@ -49,7 +47,7 @@ public class Lims {
             @NotNull final Map<String, LimsJsonSubmissionData> dataPerSubmission,
             @NotNull final Map<String, LimsShallowSeqData> shallowSeqPerSampleBarcode,
             @NotNull final Map<String, LocalDate> preLimsArrivalDatesPerSampleId, @NotNull final Set<String> samplesWithoutSamplingDate,
-            @NotNull final Set<String> patientsWithoutCuratedPrimaryTumor, @NotNull final Set<String> blacklistedPatients) {
+            @NotNull final Set<String> blacklistedPatients) {
         this.limsCohortModel = limsCohortModel;
         this.hospitalModel = hospitalModel;
         this.dataPerSampleBarcode = dataPerSampleBarcode;
@@ -57,7 +55,6 @@ public class Lims {
         this.shallowSeqPerSampleBarcode = shallowSeqPerSampleBarcode;
         this.preLimsArrivalDatesPerSampleId = preLimsArrivalDatesPerSampleId;
         this.samplesWithoutSamplingDate = samplesWithoutSamplingDate;
-        this.patientsWithoutCuratedPrimaryTumor = patientsWithoutCuratedPrimaryTumor;
         this.blacklistedPatients = blacklistedPatients;
     }
 

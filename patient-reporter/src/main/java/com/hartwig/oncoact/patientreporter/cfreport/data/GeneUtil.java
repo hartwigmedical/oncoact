@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,9 +14,9 @@ public final class GeneUtil {
     @NotNull
     public static String copyNumberToString(@Nullable Double copyNumber, boolean hasReliablePurity) {
         if (!hasReliablePurity) {
-            return DataUtil.NA_STRING;
+            return Formats.NA_STRING;
         } else {
-            return copyNumber != null ? ReportResources.decimalFormat("#.#").format(copyNumber) : DataUtil.NA_STRING;
+            return copyNumber != null ? ReportResources.decimalFormat("#.#").format(copyNumber) : Formats.NA_STRING;
         }
     }
 

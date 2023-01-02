@@ -7,7 +7,7 @@ import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.util.Strings;
 import org.immutables.value.Value;
@@ -103,9 +103,9 @@ public abstract class SampleReport {
         if (sampleDate == null) {
             return null;
         } else if (refDate == null || sampleDate.isBefore(refDate)) {
-            return DataUtil.formatDate(sampleDate);
+            return Formats.formatDate(sampleDate);
         } else {
-            return DataUtil.formatDate(refDate);
+            return Formats.formatDate(refDate);
         }
     }
 
@@ -113,11 +113,7 @@ public abstract class SampleReport {
     @Value.Derived
     public String biopsyLocationString() {
         String biopsyLocation = biopsyLocation();
-        if (biopsyLocation != null) {
-            return biopsyLocation;
-        } else {
-            return Strings.EMPTY;
-        }
+        return biopsyLocation != null ? biopsyLocation : Strings.EMPTY;
     }
 
     @NotNull

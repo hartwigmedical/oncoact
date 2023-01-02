@@ -3,10 +3,10 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
@@ -14,7 +14,7 @@ import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
-import com.hartwig.oncoact.util.DataUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
@@ -130,17 +130,17 @@ public final class SomaticVariants {
     @Nullable
     public static String tVAFString(@Nullable String tVAF, boolean hasReliablePurity, Double totalCopyNumber) {
         if (totalCopyNumber == null) {
-            return DataUtil.NA_STRING;
+            return Formats.NA_STRING;
         } else {
             double flooredCopyNumber = Math.max(0, totalCopyNumber);
             long roundedCopyNumber = Math.round(flooredCopyNumber);
-            return hasReliablePurity && roundedCopyNumber >= 1 ? tVAF : DataUtil.NA_STRING;
+            return hasReliablePurity && roundedCopyNumber >= 1 ? tVAF : Formats.NA_STRING;
         }
     }
 
     @NotNull
     public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : DataUtil.NA_STRING;
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     @NotNull
@@ -160,7 +160,7 @@ public final class SomaticVariants {
         if (hasReliablePurity && biallelic != null) {
             return biallelic ? "Yes" : "No";
         } else {
-            return DataUtil.NA_STRING;
+            return Formats.NA_STRING;
         }
     }
 
@@ -195,7 +195,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> driverGenesWithVariant(@NotNull List<ReportableVariant> variants) {
-        Set<String> genes = new TreeSet<String>();
+        Set<String> genes = Sets.newTreeSet();
         for (ReportableVariant variant : variants) {
             if (DriverInterpretation.interpret(variant.driverLikelihood()) == DriverInterpretation.HIGH) {
                 genes.add(CurationFunctions.curateGeneNamePdf(variant.gene()));
@@ -211,7 +211,7 @@ public final class SomaticVariants {
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
             @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
-        Set<String> genesDisplay = new TreeSet<String>();
+        Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
             if (Genes.MSI_GENES.contains(variant.gene())) {
@@ -237,7 +237,7 @@ public final class SomaticVariants {
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
             @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
-        Set<String> genesDisplay = new TreeSet<String>();
+        Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
             if (Genes.HRD_GENES.contains(variant.gene())) {

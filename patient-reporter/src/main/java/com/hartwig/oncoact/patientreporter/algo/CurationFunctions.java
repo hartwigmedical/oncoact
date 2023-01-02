@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.ImmutableGeneDisruption;
@@ -16,7 +17,6 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 public final class CurationFunctions {
