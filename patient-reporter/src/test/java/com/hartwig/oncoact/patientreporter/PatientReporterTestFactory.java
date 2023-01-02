@@ -35,7 +35,7 @@ public final class PatientReporterTestFactory {
 
     private static final String GERMLINE_REPORTING_TSV = Resources.getResource("germline_reporting/germline_reporting.tsv").getPath();
     private static final String SAMPLE_SPECIAL_REMARK_TSV = Resources.getResource("special_remark/sample_special_remark.tsv").getPath();
-    private static final String KNOWN_FUSION_FILE = Resources.getResource("known_fusion_data/known_fusion_file.csv").getPath();
+    private static final String KNOWN_FUSION_FILE = Resources.getResource("known_fusion_cache/known_fusion_data.csv").getPath();
 
     private static final String UDI_DI = "(01)8720299486027(8012)v5.28";
 
