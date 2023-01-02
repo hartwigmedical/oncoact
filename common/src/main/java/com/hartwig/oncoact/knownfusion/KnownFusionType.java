@@ -7,5 +7,6 @@ public enum KnownFusionType {
     PROMISCUOUS_3,
     IG_KNOWN_PAIR,
     IG_PROMISCUOUS,
-    EXON_DEL_DUP
+    EXON_DEL_DUP,
+    PROMISCUOUS_ENHANCER_TARGET
 }
