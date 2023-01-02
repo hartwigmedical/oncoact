@@ -1,6 +1,4 @@
-package com.hartwig.oncoact.common.codon;
-
-import static com.hartwig.oncoact.common.codon.Nucleotides.DNA_BASES;
+package com.hartwig.oncoact.genome;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -12,26 +10,21 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class AminoAcidsTest
-{
+public class AminoAcidsTest {
+
     @Test
-    public void canLookupAminoAcidForTrinucleotide()
-    {
+    public void canLookupAminoAcidForTrinucleotide() {
         assertEquals("E", AminoAcids.findAminoAcidForCodon("GAA"));
         assertNull(AminoAcids.findAminoAcidForCodon("TGA"));
     }
 
     @Test
-    public void allAminoAcidsAreFoundAndAreUnique()
-    {
+    public void allAminoAcidsAreFoundAndAreUnique() {
         Map<String, List<String>> aminoAcidToTrinucleotideMap = AminoAcids.aminoAcidToTrinucleotidesMap();
 
-        for(char base1 : DNA_BASES)
-        {
-            for(char base2 : DNA_BASES)
-            {
-                for(char base3 : DNA_BASES)
-                {
+        for (char base1 : Codons.DNA_BASES) {
+            for (char base2 : Codons.DNA_BASES) {
+                for (char base3 : Codons.DNA_BASES) {
                     String trinucleotide = Character.toString(base1) + base2 + base3;
                     assertTrue(aminoAcidExists(aminoAcidToTrinucleotideMap, trinucleotide));
                 }
@@ -39,12 +32,9 @@ public class AminoAcidsTest
         }
     }
 
-    private static boolean aminoAcidExists(@NotNull Map<String,List<String>> aminoAcidToTrinucleotideMap, @NotNull String trinucleotide)
-    {
-        for(Map.Entry<String,List<String>> entry : aminoAcidToTrinucleotideMap.entrySet())
-        {
-            if(entry.getValue().contains(trinucleotide))
-            {
+    private static boolean aminoAcidExists(@NotNull Map<String, List<String>> aminoAcidToTrinucleotideMap, @NotNull String trinucleotide) {
+        for (Map.Entry<String, List<String>> entry : aminoAcidToTrinucleotideMap.entrySet()) {
+            if (entry.getValue().contains(trinucleotide)) {
                 return true;
             }
         }
@@ -52,8 +42,7 @@ public class AminoAcidsTest
     }
 
     @Test
-    public void canForceSingleLetterProteinAnnotation()
-    {
+    public void canForceSingleLetterProteinAnnotation() {
         assertEquals("p.N334K", AminoAcids.forceSingleLetterProteinAnnotation("p.Asn334Lys"));
     }
 }

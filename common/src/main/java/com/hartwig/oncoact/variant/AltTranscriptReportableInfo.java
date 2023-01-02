@@ -12,6 +12,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class AltTranscriptReportableInfo {
+
     public final String TransName;
     public final String HgvsCoding;
     public final String HgvsProtein;

@@ -17,7 +17,7 @@ import org.junit.Test;
 
 public class ReportableVariantFactoryTest {
 
-    private static final double EPSILON = 1.0e-10;
+    private static final double EPSILON = 1.0E-10;
 
     @Test
     public void canResolveReportableSomaticVariants() {

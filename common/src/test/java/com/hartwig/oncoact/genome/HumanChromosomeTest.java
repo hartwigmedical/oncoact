@@ -1,11 +1,8 @@
 package com.hartwig.oncoact.genome;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-
-import com.hartwig.oncoact.common.purple.Gender;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -50,13 +47,5 @@ public class HumanChromosomeTest {
 
         assertTrue(HumanChromosome._Y.isAllosome());
         assertFalse(HumanChromosome._Y.isAutosome());
-    }
-
-    @Test
-    public void testIsDiploid() {
-        assertTrue(HumanChromosome._X.isDiploid(Gender.FEMALE));
-        assertFalse(HumanChromosome._X.isDiploid(Gender.MALE));
-        assertFalse(HumanChromosome._Y.isDiploid(Gender.MALE));
-        assertFalse(HumanChromosome._Y.isDiploid(Gender.FEMALE));
     }
 }

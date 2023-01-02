@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.hla;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 public class HlaAllelesReportingFactoryTest {
+
+    private static final double EPSILON = 1.0E-10;
 
     @Test
     public void testGene() {
@@ -87,39 +89,39 @@ public class HlaAllelesReportingFactoryTest {
         assertEquals(lilacReporting1.somaticMutations(), "2 missense");
         assertEquals(lilacReporting1.interpretation(), "Yes, but mutation(s) detected");
         assertEquals(lilacReporting1.tumorCopies(), 6, 2);
-        assertEquals(lilacReporting1.germlineCopies(), 2D);
+        assertEquals(lilacReporting1.germlineCopies(), 2D, EPSILON);
 
         HlaReporting lilacReporting2 = extractHlaReporting("B*18:02", lilacReporting.get("HLA-B"));
         assertEquals(lilacReporting2.hlaAllele().gene(), "HLA-B");
         assertEquals(lilacReporting2.hlaAllele().germlineAllele(), "B*18:02");
         assertEquals(lilacReporting2.somaticMutations(), "1 nonsense or frameshift, 1 splice");
         assertEquals(lilacReporting2.interpretation(), "Yes, but mutation(s) detected");
-        assertEquals(lilacReporting2.tumorCopies(), 1.2);
-        assertEquals(lilacReporting2.germlineCopies(), 1D);
+        assertEquals(lilacReporting2.tumorCopies(), 1.2, EPSILON);
+        assertEquals(lilacReporting2.germlineCopies(), 1D, EPSILON);
 
         HlaReporting lilacReporting3 = extractHlaReporting("B*35:02", lilacReporting.get("HLA-B"));
         assertEquals(lilacReporting3.hlaAllele().gene(), "HLA-B");
         assertEquals(lilacReporting3.hlaAllele().germlineAllele(), "B*35:02");
         assertEquals(lilacReporting3.somaticMutations(), "No");
         assertEquals(lilacReporting3.interpretation(), "Yes");
-        assertEquals(lilacReporting3.tumorCopies(), 1, 1);
-        assertEquals(lilacReporting3.germlineCopies(), 1D);
+        assertEquals(lilacReporting3.tumorCopies(), 1.1, EPSILON);
+        assertEquals(lilacReporting3.germlineCopies(), 1D, EPSILON);
 
         HlaReporting lilacReporting4 = extractHlaReporting("C*10:12", lilacReporting.get("HLA-C"));
         assertEquals(lilacReporting4.hlaAllele().gene(), "HLA-C");
         assertEquals(lilacReporting4.hlaAllele().germlineAllele(), "C*10:12");
         assertEquals(lilacReporting4.somaticMutations(), "No");
         assertEquals(lilacReporting4.interpretation(), "No");
-        assertEquals(lilacReporting4.tumorCopies(), 0D);
-        assertEquals(lilacReporting4.germlineCopies(), 1D);
+        assertEquals(lilacReporting4.tumorCopies(), 0D, EPSILON);
+        assertEquals(lilacReporting4.germlineCopies(), 1D, EPSILON);
 
         HlaReporting lilacReporting5 = extractHlaReporting("C*16:02", lilacReporting.get("HLA-C"));
         assertEquals(lilacReporting5.hlaAllele().gene(), "HLA-C");
         assertEquals(lilacReporting5.hlaAllele().germlineAllele(), "C*16:02");
         assertEquals(lilacReporting5.somaticMutations(), "1 missense");
         assertEquals(lilacReporting5.interpretation(), "Unknown");
-        assertEquals(lilacReporting5.tumorCopies(), 0D);
-        assertEquals(lilacReporting5.germlineCopies(), 1D);
+        assertEquals(lilacReporting5.tumorCopies(), 0D, EPSILON);
+        assertEquals(lilacReporting5.germlineCopies(), 1D, EPSILON);
     }
 
     @NotNull

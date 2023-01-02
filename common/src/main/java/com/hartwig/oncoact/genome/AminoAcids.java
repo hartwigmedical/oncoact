@@ -1,12 +1,12 @@
-package com.hartwig.oncoact.common.codon;
+package com.hartwig.oncoact.genome;
 
-import static com.hartwig.oncoact.common.codon.Codons.START_CODON;
-import static com.hartwig.oncoact.common.codon.Codons.STOP_CODON_1;
-import static com.hartwig.oncoact.common.codon.Codons.STOP_CODON_2;
-import static com.hartwig.oncoact.common.codon.Codons.STOP_CODON_3;
-import static com.hartwig.oncoact.common.codon.Codons.UNKNOWN;
-import static com.hartwig.oncoact.common.codon.Codons.codonToAminoAcid;
-import static com.hartwig.oncoact.common.codon.Codons.isStopCodon;
+import static com.hartwig.oncoact.genome.Codons.START_CODON;
+import static com.hartwig.oncoact.genome.Codons.STOP_CODON_1;
+import static com.hartwig.oncoact.genome.Codons.STOP_CODON_2;
+import static com.hartwig.oncoact.genome.Codons.STOP_CODON_3;
+import static com.hartwig.oncoact.genome.Codons.UNKNOWN;
+import static com.hartwig.oncoact.genome.Codons.codonToAminoAcid;
+import static com.hartwig.oncoact.genome.Codons.isStopCodon;
 
 import java.util.List;
 import java.util.Map;
@@ -20,16 +20,15 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class AminoAcids
-{
+public final class AminoAcids {
+
     // allow amino acids back to possible codons
-    public static final Map<String,List<String>> AMINO_ACID_TO_CODON_MAP = Maps.newHashMap();
+    public static final Map<String, List<String>> AMINO_ACID_TO_CODON_MAP = Maps.newHashMap();
 
     // long amino-acid name to single letter
     public static final Map<String, String> TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER = Maps.newHashMap();
 
-    static
-    {
+    static {
         TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER.put("Ala", "A"); // Alanine
         TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER.put("Cys", "C"); // Cysteine
         TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER.put("Asp", "D"); // Aspartic Acid
@@ -84,29 +83,26 @@ public final class AminoAcids
     private static final Logger LOGGER = LogManager.getLogger(AminoAcids.class);
 
     @Nullable
-    public static String findAminoAcidForCodon(@NotNull String codon)
-    {
+    public static String findAminoAcidForCodon(@NotNull String codon) {
         // only diff is ignores the stop codon
-        if(codon.length() != 3)
-        {
+        if (codon.length() != 3) {
             LOGGER.warn("Cannot look up amino acids for non-codons: {}", codon);
             return null;
         }
 
         char aminoAcid = codonToAminoAcid(codon);
 
-        if(aminoAcid == UNKNOWN || isStopCodon(codon))
+        if (aminoAcid == UNKNOWN || isStopCodon(codon)) {
             return null;
+        }
 
         return String.valueOf(aminoAcid);
     }
 
     @NotNull
-    public static String forceSingleLetterProteinAnnotation(@NotNull String proteinAnnotation)
-    {
+    public static String forceSingleLetterProteinAnnotation(@NotNull String proteinAnnotation) {
         String convertedProteinAnnotation = proteinAnnotation;
-        for(Map.Entry<String, String> mapping : TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER.entrySet())
-        {
+        for (Map.Entry<String, String> mapping : TRI_LETTER_AMINO_ACID_TO_SINGLE_LETTER.entrySet()) {
             convertedProteinAnnotation = convertedProteinAnnotation.replaceAll(mapping.getKey(), mapping.getValue());
         }
         return convertedProteinAnnotation;
@@ -114,8 +110,7 @@ public final class AminoAcids
 
     @NotNull
     @VisibleForTesting
-    static Map<String,List<String>> aminoAcidToTrinucleotidesMap()
-    {
+    static Map<String, List<String>> aminoAcidToTrinucleotidesMap() {
         return AMINO_ACID_TO_CODON_MAP;
     }
 }

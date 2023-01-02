@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.genome;
 
-import com.hartwig.oncoact.common.genome.refgenome.RefGenomeFunctions;
-import com.hartwig.oncoact.common.purple.Gender;
-
 import org.jetbrains.annotations.NotNull;
 
 public enum HumanChromosome implements Chromosome {
@@ -30,6 +27,8 @@ public enum HumanChromosome implements Chromosome {
     _22(true, false),
     _X(false, true),
     _Y(false, true);
+
+    private static final String CHR_PREFIX = "chr";
 
     private final boolean isAutosome;
     private final boolean isAllosome;
@@ -72,17 +71,13 @@ public enum HumanChromosome implements Chromosome {
     }
 
     public static boolean contains(@NotNull String chromosome) {
-        final String trimmedContig = RefGenomeFunctions.stripChrPrefix(chromosome);
+        final String trimmedContig = stripChrPrefix(chromosome);
         if (isNumeric(trimmedContig)) {
             final int integerContig = Integer.parseInt(trimmedContig);
             return integerContig >= 1 && integerContig <= 22;
         }
 
         return trimmedContig.equals("X") || trimmedContig.equals("Y");
-    }
-
-    public boolean isDiploid(@NotNull Gender gender) {
-        return isAutosome() || (gender != Gender.MALE && this.equals(_X));
     }
 
     @Override
@@ -100,7 +95,7 @@ public enum HumanChromosome implements Chromosome {
     }
 
     public static int chromosomeRank(final String chromosome) {
-        String chrTrimmed = RefGenomeFunctions.stripChrPrefix(chromosome);
+        String chrTrimmed = stripChrPrefix(chromosome);
 
         if (chrTrimmed.equalsIgnoreCase("X")) {
             return 23;
@@ -115,5 +110,14 @@ public enum HumanChromosome implements Chromosome {
                 return -1;
             }
         }
+    }
+
+    @NotNull
+    private static String stripChrPrefix(@NotNull final String chromosome) {
+        if (chromosome.startsWith(CHR_PREFIX)) {
+            return chromosome.substring(CHR_PREFIX.length());
+        }
+
+        return chromosome;
     }
 }
