@@ -2,7 +2,7 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.time.LocalDate;
 
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;

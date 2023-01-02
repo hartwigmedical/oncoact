@@ -19,9 +19,9 @@ import com.hartwig.oncoact.variant.ReportableVariant;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
-public final class CurationFunction {
+public final class CurationFunctions {
 
-    private CurationFunction() {
+    private CurationFunctions() {
     }
 
     public static final String GENE_CDKN2A = "CDKN2A";
@@ -29,7 +29,7 @@ public final class CurationFunction {
     public static final String GENE_CDKN2A_NON_CANONICAL = "CDKN2A (p14ARF)";
 
     @NotNull
-    public static GenomicAnalysis curation(@NotNull GenomicAnalysis genomicAnalysis) {
+    public static GenomicAnalysis curate(@NotNull GenomicAnalysis genomicAnalysis) {
         return ImmutableGenomicAnalysis.builder()
                 .from(genomicAnalysis)
                 .tumorSpecificEvidence(curateEvidence(genomicAnalysis.tumorSpecificEvidence()))
@@ -167,7 +167,7 @@ public final class CurationFunction {
     @NotNull
     public static String curateGeneNamePdf(@NotNull String gene) {
         if (gene.equals(GENE_CDKN2A_CANONICAL)) {
-            return CurationFunction.GENE_CDKN2A;
+            return CurationFunctions.GENE_CDKN2A;
         } else if (gene.equals(GENE_CDKN2A_NON_CANONICAL)) {
             return GENE_CDKN2A;
         } else {

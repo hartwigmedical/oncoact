@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.hartwig.oncoact.common.peach.PeachGenotype;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
+import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 
@@ -59,7 +59,7 @@ public abstract class QCFailReport implements PatientReport {
 
     @NotNull
     @Override
-    public abstract Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes();
+    public abstract Map<String, List<PeachEntry>> pharmacogeneticsGenotypes();
 
     @NotNull
     @Override

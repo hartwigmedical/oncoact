@@ -12,7 +12,7 @@ import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
 import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
 import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
-import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
+import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 import com.hartwig.oncoact.util.DataUtil;
 import com.hartwig.oncoact.variant.DriverInterpretation;
@@ -198,7 +198,7 @@ public final class SomaticVariants {
         Set<String> genes = new TreeSet<String>();
         for (ReportableVariant variant : variants) {
             if (DriverInterpretation.interpret(variant.driverLikelihood()) == DriverInterpretation.HIGH) {
-                genes.add(CurationFunction.curateGeneNamePdf(variant.gene()));
+                genes.add(CurationFunctions.curateGeneNamePdf(variant.gene()));
             }
         }
         return genes;
@@ -215,20 +215,20 @@ public final class SomaticVariants {
 
         for (ReportableVariant variant : reportableVariants) {
             if (Genes.MSI_GENES.contains(variant.gene())) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(variant.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(variant.gene()));
             }
         }
 
         for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (Genes.MSI_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS
                     || gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS)) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
 
         for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.MSI_GENES.contains(homozygousDisruption.gene())) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(homozygousDisruption.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }
         }
         return genesDisplay;
@@ -241,20 +241,20 @@ public final class SomaticVariants {
 
         for (ReportableVariant variant : reportableVariants) {
             if (Genes.HRD_GENES.contains(variant.gene())) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(variant.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(variant.gene()));
             }
         }
 
         for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (Genes.HRD_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS
                     || gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS)) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
 
         for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.HRD_GENES.contains(homozygousDisruption.gene())) {
-                genesDisplay.add(CurationFunction.curateGeneNamePdf(homozygousDisruption.gene()));
+                genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }
         }
 

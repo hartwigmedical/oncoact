@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.cuppa.interpretation;
+package com.hartwig.oncoact.cuppa;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

@@ -3,15 +3,15 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFunctions;
-import com.hartwig.oncoact.common.pipeline.PipelineVersionFile;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
+import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

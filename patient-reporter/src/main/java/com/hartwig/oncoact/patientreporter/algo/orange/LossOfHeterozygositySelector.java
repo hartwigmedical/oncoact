@@ -6,18 +6,15 @@ import com.google.common.collect.Lists;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableLohGenesReporting;
 import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LossOfHeterozygositySelector {
+public final class LossOfHeterozygositySelector {
 
     private LossOfHeterozygositySelector() {
-    }
-
-    public static long round(double copyNumber) {
-        return Math.round(Math.max(0, copyNumber));
     }
 
     @NotNull
@@ -65,5 +62,9 @@ public class LossOfHeterozygositySelector {
 
     private static boolean hasLOH(@NotNull PurpleGeneCopyNumber geneCopyNumber) {
         return geneCopyNumber.minMinorAlleleCopyNumber() < 0.5 && geneCopyNumber.minCopyNumber() > 0.5;
+    }
+
+    private static long round(double copyNumber) {
+        return Math.round(Math.max(0, copyNumber));
     }
 }

@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.pipeline;
+package com.hartwig.oncoact.pipeline;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

@@ -14,7 +14,6 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.common.chord.ChordStatus;
 import com.hartwig.oncoact.common.clinical.ImmutablePatientPrimaryTumor;
 import com.hartwig.oncoact.common.cuppa.interpretation.ImmutableMolecularTissueOriginReporting;
-import com.hartwig.oncoact.common.cuppa.interpretation.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.common.fusion.KnownFusionType;
 import com.hartwig.oncoact.common.genotype.GenotypeStatus;
 import com.hartwig.oncoact.common.hla.ImmutableHlaAllele;
@@ -46,6 +45,7 @@ import com.hartwig.oncoact.common.variant.msi.MicrosatelliteStatus;
 import com.hartwig.oncoact.common.virus.AnnotatedVirus;
 import com.hartwig.oncoact.common.virus.VirusTestFactory;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
@@ -203,7 +203,7 @@ public final class ExampleAnalysisTestFactory {
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialremark)
                 .genomicAnalysis(analysis)
-                .circosPlotPath(REPORTER_CONFIG.purpleCircosPlot())
+                .circosPlotPath(Strings.EMPTY)
                 .molecularTissueOriginReporting(molecularTissueOriginReporting)
                 .molecularTissueOriginPlotPath(REPORTER_CONFIG.cuppaPlot())
                 .comments(Optional.ofNullable(config.comments()))

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class CurationFunctionTest {
+public class CurationFunctionsTest {
 
     private static final String GENE_CDKN2A_CANONICAL = "CDKN2A (p16)";
     private static final String GENE_CDKN2A_NON_CANONICAL = "CDKN2A (p14ARF)";
@@ -40,7 +40,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateTumorSpecificEvidence() {
         List<ProtectEvidence> tumorSpecificEvidence = evidence();
-        List<ProtectEvidence> curated = CurationFunction.curateEvidence(tumorSpecificEvidence);
+        List<ProtectEvidence> curated = CurationFunctions.curateEvidence(tumorSpecificEvidence);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneProtect(curated, "KRAS", false), "KRAS");
@@ -51,7 +51,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateClinicalTrials() {
         List<ProtectEvidence> clinicalTrials = evidence();
-        List<ProtectEvidence> curated = CurationFunction.curateEvidence(clinicalTrials);
+        List<ProtectEvidence> curated = CurationFunctions.curateEvidence(clinicalTrials);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneProtect(curated, "KRAS", false), "KRAS");
@@ -62,7 +62,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateOffLabelEvidence() {
         List<ProtectEvidence> offLabelEvidence = evidence();
-        List<ProtectEvidence> curated = CurationFunction.curateEvidence(offLabelEvidence);
+        List<ProtectEvidence> curated = CurationFunctions.curateEvidence(offLabelEvidence);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneProtect(curated, "KRAS", false), "KRAS");
@@ -83,7 +83,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateReportableVariants() {
         List<ReportableVariant> variants = reportableVariants();
-        List<ReportableVariant> curated = CurationFunction.curateReportableVariants(variants);
+        List<ReportableVariant> curated = CurationFunctions.curateReportableVariants(variants);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneVariant(curated, "KRAS", false), "KRAS");
@@ -105,7 +105,7 @@ public class CurationFunctionTest {
         notifyGermlineVariants.put(somaticVariant2, true);
         notifyGermlineVariants.put(germlineVariant1, false);
 
-        Map<ReportableVariant, Boolean> map = CurationFunction.curateNotifyGermlineStatusPerVariant(notifyGermlineVariants);
+        Map<ReportableVariant, Boolean> map = CurationFunctions.curateNotifyGermlineStatusPerVariant(notifyGermlineVariants);
         List<ReportableVariant> curated = Lists.newArrayList(map.keySet());
 
         assertEquals(curated.size(), 3);
@@ -127,7 +127,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateGainsAndLosses() {
         List<GainLoss> gainLoss = gainloss();
-        List<GainLoss> curated = CurationFunction.curateGainsAndLosses(gainLoss);
+        List<GainLoss> curated = CurationFunctions.curateGainsAndLosses(gainLoss);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneGainLoss(curated, "BRAF", true), "BRAF");
@@ -148,7 +148,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateGeneDisruptions() {
         List<GeneDisruption> disruptions = geneDisruption();
-        List<GeneDisruption> curated = CurationFunction.curateGeneDisruptions(disruptions);
+        List<GeneDisruption> curated = CurationFunctions.curateGeneDisruptions(disruptions);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneGDisruption(curated, "NRAS", true), "NRAS");
@@ -169,7 +169,7 @@ public class CurationFunctionTest {
     @Test
     public void canCurateHomozygousDisruptions() {
         List<HomozygousDisruption> homozygousDisruptions = homozygousDisruptions();
-        List<HomozygousDisruption> curated = CurationFunction.curateHomozygousDisruptions(homozygousDisruptions);
+        List<HomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneHomozygousDisruption(curated, "NRAS", true), "NRAS");

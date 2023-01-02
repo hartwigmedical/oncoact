@@ -2,7 +2,8 @@ package com.hartwig.oncoact.patientreporter.algo;
 
 import java.io.IOException;
 
-import com.hartwig.oncoact.common.fusion.KnownFusionCache;
+import com.hartwig.oncoact.knownfusion.KnownFusionCache;
+import com.hartwig.oncoact.knownfusion.KnownFusionCacheLoader;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
@@ -21,11 +22,7 @@ public final class AnalysedReportDataLoader {
              @NotNull String sampleSpecialRemarkTsv, @NotNull String knownFusionFile) throws IOException {
         GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(germlineReportingTsv);
         SpecialRemarkModel specialRemarkModel = SpecialRemarkFile.buildFromTsv(sampleSpecialRemarkTsv);
-
-        KnownFusionCache knownFusionCache = new KnownFusionCache();
-        if (!knownFusionCache.loadFile(knownFusionFile)) {
-            throw new IOException("Could not load known fusions from " + knownFusionFile);
-        }
+        KnownFusionCache knownFusionCache = KnownFusionCacheLoader.load(knownFusionFile);
 
         return ImmutableAnalysedReportData.builder()
                 .from(reportData)

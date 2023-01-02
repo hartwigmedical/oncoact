@@ -92,11 +92,9 @@ public final class QualityOverruleFunctions {
 
     @NotNull
     private static HlaAllelesReportingData overuleHla(@NotNull HlaAllelesReportingData hlaAllelesReportingData, boolean hasReliablePurity) {
-
         Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
 
-        Set<String> hlaAlleles =
-                Sets.newTreeSet(hlaAllelesReportingData.hlaAllelesReporting().keySet().stream().collect(Collectors.toSet()));
+        Set<String> hlaAlleles = Sets.newTreeSet(hlaAllelesReportingData.hlaAllelesReporting().keySet());
         for (String allele : hlaAlleles) {
             List<HlaReporting> hlaReportingList = hlaAllelesReportingData.hlaAllelesReporting().get(allele);
             List<HlaReporting> hlaReportingListCurated = Lists.newArrayList();

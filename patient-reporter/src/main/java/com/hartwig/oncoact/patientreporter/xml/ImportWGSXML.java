@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.hartwig.oncoact.common.xml.KeyXML;
+import com.hartwig.oncoact.xml.KeyXML;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

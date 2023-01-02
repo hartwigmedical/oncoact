@@ -2,15 +2,15 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.genome.ChromosomeArm;
 import com.hartwig.oncoact.genome.HumanChromosome;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
+import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.util.DataUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,24 +35,24 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static Set<String> amplifiedGenes(@NotNull List<PurpleGainLoss> reportableGainLosses) {
-        Set<String> genes = new TreeSet<String>();
+    public static Set<String> amplifiedGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
+        Set<String> genes = Sets.newTreeSet();
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
             if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_GAIN
                     || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_GAIN) {
-                genes.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
+                genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
         return genes;
     }
 
     @NotNull
-    public static Set<String> lostGenes(@NotNull List<PurpleGainLoss> reportableGainLosses) {
-        Set<String> genes = new TreeSet<String>();
+    public static Set<String> lostGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
+        Set<String> genes = Sets.newTreeSet();
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
             if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS
                     || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS) {
-                genes.add(CurationFunction.curateGeneNamePdf(gainLoss.gene()));
+                genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
         return genes;
@@ -79,5 +79,10 @@ public final class GainsAndLosses {
         }
 
         return copyNumber != null ? String.valueOf(Math.round(Math.max(0, copyNumber))) : DataUtil.NA_STRING;
+    }
+
+    @NotNull
+    public static String interpretation(@NotNull PurpleGainLoss gainLoss) {
+        return gainLoss.interpretation().toString().toLowerCase().replaceAll("_", " ");
     }
 }

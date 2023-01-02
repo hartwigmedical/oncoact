@@ -3,7 +3,9 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 
-import com.hartwig.oncoact.common.chord.ChordStatus;
+import com.hartwig.oncoact.orange.chord.ChordStatus;
+import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.orange.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -33,6 +35,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class TumorCharacteristicsChapter implements ReportChapter {
+
+    private static final double HRD_THRESHOLD = 0.5;
 
     private static final float TABLE_SPACER_HEIGHT = 30;
 
@@ -75,13 +79,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         String hrDeficiencyLabel =
-                hasReliablePurity ? hrdStatus.display() + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : DataUtil.NA_STRING;
+                hasReliablePurity ? chordStatusString(hrdStatus) + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : DataUtil.NA_STRING;
 
         String hrdUnreliableFootnote = "* HRD score can not be determined reliably when a tumor is microsatellite unstable "
                 + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
         boolean displayFootNote = false;
-        boolean isHrdReliable = genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT
-                || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
+        boolean isHrdReliable =
+                genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
         if (!isHrdReliable) {
             displayFootNote = true;
             hrDeficiencyLabel = DataUtil.NA_STRING + "*";
@@ -92,7 +96,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
-        hrChart.setIndicator(ChordStatus.HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(ChordStatus.HRD_THRESHOLD) + ")");
+        hrChart.setIndicator(HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HRD_THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("HR-Deficiency score",
                 hrDeficiencyLabel,
@@ -108,8 +112,9 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         GenomicAnalysis genomicAnalysis = patientReport.genomicAnalysis();
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         double microSatelliteStability = genomicAnalysis.microsatelliteIndelsPerMb();
-        String microSatelliteStabilityString = hasReliablePurity ? genomicAnalysis.microsatelliteStatus().display() + " "
-                + DOUBLE_DECIMAL_FORMAT.format(genomicAnalysis.microsatelliteIndelsPerMb()) : DataUtil.NA_STRING;
+        String microSatelliteStabilityString =
+                hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + DOUBLE_DECIMAL_FORMAT.format(
+                        genomicAnalysis.microsatelliteIndelsPerMb()) : DataUtil.NA_STRING;
 
         BarChart satelliteChart =
                 new BarChart(microSatelliteStability, MicroSatelliteStatus.RANGE_MIN, MicroSatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
@@ -137,7 +142,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
-        String tmlStatus = genomicAnalysis.tumorMutationalLoadStatus().display();
+        String tmlStatus = tumorMutationalStatusString(genomicAnalysis.tumorMutationalLoadStatus());
 
         String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : DataUtil.NA_STRING;
         BarChart mutationalLoadChart =
@@ -147,8 +152,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
         mutationalLoadChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalLoadChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(mutationalLoadChart.max()));
-        mutationalLoadChart.setIndicator(MutationalLoad.THRESHOLD,
-                "High (" + NO_DECIMAL_FORMAT.format(MutationalLoad.THRESHOLD) + ")");
+        mutationalLoadChart.setIndicator(MutationalLoad.THRESHOLD, "High (" + NO_DECIMAL_FORMAT.format(MutationalLoad.THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("Tumor mutational load",
                 mutationalLoadString,
@@ -253,7 +257,6 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                                         + "and there is lower confidence."))));
             }
 
-
             table.addCell(TableUtil.createLayoutCell());
 
             table.addCell(TableUtil.createLayoutCell()
@@ -263,8 +266,9 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                                     + "driver landscape and passenger characteristics (e.g. tumor-type specific drivers), and 3) somatic mutation "
                                     + "pattern (mutation distribution across the genome)."))));
         } else {
-            reportDocument.add(new Paragraph("The molecular tissue of origin prediction is unreliable due to the unreliable tumor purity and "
-                    + "therefore the results are not available.").addStyle(ReportResources.subTextStyle()));
+            reportDocument.add(new Paragraph(
+                    "The molecular tissue of origin prediction is unreliable due to the unreliable tumor purity and "
+                            + "therefore the results are not available.").addStyle(ReportResources.subTextStyle()));
         }
 
         reportDocument.add(table);
@@ -286,7 +290,6 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         return div;
     }
-
 
     @NotNull
     private Div createCharacteristicDisclaimerDiv(@NotNull String title) {
@@ -323,5 +326,61 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         }
 
         return div;
+    }
+
+    @NotNull
+    private static String chordStatusString(@NotNull ChordStatus hrdStatus) {
+        switch (hrdStatus) {
+            case CANNOT_BE_DETERMINED: {
+                return "Cannot be determined";
+            }
+            case HR_PROFICIENT: {
+                return "Proficient";
+            }
+            case HR_DEFICIENT: {
+                return "Deficient";
+            }
+            case UNKNOWN: {
+                return "Unknown";
+            }
+            default: {
+                return "Invalid";
+            }
+        }
+    }
+
+    @NotNull
+    private static String microsatelliteStatusString(@NotNull PurpleMicrosatelliteStatus microsatelliteStatus) {
+        switch (microsatelliteStatus) {
+            case MSI: {
+                return "Unstable";
+            }
+            case MSS: {
+                return "Stable";
+            }
+            case UNKNOWN: {
+                return "Unknown";
+            }
+            default: {
+                return "Invalid";
+            }
+        }
+    }
+    @NotNull
+    private static String tumorMutationalStatusString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
+        switch (tumorMutationalLoadStatus) {
+            case HIGH: {
+                return "High";
+            }
+            case LOW: {
+                return "Low";
+            }
+            case UNKNOWN: {
+                return "Unknown";
+            }
+            default: {
+                return "Invalid";
+            }
+        }
     }
 }

@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.HlaReporting;
@@ -139,9 +138,8 @@ public class SummaryChapter implements ReportChapter {
             div.add(new Paragraph("Summary of most relevant findings").addStyle(ReportResources.sectionTitleStyle()));
 
             div.add(new Paragraph(text).setWidth(contentWidth()).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(11));
-            div.add(new Paragraph(
-                    "\nFurther interpretation of these results within the patient’s clinical context is required " +
-                            "by a clinician with support of a molecular tumor board..").addStyle(ReportResources.subTextStyle()));
+            div.add(new Paragraph("\nFurther interpretation of these results within the patient’s clinical context is required "
+                    + "by a clinician with support of a molecular tumor board..").addStyle(ReportResources.subTextStyle()));
 
             reportDocument.add(div);
         }
@@ -214,8 +212,9 @@ public class SummaryChapter implements ReportChapter {
             if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
                 cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
             } else {
-                cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType() + " ("
-                        + DataUtil.formatPercentageDigit(patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
+                cuppaPrediction =
+                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + DataUtil.formatPercentageDigit(
+                                patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
             }
         }
 
@@ -229,15 +228,15 @@ public class SummaryChapter implements ReportChapter {
         Style dataStyle = hasReliablePurity ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
 
         // TODO evaluate display
-        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " ("
-                + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalLoad()) + " mut/genome)" : DataUtil.NA_STRING;
+        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " (" + SINGLE_DECIMAL_FORMAT.format(
+                analysis().tumorMutationalLoad()) + " mut/genome)" : DataUtil.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational load").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalLoadString).addStyle(dataStyle)));
 
         // TODO evaluate display
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " ("
-                + DOUBLE_DECIMAL_FORMAT.format(analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : DataUtil.NA_STRING;
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(
+                analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : DataUtil.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(microSatelliteStabilityString).addStyle(dataStyle)));
@@ -384,14 +383,14 @@ public class SummaryChapter implements ReportChapter {
                                 TableUtil.createHeaderCell("Function") },
                         ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
-                Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet().stream().collect(Collectors.toSet()));
+                Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
                     List<PeachEntry> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
 
                     Set<String> function = Sets.newHashSet();
                     int count = pharmacogeneticsGenotypeList.size();
 
-                    for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
+                    for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
                         function.add(pharmacogeneticsGenotype.function());
                     }
 
@@ -425,14 +424,13 @@ public class SummaryChapter implements ReportChapter {
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
-        }else {
+        } else {
             Table table = TableUtil.createReportContentTable(new float[] { 15, 15, 15 },
                     new Cell[] { TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele"),
                             TableUtil.createHeaderCell("Interpretation: presence in tumor") },
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
-            Set<String> sortedAlleles =
-                    Sets.newTreeSet(patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().keySet().stream().collect(Collectors.toSet()));
+            Set<String> sortedAlleles = Sets.newTreeSet(patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().keySet());
             for (String sortAllele : sortedAlleles) {
                 List<HlaReporting> allele = patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().get(sortAllele);
 

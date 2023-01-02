@@ -8,7 +8,7 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
 import com.hartwig.oncoact.orange.linx.LinxFusionType;
-import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
+import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.itextpdf.kernel.pdf.action.PdfAction;
@@ -20,6 +20,30 @@ import org.jetbrains.annotations.NotNull;
 public final class GeneFusions {
 
     private GeneFusions() {
+    }
+
+    @NotNull
+    public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
+        return fusions.stream().sorted((fusion1, fusion2) -> {
+            if (fusion1.driverLikelihood() == fusion2.driverLikelihood()) {
+                if (fusion1.geneStart().equals(fusion2.geneStart())) {
+                    return fusion1.geneEnd().compareTo(fusion2.geneEnd());
+                } else {
+                    return fusion1.geneStart().compareTo(fusion2.geneStart());
+                }
+            } else {
+                return fusion1.driverLikelihood() == LinxFusionDriverLikelihood.HIGH ? -1 : 1;
+            }
+        }).collect(Collectors.toList());
+    }
+
+    @NotNull
+    public static Set<String> uniqueGeneFusions(@NotNull Iterable<LinxFusion> fusions) {
+        Set<String> genes = Sets.newTreeSet();
+        for (LinxFusion fusion : fusions) {
+            genes.add(name(fusion));
+        }
+        return genes;
     }
 
     @NotNull
@@ -40,41 +64,18 @@ public final class GeneFusions {
     }
 
     @NotNull
-    public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
-        return fusions.stream().sorted((fusion1, fusion2) -> {
-            if (fusion1.driverLikelihood() == fusion2.driverLikelihood()) {
-                if (fusion1.geneStart().equals(fusion2.geneStart())) {
-                    return fusion1.geneEnd().compareTo(fusion2.geneEnd());
-                } else {
-                    return fusion1.geneStart().compareTo(fusion2.geneStart());
-                }
-            } else {
-                return fusion1.driverLikelihood() == LinxFusionDriverLikelihood.HIGH ? -1 : 1;
-            }
-        }).collect(Collectors.toList());
-    }
-
-    @NotNull
-    public static Set<String> uniqueGeneFusions(@NotNull List<LinxFusion> fusions) {
-        Set<String> genes = Sets.newTreeSet();
-        for (LinxFusion fusion : fusions) {
-            genes.add(name(fusion));
-        }
-        return genes;
-    }
-
-    @NotNull
     public static String name(@NotNull LinxFusion fusion) {
-        return CurationFunction.curateGeneNamePdf(fusion.geneStart()) + " - " + CurationFunction.curateGeneNamePdf(fusion.geneEnd());
+        return CurationFunctions.curateGeneNamePdf(fusion.geneStart()) + " - " + CurationFunctions.curateGeneNamePdf(fusion.geneEnd());
     }
 
     @NotNull
-    public static String transcriptUrl(@NotNull String transcriptField) {
-        return "http://grch37.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;t=" + transcriptField;
+    public static String transcriptUrl(@NotNull String transcript) {
+        return "http://grch37.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;t=" + transcript;
     }
 
     @NotNull
-    public static String displayStr(@NotNull LinxFusionType type) {
+    public static String type(@NotNull LinxFusion fusion) {
+        LinxFusionType type = fusion.type();
         if (type.equals(LinxFusionType.NONE)) {
             return "None";
         } else if (type.equals(LinxFusionType.KNOWN_PAIR)) {
@@ -93,6 +94,42 @@ public final class GeneFusions {
             return "5' and 3' Promiscuous";
         } else {
             return type.toString();
+        }
+    }
+
+    @NotNull
+    public static String phased(@NotNull LinxFusion fusion) {
+        switch (fusion.phased()) {
+            case INFRAME: {
+                return "Inframe";
+            }
+            case SKIPPED_EXONS: {
+                return "Skipped exons";
+            }
+            case OUT_OF_FRAME: {
+                return "Out of frame";
+            }
+            default: {
+                return "Invalid";
+            }
+        }
+    }
+
+    @NotNull
+    public static String driverLikelihood(@NotNull LinxFusion fusion) {
+        switch (fusion.driverLikelihood()) {
+            case HIGH: {
+                return "High";
+            }
+            case LOW: {
+                return "Low";
+            }
+            case NA: {
+                return "NA";
+            }
+            default: {
+                return "Invalid";
+            }
         }
     }
 }

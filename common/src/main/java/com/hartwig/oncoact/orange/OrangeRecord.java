@@ -7,6 +7,7 @@ import com.hartwig.oncoact.orange.cuppa.CuppaRecord;
 import com.hartwig.oncoact.orange.lilac.LilacRecord;
 import com.hartwig.oncoact.orange.linx.LinxRecord;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
+import com.hartwig.oncoact.orange.plots.OrangePlots;
 import com.hartwig.oncoact.orange.purple.PurpleRecord;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterRecord;
 
@@ -47,5 +48,8 @@ public abstract class OrangeRecord {
 
     @NotNull
     public abstract ChordRecord chord();
+
+    @NotNull
+    public abstract OrangePlots plots();
 
 }

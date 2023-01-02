@@ -367,7 +367,11 @@
     {
       "gene": "DPYD",
       "haplotype": "*1_HOM",
-      "function": "Normal Function"
+      "function": "Normal Function",
+      "linkedDrugs": "5-Fluorouracil",
+      "urlPrescriptionInfo": "https://www.pharmgkb.org/guidelineAnnotation/PA166104939",
+      "panelVersion": "peach_prod_v1.3",
+      "repoVersion": "1.7"
     }
   ],
   "cuppa": {

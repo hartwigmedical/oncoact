@@ -37,12 +37,30 @@ public final class ViralPresence {
     }
 
     @NotNull
-    public static String createViralCoverageString(double percentageCovered) {
-        return Math.round(percentageCovered) + "%";
+    public static String percentageCovered(@NotNull VirusInterpreterEntry virus) {
+        return Math.round(virus.percentageCovered()) + "%";
     }
 
     @NotNull
-    public static String createIntegrationSiteString(Integer integrations) {
-        return integrations == 0 ? "Detected without integration sites" : Integer.toString(integrations);
+    public static String integrations(@NotNull VirusInterpreterEntry virus) {
+        return virus.integrations() == 0 ? "Detected without integration sites" : Integer.toString(virus.integrations());
+    }
+
+    @NotNull
+    public static String driverLikelihood(@NotNull VirusInterpreterEntry virus) {
+        switch (virus.driverLikelihood()) {
+            case HIGH: {
+                return "High";
+            }
+            case LOW: {
+                return "Low";
+            }
+            case UNKNOWN: {
+                return "Unknown";
+            }
+            default: {
+                return "Invalid";
+            }
+        }
     }
 }

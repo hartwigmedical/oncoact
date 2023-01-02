@@ -297,6 +297,10 @@ public class OrangeJsonTest {
         assertEquals("DPYD", entry.gene());
         assertEquals("*1_HOM", entry.haplotype());
         assertEquals("Normal Function", entry.function());
+        assertEquals("5-Fluorouracil", entry.linkedDrugs());
+        assertEquals("https://www.pharmgkb.org/guidelineAnnotation/PA166104939", entry.urlPrescriptionInfo());
+        assertEquals("peach_prod_v1.3", entry.panelVersion());
+        assertEquals("1.7", entry.repoVersion());
     }
 
     private static void assertCuppa(@NotNull CuppaRecord cuppa) {

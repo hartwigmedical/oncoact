@@ -14,6 +14,9 @@ public abstract class LinxFusion {
     public abstract LinxFusionType type();
 
     @NotNull
+    public abstract String name();
+
+    @NotNull
     public abstract String geneStart();
 
     @NotNull
@@ -37,5 +40,11 @@ public abstract class LinxFusion {
 
     @Nullable
     public abstract LinxFusionDriverLikelihood driverLikelihood();
+
+    @NotNull
+    public abstract LinxPhasedType phased();
+
+    public abstract double junctionCopyNumber();
+
 
 }

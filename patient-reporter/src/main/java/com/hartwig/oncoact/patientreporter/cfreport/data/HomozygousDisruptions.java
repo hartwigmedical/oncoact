@@ -6,7 +6,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.patientreporter.algo.CurationFunction;
+import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public final class HomozygousDisruptions {
     public static Set<String> disruptedGenes(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
         Set<String> genes = new TreeSet<String>();
         for (LinxHomozygousDisruption disruption : homozygousDisruptions) {
-            genes.add(CurationFunction.curateGeneNamePdf(disruption.gene()));
+            genes.add(CurationFunctions.curateGeneNamePdf(disruption.gene()));
         }
         return genes;
     }

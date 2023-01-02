@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.clinical;
+package com.hartwig.oncoact.clinical;
 
 import java.util.List;
 import java.util.stream.Collectors;

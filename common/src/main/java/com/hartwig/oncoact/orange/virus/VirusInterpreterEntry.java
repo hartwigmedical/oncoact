@@ -23,4 +23,6 @@ public abstract class VirusInterpreterEntry {
 
     @NotNull
     public abstract VirusDriverLikelihood driverLikelihood();
+
+    public abstract double percentageCovered();
 }

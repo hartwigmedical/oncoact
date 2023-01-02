@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.common.fusion.KnownFusionCache;
 import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
 import com.hartwig.oncoact.lims.Lims;

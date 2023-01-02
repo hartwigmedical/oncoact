@@ -2,8 +2,8 @@ package com.hartwig.oncoact.patientreporter.panel;
 
 import java.util.Optional;
 
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFunctions;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.SampleReport;

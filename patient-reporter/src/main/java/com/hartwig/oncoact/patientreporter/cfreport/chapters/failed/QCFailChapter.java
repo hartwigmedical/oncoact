@@ -69,7 +69,6 @@ public class QCFailChapter implements ReportChapter {
         String reason = DataUtil.NA_STRING;
         String explanation = DataUtil.NA_STRING;
         String explanationDetail = DataUtil.NA_STRING;
-        boolean reportPeachReport = true;
 
         switch (failReason.type()) {
             case LOW_QUALITY_BIOPSY: {

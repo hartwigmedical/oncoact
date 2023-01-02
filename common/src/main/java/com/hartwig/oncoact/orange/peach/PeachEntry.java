@@ -16,4 +16,16 @@ public abstract class PeachEntry {
 
     @NotNull
     public abstract String function();
+
+    @NotNull
+    public abstract String linkedDrugs();
+
+    @NotNull
+    public abstract String urlPrescriptionInfo();
+
+    @NotNull
+    public abstract String panelVersion();
+
+    @NotNull
+    public abstract String repoVersion();
 }

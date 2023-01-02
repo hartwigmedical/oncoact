@@ -10,6 +10,13 @@ public final class TestPeachFactory {
 
     @NotNull
     public static ImmutablePeachEntry.Builder builder() {
-        return ImmutablePeachEntry.builder().gene(Strings.EMPTY).haplotype(Strings.EMPTY).function(Strings.EMPTY);
+        return ImmutablePeachEntry.builder()
+                .gene(Strings.EMPTY)
+                .haplotype(Strings.EMPTY)
+                .function(Strings.EMPTY)
+                .linkedDrugs(Strings.EMPTY)
+                .urlPrescriptionInfo(Strings.EMPTY)
+                .panelVersion(Strings.EMPTY)
+                .repoVersion(Strings.EMPTY);
     }
 }

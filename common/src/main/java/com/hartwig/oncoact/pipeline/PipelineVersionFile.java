@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.pipeline;
+package com.hartwig.oncoact.pipeline;
 
 import java.io.File;
 import java.io.IOException;

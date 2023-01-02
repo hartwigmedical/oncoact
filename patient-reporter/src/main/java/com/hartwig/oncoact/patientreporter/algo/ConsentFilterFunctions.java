@@ -6,13 +6,13 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.virus.AnnotatedVirus;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.variant.ImmutableReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
 
 import org.immutables.value.internal.$guava$.annotations.$VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +36,7 @@ public final class ConsentFilterFunctions {
             notifyPerVariant.put(filtered.variant(), filtered.notifyVariant());
         }
 
-        List<AnnotatedVirus> filteredViruses =
+        List<VirusInterpreterEntry> filteredViruses =
                 reportViralPresence ? genomicAnalysis.reportableViruses() : Lists.newArrayList();
 
         List<ProtectEvidence> filteredTumorSpecificEvidence =

@@ -7,24 +7,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFunctions;
-import com.hartwig.oncoact.common.cuppa.CuppaDataFile;
-import com.hartwig.oncoact.common.cuppa.interpretation.CuppaPrediction;
-import com.hartwig.oncoact.common.cuppa.interpretation.CuppaPredictionFactory;
-import com.hartwig.oncoact.common.cuppa.interpretation.MolecularTissueOriginReporting;
-import com.hartwig.oncoact.common.cuppa.interpretation.MolecularTissueOriginReportingFactory;
-import com.hartwig.oncoact.common.peach.PeachGenotype;
-import com.hartwig.oncoact.common.peach.PeachGenotypeFile;
-import com.hartwig.oncoact.common.pipeline.PipelineVersionFile;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
+import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
+import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.orange.OrangeJson;
+import com.hartwig.oncoact.orange.OrangeRecord;
+import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
+import com.hartwig.oncoact.orange.cuppa.CuppaRecord;
+import com.hartwig.oncoact.orange.cuppa.ImmutableCuppaPrediction;
+import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
@@ -32,7 +32,12 @@ import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
+import com.hartwig.oncoact.pipeline.PipelineVersionFile;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,7 +74,7 @@ public class AnalysedPatientReporter {
 
         String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(sampleMetadata.tumorSampleId());
 
-        String pipelineVersion = null;
+        String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {
             String pipelineVersionFile = config.pipelineVersionFile();
             assert pipelineVersionFile != null;
@@ -77,41 +82,33 @@ public class AnalysedPatientReporter {
             PipelineVersion.checkPipelineVersion(pipelineVersion, config.expectedPipelineVersion(), config.overridePipelineVersion());
         }
 
-        GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel());
-        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(sampleMetadata.tumorSampleId(),
-                sampleMetadata.refSampleId(),
-                config,
-                sampleReport.germlineReportingLevel(),
-                reportData.knownFusionCache());
+        GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel(), reportData.knownFusionCache());
+
+        OrangeRecord orange = OrangeJson.read(config.orangeJson());
+        List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
+        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, sampleReport.germlineReportingLevel());
 
         GenomicAnalysis filteredAnalysis =
                 ConsentFilterFunctions.filter(genomicAnalysis, sampleReport.germlineReportingLevel(), sampleReport.reportViralPresence());
-
-        String qcForm = determineForNumber(genomicAnalysis.hasReliablePurity(), genomicAnalysis.impliedPurity());
-
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
-        GenomicAnalysis curateGeneName = CurationFunction.curation(overruledAnalysis);
+        GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
-        LOGGER.info("Loading CUPPA from {}", new File(config.cuppaResultCsv()).getParent());
-        List<CuppaDataFile> cuppaEntries = CuppaDataFile.read(config.cuppaResultCsv());
-        LOGGER.info(" Loaded {} entries from {}", cuppaEntries.size(), config.cuppaResultCsv());
+        String qcForm = determineForNumber(curatedAnalysis.hasReliablePurity(), curatedAnalysis.impliedPurity());
 
-        List<CuppaPrediction> predictions = CuppaPredictionFactory.create(cuppaEntries);
-        CuppaPrediction best = predictions.get(0);
-        MolecularTissueOriginReporting molecularTissueOriginReporting =
-                MolecularTissueOriginReportingFactory.createMolecularTissueOriginReportingData(best);
+        CuppaPrediction best = bestPrediction(orange.cuppa());
+        MolecularTissueOriginReporting molecularTissueOriginReporting = MolecularTissueOriginReportingFactory.create(best);
         LOGGER.info(" Predicted cancer type '{}' with likelihood {}", best.cancerType(), best.likelihood());
 
-        List<PeachGenotype> pharmacogeneticsGenotypes = curateGeneName.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION)
-                ? Lists.newArrayList()
-                : loadPeachData(config.peachGenotypeTsv());
+        Set<PeachEntry> pharmacogeneticsGenotypes =
+                curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach().entries();
 
-        List<PeachGenotype> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Lists.newArrayList();
+        Set<PeachEntry> pharmacogeneticsGenotypesOverrule =
+                sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
 
-        Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
-        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
+        Map<String, List<PeachEntry>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
+        for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
             if (pharmacogeneticsGenotypesMap.containsKey(pharmacogeneticsGenotype.gene())) {
-                List<PeachGenotype> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
+                List<PeachEntry> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
                 current.add(pharmacogeneticsGenotype);
                 pharmacogeneticsGenotypesMap.put(pharmacogeneticsGenotype.gene(), current);
             } else {
@@ -125,13 +122,13 @@ public class AnalysedPatientReporter {
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
                 .pipelineVersion(pipelineVersion)
-                .genomicAnalysis(curateGeneName)
+                .genomicAnalysis(curatedAnalysis)
                 .molecularTissueOriginReporting(
-                        curateGeneName.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curateGeneName.hasReliablePurity()
+                        curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
                                 ? null
                                 : molecularTissueOriginReporting)
                 .molecularTissueOriginPlotPath(config.cuppaPlot())
-                .circosPlotPath(config.purpleCircosPlot())
+                .circosPlotPath(orange.plots().purpleFinalCircosPlot())
                 .comments(Optional.ofNullable(config.comments()))
                 .isCorrectedReport(config.isCorrectedReport())
                 .isCorrectedReportExtern(config.isCorrectedReportExtern())
@@ -150,19 +147,44 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    private static List<PeachGenotype> loadPeachData(@NotNull String peachGenotypeTsv) throws IOException {
-        LOGGER.info("Loading peach genotypes from {}", new File(peachGenotypeTsv).getParent());
-        List<PeachGenotype> peachGenotypes = PeachGenotypeFile.read(peachGenotypeTsv);
-        LOGGER.info(" Loaded {} reportable genotypes from {}", peachGenotypes.size(), peachGenotypeTsv);
-        return peachGenotypes;
-    }
-
-    @NotNull
     @VisibleForTesting
     static String determineForNumber(boolean hasReliablePurity, double purity) {
         return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
                 ? QsFormNumber.FOR_080.display()
                 : QsFormNumber.FOR_209.display();
+    }
+
+    @NotNull
+    private static List<ProtectEvidence> extractReportableEvidenceItems(@NotNull String protectEvidenceTsv) throws IOException {
+        LOGGER.info("Loading PROTECT data from {}", new File(protectEvidenceTsv).getParent());
+        List<ProtectEvidence> evidences = ProtectEvidenceFile.read(protectEvidenceTsv);
+
+        List<ProtectEvidence> reportableEvidenceItems = Lists.newArrayList();
+        for (ProtectEvidence evidence : evidences) {
+            if (evidence.reported()) {
+                reportableEvidenceItems.add(evidence);
+            }
+        }
+        LOGGER.info(" Loaded {} reportable evidence items from {}", reportableEvidenceItems.size(), protectEvidenceTsv);
+
+        return reportableEvidenceItems;
+    }
+
+    @NotNull
+    private static CuppaPrediction bestPrediction(@NotNull CuppaRecord cuppa) {
+        CuppaPrediction best = null;
+        for (CuppaPrediction prediction : cuppa.predictions()) {
+            if (best == null || prediction.likelihood() > best.likelihood()) {
+                best = prediction;
+            }
+        }
+
+        if (best == null) {
+            LOGGER.warn("No best CUPPA prediction found");
+            return ImmutableCuppaPrediction.builder().cancerType("Unknown").likelihood(0D).build();
+        }
+
+        return best;
     }
 
     private static void printReportState(@NotNull AnalysedPatientReport report) {

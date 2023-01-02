@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.xml;
 
-import com.hartwig.oncoact.common.xml.KeyXML;
+import com.hartwig.oncoact.xml.KeyXML;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

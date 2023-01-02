@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.clinical;
+package com.hartwig.oncoact.clinical;
 
 import static org.junit.Assert.assertEquals;
 

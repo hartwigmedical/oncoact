@@ -219,7 +219,15 @@ public final class TestOrangeFactory {
     @NotNull
     private static PeachRecord createTestPeachRecord() {
         return ImmutablePeachRecord.builder()
-                .addEntries(TestPeachFactory.builder().gene("DPYD").haplotype("1* HOM").function("Normal function").build())
+                .addEntries(TestPeachFactory.builder()
+                        .gene("DPYD")
+                        .haplotype("1* HOM")
+                        .function("Normal function")
+                        .linkedDrugs("5-Fluorouracil")
+                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939")
+                        .panelVersion("peach_prod_v1.3")
+                        .repoVersion("1.7")
+                        .build())
                 .build();
     }
 

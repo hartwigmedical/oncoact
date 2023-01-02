@@ -33,12 +33,13 @@ public enum HumanChromosome implements Chromosome {
 
     private final boolean isAutosome;
     private final boolean isAllosome;
+    @NotNull
     private final String name;
 
     HumanChromosome(final boolean isAutosome, boolean isAllosome) {
         this.isAutosome = isAutosome;
         this.isAllosome = isAllosome;
-        name = name().substring(1).intern();
+        this.name = name().substring(1).intern();
     }
 
     @Override
@@ -52,17 +53,17 @@ public enum HumanChromosome implements Chromosome {
     }
 
     @NotNull
-    public static Chromosome valueOf(@NotNull final GenomePosition position) {
+    public static Chromosome valueOf(@NotNull GenomePosition position) {
         return fromString(position.chromosome());
     }
 
     @NotNull
-    public static Chromosome valueOf(@NotNull final GenomeRegion region) {
+    public static Chromosome valueOf(@NotNull GenomeRegion region) {
         return fromString(region.chromosome());
     }
 
     @NotNull
-    public static HumanChromosome fromString(@NotNull final String chromosome) {
+    public static HumanChromosome fromString(@NotNull String chromosome) {
         if (chromosome.toLowerCase().startsWith("chr")) {
             return HumanChromosome.valueOf("_" + chromosome.substring(3));
         }
@@ -70,7 +71,7 @@ public enum HumanChromosome implements Chromosome {
         return HumanChromosome.valueOf("_" + chromosome);
     }
 
-    public static boolean contains(@NotNull final String chromosome) {
+    public static boolean contains(@NotNull String chromosome) {
         final String trimmedContig = RefGenomeFunctions.stripChrPrefix(chromosome);
         if (isNumeric(trimmedContig)) {
             final int integerContig = Integer.parseInt(trimmedContig);
@@ -78,10 +79,6 @@ public enum HumanChromosome implements Chromosome {
         }
 
         return trimmedContig.equals("X") || trimmedContig.equals("Y");
-    }
-
-    public int intValue() {
-        return this.ordinal() + 1;
     }
 
     public boolean isDiploid(@NotNull Gender gender) {
@@ -93,17 +90,13 @@ public enum HumanChromosome implements Chromosome {
         return name;
     }
 
-    private static boolean isNumeric(String str) {
+    private static boolean isNumeric(@NotNull String str) {
         for (int i = 0; i < str.length(); i++) {
             if (!Character.isDigit(str.charAt(i))) {
                 return false;
             }
         }
         return true;
-    }
-
-    public static boolean lowerChromosome(final String chr, final String otherChr) {
-        return chromosomeRank(chr) < chromosomeRank(otherChr);
     }
 
     public static int chromosomeRank(final String chromosome) {
@@ -123,5 +116,4 @@ public enum HumanChromosome implements Chromosome {
             }
         }
     }
-
 }

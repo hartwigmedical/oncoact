@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.xml;
+package com.hartwig.oncoact.xml;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 

@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.common.clinical;
+package com.hartwig.oncoact.clinical;
 
 import java.util.List;
 
@@ -7,8 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(allParameters = true,
-             passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class PatientPrimaryTumor {
 
     @NotNull

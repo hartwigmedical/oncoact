@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.common.clinical.PatientPrimaryTumorFile;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;

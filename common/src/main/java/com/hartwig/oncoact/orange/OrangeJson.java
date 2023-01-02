@@ -427,6 +427,10 @@ public final class OrangeJson {
                         .gene(string(peach, "gene"))
                         .haplotype(string(peach, "haplotype"))
                         .function(string(peach, "function"))
+                        .linkedDrugs(string(peach, "linkedDrugs"))
+                        .urlPrescriptionInfo(string(peach, "urlPrescriptionInfo"))
+                        .panelVersion(string(peach, "panelVersion"))
+                        .repoVersion(string(peach, "repoVersion"))
                         .build());
             }
             return ImmutablePeachRecord.builder().entries(entries).build();

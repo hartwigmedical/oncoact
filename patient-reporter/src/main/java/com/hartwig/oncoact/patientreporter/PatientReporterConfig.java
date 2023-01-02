@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.genome.refgenome.RefGenomeVersion;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 
 import org.apache.commons.cli.CommandLine;
@@ -51,27 +50,8 @@ public interface PatientReporterConfig {
 
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
-    String PURPLE_PURITY_TSV = "purple_purity_tsv"; // Also used for certain QC fail reports in case deep WGS is available.
-    String PURPLE_QC_FILE = "purple_qc_file"; // Also used for certain QC fail reports in case deep WGS is available.
-    String PURPLE_SOMATIC_DRIVER_CATALOG_TSV = "purple_somatic_driver_catalog_tsv";
-    String PURPLE_GERMLINE_DRIVER_CATALOG_TSV = "purple_germline_driver_catalog_tsv";
-    String PURPLE_SOMATIC_VARIANT_VCF = "purple_somatic_variant_vcf";
-    String PURPLE_GERMLINE_VARIANT_VCF = "purple_germline_variant_vcf";
-    String PURPLE_SOMATIC_COPYNUMBER_TSV = "purple_somatic_copynumber_tsv";
-    String PURPLE_GENE_COPY_NUMBER_TSV = "purple_gene_copy_number_tsv";
-    String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
-    String LINX_FUSION_TSV = "linx_fusion_tsv";
-    String LINX_BREAKEND_TSV = "linx_breakend_tsv";
-    String LINX_SVS_TSV = "linx_svs_tsv";
-    String LINX_DRIVER_CATALOG_TSV = "linx_driver_catalog_tsv";
-    String CHORD_PREDICTION_TXT = "chord_prediction_txt";
-    String CUPPA_RESULT_CSV = "cuppa_result_csv";
     String CUPPA_PLOT = "cuppa_plot";
-    String ANNOTATED_VIRUS_TSV = "annotated_virus_tsv";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
-    String LILAC_RESULT_CSV = "lilac_result_csv";
-    String LILAC_QC_CSV = "lilac_qc_csv";
-
     String ADD_ROSE = "add_rose";
     String ROSE_TSV = "rose_tsv";
 
@@ -120,26 +100,8 @@ public interface PatientReporterConfig {
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
-        options.addOption(PURPLE_PURITY_TSV, true, "Path towards the purple purity TSV.");
-        options.addOption(PURPLE_QC_FILE, true, "Path towards the purple qc file.");
-        options.addOption(PURPLE_SOMATIC_DRIVER_CATALOG_TSV, true, "Path towards the purple somatic driver catalog TSV.");
-        options.addOption(PURPLE_GERMLINE_DRIVER_CATALOG_TSV, true, "Path towards the purple germline driver catalog TSV.");
-        options.addOption(PURPLE_SOMATIC_VARIANT_VCF, true, "Path towards the purple somatic variant VCF.");
-        options.addOption(PURPLE_GERMLINE_VARIANT_VCF, true, "Path towards the purple germline variant VCF.");
-        options.addOption(PURPLE_SOMATIC_COPYNUMBER_TSV, true, "Path towards the purple somatic copynumber TSV.");
-        options.addOption(PURPLE_GENE_COPY_NUMBER_TSV, true, "Path towards the purple gene copy number TSV.");
-        options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
-        options.addOption(LINX_FUSION_TSV, true, "Path towards the linx fusion TSV.");
-        options.addOption(LINX_BREAKEND_TSV, true, "Path towards the linx breakend TSV.");
-        options.addOption(LINX_SVS_TSV, true, "Path towards the linx svs TSV.");
-        options.addOption(LINX_DRIVER_CATALOG_TSV, true, "Path towards the LINX driver catalog TSV.");
-        options.addOption(CHORD_PREDICTION_TXT, true, "Path towards the CHORD prediction TXT.");
-        options.addOption(CUPPA_RESULT_CSV, true, "Path towards the Cuppa result CSV.");
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
-        options.addOption(ANNOTATED_VIRUS_TSV, true, "Path towards the annotated virus TSV.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
-        options.addOption(LILAC_RESULT_CSV, true, "Path towards the LILAC result CSV.");
-        options.addOption(LILAC_QC_CSV, true, "Path towards the LILAC QC CSV.");
         options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
@@ -159,8 +121,6 @@ public interface PatientReporterConfig {
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
         options.addOption(EXPECTED_PIPELINE_VERSION, true, "String of the expected pipeline version");
         options.addOption(OVERRIDE_PIPELINE_VERSION, false, "if set, the check for pipeline version is overridden");
-
-        options.addOption(RefGenomeVersion.REF_GENOME_VERSION, true, "Ref genome version to use (either '37' or '38')");
 
         return options;
     }
@@ -213,64 +173,10 @@ public interface PatientReporterConfig {
     String orangeJson();
 
     @NotNull
-    String purplePurityTsv();
-
-    @NotNull
-    String purpleQcFile();
-
-    @NotNull
-    String purpleSomaticDriverCatalogTsv();
-
-    @NotNull
-    String purpleGermlineDriverCatalogTsv();
-
-    @NotNull
-    String purpleSomaticVariantVcf();
-
-    @NotNull
-    String purpleGermlineVariantVcf();
-
-    @NotNull
-    String purpleSomaticCopyNumberTsv();
-
-    @NotNull
-    String purpleGeneCopyNumberTsv();
-
-    @NotNull
-    String purpleCircosPlot();
-
-    @NotNull
-    String linxFusionTsv();
-
-    @NotNull
-    String linxBreakendTsv();
-
-    @NotNull
-    String linxSvsTsv();
-
-    @NotNull
-    String linxDriverCatalogTsv();
-
-    @NotNull
-    String chordPredictionTxt();
-
-    @NotNull
-    String cuppaResultCsv();
-
-    @NotNull
     String cuppaPlot();
 
     @NotNull
-    String annotatedVirusTsv();
-
-    @NotNull
     String protectEvidenceTsv();
-
-    @NotNull
-    String lilacResultCsv();
-
-    @NotNull
-    String lilacQcCsv();
 
     boolean addRose();
 
@@ -308,9 +214,6 @@ public interface PatientReporterConfig {
     boolean overridePipelineVersion();
 
     @NotNull
-    RefGenomeVersion refGenomeVersion();
-
-    @NotNull
     static PatientReporterConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -330,26 +233,8 @@ public interface PatientReporterConfig {
 
         String pipelineVersion = null;
         String orangeJson = Strings.EMPTY;
-        String purplePurityTsv = Strings.EMPTY;
-        String purpleQcFile = Strings.EMPTY;
-        String purpleSomaticDriverCatalogTsv = Strings.EMPTY;
-        String purpleGermlineDriverCatalogTsv = Strings.EMPTY;
-        String purpleSomaticVariantVcf = Strings.EMPTY;
-        String purpleGermlineVariantVcf = Strings.EMPTY;
-        String purpleSomaticCopyNumberTsv = Strings.EMPTY;
-        String purpleGeneCopyNumberTsv = Strings.EMPTY;
-        String purpleCircosPlot = Strings.EMPTY;
-        String linxFusionTsv = Strings.EMPTY;
-        String linxBreakendTsv = Strings.EMPTY;
-        String linxSvsTsv = Strings.EMPTY;
-        String linxDriverCatalogTsv = Strings.EMPTY;
-        String chordPredictionTxt = Strings.EMPTY;
-        String cuppaResultCsv = Strings.EMPTY;
         String cuppaPlot = Strings.EMPTY;
-        String annotatedVirusTsv = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
-        String lilacResultCsv = Strings.EMPTY;
-        String lilacQcCsv = Strings.EMPTY;
         boolean addRose = false;
         String roseTsv = null;
 
@@ -362,34 +247,14 @@ public interface PatientReporterConfig {
                 pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
             }
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
-            purplePurityTsv = nonOptionalFile(cmd, PURPLE_PURITY_TSV);
-            purpleQcFile = nonOptionalFile(cmd, PURPLE_QC_FILE);
         } else if (!isQCFail) {
             if (requirePipelineVersion) {
                 pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
             }
 
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
-            purplePurityTsv = nonOptionalFile(cmd, PURPLE_PURITY_TSV);
-            purpleQcFile = nonOptionalFile(cmd, PURPLE_QC_FILE);
-            purpleSomaticDriverCatalogTsv = nonOptionalFile(cmd, PURPLE_SOMATIC_DRIVER_CATALOG_TSV);
-            purpleGermlineDriverCatalogTsv = nonOptionalFile(cmd, PURPLE_GERMLINE_DRIVER_CATALOG_TSV);
-            purpleSomaticVariantVcf = nonOptionalFile(cmd, PURPLE_SOMATIC_VARIANT_VCF);
-            purpleGermlineVariantVcf = nonOptionalFile(cmd, PURPLE_GERMLINE_VARIANT_VCF);
-            purpleSomaticCopyNumberTsv = nonOptionalFile(cmd, PURPLE_SOMATIC_COPYNUMBER_TSV);
-            purpleGeneCopyNumberTsv = nonOptionalFile(cmd, PURPLE_GENE_COPY_NUMBER_TSV);
-            purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
-            linxFusionTsv = nonOptionalFile(cmd, LINX_FUSION_TSV);
-            linxBreakendTsv = nonOptionalFile(cmd, LINX_BREAKEND_TSV);
-            linxSvsTsv = nonOptionalFile(cmd, LINX_SVS_TSV);
-            linxDriverCatalogTsv = nonOptionalFile(cmd, LINX_DRIVER_CATALOG_TSV);
-            chordPredictionTxt = nonOptionalFile(cmd, CHORD_PREDICTION_TXT);
-            cuppaResultCsv = nonOptionalFile(cmd, CUPPA_RESULT_CSV);
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
-            annotatedVirusTsv = nonOptionalFile(cmd, ANNOTATED_VIRUS_TSV);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
-            lilacQcCsv = nonOptionalFile(cmd, LILAC_QC_CSV);
-            lilacResultCsv = nonOptionalFile(cmd, LILAC_RESULT_CSV);
             addRose = cmd.hasOption(ADD_ROSE);
             if (addRose) {
                 roseTsv = nonOptionalFile(cmd, ROSE_TSV);
@@ -398,7 +263,6 @@ public interface PatientReporterConfig {
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
             sampleSpecialRemarkTsv = nonOptionalFile(cmd, SAMPLE_SPECIAL_REMARK_TSV);
             knownFusionFile = nonOptionalFile(cmd, KNOWN_FUSION_FILE);
-
         }
 
         return ImmutablePatientReporterConfig.builder()
@@ -417,26 +281,8 @@ public interface PatientReporterConfig {
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
                 .orangeJson(orangeJson)
-                .purplePurityTsv(purplePurityTsv)
-                .purpleQcFile(purpleQcFile)
-                .purpleSomaticDriverCatalogTsv(purpleSomaticDriverCatalogTsv)
-                .purpleGermlineDriverCatalogTsv(purpleGermlineDriverCatalogTsv)
-                .purpleSomaticVariantVcf(purpleSomaticVariantVcf)
-                .purpleGermlineVariantVcf(purpleGermlineVariantVcf)
-                .purpleSomaticCopyNumberTsv(purpleSomaticCopyNumberTsv)
-                .purpleGeneCopyNumberTsv(purpleGeneCopyNumberTsv)
-                .purpleCircosPlot(purpleCircosPlot)
-                .linxFusionTsv(linxFusionTsv)
-                .linxBreakendTsv(linxBreakendTsv)
-                .linxSvsTsv(linxSvsTsv)
-                .linxDriverCatalogTsv(linxDriverCatalogTsv)
-                .chordPredictionTxt(chordPredictionTxt)
-                .cuppaResultCsv(cuppaResultCsv)
                 .cuppaPlot(cuppaPlot)
-                .annotatedVirusTsv(annotatedVirusTsv)
                 .protectEvidenceTsv(protectEvidenceTsv)
-                .lilacResultCsv(lilacResultCsv)
-                .lilacQcCsv(lilacQcCsv)
                 .addRose(addRose)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
@@ -452,7 +298,6 @@ public interface PatientReporterConfig {
                 .pipelineVersionFile(pipelineVersion)
                 .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))
                 .overridePipelineVersion(cmd.hasOption(OVERRIDE_PIPELINE_VERSION))
-                .refGenomeVersion(RefGenomeVersion.from(nonOptionalValue(cmd, RefGenomeVersion.REF_GENOME_VERSION)))
                 .build();
     }
 

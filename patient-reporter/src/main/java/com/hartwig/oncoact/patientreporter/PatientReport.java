@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.hartwig.oncoact.common.peach.PeachGenotype;
+import com.hartwig.oncoact.orange.peach.PeachEntry;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public interface PatientReport {
@@ -17,9 +16,9 @@ public interface PatientReport {
     @NotNull
     default String user() {
         String systemUser = System.getProperty("user.name");
-        String userName = Strings.EMPTY;
+        String userName;
         String trainedEmployee = " (trained IT employee)";
-        String combinedUserName = Strings.EMPTY;
+        String combinedUserName;
         if (systemUser.equals("lieke") || systemUser.equals("liekeschoenmaker") || systemUser.equals("lschoenmaker")) {
             userName = "Lieke Schoenmaker";
             combinedUserName = userName + trainedEmployee;
@@ -69,7 +68,7 @@ public interface PatientReport {
     String udiDi();
 
     @NotNull
-    Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes();
+    Map<String, List<PeachEntry>> pharmacogeneticsGenotypes();
 
     @NotNull
     String reportDate();
