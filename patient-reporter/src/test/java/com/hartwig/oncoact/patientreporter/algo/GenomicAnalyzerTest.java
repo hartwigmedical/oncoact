@@ -27,7 +27,7 @@ import org.junit.Test;
 public class GenomicAnalyzerTest {
 
     @Test
-    public void canRunOnTestRun() throws IOException {
+    public void canRunOnExampleData() throws IOException {
         AnalysedReportData testReportData = PatientReporterTestFactory.loadTestAnalysedReportData();
 
         GenomicAnalyzer analyzer = new GenomicAnalyzer(testReportData.germlineReportingModel(), testReportData.knownFusionCache());
