@@ -69,7 +69,7 @@ public final class PatientReporterTestFactory {
                 .onlyCreatePDF(false)
                 .requirePipelineVersionFile(true)
                 .pipelineVersionFile(PIPELINE_VERSION_FILE)
-                .expectedPipelineVersion("5.28")
+                .expectedPipelineVersion("5.31")
                 .overridePipelineVersion(false)
                 .allowDefaultCohortConfig(false)
                 .build();
