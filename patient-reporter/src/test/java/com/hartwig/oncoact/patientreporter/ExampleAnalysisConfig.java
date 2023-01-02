@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
+import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,7 +85,6 @@ public class ExampleAnalysisConfig {
         @NotNull
         private String sampleId = "COLO829T";
         private boolean isCorrectionReport = false;
-        private boolean isCorrectionReportExtern = false;
         @Nullable
         private String comments = null;
         @NotNull
@@ -95,7 +94,7 @@ public class ExampleAnalysisConfig {
         private boolean includeSummary = true;
         private boolean reportGermline = false;
         @NotNull
-        private LimsCohortConfig limsCohortConfig = LimsCohortTestFactory.createCOLOCohortConfig();
+        private LimsCohortConfig limsCohortConfig = TestLimsCohortConfigFactory.createCOLOCohortConfig();
 
         public Builder() {
         }
@@ -109,12 +108,6 @@ public class ExampleAnalysisConfig {
         @NotNull
         public Builder isCorrectionReport(final boolean isCorrectionReport) {
             this.isCorrectionReport = isCorrectionReport;
-            return this;
-        }
-
-        @NotNull
-        public Builder isCorrectionReportExtern(final boolean isCorrectionReportExtern) {
-            this.isCorrectionReportExtern = isCorrectionReportExtern;
             return this;
         }
 
@@ -164,7 +157,7 @@ public class ExampleAnalysisConfig {
         public ExampleAnalysisConfig build() {
             return new ExampleAnalysisConfig(sampleId,
                     isCorrectionReport,
-                    isCorrectionReportExtern,
+                    false,
                     comments,
                     qcForNumber,
                     hasReliablePurity,

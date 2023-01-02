@@ -15,7 +15,7 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortModel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
-import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
+import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
 import com.hartwig.oncoact.lims.hospital.HospitalModel;
 import com.hartwig.oncoact.lims.hospital.ImmutableHospitalAddress;
@@ -498,7 +498,7 @@ public class LimsTest {
     @NotNull
     private static LimsCohortModel buildCohortModelFromSampleCohort(@NotNull String sampleCohort) {
         Map<String, LimsCohortConfig> configMap = Maps.newHashMap();
-        configMap.put(sampleCohort, LimsCohortTestFactory.createAllDisabledCohortConfig(sampleCohort));
+        configMap.put(sampleCohort, TestLimsCohortConfigFactory.createAllDisabledCohortConfig(sampleCohort));
         return ImmutableLimsCohortModel.builder().limsCohortMap(configMap).build();
     }
 }

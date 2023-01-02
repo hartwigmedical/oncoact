@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
+import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class LimsCheckerTest {
         String correctIdC_part = "C18-124 I 1";
         String correctIdT_part_small = "T20-1 (I-6)";
         String correctIdC_part_small = "C18-2 I 1";
-        LimsCohortConfig cohortConfigWIDE = LimsCohortTestFactory.createWIDECohortConfig();
+        LimsCohortConfig cohortConfigWIDE = TestLimsCohortConfigFactory.createWIDECohortConfig();
         assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, wideSampleId, cohortConfigWIDE));
         assertEquals(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, wideSampleId, cohortConfigWIDE));
         assertEquals(correctIdT_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part, wideSampleId, cohortConfigWIDE));
@@ -38,12 +38,12 @@ public class LimsCheckerTest {
         assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Lims.NOT_AVAILABLE_STRING, wideSampleId, cohortConfigWIDE));
         assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, wideSampleId, cohortConfigWIDE));
 
-        LimsCohortConfig cohortConfigCORE = LimsCohortTestFactory.createCORECohortConfig();
+        LimsCohortConfig cohortConfigCORE = TestLimsCohortConfigFactory.createCORECohortConfig();
         assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, coreSampleId, cohortConfigCORE));
         assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, coreSampleId, cohortConfigCORE));
         assertNull(LimsChecker.toHospitalPathologySampleIdForReport(wrongId, coreSampleId, cohortConfigCORE));
 
-        LimsCohortConfig cohortConfigCPCT = LimsCohortTestFactory.createCPCTCohortConfig();
+        LimsCohortConfig cohortConfigCPCT = TestLimsCohortConfigFactory.createCPCTCohortConfig();
         assertNull(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, cpctSampleId, cohortConfigCPCT));
         assertNull(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, cpctSampleId, cohortConfigCPCT));
     }
@@ -57,12 +57,12 @@ public class LimsCheckerTest {
         String hospitalIDEmpty = Strings.EMPTY;
         String hospitalId = "1234";
 
-        LimsCohortConfig cohortConfigCORE = LimsCohortTestFactory.createCORECohortConfig();
+        LimsCohortConfig cohortConfigCORE = TestLimsCohortConfigFactory.createCORECohortConfig();
         LimsChecker.checkHospitalPatientId(hospitalIdNA, coreSampleId, cohortConfigCORE);
         LimsChecker.checkHospitalPatientId(hospitalIDEmpty, coreSampleId, cohortConfigCORE);
         LimsChecker.checkHospitalPatientId(hospitalId, coreSampleId, cohortConfigCORE);
 
-        LimsCohortConfig cohortConfigWIDE = LimsCohortTestFactory.createWIDECohortConfig();
+        LimsCohortConfig cohortConfigWIDE = TestLimsCohortConfigFactory.createWIDECohortConfig();
         LimsChecker.checkHospitalPatientId(hospitalIdNA, wideSampleId, cohortConfigWIDE);
     }
 }

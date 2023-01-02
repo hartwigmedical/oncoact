@@ -126,7 +126,7 @@ public final class LimsFactory {
     @VisibleForTesting
     static Map<String, LimsJsonSampleData> readLimsJsonSamples(@NotNull String limsJsonPath) throws FileNotFoundException {
         Gson gson = LimsGsonAdapter.buildSampleGson();
-        JsonObject jsonObject = new JsonParser().parse(new FileReader(limsJsonPath)).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseReader(new FileReader(limsJsonPath)).getAsJsonObject();
         Set<Map.Entry<String, JsonElement>> jsonSamples = jsonObject.getAsJsonObject("samples").entrySet();
 
         Map<String, LimsJsonSampleData> limsDataPerSampleBarcode = Maps.newHashMap();
@@ -154,6 +154,7 @@ public final class LimsFactory {
                 }
             }
         });
+
         //Make COLO patient ID available for use cases
         limsDataPerSampleBarcode.put("COLO829V003TVAL", createLimsSampleDataForCOLO());
 
@@ -188,7 +189,7 @@ public final class LimsFactory {
     @VisibleForTesting
     static Map<String, LimsJsonSubmissionData> readLimsJsonSubmissions(@NotNull String limsJsonPath) throws FileNotFoundException {
         Gson gson = LimsGsonAdapter.buildSubmissionGson();
-        JsonObject jsonObject = new JsonParser().parse(new FileReader(limsJsonPath)).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseReader(new FileReader(limsJsonPath)).getAsJsonObject();
         Set<Map.Entry<String, JsonElement>> jsonSubmissions = jsonObject.getAsJsonObject("submissions").entrySet();
 
         Map<String, LimsJsonSubmissionData> limsDataPerSubmission = Maps.newHashMap();

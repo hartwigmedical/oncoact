@@ -14,7 +14,7 @@ public class LimsCohortModelTest {
 
     @Test
     public void canQueryLimsCohortModel() {
-        LimsCohortConfig cohortConfig = LimsCohortTestFactory.createAllDisabledCohortConfig("DRUP");
+        LimsCohortConfig cohortConfig = TestLimsCohortConfigFactory.createAllDisabledCohortConfig("DRUP");
         Map<String, LimsCohortConfig> cohortMap = Maps.newHashMap();
         cohortMap.put("DRUP", cohortConfig);
 
@@ -24,7 +24,7 @@ public class LimsCohortModelTest {
 
     @Test
     public void fallbackToSampleIdWhenCohortIsEmpty() {
-        LimsCohortConfig cohortConfig = LimsCohortTestFactory.createAllDisabledCohortConfig("DRUP");
+        LimsCohortConfig cohortConfig = TestLimsCohortConfigFactory.createAllDisabledCohortConfig("DRUP");
         Map<String, LimsCohortConfig> cohortMap = Maps.newHashMap();
         cohortMap.put("DRUP", cohortConfig);
 
@@ -36,7 +36,7 @@ public class LimsCohortModelTest {
     @Test(expected = IllegalStateException.class)
     public void crashWhenSampleIdIsNotAsExpected() {
         Map<String, LimsCohortConfig> cohortMap = Maps.newHashMap();
-        cohortMap.put("DRUP", LimsCohortTestFactory.createAllDisabledCohortConfig("DRUP"));
+        cohortMap.put("DRUP", TestLimsCohortConfigFactory.createAllDisabledCohortConfig("DRUP"));
 
         LimsCohortModel model = ImmutableLimsCohortModel.builder().limsCohortMap(cohortMap).build();
         model.queryCohortData("DRUP", "CPCT01");
@@ -45,7 +45,7 @@ public class LimsCohortModelTest {
     @Test
     public void nullWhenCohortConfigIsNotPresent() {
         Map<String, LimsCohortConfig> cohortMap = Maps.newHashMap();
-        cohortMap.put("DRUP", LimsCohortTestFactory.createAllDisabledCohortConfig("DRUP"));
+        cohortMap.put("DRUP", TestLimsCohortConfigFactory.createAllDisabledCohortConfig("DRUP"));
 
         LimsCohortModel model = ImmutableLimsCohortModel.builder().limsCohortMap(cohortMap).build();
         assertNull(model.queryCohortData("NON-DRUP", "NON-DRUP01"));

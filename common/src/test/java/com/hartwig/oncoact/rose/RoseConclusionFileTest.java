@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class RoseConclusionFileTest  {
 
-    private static final String ROSE_TSV = Resources.getResource("rose/tumor_sample.rose.tsv").getPath();
+    private static final String ROSE_TSV = Resources.getResource("rose/sample.rose.tsv").getPath();
 
     @Test
     public void canReadRoseSummaryFile() throws IOException {
