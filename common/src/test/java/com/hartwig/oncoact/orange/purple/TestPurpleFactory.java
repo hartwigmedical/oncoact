@@ -72,9 +72,9 @@ public final class TestPurpleFactory {
     @NotNull
     public static ImmutablePurpleGeneCopyNumber.Builder geneCopyNumberBuilder() {
         return ImmutablePurpleGeneCopyNumber.builder()
-                .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
                 .chromosomeBand(Strings.EMPTY)
+                .gene(Strings.EMPTY)
                 .minCopyNumber(0D)
                 .minMinorAlleleCopyNumber(0D);
     }
@@ -82,6 +82,8 @@ public final class TestPurpleFactory {
     @NotNull
     public static ImmutablePurpleGainLoss.Builder gainLossBuilder() {
         return ImmutablePurpleGainLoss.builder()
+                .chromosome(Strings.EMPTY)
+                .chromosomeBand(Strings.EMPTY)
                 .gene(Strings.EMPTY)
                 .transcript(Strings.EMPTY)
                 .isCanonical(false)

@@ -1,17 +1,17 @@
 package com.hartwig.oncoact.patientreporter.pipeline;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PipelineVersion {
+public final class PipelineVersion {
 
     private static final Logger LOGGER = LogManager.getLogger(PipelineVersion.class);
 
-    @VisibleForTesting
+    private PipelineVersion() {
+    }
+    
     public static void checkPipelineVersion(@Nullable String actualPipelineVersion, @NotNull String expectedPipelineVersion,
             boolean overridePipelineVersion) {
         if (overridePipelineVersion) {

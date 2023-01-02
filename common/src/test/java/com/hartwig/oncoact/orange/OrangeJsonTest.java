@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -23,11 +24,13 @@ import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
 import com.hartwig.oncoact.orange.linx.LinxFusionType;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.linx.LinxPhasedType;
 import com.hartwig.oncoact.orange.linx.LinxRecord;
 import com.hartwig.oncoact.orange.linx.LinxRegionType;
 import com.hartwig.oncoact.orange.linx.LinxStructuralVariant;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
+import com.hartwig.oncoact.orange.plots.OrangePlots;
 import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
 import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleDriver;
@@ -86,6 +89,7 @@ public class OrangeJsonTest {
         assertVirusInterpreter(record.virusInterpreter());
         assertLilac(record.lilac());
         assertChord(record.chord());
+        assertPlots(record.plots());
     }
 
     private static void assertPurple(@NotNull PurpleRecord purple) {
@@ -204,6 +208,8 @@ public class OrangeJsonTest {
 
         assertEquals(1, purple.allSomaticGainsLosses().size());
         PurpleGainLoss gainLoss = purple.allSomaticGainsLosses().iterator().next();
+        assertEquals("5", gainLoss.chromosome());
+        assertEquals("q2.2", gainLoss.chromosomeBand());
         assertEquals("SMAD4", gainLoss.gene());
         assertEquals("ENST00000591126", gainLoss.transcript());
         assertFalse(gainLoss.isCanonical());
@@ -245,6 +251,8 @@ public class OrangeJsonTest {
 
         assertEquals(1, linx.homozygousDisruptions().size());
         LinxHomozygousDisruption homozygousDisruption = linx.homozygousDisruptions().iterator().next();
+        assertEquals("4", homozygousDisruption.chromosome());
+        assertEquals("p1.12", homozygousDisruption.chromosomeBand());
         assertEquals("NF1", homozygousDisruption.gene());
         assertEquals("ENST00000358273", homozygousDisruption.transcript());
         assertTrue(homozygousDisruption.isCanonical());
@@ -277,6 +285,7 @@ public class OrangeJsonTest {
         LinxFusion fusion = linx.allFusions().iterator().next();
         assertTrue(fusion.reported());
         assertEquals(LinxFusionType.KNOWN_PAIR, fusion.type());
+        assertEquals("TMPRSS2-ETV4", fusion.name());
         assertEquals("TMPRSS2", fusion.geneStart());
         assertEquals("ENST00000332149", fusion.geneTranscriptStart());
         assertEquals("Exon 1", fusion.geneContextStart());
@@ -286,6 +295,8 @@ public class OrangeJsonTest {
         assertEquals("Exon 2", fusion.geneContextEnd());
         assertEquals(2, fusion.fusedExonDown());
         assertEquals(LinxFusionDriverLikelihood.HIGH, fusion.driverLikelihood());
+        assertEquals(LinxPhasedType.INFRAME, fusion.phased());
+        assertEquals(1.1, fusion.junctionCopyNumber(), EPSILON);
 
         assertEquals(1, linx.reportableFusions().size());
         assertEquals(fusion, linx.reportableFusions().iterator().next());
@@ -318,6 +329,7 @@ public class OrangeJsonTest {
         assertEquals(VirusInterpretation.HPV, virus1.interpretation());
         assertEquals(1, virus1.integrations());
         assertEquals(VirusDriverLikelihood.HIGH, virus1.driverLikelihood());
+        assertEquals(0.9, virus1.percentageCovered(), EPSILON);
 
         VirusInterpreterEntry virus2 = findVirusByName(virusInterpreter.allViruses(), "Human betaherpesvirus 6B");
         assertFalse(virus2.reported());
@@ -325,6 +337,7 @@ public class OrangeJsonTest {
         assertNull(virus2.interpretation());
         assertEquals(0, virus2.integrations());
         assertEquals(VirusDriverLikelihood.LOW, virus2.driverLikelihood());
+        assertEquals(0.4, virus2.percentageCovered(), EPSILON);
 
         assertEquals(1, virusInterpreter.reportableViruses().size());
         assertEquals(virus1, virusInterpreter.reportableViruses().iterator().next());
@@ -358,5 +371,9 @@ public class OrangeJsonTest {
     private static void assertChord(@NotNull ChordRecord chord) {
         assertEquals(0.01, chord.hrdValue(), EPSILON);
         assertEquals(ChordStatus.HR_PROFICIENT, chord.hrStatus());
+    }
+
+    private static void assertPlots(@NotNull OrangePlots plots) {
+        assertTrue(new File(plots.purpleFinalCircosPlot()).exists());
     }
 }

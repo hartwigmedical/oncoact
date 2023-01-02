@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +53,7 @@ import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
 import com.hartwig.oncoact.orange.linx.LinxFusionType;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.linx.LinxPhasedType;
 import com.hartwig.oncoact.orange.linx.LinxRecord;
 import com.hartwig.oncoact.orange.linx.LinxRegionType;
 import com.hartwig.oncoact.orange.linx.LinxStructuralVariant;
@@ -59,6 +61,8 @@ import com.hartwig.oncoact.orange.peach.ImmutablePeachEntry;
 import com.hartwig.oncoact.orange.peach.ImmutablePeachRecord;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
+import com.hartwig.oncoact.orange.plots.ImmutableOrangePlots;
+import com.hartwig.oncoact.orange.plots.OrangePlots;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleAllelicDepth;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleCharacteristics;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleCopyNumber;
@@ -109,8 +113,18 @@ public final class OrangeJson {
     public static OrangeRecord read(@NotNull String orangeJson) throws IOException {
         Gson gson = new GsonBuilder().registerTypeAdapter(OrangeRecord.class, new OrangeRecordCreator()).create();
 
-        String json = Files.readString(new File(orangeJson).toPath());
-        return gson.fromJson(json, OrangeRecord.class);
+        Path orangePath = new File(orangeJson).toPath();
+        OrangeRecord orange = gson.fromJson(Files.readString(orangePath), OrangeRecord.class);
+        return fixPlotPaths(orange, orangePath.getParent().toString());
+    }
+
+    @NotNull
+    private static OrangeRecord fixPlotPaths(@NotNull OrangeRecord orange, @NotNull String orangeBasePath) {
+        // All ORANGE plots are relative to the base path of ORANGE JSON.
+        OrangePlots fixedPlots = ImmutableOrangePlots.builder()
+                .purpleFinalCircosPlot(orangeBasePath + File.separator + orange.plots().purpleFinalCircosPlot())
+                .build();
+        return ImmutableOrangeRecord.builder().from(orange).plots(fixedPlots).build();
     }
 
     private static class OrangeRecordCreator implements JsonDeserializer<OrangeRecord> {
@@ -131,6 +145,7 @@ public final class OrangeJson {
                     .virusInterpreter(toVirusInterpreterRecord(object(record, "virusInterpreter")))
                     .lilac(toLilacRecord(object(record, "lilac")))
                     .chord(toChordRecord(object(record, "chord")))
+                    .plots(toOrangePlots(object(record, "plots")))
                     .build();
         }
 
@@ -300,9 +315,9 @@ public final class OrangeJson {
             for (JsonElement element : geneCopyNumberArray) {
                 JsonObject geneCopyNumber = element.getAsJsonObject();
                 geneCopyNumbers.add(ImmutablePurpleGeneCopyNumber.builder()
-                        .gene(string(geneCopyNumber, "geneName"))
                         .chromosome(string(geneCopyNumber, "chromosome"))
                         .chromosomeBand(string(geneCopyNumber, "chromosomeBand"))
+                        .gene(string(geneCopyNumber, "geneName"))
                         .minCopyNumber(number(geneCopyNumber, "minCopyNumber"))
                         .minMinorAlleleCopyNumber(number(geneCopyNumber, "minMinorAlleleCopyNumber"))
                         .build());
@@ -316,6 +331,8 @@ public final class OrangeJson {
             for (JsonElement element : gainLossArray) {
                 JsonObject gainLoss = element.getAsJsonObject();
                 gainsLosses.add(ImmutablePurpleGainLoss.builder()
+                        .chromosome(string(gainLoss, "chromosome"))
+                        .chromosomeBand(string(gainLoss, "chromosomeBand"))
                         .gene(string(gainLoss, "gene"))
                         .transcript(string(gainLoss, "transcript"))
                         .isCanonical(bool(gainLoss, "isCanonical"))
@@ -358,6 +375,8 @@ public final class OrangeJson {
             for (JsonElement element : homozygousDisruptionArray) {
                 JsonObject homozygousDisruption = element.getAsJsonObject();
                 homozygousDisruptions.add(ImmutableLinxHomozygousDisruption.builder()
+                        .chromosome(string(homozygousDisruption, "chromosome"))
+                        .chromosomeBand(string(homozygousDisruption, "chromosomeBand"))
                         .gene(string(homozygousDisruption, "gene"))
                         .transcript(string(homozygousDisruption, "transcript"))
                         .isCanonical(bool(homozygousDisruption, "isCanonical"))
@@ -404,6 +423,7 @@ public final class OrangeJson {
                 fusions.add(ImmutableLinxFusion.builder()
                         .reported(bool(fusion, "reported"))
                         .type(LinxFusionType.valueOf(string(fusion, "reportedType")))
+                        .name(string(fusion, "name"))
                         .geneStart(string(fusion, "geneStart"))
                         .geneTranscriptStart(string(fusion, "geneTranscriptStart"))
                         .geneContextStart(string(fusion, "geneContextStart"))
@@ -413,6 +433,8 @@ public final class OrangeJson {
                         .geneContextEnd(string(fusion, "geneContextEnd"))
                         .fusedExonDown(integer(fusion, "fusedExonDown"))
                         .driverLikelihood(LinxFusionDriverLikelihood.valueOf(string(fusion, "likelihood")))
+                        .phased(LinxPhasedType.valueOf(string(fusion, "phased")))
+                        .junctionCopyNumber(number(fusion, "junctionCopyNumber"))
                         .build());
             }
             return fusions;
@@ -469,6 +491,7 @@ public final class OrangeJson {
                         .interpretation(toVirusInterpretation(nullableString(virus, "interpretation")))
                         .integrations(integer(virus, "integrations"))
                         .driverLikelihood(VirusDriverLikelihood.valueOf(string(virus, "virusDriverLikelihoodType")))
+                        .percentageCovered(number(virus, "percentageCovered"))
                         .build());
             }
             return entries;
@@ -504,6 +527,11 @@ public final class OrangeJson {
                     .hrdValue(number(chord, "hrdValue"))
                     .hrStatus(ChordStatus.valueOf(string(chord, "hrStatus")))
                     .build();
+        }
+
+        @NotNull
+        private static OrangePlots toOrangePlots(@NotNull JsonObject plots) {
+            return ImmutableOrangePlots.builder().purpleFinalCircosPlot(string(plots, "purpleFinalCircosPlot")).build();
         }
     }
 }

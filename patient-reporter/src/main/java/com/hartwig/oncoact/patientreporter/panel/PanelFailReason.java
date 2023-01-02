@@ -11,15 +11,13 @@ import org.jetbrains.annotations.Nullable;
 public enum PanelFailReason {
     PANEL_FAILURE("insufficient_dna_panel", false, QsFormNumber.FOR_345);
 
-
     @NotNull
     private final String identifier;
     private final boolean deepWGSDataAvailable;
     @NotNull
     private final QsFormNumber qsFormNumber;
 
-    PanelFailReason(@NotNull final String identifier, final boolean deepWGSDataAvailable,
-            @NotNull QsFormNumber qsFormNumber) {
+    PanelFailReason(@NotNull final String identifier, final boolean deepWGSDataAvailable, @NotNull QsFormNumber qsFormNumber) {
         this.identifier = identifier;
         this.deepWGSDataAvailable = deepWGSDataAvailable;
         this.qsFormNumber = qsFormNumber;

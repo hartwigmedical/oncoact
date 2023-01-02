@@ -9,13 +9,13 @@ import org.jetbrains.annotations.Nullable;
 public abstract class PurpleGeneCopyNumber {
 
     @NotNull
-    public abstract String gene();
-
-    @NotNull
     public abstract String chromosome();
 
     @NotNull
     public abstract String chromosomeBand();
+
+    @NotNull
+    public abstract String gene();
 
     public abstract double minCopyNumber();
 

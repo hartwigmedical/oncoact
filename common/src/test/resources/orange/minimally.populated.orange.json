@@ -220,6 +220,8 @@
     "allSomaticGainsLosses": [
       {
         "interpretation": "FULL_LOSS",
+        "chromosome": 5,
+        "chromosomeBand": "q2.2",
         "gene": "SMAD4",
         "transcript": "ENST00000591126",
         "isCanonical": false,
@@ -230,6 +232,8 @@
     "reportableSomaticGainsLosses": [
       {
         "interpretation": "FULL_LOSS",
+        "chromosome": "5",
+        "chromosomeBand": "q2.2",
         "gene": "SMAD4",
         "transcript": "ENST00000591126",
         "isCanonical": false,
@@ -252,12 +256,15 @@
         "likelihood": "HIGH",
         "fusedExonUp": 1,
         "fusedExonDown": 2,
+        "name": "TMPRSS2-ETV4",
         "geneStart": "TMPRSS2",
         "geneTranscriptStart": "ENST00000332149",
         "geneContextStart": "Exon 1",
         "geneEnd": "ETV4",
         "geneTranscriptEnd": "ENST00000319349",
-        "geneContextEnd": "Exon 2"
+        "geneContextEnd": "Exon 2",
+        "phased": "INFRAME",
+        "junctionCopyNumber": 1.1
       }
     ],
     "reportableFusions": [
@@ -267,12 +274,15 @@
         "likelihood": "HIGH",
         "fusedExonUp": 1,
         "fusedExonDown": 2,
+        "name": "TMPRSS2-ETV4",
         "geneStart": "TMPRSS2",
         "geneTranscriptStart": "ENST00000332149",
         "geneContextStart": "Exon 1",
         "geneEnd": "ETV4",
         "geneTranscriptEnd": "ENST00000319349",
-        "geneContextEnd": "Exon 2"
+        "geneContextEnd": "Exon 2",
+        "phased": "INFRAME",
+        "junctionCopyNumber": 1.1
       }
     ],
     "allBreakends": [
@@ -323,6 +333,8 @@
     ],
     "homozygousDisruptions": [
       {
+        "chromosome": "4",
+        "chromosomeBand": "p1.12",
         "gene": "NF1",
         "transcript": "ENST00000358273",
         "isCanonical": true
@@ -337,7 +349,8 @@
         "integrations": 1,
         "interpretation": "HPV",
         "reported": true,
-        "virusDriverLikelihoodType": "HIGH"
+        "virusDriverLikelihoodType": "HIGH",
+        "percentageCovered": 0.9
       },
       {
         "name": "Human betaherpesvirus 6B",
@@ -345,7 +358,8 @@
         "integrations": 0,
         "interpretation": null,
         "reported": false,
-        "virusDriverLikelihoodType": "LOW"
+        "virusDriverLikelihoodType": "LOW",
+        "percentageCovered": 0.4
       }
     ],
     "reportableViruses": [
@@ -355,7 +369,8 @@
         "integrations": 1,
         "interpretation": "HPV",
         "reported": true,
-        "virusDriverLikelihoodType": "HIGH"
+        "virusDriverLikelihoodType": "HIGH",
+        "percentageCovered": 0.9
       }
     ]
   },
@@ -395,5 +410,8 @@
         "somaticInframeIndel": 1.0
       }
     ]
+  },
+  "plots": {
+    "purpleFinalCircosPlot": "plot/empty.circos.png"
   }
 }

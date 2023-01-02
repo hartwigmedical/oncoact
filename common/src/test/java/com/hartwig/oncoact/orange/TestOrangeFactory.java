@@ -2,6 +2,7 @@ package com.hartwig.oncoact.orange;
 
 import java.time.LocalDate;
 
+import com.google.common.io.Resources;
 import com.hartwig.oncoact.orange.chord.ChordRecord;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
@@ -22,6 +23,8 @@ import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.ImmutablePeachRecord;
 import com.hartwig.oncoact.orange.peach.PeachRecord;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
+import com.hartwig.oncoact.orange.plots.ImmutableOrangePlots;
+import com.hartwig.oncoact.orange.plots.OrangePlots;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleRecord;
 import com.hartwig.oncoact.orange.purple.PurpleCharacteristics;
 import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
@@ -50,6 +53,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class TestOrangeFactory {
 
+    private static final String EMPTY_CIRCOS_PLOT = Resources.getResource("orange/plot/empty.circos.png").getPath();
+
     private TestOrangeFactory() {
     }
 
@@ -66,6 +71,7 @@ public final class TestOrangeFactory {
                 .virusInterpreter(ImmutableVirusInterpreterRecord.builder().build())
                 .lilac(createMinimalTestLilacRecord())
                 .chord(TestChordFactory.builder().build())
+                .plots(createMinimalTestOrangePlots())
                 .build();
     }
 
@@ -80,6 +86,11 @@ public final class TestOrangeFactory {
     @NotNull
     private static LilacRecord createMinimalTestLilacRecord() {
         return ImmutableLilacRecord.builder().qc(Strings.EMPTY).build();
+    }
+
+    @NotNull
+    private static OrangePlots createMinimalTestOrangePlots() {
+        return ImmutableOrangePlots.builder().purpleFinalCircosPlot(EMPTY_CIRCOS_PLOT).build();
     }
 
     @NotNull

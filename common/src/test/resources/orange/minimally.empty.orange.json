@@ -61,5 +61,8 @@
     "qc": "FAIL",
     "alleles": [
     ]
+  },
+  "plots": {
+    "purpleFinalCircosPlot": "plot/empty.circos.png"
   }
 }

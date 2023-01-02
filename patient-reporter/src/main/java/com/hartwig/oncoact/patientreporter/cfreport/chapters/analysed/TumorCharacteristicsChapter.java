@@ -16,7 +16,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.DataLabel;
 import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HrDeficiency;
-import com.hartwig.oncoact.patientreporter.cfreport.data.MicroSatelliteStatus;
+import com.hartwig.oncoact.patientreporter.cfreport.data.MicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalLoad;
 import com.hartwig.oncoact.util.DataUtil;
@@ -35,8 +35,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class TumorCharacteristicsChapter implements ReportChapter {
-
-    private static final double HRD_THRESHOLD = 0.5;
 
     private static final float TABLE_SPACER_HEIGHT = 30;
 
@@ -96,7 +94,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
-        hrChart.setIndicator(HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HRD_THRESHOLD) + ")");
+        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("HR-Deficiency score",
                 hrDeficiencyLabel,
@@ -117,15 +115,15 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                         genomicAnalysis.microsatelliteIndelsPerMb()) : DataUtil.NA_STRING;
 
         BarChart satelliteChart =
-                new BarChart(microSatelliteStability, MicroSatelliteStatus.RANGE_MIN, MicroSatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
+                new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
-        satelliteChart.setTickMarks(new double[] { MicroSatelliteStatus.RANGE_MIN, 10, MicroSatelliteStatus.RANGE_MAX },
+        satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
                 DOUBLE_DECIMAL_FORMAT);
         satelliteChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         satelliteChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(satelliteChart.max()));
-        satelliteChart.setIndicator(MicroSatelliteStatus.THRESHOLD,
-                "Microsatellite \ninstability (" + DOUBLE_DECIMAL_FORMAT.format(MicroSatelliteStatus.THRESHOLD) + ")");
+        satelliteChart.setIndicator(MicrosatelliteStatus.THRESHOLD,
+                "Microsatellite \ninstability (" + DOUBLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
         reportDocument.add(createCharacteristicDiv("Microsatellite status",
                 microSatelliteStabilityString,
                 "The microsatellite stability score represents the number of somatic inserts and deletes in "

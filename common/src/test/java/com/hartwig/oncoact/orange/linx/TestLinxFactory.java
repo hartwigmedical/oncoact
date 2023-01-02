@@ -15,7 +15,12 @@ public final class TestLinxFactory {
 
     @NotNull
     public static ImmutableLinxHomozygousDisruption.Builder homozygousDisruptionBuilder() {
-        return ImmutableLinxHomozygousDisruption.builder().gene(Strings.EMPTY).transcript(Strings.EMPTY).isCanonical(false);
+        return ImmutableLinxHomozygousDisruption.builder()
+                .chromosome(Strings.EMPTY)
+                .chromosomeBand(Strings.EMPTY)
+                .gene(Strings.EMPTY)
+                .transcript(Strings.EMPTY)
+                .isCanonical(false);
     }
 
     @NotNull
@@ -47,6 +52,7 @@ public final class TestLinxFactory {
         return ImmutableLinxFusion.builder()
                 .reported(true)
                 .type(LinxFusionType.NONE)
+                .name(Strings.EMPTY)
                 .geneStart(Strings.EMPTY)
                 .geneTranscriptStart(Strings.EMPTY)
                 .geneContextStart(Strings.EMPTY)
@@ -55,6 +61,8 @@ public final class TestLinxFactory {
                 .geneTranscriptEnd(Strings.EMPTY)
                 .geneContextEnd(Strings.EMPTY)
                 .fusedExonDown(0)
-                .driverLikelihood(LinxFusionDriverLikelihood.LOW);
+                .driverLikelihood(LinxFusionDriverLikelihood.LOW)
+                .phased(LinxPhasedType.OUT_OF_FRAME)
+                .junctionCopyNumber(0D);
     }
 }
