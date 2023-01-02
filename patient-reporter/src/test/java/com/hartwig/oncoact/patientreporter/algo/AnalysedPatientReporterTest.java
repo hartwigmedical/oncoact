@@ -14,7 +14,6 @@ import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.util.DataUtil;
 
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class AnalysedPatientReporterTest {
@@ -44,7 +43,7 @@ public class AnalysedPatientReporterTest {
         double purityCorrect = 0.40;
         boolean hasReliablePurityCorrect = true;
 
-        Assert.assertEquals(QsFormNumber.FOR_080.display(),
+        assertEquals(QsFormNumber.FOR_080.display(),
                 AnalysedPatientReporter.determineForNumber(hasReliablePurityCorrect, purityCorrect));
 
         double purityNotCorrect = 0.10;

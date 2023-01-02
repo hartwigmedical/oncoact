@@ -6,15 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.genotype.GenotypeStatus;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
-import com.hartwig.oncoact.common.variant.VariantType;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
+import com.hartwig.oncoact.orange.purple.PurpleVariantType;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -26,13 +25,13 @@ public class GermlineReportingModelTest {
         LimsGermlineReportingLevel germlineReportingLevel = LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION;
         AnalysedReportData testReportData = PatientReporterTestFactory.loadTestAnalysedReportData();
 
-        ReportableVariant reportableVariant1 = testReportableVariant("MUTYH", GenotypeStatus.HOM_ALT);
+        ReportableVariant reportableVariant1 = createReportableVariant("MUTYH", PurpleGenotypeStatus.HOM_ALT);
         Set<String> germlineGenesWithIndependentHits1 = Sets.newHashSet();
 
         assertTrue(testReportData.germlineReportingModel()
                 .notifyGermlineVariant(reportableVariant1, germlineReportingLevel, germlineGenesWithIndependentHits1));
 
-        ReportableVariant reportableVariant = testReportableVariant("MUTYH", GenotypeStatus.UNKNOWN);
+        ReportableVariant reportableVariant = createReportableVariant("MUTYH", PurpleGenotypeStatus.UNKNOWN);
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
 
         assertFalse(testReportData.germlineReportingModel()
@@ -45,10 +44,9 @@ public class GermlineReportingModelTest {
     }
 
     @NotNull
-    private static ReportableVariant testReportableVariant(@NotNull String gene, @NotNull GenotypeStatus genotypeStatus) {
-        return ImmutableReportableVariant.builder()
-                .from(ReportableVariantTestFactory.create())
-                .type(VariantType.SNP)
+    private static ReportableVariant createReportableVariant(@NotNull String gene, @NotNull PurpleGenotypeStatus genotypeStatus) {
+        return TestReportableVariantFactory.builder()
+                .type(PurpleVariantType.SNP)
                 .source(ReportableVariantSource.GERMLINE)
                 .gene(gene)
                 .genotypeStatus(genotypeStatus)

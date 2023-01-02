@@ -21,5 +21,4 @@ public class PipelineVersionTest  {
     public void crashTestPipelineVersionOnVersionDifference() {
         PipelineVersion.checkPipelineVersion("5.22", "5.21", false);
     }
-
 }

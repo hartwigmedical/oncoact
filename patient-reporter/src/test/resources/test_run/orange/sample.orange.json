@@ -1,0 +1,68 @@
+{
+  "sampleId": "sample",
+  "experimentDate": {
+    "year": 2022,
+    "month": 1,
+    "day": 20
+  },
+  "refGenomeVersion": "V37",
+  "purple": {
+    "fit": {
+      "qc": {
+        "status": [
+        ]
+      },
+      "hasSufficientQuality": false,
+      "containsTumorCells": false,
+      "purity": 0.1,
+      "ploidy": 2
+    },
+    "characteristics": {
+      "microsatelliteIndelsPerMb": 0,
+      "microsatelliteStatus": "MSS",
+      "tumorMutationalBurdenPerMb": 0,
+      "tumorMutationalBurdenStatus": "UNKNOWN",
+      "tumorMutationalLoad": 0,
+      "tumorMutationalLoadStatus": "UNKNOWN"
+    },
+    "somaticDrivers": [],
+    "germlineDrivers": null,
+    "allSomaticVariants": [],
+    "reportableSomaticVariants": [],
+    "allGermlineVariants": null,
+    "reportableGermlineVariants": null,
+    "allSomaticCopyNumbers": [],
+    "allSomaticGeneCopyNumbers": [],
+    "allSomaticGainsLosses": [],
+    "reportableSomaticGainsLosses": []
+  },
+  "linx": {
+    "allStructuralVariants": [],
+    "allFusions": [],
+    "reportableFusions": [],
+    "allBreakends": [],
+    "reportableBreakends": [],
+    "homozygousDisruptions": []
+  },
+  "virusInterpreter": {
+    "allViruses": [],
+    "reportableViruses": []
+  },
+  "chord": {
+    "hrdValue": 0,
+    "hrStatus": "HR_PROFICIENT"
+  },
+  "peach": [],
+  "cuppa": {
+    "predictions": [
+    ]
+  },
+  "lilac": {
+    "qc": "FAIL",
+    "alleles": [
+    ]
+  },
+  "plots": {
+    "purpleFinalCircosPlot": "plot/empty.circos.png"
+  }
+}

@@ -11,16 +11,16 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.clinical.ImmutablePatientPrimaryTumor;
-import com.hartwig.oncoact.common.lims.hospital.ImmutableHospitalContactData;
-import com.hartwig.oncoact.common.peach.ImmutablePeachGenotype;
-import com.hartwig.oncoact.common.peach.PeachGenotype;
-import com.hartwig.oncoact.common.purple.PurpleQCStatus;
+import com.hartwig.oncoact.clinical.ImmutablePatientPrimaryTumor;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortTestFactory;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
+import com.hartwig.oncoact.lims.hospital.ImmutableHospitalContactData;
+import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.oncoact.orange.peach.TestPeachFactory;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.ImmutableSampleMetadata;
@@ -541,10 +541,10 @@ public class CFReportWriterTest {
     }
 
     @NotNull
-    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
-        Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
+    private static Map<String, List<PeachEntry>> createTestPharmacogeneticsGenotypes() {
+        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("DPYD",
-                Lists.newArrayList(ImmutablePeachGenotype.builder()
+                Lists.newArrayList(TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*1_HOM")
                                 .function("Normal Function")
@@ -555,7 +555,7 @@ public class CFReportWriterTest {
                                 .panelVersion("PGx_min_DPYD_v1.2")
                                 .repoVersion("1.6")
                                 .build(),
-                        ImmutablePeachGenotype.builder()
+                        TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*2_HOM")
                                 .function("Normal Function")

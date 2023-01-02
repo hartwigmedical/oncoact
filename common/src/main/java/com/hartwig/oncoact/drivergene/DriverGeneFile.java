@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.drivergene;
 
-import static com.hartwig.serve.datamodel.serialization.util.SerializationUtil.createFields;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.io.FileReaderUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +29,7 @@ public final class DriverGeneFile {
     private static List<DriverGene> fromLines(@NotNull List<String> lines) {
         List<DriverGene> driverGenes = Lists.newArrayList();
 
-        Map<String, Integer> fields = createFields(lines.get(0), DELIMITER);
+        Map<String, Integer> fields = FileReaderUtils.createFields(lines.get(0), DELIMITER);
 
         int geneIndex = fields.get("gene");
         int missenseIndex = fields.get("reportMissense");

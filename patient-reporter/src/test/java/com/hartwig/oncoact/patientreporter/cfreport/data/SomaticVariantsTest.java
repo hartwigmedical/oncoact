@@ -5,16 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.purple.loader.CopyNumberInterpretation;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -31,10 +29,9 @@ public class SomaticVariantsTest {
 
     @Test
     public void sortCorrectlyOnCodon() {
-        ReportableVariant base = ReportableVariantTestFactory.create();
-        ReportableVariant variant1 = ImmutableReportableVariant.builder().from(base).canonicalHgvsCodingImpact("c.-300T>A").build();
-        ReportableVariant variant2 = ImmutableReportableVariant.builder().from(base).canonicalHgvsCodingImpact("c.4000T>A").build();
-        ReportableVariant variant3 = ImmutableReportableVariant.builder().from(base).canonicalHgvsCodingImpact("c.500T>A").build();
+        ReportableVariant variant1 = TestReportableVariantFactory.builder().canonicalHgvsCodingImpact("c.-300T>A").build();
+        ReportableVariant variant2 = TestReportableVariantFactory.builder().canonicalHgvsCodingImpact("c.4000T>A").build();
+        ReportableVariant variant3 = TestReportableVariantFactory.builder().canonicalHgvsCodingImpact("c.500T>A").build();
 
         List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2, variant3);
 
@@ -46,60 +43,74 @@ public class SomaticVariantsTest {
     }
 
     @Test
-    public void canExtractMSIgenes() {
-        ReportableVariant base = ReportableVariantTestFactory.create();
-        ReportableVariant variant1 = ImmutableReportableVariant.builder().from(base).gene("MLH1").build();
-        ReportableVariant variant2 = ImmutableReportableVariant.builder().from(base).gene("BRAF").build();
+    public void canExtractMSIGenes() {
+        ReportableVariant variant1 = TestReportableVariantFactory.builder().gene("MLH1").build();
+        ReportableVariant variant2 = TestReportableVariantFactory.builder().gene("BRAF").build();
 
         List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2);
 
-        GainLoss baseGainLoss = GainsAndLossesTest.testGainLoss("1", "p.12");
-        GainLoss gainLoss1 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("MSH2").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
-        GainLoss gainLoss2 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("MSH6").interpretation(CopyNumberInterpretation.PARTIAL_LOSS).build();
-        GainLoss gainLoss3 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("EPCAM").interpretation(CopyNumberInterpretation.FULL_GAIN).build();
+        PurpleGainLoss baseGainLoss = createGainLoss("1", "p.12");
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("MSH2")
+                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
+                .build();
+        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("MSH6")
+                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .build();
+        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("EPCAM")
+                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
+                .build();
 
-        List<GainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
+        List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(create("PMS2"));
+        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
 
         assertEquals(4, SomaticVariants.determineMSIGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @Test
-    public void canExtractHRDgenes() {
-        ReportableVariant base = ReportableVariantTestFactory.create();
-        ReportableVariant variant1 = ImmutableReportableVariant.builder().from(base).gene("BRCA1").build();
-        ReportableVariant variant2 = ImmutableReportableVariant.builder().from(base).gene("BRAF").build();
+    public void canExtractHRDGenes() {
+        ReportableVariant variant1 = TestReportableVariantFactory.builder().gene("BRCA1").build();
+        ReportableVariant variant2 = TestReportableVariantFactory.builder().gene("BRAF").build();
 
         List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2);
 
-        GainLoss baseGainLoss = GainsAndLossesTest.testGainLoss("1", "p.12");
-        GainLoss gainLoss1 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("BRCA2").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
-        GainLoss gainLoss2 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("PALB2").interpretation(CopyNumberInterpretation.PARTIAL_LOSS).build();
-        GainLoss gainLoss3 =
-                ImmutableGainLoss.builder().from(baseGainLoss).gene("RAD51B").interpretation(CopyNumberInterpretation.FULL_GAIN).build();
+        PurpleGainLoss baseGainLoss = createGainLoss("1", "p.12");
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("BRCA2")
+                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
+                .build();
+        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("PALB2")
+                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .build();
+        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
+                .from(baseGainLoss)
+                .gene("RAD51B")
+                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
+                .build();
 
-        List<GainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
+        List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(create("RAD51C"));
-
+        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
 
         assertEquals(4, SomaticVariants.determineHRDGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @NotNull
-    private static HomozygousDisruption create(@NotNull String gene) {
-        return ImmutableHomozygousDisruption.builder()
-                .chromosome(Strings.EMPTY)
-                .chromosomeBand(Strings.EMPTY)
-                .gene(gene)
-                .transcript("123")
-                .isCanonical(true)
-                .build();
+    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+        return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
+    }
+
+    @NotNull
+    private static PurpleGainLoss createGainLoss(@NotNull String chromosome, @NotNull String chromosomeBand) {
+        return TestPurpleFactory.gainLossBuilder().chromosome(chromosome).chromosomeBand(chromosomeBand).build();
     }
 }

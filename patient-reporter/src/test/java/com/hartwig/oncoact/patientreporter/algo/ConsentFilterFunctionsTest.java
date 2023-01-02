@@ -8,30 +8,28 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.apache.logging.log4j.util.Strings;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 public class ConsentFilterFunctionsTest {
 
     @Test
     public void canFilterVariantsForGermlineConsent() {
-        ReportableVariant somaticVariant = createTestReportableVariantBuilder().source(ReportableVariantSource.SOMATIC).build();
-        ReportableVariant germlineVariant = createTestReportableVariantBuilder().source(ReportableVariantSource.GERMLINE).build();
+        ReportableVariant somaticVariant = TestReportableVariantFactory.builder().source(ReportableVariantSource.SOMATIC).build();
+        ReportableVariant germlineVariant = TestReportableVariantFactory.builder().source(ReportableVariantSource.GERMLINE).build();
 
         Map<ReportableVariant, Boolean> notifyGermlineVariants = Maps.newHashMap();
         notifyGermlineVariants.put(somaticVariant, false);
@@ -96,10 +94,5 @@ public class ConsentFilterFunctionsTest {
         assertEquals(0,
                 ConsentFilterFunctions.filterEvidenceForGermlineConsent(Lists.newArrayList(evidence),
                         LimsGermlineReportingLevel.NO_REPORTING).size());
-    }
-
-    @NotNull
-    private static ImmutableReportableVariant.Builder createTestReportableVariantBuilder() {
-        return ImmutableReportableVariant.builder().from(ReportableVariantTestFactory.create());
     }
 }

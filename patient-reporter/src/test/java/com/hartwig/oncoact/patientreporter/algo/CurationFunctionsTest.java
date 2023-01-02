@@ -8,21 +8,19 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.common.linx.HomozygousDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableGeneDisruption;
-import com.hartwig.oncoact.common.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.common.purple.loader.GainLoss;
-import com.hartwig.oncoact.common.purple.loader.GainLossTestFactory;
-import com.hartwig.oncoact.common.purple.loader.ImmutableGainLoss;
-import com.hartwig.oncoact.common.variant.ImmutableReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariant;
-import com.hartwig.oncoact.common.variant.ReportableVariantSource;
-import com.hartwig.oncoact.common.variant.ReportableVariantTestFactory;
 import com.hartwig.oncoact.disruption.GeneDisruption;
+import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
+import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
@@ -39,7 +37,7 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateTumorSpecificEvidence() {
-        List<ProtectEvidence> tumorSpecificEvidence = evidence();
+        List<ProtectEvidence> tumorSpecificEvidence = createTestEvidences();
         List<ProtectEvidence> curated = CurationFunctions.curateEvidence(tumorSpecificEvidence);
 
         assertEquals(curated.size(), 3);
@@ -50,7 +48,7 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateClinicalTrials() {
-        List<ProtectEvidence> clinicalTrials = evidence();
+        List<ProtectEvidence> clinicalTrials = createTestEvidences();
         List<ProtectEvidence> curated = CurationFunctions.curateEvidence(clinicalTrials);
 
         assertEquals(curated.size(), 3);
@@ -61,7 +59,7 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateOffLabelEvidence() {
-        List<ProtectEvidence> offLabelEvidence = evidence();
+        List<ProtectEvidence> offLabelEvidence = createTestEvidences();
         List<ProtectEvidence> curated = CurationFunctions.curateEvidence(offLabelEvidence);
 
         assertEquals(curated.size(), 3);
@@ -71,18 +69,18 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneProtect(List<ProtectEvidence> curate, @NotNull String gene, boolean isCanonical) {
-        for (ProtectEvidence evidence : curate) {
+    private static String findByGeneProtect(@NotNull List<ProtectEvidence> evidences, @NotNull String gene, boolean isCanonical) {
+        for (ProtectEvidence evidence : evidences) {
             if (evidence.gene().equals(gene) && evidence.isCanonical().equals(isCanonical)) {
                 return evidence.gene();
             }
         }
-        throw new IllegalStateException("Could not find gene with canonical: " + gene + " " + isCanonical);
+        throw new IllegalStateException("Could not find evidence with gene and canonical: " + gene + " " + isCanonical);
     }
 
     @Test
     public void canCurateReportableVariants() {
-        List<ReportableVariant> variants = reportableVariants();
+        List<ReportableVariant> variants = createTestVariants();
         List<ReportableVariant> curated = CurationFunctions.curateReportableVariants(variants);
 
         assertEquals(curated.size(), 3);
@@ -94,11 +92,11 @@ public class CurationFunctionsTest {
     @Test
     public void canCurateNotifyGermlineStatusPerVariant() {
         ReportableVariant somaticVariant1 =
-                createTestReportableVariantBuilder().gene("KRAS").isCanonical(false).source(ReportableVariantSource.SOMATIC).build();
+                TestReportableVariantFactory.builder().gene("KRAS").isCanonical(false).source(ReportableVariantSource.SOMATIC).build();
         ReportableVariant somaticVariant2 =
-                createTestReportableVariantBuilder().gene("CDKN2A").isCanonical(true).source(ReportableVariantSource.SOMATIC).build();
+                TestReportableVariantFactory.builder().gene("CDKN2A").isCanonical(true).source(ReportableVariantSource.SOMATIC).build();
         ReportableVariant germlineVariant1 =
-                createTestReportableVariantBuilder().gene("CDKN2A").isCanonical(false).source(ReportableVariantSource.GERMLINE).build();
+                TestReportableVariantFactory.builder().gene("CDKN2A").isCanonical(false).source(ReportableVariantSource.GERMLINE).build();
 
         Map<ReportableVariant, Boolean> notifyGermlineVariants = Maps.newHashMap();
         notifyGermlineVariants.put(somaticVariant1, false);
@@ -115,8 +113,8 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneVariant(List<ReportableVariant> curate, @NotNull String gene, boolean isCanonical) {
-        for (ReportableVariant variant : curate) {
+    private static String findByGeneVariant(@NotNull List<ReportableVariant> variants, @NotNull String gene, boolean isCanonical) {
+        for (ReportableVariant variant : variants) {
             if (variant.gene().equals(gene) && variant.isCanonical() == isCanonical) {
                 return variant.gene();
             }
@@ -126,8 +124,8 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateGainsAndLosses() {
-        List<GainLoss> gainLoss = gainloss();
-        List<GainLoss> curated = CurationFunctions.curateGainsAndLosses(gainLoss);
+        List<PurpleGainLoss> gainsLosses = createTestGainsLosses();
+        List<PurpleGainLoss> curated = CurationFunctions.curateGainsAndLosses(gainsLosses);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneGainLoss(curated, "BRAF", true), "BRAF");
@@ -136,8 +134,8 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneGainLoss(List<GainLoss> curate, @NotNull String gene, boolean isCanonical) {
-        for (GainLoss gainLoss : curate) {
+    private static String findByGeneGainLoss(@NotNull List<PurpleGainLoss> gainsLosses, @NotNull String gene, boolean isCanonical) {
+        for (PurpleGainLoss gainLoss : gainsLosses) {
             if (gainLoss.gene().equals(gene) && gainLoss.isCanonical() == isCanonical) {
                 return gainLoss.gene();
             }
@@ -147,18 +145,18 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateGeneDisruptions() {
-        List<GeneDisruption> disruptions = geneDisruption();
+        List<GeneDisruption> disruptions = createTestGeneDisruptions();
         List<GeneDisruption> curated = CurationFunctions.curateGeneDisruptions(disruptions);
 
         assertEquals(curated.size(), 3);
-        assertEquals(findByGeneGDisruption(curated, "NRAS", true), "NRAS");
-        assertEquals(findByGeneGDisruption(curated, GENE_CDKN2A_CANONICAL, true), GENE_CDKN2A_CANONICAL);
-        assertEquals(findByGeneGDisruption(curated, GENE_CDKN2A_NON_CANONICAL, false), GENE_CDKN2A_NON_CANONICAL);
+        assertEquals(findByGeneDisruption(curated, "NRAS", true), "NRAS");
+        assertEquals(findByGeneDisruption(curated, GENE_CDKN2A_CANONICAL, true), GENE_CDKN2A_CANONICAL);
+        assertEquals(findByGeneDisruption(curated, GENE_CDKN2A_NON_CANONICAL, false), GENE_CDKN2A_NON_CANONICAL);
     }
 
     @NotNull
-    private static String findByGeneGDisruption(List<GeneDisruption> curate, @NotNull String gene, boolean isCanonical) {
-        for (GeneDisruption disruption : curate) {
+    private static String findByGeneDisruption(@NotNull List<GeneDisruption> disruptions, @NotNull String gene, boolean isCanonical) {
+        for (GeneDisruption disruption : disruptions) {
             if (disruption.gene().equals(gene) && disruption.isCanonical() == isCanonical) {
                 return disruption.gene();
             }
@@ -168,8 +166,8 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateHomozygousDisruptions() {
-        List<HomozygousDisruption> homozygousDisruptions = homozygousDisruptions();
-        List<HomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
+        List<LinxHomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
+        List<LinxHomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneHomozygousDisruption(curated, "NRAS", true), "NRAS");
@@ -178,8 +176,9 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneHomozygousDisruption(List<HomozygousDisruption> curate, @NotNull String gene, boolean isCanonical) {
-        for (HomozygousDisruption disruption : curate) {
+    private static String findByGeneHomozygousDisruption(@NotNull List<LinxHomozygousDisruption> disruptions, @NotNull String gene,
+            boolean isCanonical) {
+        for (LinxHomozygousDisruption disruption : disruptions) {
             if (disruption.gene().equals(gene) && disruption.isCanonical() == isCanonical) {
                 return disruption.gene();
             }
@@ -189,7 +188,7 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence() {
+    private static List<ProtectEvidence> createTestEvidences() {
         ProtectEvidence evidence1 = TestProtectFactory.builder()
                 .gene("KRAS")
                 .isCanonical(false)
@@ -259,71 +258,40 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    public List<ReportableVariant> reportableVariants() {
+    private static List<ReportableVariant> createTestVariants() {
         ReportableVariant somaticVariant1 =
-                createTestReportableVariantBuilder().gene("KRAS").isCanonical(false).source(ReportableVariantSource.SOMATIC).build();
+                TestReportableVariantFactory.builder().gene("KRAS").isCanonical(false).source(ReportableVariantSource.SOMATIC).build();
         ReportableVariant somaticVariant2 =
-                createTestReportableVariantBuilder().gene("CDKN2A").isCanonical(true).source(ReportableVariantSource.SOMATIC).build();
+                TestReportableVariantFactory.builder().gene("CDKN2A").isCanonical(true).source(ReportableVariantSource.SOMATIC).build();
         ReportableVariant germlineVariant1 =
-                createTestReportableVariantBuilder().gene("CDKN2A").isCanonical(false).source(ReportableVariantSource.GERMLINE).build();
+                TestReportableVariantFactory.builder().gene("CDKN2A").isCanonical(false).source(ReportableVariantSource.GERMLINE).build();
         return Lists.newArrayList(somaticVariant1, somaticVariant2, germlineVariant1);
     }
 
     @NotNull
-    private static ImmutableReportableVariant.Builder createTestReportableVariantBuilder() {
-        return ImmutableReportableVariant.builder().from(ReportableVariantTestFactory.create());
-    }
-
-    @NotNull
-    public List<GainLoss> gainloss() {
-        GainLoss gainLoss1 =
-                ImmutableGainLoss.builder().from(GainLossTestFactory.createTestGainLoss()).gene("BRAF").isCanonical(true).build();
-        GainLoss gainLoss2 =
-                ImmutableGainLoss.builder().from(GainLossTestFactory.createTestGainLoss()).gene("CDKN2A").isCanonical(true).build();
-        GainLoss gainLoss3 =
-                ImmutableGainLoss.builder().from(GainLossTestFactory.createTestGainLoss()).gene("CDKN2A").isCanonical(false).build();
+    private static List<PurpleGainLoss> createTestGainsLosses() {
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder().gene("BRAF").isCanonical(true).build();
+        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder().gene("CDKN2A").isCanonical(true).build();
+        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
     }
 
     @NotNull
-    public List<GeneDisruption> geneDisruption() {
-        GeneDisruption disruption1 = createTestReportableGeneDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        GeneDisruption disruption2 = createTestReportableGeneDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
-        GeneDisruption disruption3 = createTestReportableGeneDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
+    private static List<GeneDisruption> createTestGeneDisruptions() {
+        GeneDisruption disruption1 = TestGeneDisruptionFactory.builder().gene("NRAS").isCanonical(true).build();
+        GeneDisruption disruption2 = TestGeneDisruptionFactory.builder().gene("CDKN2A").isCanonical(true).build();
+        GeneDisruption disruption3 = TestGeneDisruptionFactory.builder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(disruption1, disruption2, disruption3);
     }
 
     @NotNull
-    private static ImmutableGeneDisruption.Builder createTestReportableGeneDisruptionBuilder() {
-        return ImmutableGeneDisruption.builder()
-                .location(Strings.EMPTY)
-                .gene(Strings.EMPTY)
-                .range(Strings.EMPTY)
-                .type(Strings.EMPTY)
-                .junctionCopyNumber(2.012)
-                .undisruptedCopyNumber(0.0)
-                .firstAffectedExon(5)
-                .clusterId(2)
-                .transcriptId(Strings.EMPTY);
-    }
-
-    @NotNull
-    private static List<HomozygousDisruption> homozygousDisruptions() {
-        HomozygousDisruption homozygousDisruption1 =
-                createTestReportableHomozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption2 =
-                createTestReportableHomozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption3 =
-                createTestReportableHomozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
+    private static List<LinxHomozygousDisruption> createTestHomozygousDisruptions() {
+        LinxHomozygousDisruption homozygousDisruption1 =
+                TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
+        LinxHomozygousDisruption homozygousDisruption2 =
+                TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
+        LinxHomozygousDisruption homozygousDisruption3 =
+                TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(homozygousDisruption1, homozygousDisruption2, homozygousDisruption3);
-    }
-
-    @NotNull
-    private static ImmutableHomozygousDisruption.Builder createTestReportableHomozygousDisruptionBuilder() {
-        return ImmutableHomozygousDisruption.builder()
-                .chromosome(Strings.EMPTY)
-                .chromosomeBand(Strings.EMPTY)
-                .gene(Strings.EMPTY)
-                .transcript(Strings.EMPTY);
     }
 }

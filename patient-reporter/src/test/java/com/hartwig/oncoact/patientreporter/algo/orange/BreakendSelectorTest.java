@@ -6,12 +6,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.common.fusion.KnownFusionCache;
-import com.hartwig.oncoact.common.fusion.KnownFusionData;
-import com.hartwig.oncoact.common.fusion.KnownFusionType;
-import com.hartwig.oncoact.common.linx.LinxBreakend;
-import com.hartwig.oncoact.common.linx.LinxFusion;
-import com.hartwig.oncoact.common.linx.LinxTestFactory;
+import com.hartwig.oncoact.knownfusion.KnownFusionCache;
+import com.hartwig.oncoact.knownfusion.KnownFusionData;
+import com.hartwig.oncoact.knownfusion.KnownFusionType;
+import com.hartwig.oncoact.knownfusion.TestKnownFusionFactory;
+import com.hartwig.oncoact.orange.linx.LinxBreakend;
+import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -38,18 +39,16 @@ public class BreakendSelectorTest {
                 threeGeneExon21,
                 otherGene);
 
-        KnownFusionData fiveData = knownFusion(KnownFusionType.PROMISCUOUS_5, "five", Strings.EMPTY);
-        fiveData.setKnownExonData("canonical", "8;12", Strings.EMPTY);
+        int[] fiveGeneExonRange = { 8, 12 };
+        KnownFusionData knownFive = createKnownFiveFusion("five", "canonical", fiveGeneExonRange);
 
-        KnownFusionData threeData = knownFusion(KnownFusionType.PROMISCUOUS_3, Strings.EMPTY, "three");
-        threeData.setKnownExonData("canonical", Strings.EMPTY, "20;21");
+        int[] threeGeneExonRange = { 20, 21 };
+        KnownFusionData knownThree = createKnownThreeFusion("three", "canonical", threeGeneExonRange);
 
-        KnownFusionCache knownFusionCache = new KnownFusionCache();
-        knownFusionCache.addData(fiveData);
-        knownFusionCache.addData(threeData);
+        KnownFusionCache knownFusionCache = TestKnownFusionFactory.createCache(Lists.newArrayList(knownFive, knownThree));
 
-        LinxFusion fiveFusion = LinxTestFactory.fusionBuilder().geneStart("five").fusedExonUp(11).build();
-        LinxFusion threeFusion = LinxTestFactory.fusionBuilder().geneEnd("three").fusedExonDown(21).build();
+        LinxFusion fiveFusion = TestLinxFactory.fusionBuilder().geneStart("five").fusedExonUp(11).build();
+        LinxFusion threeFusion = TestLinxFactory.fusionBuilder().geneEnd("three").fusedExonDown(21).build();
         List<LinxBreakend> potentiallyInteresting = BreakendSelector.selectInterestingUnreportedBreakends(allBreakends,
                 Lists.newArrayList(fiveFusion, threeFusion),
                 knownFusionCache);
@@ -71,19 +70,38 @@ public class BreakendSelectorTest {
 
     @NotNull
     private static LinxBreakend create(@NotNull String gene, @NotNull String transcript, @NotNull String geneOrientation, int exon) {
-        return LinxTestFactory.breakendBuilder()
+        return TestLinxFactory.breakendBuilder()
+                .reported(false)
                 .gene(gene)
                 .transcriptId(transcript)
                 .geneOrientation(geneOrientation)
                 .nextSpliceExonRank(exon)
-                .reportedDisruption(false)
                 .disruptive(true)
                 .build();
     }
 
     @NotNull
-    private static KnownFusionData knownFusion(@NotNull KnownFusionType type, @NotNull String fiveGene, @NotNull String threeGene) {
-        return new KnownFusionData(type, fiveGene, threeGene, Strings.EMPTY, Strings.EMPTY);
+    private static KnownFusionData createKnownFiveFusion(@NotNull String gene, @NotNull String specificExonsTransName,
+            @NotNull int[] exonRange) {
+        return createKnownFusion(KnownFusionType.PROMISCUOUS_5, gene, Strings.EMPTY, specificExonsTransName, exonRange, new int[] {});
     }
 
+    @NotNull
+    private static KnownFusionData createKnownThreeFusion(@NotNull String gene, @NotNull String specificExonsTransName,
+            @NotNull int[] exonRange) {
+        return createKnownFusion(KnownFusionType.PROMISCUOUS_3, Strings.EMPTY, gene, specificExonsTransName, new int[] {}, exonRange);
+    }
+
+    @NotNull
+    private static KnownFusionData createKnownFusion(@NotNull KnownFusionType type, @NotNull String fiveGene, @NotNull String threeGene,
+            @NotNull String specificExonsTransName, @NotNull int[] fiveGeneExonRange, @NotNull int[] threeGeneExonRange) {
+        return TestKnownFusionFactory.builder()
+                .type(type)
+                .fiveGene(fiveGene)
+                .threeGene(threeGene)
+                .specificExonsTransName(specificExonsTransName)
+                .fiveGeneExonRange(fiveGeneExonRange)
+                .threeGeneExonRange(threeGeneExonRange)
+                .build();
+    }
 }
