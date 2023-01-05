@@ -33,12 +33,14 @@ import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 
+import com.hartwig.serve.datamodel.ImmutableTreatment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -61,13 +63,9 @@ public class AnalysedPatientReporter {
     @NotNull
     public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
         String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
-        PatientPrimaryTumor patientPrimaryTumor =
-                PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
+        PatientPrimaryTumor patientPrimaryTumor = PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
 
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata,
-                reportData.limsModel(),
-                patientPrimaryTumor,
-                config.allowDefaultCohortConfig());
+        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, config.allowDefaultCohortConfig());
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
@@ -88,8 +86,7 @@ public class AnalysedPatientReporter {
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
         GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, sampleReport.germlineReportingLevel());
 
-        GenomicAnalysis filteredAnalysis =
-                ConsentFilterFunctions.filter(genomicAnalysis, sampleReport.germlineReportingLevel(), sampleReport.reportViralPresence());
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, sampleReport.germlineReportingLevel(), sampleReport.reportViralPresence());
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
@@ -99,11 +96,9 @@ public class AnalysedPatientReporter {
         MolecularTissueOriginReporting molecularTissueOriginReporting = MolecularTissueOriginReportingFactory.create(best);
         LOGGER.info(" Predicted cancer type '{}' with likelihood {}", best.cancerType(), best.likelihood());
 
-        Set<PeachEntry> pharmacogeneticsGenotypes =
-                curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach().entries();
+        Set<PeachEntry> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach().entries();
 
-        Set<PeachEntry> pharmacogeneticsGenotypesOverrule =
-                sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
+        Set<PeachEntry> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
 
         Map<String, List<PeachEntry>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
         for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
@@ -116,30 +111,7 @@ public class AnalysedPatientReporter {
             }
         }
 
-        AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
-                .sampleReport(sampleReport)
-                .qsFormNumber(qcForm)
-                .clinicalSummary(clinicalSummary)
-                .specialRemark(specialRemark)
-                .pipelineVersion(pipelineVersion)
-                .genomicAnalysis(curatedAnalysis)
-                .molecularTissueOriginReporting(
-                        curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
-                                ? null
-                                : molecularTissueOriginReporting)
-                .molecularTissueOriginPlotPath(config.cuppaPlot())
-                .circosPlotPath(orange.plots().purpleFinalCircosPlot())
-                .comments(Optional.ofNullable(config.comments()))
-                .isCorrectedReport(config.isCorrectedReport())
-                .isCorrectedReportExtern(config.isCorrectedReportExtern())
-                .signaturePath(reportData.signaturePath())
-                .logoRVAPath(reportData.logoRVAPath())
-                .logoCompanyPath(reportData.logoCompanyPath())
-                .udiDi(reportData.udiDi())
-                .pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap)
-                .reportDate(reportDate)
-                .isWGSReport(true)
-                .build();
+        AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder().sampleReport(sampleReport).qsFormNumber(qcForm).clinicalSummary(clinicalSummary).specialRemark(specialRemark).pipelineVersion(pipelineVersion).genomicAnalysis(curatedAnalysis).molecularTissueOriginReporting(curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity() ? null : molecularTissueOriginReporting).molecularTissueOriginPlotPath(config.cuppaPlot()).circosPlotPath(orange.plots().purpleFinalCircosPlot()).comments(Optional.ofNullable(config.comments())).isCorrectedReport(config.isCorrectedReport()).isCorrectedReportExtern(config.isCorrectedReportExtern()).signaturePath(reportData.signaturePath()).logoRVAPath(reportData.logoRVAPath()).logoCompanyPath(reportData.logoCompanyPath()).udiDi(reportData.udiDi()).pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap).reportDate(reportDate).isWGSReport(true).build();
 
         printReportState(report);
 
@@ -149,9 +121,7 @@ public class AnalysedPatientReporter {
     @NotNull
     @VisibleForTesting
     static String determineForNumber(boolean hasReliablePurity, double purity) {
-        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
-                ? QsFormNumber.FOR_080.display()
-                : QsFormNumber.FOR_209.display();
+        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF ? QsFormNumber.FOR_080.display() : QsFormNumber.FOR_209.display();
     }
 
     @NotNull
@@ -162,7 +132,12 @@ public class AnalysedPatientReporter {
         List<ProtectEvidence> reportableEvidenceItems = Lists.newArrayList();
         for (ProtectEvidence evidence : evidences) {
             if (evidence.reported()) {
-                reportableEvidenceItems.add(evidence);
+                //TODO; switch to reportableEvidenceItems.add(evidence) when ready to use for reporting
+                reportableEvidenceItems.add(ImmutableProtectEvidence.builder().from(evidence).
+                        treatment(ImmutableTreatment.builder().from(evidence.treatment())
+                                .relevantTreatmentApproaches(Sets.newHashSet())
+                                .sourceRelevantTreatmentApproaches(Sets.newHashSet()).build())
+                        .build());
             }
         }
         LOGGER.info(" Loaded {} reportable evidence items from {}", reportableEvidenceItems.size(), protectEvidenceTsv);
@@ -189,16 +164,11 @@ public class AnalysedPatientReporter {
 
     private static void printReportState(@NotNull AnalysedPatientReport report) {
         LocalDate tumorArrivalDate = report.sampleReport().tumorArrivalDate();
-        String formattedTumorArrivalDate =
-                tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
+        String formattedTumorArrivalDate = tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
 
         LOGGER.info("Printing clinical and laboratory data for {}", report.sampleReport().tumorSampleId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
-        LOGGER.info(" Primary tumor details: {}{}",
-                report.sampleReport().primaryTumorLocationString(),
-                !report.sampleReport().primaryTumorTypeString().isEmpty()
-                        ? " (" + report.sampleReport().primaryTumorTypeString() + ")"
-                        : Strings.EMPTY);
+        LOGGER.info(" Primary tumor details: {}{}", report.sampleReport().primaryTumorLocationString(), !report.sampleReport().primaryTumorTypeString().isEmpty() ? " (" + report.sampleReport().primaryTumorTypeString() + ")" : Strings.EMPTY);
         LOGGER.info(" Shallow seq purity: {}", report.sampleReport().shallowSeqPurityString());
         LOGGER.info(" Lab SOPs used: {}", report.sampleReport().labProcedures());
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
