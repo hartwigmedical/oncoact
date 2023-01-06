@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class EvidenceReportingFunctions {
 
-    private static final Set<Knowledgebase> TRIAL_SOURCES = Sets.newHashSet(Knowledgebase.ICLUSION, Knowledgebase.ACTIN);
+    private static final Set<Knowledgebase> TRIAL_SOURCES = Sets.newHashSet(Knowledgebase.ICLUSION);
 
     private EvidenceReportingFunctions() {
     }

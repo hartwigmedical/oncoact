@@ -92,7 +92,7 @@ evidence is consolidated and evaluated for reporting. The following steps are ex
  2. Evidence is filtered for reporting in case they are based on genomic events that are not reportable.
  3. Evidence is filtered for reporting based on the maximum configured reporting level for the evidence.
      - For CKB C evidence is reported, or up to B for predicted evidence
-     - For VICC, ACTIN and iClusion evidence is reported up to B level.
+     - For VICC and iClusion evidence is reported up to B level.
      - For all other sources evidence is reported for A level only.
  4. For every gene/event/treatment/direction combination only the highest on-label level of evidence is reported:
      - All separate responsive and resistant directions are grouped for this filtering step.
