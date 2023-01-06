@@ -57,12 +57,12 @@ public class PanelReporterApplication {
     @NotNull
     private final String reportDate;
 
-    private PanelReporterApplication(@NotNull final PanelReporterConfig config, @NotNull final String reportDate) {
+    public PanelReporterApplication(@NotNull final PanelReporterConfig config, @NotNull final String reportDate) {
         this.config = config;
         this.reportDate = reportDate;
     }
 
-    private void run() throws IOException {
+    public void run() throws IOException {
         SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.panelQcFail()) {

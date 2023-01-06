@@ -39,7 +39,7 @@ public class RoseApplication {
     @NotNull
     private final RoseConfig config;
 
-    private RoseApplication(@NotNull final RoseConfig config) {
+    public RoseApplication(@NotNull final RoseConfig config) {
         this.config = config;
     }
 

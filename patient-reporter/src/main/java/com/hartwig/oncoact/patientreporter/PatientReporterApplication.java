@@ -60,12 +60,12 @@ public class PatientReporterApplication {
     @NotNull
     private final String reportDate;
 
-    private PatientReporterApplication(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
+    public PatientReporterApplication(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
         this.config = config;
         this.reportDate = reportDate;
     }
 
-    private void run() throws IOException {
+    public void run() throws IOException {
         SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.qcFail()) {

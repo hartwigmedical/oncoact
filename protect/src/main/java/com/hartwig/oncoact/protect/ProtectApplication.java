@@ -51,7 +51,7 @@ public class ProtectApplication {
     @NotNull
     private final ProtectConfig config;
 
-    private ProtectApplication(@NotNull final ProtectConfig config) {
+    public ProtectApplication(@NotNull final ProtectConfig config) {
         this.config = config;
     }
 
