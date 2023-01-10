@@ -25,7 +25,6 @@ public final class HospitalModelFactory {
     private static final String HOSPITAL_ACTIN_TSV = "hospital_actin.tsv";
     private static final String HOSPITAL_GLOW_TSV = "hospital_glow.tsv";
     private static final String HOSPITAL_OPTIC_TSV = "hospital_optic.tsv";
-    private static final String HOSPITAL_SHERPA_TSV = "hospital_sherpa.tsv";
     private static final String HOSPITAL_GENAYA_TSV = "hospital_genaya.tsv";
     private static final String HOSPITAL_OMIC_TSV = "hospital_omic.tsv";
     private static final String HOSPITAL_TARGTO_TSV = "hospital_targto.tsv";
@@ -49,7 +48,6 @@ public final class HospitalModelFactory {
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_ACTIN = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_GLOW = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_OPTIC = 2;
-    private static final int HOSPITAL_PERSONS_FIELD_COUNT_SHERPA = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_GENAYA = 4;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_OMIC = 2;
     private static final int HOSPITAL_PERSONS_FIELD_COUNT_TARGTO = 4;
@@ -74,7 +72,6 @@ public final class HospitalModelFactory {
         String hospitalPersonsACTINTsv = limsDirectory + File.separator + HOSPITAL_ACTIN_TSV;
         String hospitalPersonsGLOWTsv = limsDirectory + File.separator + HOSPITAL_GLOW_TSV;
         String hospitalPersonsOPTICTsv = limsDirectory + File.separator + HOSPITAL_OPTIC_TSV;
-        String hospitalPersonsSHERPATsv = limsDirectory + File.separator + HOSPITAL_SHERPA_TSV;
         String hospitalPersonsGENAYATsv = limsDirectory + File.separator + HOSPITAL_GENAYA_TSV;
         String hospitalPersonsOmicTsv = limsDirectory + File.separator + HOSPITAL_OMIC_TSV;
         String hospitalPersonsTargtoTsv = limsDirectory + File.separator + HOSPITAL_TARGTO_TSV;
@@ -96,8 +93,6 @@ public final class HospitalModelFactory {
                 readFromHospitalPersonsTsv(hospitalPersonsGLOWTsv, HOSPITAL_PERSONS_FIELD_COUNT_GLOW);
         Map<String, HospitalPersons> hospitalPersonsOPTIC =
                 readFromHospitalPersonsTsv(hospitalPersonsOPTICTsv, HOSPITAL_PERSONS_FIELD_COUNT_OPTIC);
-        Map<String, HospitalPersons> hospitalPersonsSHERPA =
-                readFromHospitalPersonsTsv(hospitalPersonsSHERPATsv, HOSPITAL_PERSONS_FIELD_COUNT_SHERPA);
         Map<String, HospitalPersons> hospitalPersonsGENAYA =
                 readFromHospitalPersonsTsv(hospitalPersonsGENAYATsv, HOSPITAL_PERSONS_FIELD_COUNT_GENAYA);
         Map<String, HospitalPersons> hospitalPersonsOmic =
@@ -115,7 +110,6 @@ public final class HospitalModelFactory {
                 .hospitalPersonsACTIN(hospitalPersonsACTIN)
                 .hospitalPersonsGLOW(hospitalPersonsGLOW)
                 .hospitalPersonsOPTIC(hospitalPersonsOPTIC)
-                .hospitalPersonsSHERPA(hospitalPersonsSHERPA)
                 .hospitalPersonsGENAYA(hospitalPersonsGENAYA)
                 .hospitalPersonsOMIC(hospitalPersonsOmic)
                 .hospitalPersonsTARGTO(hospitalPersonsTargto)

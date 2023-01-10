@@ -134,18 +134,6 @@ public class HospitalModelFactoryTest {
     }
 
     @Test
-    public void canReadHospitalContactSHERPA() throws IOException {
-        Map<String, HospitalPersons> hospitalContactSHERPA =
-                HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_sherpa.tsv", 2);
-        assertEquals(1, hospitalContactSHERPA.size());
-
-        HospitalPersons sherpa = hospitalContactSHERPA.get("02");
-        assertEquals("Someone", sherpa.hospitalPI());
-        assertNull(sherpa.requesterName());
-        assertNull(sherpa.requesterEmail());
-    }
-
-    @Test
     public void canReadHospitalContactGENAYA() throws IOException {
         Map<String, HospitalPersons> hospitalContactGENAYA =
                 HospitalModelFactory.readFromHospitalPersonsTsv(LIMS_DIRECTORY + File.separator + "hospital_genaya.tsv", 4);

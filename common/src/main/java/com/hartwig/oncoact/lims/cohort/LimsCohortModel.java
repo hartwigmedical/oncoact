@@ -70,8 +70,6 @@ public abstract class LimsCohortModel {
             return "GLOW";
         } else if (sampleId.startsWith("OPTC")) {
             return "OPTIC";
-        } else if (sampleId.startsWith("SHRP")) {
-            return "SHERPA";
         } else if (sampleId.startsWith("GAYA")) {
             return "GENAYA";
         } else if (sampleId.startsWith("OMIC")) {

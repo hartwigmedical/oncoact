@@ -26,7 +26,6 @@ public final class HospitalChecker {
         Set<String> keyACTIN = hospitalModel.hospitalPersonsACTIN().keySet();
         Set<String> keyGLOW = hospitalModel.hospitalPersonsGLOW().keySet();
         Set<String> keyOPTIC = hospitalModel.hospitalPersonsOPTIC().keySet();
-        Set<String> keySHERPA = hospitalModel.hospitalPersonsSHERPA().keySet();
         Set<String> keyGENAYA = hospitalModel.hospitalPersonsGENAYA().keySet();
         Set<String> keyOMIC = hospitalModel.hospitalPersonsOMIC().keySet();
         Set<String> keyTARGTO = hospitalModel.hospitalPersonsTARGTO().keySet();
@@ -79,13 +78,6 @@ public final class HospitalChecker {
             if (!hospitalIdsInAddressList.contains(OPTIC)) {
                 allCorrect = false;
                 LOGGER.warn("OPTIC hospital ID is not present in hospital address list: '{}'", OPTIC);
-            }
-        }
-
-        for (String SHERPA : keySHERPA) {
-            if (!hospitalIdsInAddressList.contains(SHERPA)) {
-                allCorrect = false;
-                LOGGER.warn("SHERPA hospital ID is not present in hospital address list: '{}'", SHERPA);
             }
         }
 
