@@ -1,12 +1,5 @@
 package com.hartwig.oncoact.doid;
 
-import static com.hartwig.oncoact.json.Json.optionalArray;
-import static com.hartwig.oncoact.json.Json.optionalObject;
-import static com.hartwig.oncoact.json.Json.optionalString;
-import static com.hartwig.oncoact.json.Json.optionalStringList;
-import static com.hartwig.oncoact.json.Json.string;
-import static com.hartwig.oncoact.json.Json.stringList;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +18,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.hartwig.oncoact.json.Json.*;
 
 public final class DiseaseOntology {
 
@@ -239,6 +234,8 @@ public final class DiseaseOntology {
 
         ImmutableDoidMetadata.Builder doidMetadataBuilder = ImmutableDoidMetadata.builder();
         doidMetadataBuilder.synonyms(extractDoidSynonyms(optionalArray(metadataObject, "synonyms")));
+        doidMetadataBuilder.deprecated(optionalBool(metadataObject, "deprecated"));
+        doidMetadataBuilder.comments(optionalStringList(metadataObject, "comments"));
         doidMetadataBuilder.basicPropertyValues(extractBasicPropertyValues(optionalArray(metadataObject, "basicPropertyValues")));
         doidMetadataBuilder.doidDefinition(extractDoidDefinition(optionalObject(metadataObject, "definition")));
         doidMetadataBuilder.subsets(optionalStringList(metadataObject, "subsets"));
