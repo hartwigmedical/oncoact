@@ -10,10 +10,7 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
-import com.hartwig.oncoact.orange.purple.PurpleTumorMutationalStatus;
+import com.hartwig.oncoact.orange.purple.*;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -90,8 +87,5 @@ public abstract class GenomicAnalysis {
     public abstract HlaAllelesReportingData hlaAlleles();
 
     @NotNull
-    public abstract List<LohGenesReporting> suspectGeneCopyNumbersHRDWithLOH();
-
-    @NotNull
-    public abstract List<LohGenesReporting> suspectGeneCopyNumbersMSIWithLOH();
+    public abstract List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH();
 }

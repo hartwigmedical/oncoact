@@ -40,16 +40,7 @@ import com.hartwig.oncoact.orange.linx.LinxPhasedType;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
-import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
-import com.hartwig.oncoact.orange.purple.PurpleTumorMutationalStatus;
-import com.hartwig.oncoact.orange.purple.PurpleVariantType;
-import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.purple.*;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
 import com.hartwig.oncoact.orange.virus.VirusInterpretation;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
@@ -190,8 +181,7 @@ public final class ExampleAnalysisTestFactory {
                 .homozygousDisruptions(homozygousDisruptions)
                 .reportableViruses(viruses)
                 .hlaAlleles(hlaData)
-                .suspectGeneCopyNumbersMSIWithLOH(MSILOHGenes())
-                .suspectGeneCopyNumbersHRDWithLOH(HRDLOHGenes())
+                .suspectGeneCopyNumbersWithLOH(HRDLOHGenes())
                 .build();
 
         MolecularTissueOriginReporting molecularTissueOriginReporting = ImmutableMolecularTissueOriginReporting.builder()
@@ -225,12 +215,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<LohGenesReporting> HRDLOHGenes() {
-        return Lists.newArrayList();
-    }
-
-    @NotNull
-    private static List<LohGenesReporting> MSILOHGenes() {
+    private static List<PurpleGeneCopyNumber> HRDLOHGenes() {
         return Lists.newArrayList();
     }
 

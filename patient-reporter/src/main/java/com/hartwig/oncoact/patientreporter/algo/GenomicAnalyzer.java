@@ -18,12 +18,11 @@ import com.hartwig.oncoact.knownfusion.KnownFusionCache;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeRecord;
 import com.hartwig.oncoact.orange.OrangeRefGenomeVersion;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleRecord;
 import com.hartwig.oncoact.orange.purple.PurpleVariant;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
-import com.hartwig.oncoact.patientreporter.algo.orange.BreakendSelector;
-import com.hartwig.oncoact.patientreporter.algo.orange.LossOfHeterozygositySelector;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -50,24 +49,16 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-            @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
+                               @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
         List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(BreakendSelector.selectInterestingUnreportedBreakends(orange.linx().allBreakends(),
-                        orange.linx().reportableFusions(),
-                        knownFusionCache), orange.linx().structuralVariants());
+                GeneDisruptionFactory.convert(orange.linx().additionalSuspectBreakends(), orange.linx().structuralVariants());
 
         List<GeneDisruption> reportableGeneDisruptions =
                 GeneDisruptionFactory.convert(orange.linx().reportableBreakends(), orange.linx().structuralVariants());
         reportableGeneDisruptions.addAll(additionalSuspectBreakends);
 
-        List<LohGenesReporting> suspectGeneCopyNumbersHRDWithLOH =
-                LossOfHeterozygositySelector.selectHRDGenesWithLOH(orange.purple().allSomaticGeneCopyNumbers(), orange.chord().hrStatus());
-        LOGGER.info(" Found an additional {} suspect gene copy numbers HRD with LOH", suspectGeneCopyNumbersHRDWithLOH.size());
-
-        List<LohGenesReporting> suspectGeneCopyNumbersMSIWithLOH =
-                LossOfHeterozygositySelector.selectMSIGenesWithLOH(orange.purple().allSomaticGeneCopyNumbers(),
-                        orange.purple().characteristics().microsatelliteStatus());
-        LOGGER.info(" Found an additional {} suspect gene copy numbers MSI with LOH", suspectGeneCopyNumbersMSIWithLOH.size());
+        List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
+        LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
 
         Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
         Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
@@ -114,8 +105,7 @@ public class GenomicAnalyzer {
                 .homozygousDisruptions(orange.linx().homozygousDisruptions())
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .hlaAlleles(hlaReportingData)
-                .suspectGeneCopyNumbersHRDWithLOH(suspectGeneCopyNumbersHRDWithLOH)
-                .suspectGeneCopyNumbersMSIWithLOH(suspectGeneCopyNumbersMSIWithLOH)
+                .suspectGeneCopyNumbersWithLOH(suspectGeneCopyNumbersWithLOH)
                 .build();
     }
 
@@ -136,7 +126,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull GermlineReportingModel germlineReportingModel, @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
+                                                                   @NotNull GermlineReportingModel germlineReportingModel, @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -160,7 +150,7 @@ public class GenomicAnalyzer {
 
     @VisibleForTesting
     static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
-            @NotNull ReportableVariant variantToCompareWith) {
+                                                                @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
             if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene())

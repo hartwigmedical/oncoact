@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.orange.linx;
 
+import java.util.List;
 import java.util.Set;
 
 import org.immutables.value.Value;
@@ -15,6 +16,9 @@ public abstract class LinxRecord {
 
     @NotNull
     public abstract Set<LinxHomozygousDisruption> homozygousDisruptions();
+
+    @NotNull
+    public abstract List<LinxBreakend> additionalSuspectBreakends();
 
     @NotNull
     public abstract Set<LinxBreakend> allBreakends();

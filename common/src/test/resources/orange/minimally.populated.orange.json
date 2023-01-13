@@ -240,6 +240,16 @@
         "minCopies": 0,
         "maxCopies": 1
       }
+    ],
+
+    "suspectGeneCopyNumbersWithLOH": [
+      {
+        "geneName": "gene",
+        "chromosome": "12",
+        "chromosomeBand": "p13",
+        "minCopyNumber": 1.2,
+        "minMinorAlleleCopyNumber": 0.4
+      }
     ]
   },
   "linx": {
@@ -338,6 +348,29 @@
         "gene": "NF1",
         "transcript": "ENST00000358273",
         "isCanonical": true
+      }
+    ],
+    "additionalSuspectBreakends": [
+      {
+        "reportedDisruption": false,
+        "disruptive": false,
+        "svId": 1,
+        "gene": "NF1",
+        "chromosome": "1",
+        "chrBand": "p12",
+        "transcriptId": "trans",
+        "canonical": true,
+        "type": "DUP",
+        "junctionCopyNumber": 1.1,
+        "undisruptedCopyNumber": 1.0,
+        "nextSpliceExonRank": -1,
+        "exonUp": 1,
+        "exonDown": 2,
+        "geneOrientation": "Upstream",
+        "orientation": -1,
+        "strand": -1,
+        "regionType": "EXONIC",
+        "codingType": "UTR_3P"
       }
     ]
   },

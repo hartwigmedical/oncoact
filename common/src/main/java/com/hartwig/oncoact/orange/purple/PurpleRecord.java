@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.orange.purple;
 
+import java.util.List;
 import java.util.Set;
 
 import org.immutables.value.Value;
@@ -45,4 +46,7 @@ public abstract class PurpleRecord {
 
     @NotNull
     public abstract Set<PurpleGainLoss> reportableSomaticGainsLosses();
+
+    @NotNull
+    public abstract List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH();
 }

@@ -13,6 +13,8 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
+import com.hartwig.oncoact.orange.purple.ImmutablePurpleGeneCopyNumber;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
@@ -55,22 +57,20 @@ public final class QualityOverruleFunctions {
                 .notifyGermlineStatusPerVariant(newNotifyPerVariant)
                 .cnPerChromosome(cnPerChromosomeDataSort)
                 .hlaAlleles(hlaAllelesReportingData)
-                .suspectGeneCopyNumbersHRDWithLOH(overruleSuspectedLOH(genomicAnalysis.suspectGeneCopyNumbersHRDWithLOH(),
-                        genomicAnalysis.hasReliablePurity()))
-                .suspectGeneCopyNumbersMSIWithLOH(overruleSuspectedLOH(genomicAnalysis.suspectGeneCopyNumbersMSIWithLOH(),
+                .suspectGeneCopyNumbersWithLOH(overruleSuspectedLOH(genomicAnalysis.suspectGeneCopyNumbersWithLOH(),
                         genomicAnalysis.hasReliablePurity()))
                 .build();
     }
 
     @NotNull
-    public static List<LohGenesReporting> overruleSuspectedLOH(@NotNull List<LohGenesReporting> suspectedGenes, boolean hasReliablePurity) {
-        List<LohGenesReporting> suspectedGenesCurated = Lists.newArrayList();
+    public static List<PurpleGeneCopyNumber> overruleSuspectedLOH(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers, boolean hasReliablePurity) {
+        List<PurpleGeneCopyNumber> suspectedGenesCurated = Lists.newArrayList();
 
-        for (LohGenesReporting lohGenesReporting : suspectedGenes) {
-            suspectedGenesCurated.add(ImmutableLohGenesReporting.builder()
-                    .from(lohGenesReporting)
-                    .minorAlleleCopies(hasReliablePurity ? lohGenesReporting.minorAlleleCopies() : null)
-                    .tumorCopies(hasReliablePurity ? lohGenesReporting.tumorCopies() : null)
+        for (PurpleGeneCopyNumber purpleGeneCopyNumber : purpleGeneCopyNumbers) {
+            suspectedGenesCurated.add(ImmutablePurpleGeneCopyNumber.builder()
+                    .from(purpleGeneCopyNumber)
+                    .minCopyNumber(hasReliablePurity ? purpleGeneCopyNumber.minCopyNumber() : null)
+                    .minMinorAlleleCopyNumber(hasReliablePurity ? purpleGeneCopyNumber.minMinorAlleleCopyNumber() : null)
                     .build());
         }
         return suspectedGenesCurated;

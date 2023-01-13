@@ -1,18 +1,5 @@
 package com.hartwig.oncoact.orange;
 
-import static com.hartwig.oncoact.json.Json.array;
-import static com.hartwig.oncoact.json.Json.bool;
-import static com.hartwig.oncoact.json.Json.date;
-import static com.hartwig.oncoact.json.Json.integer;
-import static com.hartwig.oncoact.json.Json.nullableArray;
-import static com.hartwig.oncoact.json.Json.nullableInteger;
-import static com.hartwig.oncoact.json.Json.nullableIntegerList;
-import static com.hartwig.oncoact.json.Json.nullableString;
-import static com.hartwig.oncoact.json.Json.number;
-import static com.hartwig.oncoact.json.Json.object;
-import static com.hartwig.oncoact.json.Json.string;
-import static com.hartwig.oncoact.json.Json.stringList;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -104,6 +91,8 @@ import com.hartwig.oncoact.orange.virus.VirusQCStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.hartwig.oncoact.json.Json.*;
+
 public final class OrangeJson {
 
     private OrangeJson() {
@@ -164,6 +153,7 @@ public final class OrangeJson {
                     .allSomaticGeneCopyNumbers(toPurpleGeneCopyNumbers(array(purple, "allSomaticGeneCopyNumbers")))
                     .allSomaticGainsLosses(toPurpleGainsLosses(array(purple, "allSomaticGainsLosses")))
                     .reportableSomaticGainsLosses(toPurpleGainsLosses(array(purple, "reportableSomaticGainsLosses")))
+                    .suspectGeneCopyNumbersWithLOH(toPurpleGeneCopyNumbers(array(purple, "suspectGeneCopyNumbersWithLOH")))
                     .build();
         }
 
@@ -318,8 +308,8 @@ public final class OrangeJson {
                         .chromosome(string(geneCopyNumber, "chromosome"))
                         .chromosomeBand(string(geneCopyNumber, "chromosomeBand"))
                         .gene(string(geneCopyNumber, "geneName"))
-                        .minCopyNumber(number(geneCopyNumber, "minCopyNumber"))
-                        .minMinorAlleleCopyNumber(number(geneCopyNumber, "minMinorAlleleCopyNumber"))
+                        .minCopyNumber(nullableNumber(geneCopyNumber, "minCopyNumber"))
+                        .minMinorAlleleCopyNumber(nullableNumber(geneCopyNumber, "minMinorAlleleCopyNumber"))
                         .build());
             }
             return geneCopyNumbers;
@@ -351,6 +341,7 @@ public final class OrangeJson {
                     .homozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "homozygousDisruptions")))
                     .allBreakends(toLinxBreakends(array(linx, "allBreakends")))
                     .reportableBreakends(toLinxBreakends(array(linx, "reportableBreakends")))
+                    .additionalSuspectBreakends(toLinxBreakends(array(linx, "additionalSuspectBreakends")))
                     .allFusions(toLinxFusions(array(linx, "allFusions")))
                     .reportableFusions(toLinxFusions(array(linx, "reportableFusions")))
                     .build();

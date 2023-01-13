@@ -17,8 +17,10 @@ public abstract class PurpleGeneCopyNumber {
     @NotNull
     public abstract String gene();
 
-    public abstract double minCopyNumber();
+    @Nullable
+    public abstract Double minCopyNumber();
 
-    public abstract double minMinorAlleleCopyNumber();
+    @Nullable
+    public abstract Double minMinorAlleleCopyNumber();
 
 }

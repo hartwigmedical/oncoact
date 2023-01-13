@@ -34,7 +34,8 @@
     "allSomaticCopyNumbers": [],
     "allSomaticGeneCopyNumbers": [],
     "allSomaticGainsLosses": [],
-    "reportableSomaticGainsLosses": []
+    "reportableSomaticGainsLosses": [],
+    "suspectGeneCopyNumbersWithLOH": []
   },
   "linx": {
     "allStructuralVariants": [],
@@ -42,7 +43,8 @@
     "reportableFusions": [],
     "allBreakends": [],
     "reportableBreakends": [],
-    "homozygousDisruptions": []
+    "homozygousDisruptions": [],
+    "additionalSuspectBreakends": []
   },
   "virusInterpreter": {
     "allViruses": [],

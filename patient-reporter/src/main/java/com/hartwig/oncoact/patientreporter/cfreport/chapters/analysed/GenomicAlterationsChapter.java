@@ -14,7 +14,9 @@ import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.patientreporter.SampleReport;
@@ -96,12 +98,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 genomicAnalysis.cnPerChromosome()));
         reportDocument.add(createFusionsTable(genomicAnalysis.geneFusions(), hasReliablePurity));
         reportDocument.add(createHomozygousDisruptionsTable(genomicAnalysis.homozygousDisruptions()));
-        if (genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT) {
-            reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersHRDWithLOH(), "HRD"));
-        }
-        if (genomicAnalysis.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI) {
-            reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersMSIWithLOH(), "MSI"));
-        }
+        reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH()));
         reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
         reportDocument.add(createVirusTable(genomicAnalysis.reportableViruses(), sampleReport.reportViralPresence()));
         reportDocument.add(createHlaTable(genomicAnalysis.hlaAlleles(), hasReliablePurity));
@@ -293,15 +290,10 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createLOHTable(@NotNull List<LohGenesReporting> lohGenes, @NotNull String signature) {
-        String title = Strings.EMPTY;
-        if (signature.equals("HRD")) {
-            title = "Interesting LOH events in case of HRD";
-        } else if (signature.equals("MSI")) {
-            title = "Interesting LOH events in case of MSI";
-        }
+    private static Table createLOHTable(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers) {
+        String title = "Interesting LOH events";
 
-        if (lohGenes.isEmpty() || title.equals(Strings.EMPTY)) {
+        if (purpleGeneCopyNumbers.isEmpty()) {
             return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
@@ -311,11 +303,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         TableUtil.createHeaderCell("Tumor copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        for (LohGenesReporting lohGene : LohGenes.sort(lohGenes)) {
-            table.addCell(TableUtil.createContentCell(lohGene.location()));
-            table.addCell(TableUtil.createContentCell(lohGene.gene()));
-            table.addCell(TableUtil.createContentCell(String.valueOf(lohGene.minorAlleleCopies())).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(TableUtil.createContentCell(String.valueOf(lohGene.tumorCopies())).setTextAlignment(TextAlignment.CENTER));
+        for (PurpleGeneCopyNumber geneCopyNumber : LohGenes.sort(purpleGeneCopyNumbers)) {
+            table.addCell(TableUtil.createContentCell(geneCopyNumber.chromosome() + geneCopyNumber.chromosomeBand()));
+            table.addCell(TableUtil.createContentCell(geneCopyNumber.gene()));
+            table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minMinorAlleleCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
         }
 
         return TableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
