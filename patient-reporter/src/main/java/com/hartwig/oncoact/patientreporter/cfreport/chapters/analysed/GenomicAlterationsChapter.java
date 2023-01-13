@@ -98,7 +98,14 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 genomicAnalysis.cnPerChromosome()));
         reportDocument.add(createFusionsTable(genomicAnalysis.geneFusions(), hasReliablePurity));
         reportDocument.add(createHomozygousDisruptionsTable(genomicAnalysis.homozygousDisruptions()));
-        reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH()));
+
+        if (genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT) {
+            reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH(), "HRD"));
+        }
+        if (genomicAnalysis.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI) {
+            reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH(), "MSI"));
+        }
+
         reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
         reportDocument.add(createVirusTable(genomicAnalysis.reportableViruses(), sampleReport.reportViralPresence()));
         reportDocument.add(createHlaTable(genomicAnalysis.hlaAlleles(), hasReliablePurity));
@@ -290,10 +297,15 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createLOHTable(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers) {
-        String title = "Interesting LOH events";
+    private static Table createLOHTable(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers, @NotNull String signature) {
+        String title = Strings.EMPTY;
+        if (signature.equals("HRD")) {
+            title = "Interesting LOH events in case of HRD";
+        } else if (signature.equals("MSI")) {
+            title = "Interesting LOH events in case of MSI";
+        }
 
-        if (purpleGeneCopyNumbers.isEmpty()) {
+        if (purpleGeneCopyNumbers.isEmpty() || title.equals(Strings.EMPTY)) {
             return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
