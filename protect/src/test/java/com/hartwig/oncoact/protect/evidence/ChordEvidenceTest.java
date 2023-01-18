@@ -46,10 +46,16 @@ public class ChordEvidenceTest {
         assertEquals(ChordEvidence.HR_DEFICIENCY_EVENT, evidence1.event());
 
         ChordRecord hrProficientWithHighScore = create(ChordStatus.HR_PROFICIENT, 0.85);
-        assertEquals(1, chordEvidence.evidence(hrProficientWithHighScore).size());
+        assertEquals(0, chordEvidence.evidence(hrProficientWithHighScore).size());
 
         ChordRecord hrProficientWithLowScore = create(ChordStatus.HR_PROFICIENT, 0.2);
         assertEquals(0, chordEvidence.evidence(hrProficientWithLowScore).size());
+
+        ChordRecord hrCannotBeDeterminedWithLowScore = create(ChordStatus.CANNOT_BE_DETERMINED, 0.2);
+        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithLowScore).size());
+
+        ChordRecord hrCannotBeDeterminedWithHighScore = create(ChordStatus.CANNOT_BE_DETERMINED, 0.9);
+        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithHighScore).size());
     }
 
     @NotNull

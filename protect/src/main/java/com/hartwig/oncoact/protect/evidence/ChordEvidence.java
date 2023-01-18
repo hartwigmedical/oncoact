@@ -33,16 +33,17 @@ public class ChordEvidence {
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull ChordRecord chordAnalysis) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (ActionableCharacteristic characteristic : actionableCharacteristics) {
-            if (CharacteristicsFunctions.hasExplicitCutoff(characteristic)) {
-                if (CharacteristicsFunctions.evaluateVersusCutoff(characteristic, chordAnalysis.hrdValue())) {
+        if (chordAnalysis.hrStatus() == ChordStatus.HR_DEFICIENT) {
+            for (ActionableCharacteristic characteristic : actionableCharacteristics) {
+                if (CharacteristicsFunctions.hasExplicitCutoff(characteristic)) {
+                    if (CharacteristicsFunctions.evaluateVersusCutoff(characteristic, chordAnalysis.hrdValue())) {
+                        result.add(toHRDEvidence(characteristic));
+                    }
+                } else {
                     result.add(toHRDEvidence(characteristic));
                 }
-            } else if (chordAnalysis.hrStatus() == ChordStatus.HR_DEFICIENT) {
-                result.add(toHRDEvidence(characteristic));
             }
         }
-
         return result;
     }
 
