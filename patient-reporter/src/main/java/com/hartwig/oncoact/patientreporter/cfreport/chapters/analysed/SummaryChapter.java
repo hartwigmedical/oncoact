@@ -228,15 +228,15 @@ public class SummaryChapter implements ReportChapter {
         Style dataStyle = hasReliablePurity ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
 
         // TODO evaluate display
-        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " (" + SINGLE_DECIMAL_FORMAT.format(
-                analysis().tumorMutationalLoad()) + " mut/genome)" : Formats.NA_STRING;
+        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " (TML score " + SINGLE_DECIMAL_FORMAT.format(
+                analysis().tumorMutationalLoad()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational load").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalLoadString).addStyle(dataStyle)));
 
         // TODO evaluate display
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(
-                analysis().microsatelliteIndelsPerMb()) + " indels/genome)" : Formats.NA_STRING;
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " (MSI score " + DOUBLE_DECIMAL_FORMAT.format(
+                analysis().microsatelliteIndelsPerMb()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(microSatelliteStabilityString).addStyle(dataStyle)));
@@ -247,7 +247,7 @@ public class SummaryChapter implements ReportChapter {
         // TODO evaluate display
         if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
                 || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + " signature)";
+            hrdString = analysis().hrdStatus() + " (HRS score " + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
             hrdStyle = ReportResources.dataHighlightStyle();
         } else {
             hrdString = Formats.NA_STRING;
