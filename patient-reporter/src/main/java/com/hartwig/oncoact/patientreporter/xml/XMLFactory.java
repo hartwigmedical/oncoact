@@ -76,12 +76,12 @@ public class XMLFactory {
         mapXml.put("itemWgsTumorPurity",
                 ImmutableKeyXML.builder()
                         .keyPath("WgsTumorPurity")
-                        .valuePath(Map.of("value", Formats.formatPercentage(report.genomicAnalysis().impliedPurity())))
+                        .valuePath(Map.of("value", Formats.formatPercentageRound(report.genomicAnalysis().impliedPurity())))
                         .build());
         mapXml.put("itemWgsGemTuPloid",
                 ImmutableKeyXML.builder()
                         .keyPath("WgsGemTuPloid")
-                        .valuePath(Map.of("value", String.valueOf(report.genomicAnalysis().averageTumorPloidy())))
+                        .valuePath(Map.of("value", GeneUtil.copyNumberToString(report.genomicAnalysis().averageTumorPloidy(), hasReliablePurity)))
                         .build());
 
         String cupAnalyse;
