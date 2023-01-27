@@ -12,6 +12,7 @@ import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
@@ -92,9 +93,9 @@ public class XMLFactory {
                 .build());
 
         String disclaimer = Strings.EMPTY;
-        disclaimer += report.genomicAnalysis().hasReliablePurity() ? Strings.EMPTY : "Due to the lower tumor purity potential "
+        disclaimer += report.qsFormNumber().equals(QsFormNumber.FOR_209.display()) ? "Due to the lower tumor purity potential "
                 + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
-                + "considered with caution.";
+                + "considered with caution." : Strings.EMPTY;
         disclaimer += !report.specialRemark().isEmpty() ? report.specialRemark() : Strings.EMPTY;
         xml.add(ImmutableKeyXML.builder().keyPath("WgsDisclaimerTonen").valuePath(Map.of("value", disclaimer)).build());
 
