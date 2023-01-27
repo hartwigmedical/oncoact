@@ -1452,7 +1452,7 @@ public final class ExampleAnalysisTestFactory {
                 Lists.newArrayList(hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder()
                         .gene("HLA-A")
                         .germlineAllele("A*01:01")
-                        .build()).germlineCopies(2.0).tumorCopies(3.83).somaticMutations("No").interpretation("Yes").build()));
+                        .build()).germlineCopies(2.0).tumorCopies(3.83).somaticMutations("0 mutations").interpretation("Yes").build()));
         alleles.put("HLA-B",
                 Lists.newArrayList(hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder()
                                 .gene("HLA-B")
@@ -1461,7 +1461,7 @@ public final class ExampleAnalysisTestFactory {
                         hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-B").germlineAllele("B*08:01").build())
                                 .germlineCopies(1.0)
                                 .tumorCopies(1.83)
-                                .somaticMutations("No")
+                                .somaticMutations("0 mutations")
                                 .interpretation("Yes")
                                 .build()));
         alleles.put("HLA-C",
@@ -1472,7 +1472,7 @@ public final class ExampleAnalysisTestFactory {
                         hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-C").germlineAllele("C*03:04").build())
                                 .germlineCopies(1.0)
                                 .tumorCopies(2.0)
-                                .somaticMutations("No")
+                                .somaticMutations("0 mutations")
                                 .interpretation("Yes")
                                 .build()));
         return ImmutableHlaAllelesReportingData.builder().hlaQC("PASS").hlaAllelesReporting(alleles).build();
