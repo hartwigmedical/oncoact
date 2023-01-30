@@ -185,10 +185,10 @@ public class SummaryChapter implements ReportChapter {
     private void renderTumorCharacteristics(@NotNull Div divTumor) {
         boolean hasReliablePurity = analysis().hasReliablePurity();
 
-        Div div = createSectionStartDiv(contentWidth());
+        Div div = createSectionStartDiv(300);
 
         Table table = new Table(UnitValue.createPercentArray(new float[] { 1, .33f, .66f }));
-        table.setWidth(contentWidth());
+        table.setWidth(300);
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Paragraph("Tumor characteristics").setVerticalAlignment(VerticalAlignment.TOP)
                         .addStyle(ReportResources.sectionTitleStyle())));
@@ -295,10 +295,10 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderGenomicAlterations(@NotNull Div divTumor) {
-        Div div = createSectionStartDiv(contentWidth());
+        Div div = createSectionStartDiv(300);
 
         Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 1 }));
-        table.setWidth(contentWidth());
+        table.setWidth(300);
         table.addCell(TableUtil.createLayoutCellSummary()
                 .add(new Paragraph("Genomic alterations in cancer genes").addStyle(ReportResources.sectionTitleStyle())));
         table.addCell(TableUtil.createLayoutCell(1, 2).setHeight(TABLE_SPACER_HEIGHT));
@@ -356,7 +356,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderPharmacogenetics(@NotNull Div divGermline) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
         String title = "Pharmacogenetics";
 
         if (patientReport.sampleReport().reportPharmogenetics()) {
@@ -364,12 +364,12 @@ public class SummaryChapter implements ReportChapter {
                 div.add(TableUtil.createNoneReportTable(title,
                         null,
                         TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                        ReportResources.CONTENT_WIDTH_WIDE_SMALL));
+                        ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
             } else {
                 Table contentTable = TableUtil.createReportContentTable(new float[] { 5, 15 },
                         new Cell[] { TableUtil.createHeaderCell("Gene"),
                                 TableUtil.createHeaderCell("Function") },
-                        ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+                        ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
                 Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
@@ -391,29 +391,29 @@ public class SummaryChapter implements ReportChapter {
             div.add(TableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SMALL));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
         }
         divGermline.add(div);
     }
 
     private void renderHla(@NotNull Div divHla) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
         String title = "HLA Alleles";
         if (!patientReport.genomicAnalysis().hlaAlleles().hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
             div.add(TableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SMALL));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
         } else if (patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().isEmpty()) {
             div.add(TableUtil.createNoneReportTable(title,
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SMALL));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY));
         } else {
             Table table = TableUtil.createReportContentTable(new float[] { 5, 15 },
                     new Cell[] { TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele")},
-                    ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
 
             Set<String> sortedAlleles = Sets.newTreeSet(patientReport.genomicAnalysis().hlaAlleles().hlaAllelesReporting().keySet());
             for (String sortAllele : sortedAlleles) {
@@ -437,7 +437,7 @@ public class SummaryChapter implements ReportChapter {
         String text = "Data concerning cancer predisposition genes may be requested by a clinical geneticist after the patient has "
                 + "given informed consent.";
 
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY);
         div.add(new Paragraph("Germline results").addStyle(ReportResources.sectionTitleStyle()));
 
         div.add(new Paragraph(text).setWidth(200).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(11));
