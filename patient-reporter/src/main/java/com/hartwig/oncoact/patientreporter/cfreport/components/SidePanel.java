@@ -51,7 +51,7 @@ public final class SidePanel {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
-        BaseMarker.renderMarkerGrid(4, (fullHeight ? 20 : 2), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        BaseMarker.renderMarkerGrid(4, (fullHeight ? 11 : 2), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
@@ -91,10 +91,11 @@ public final class SidePanel {
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
+        float size = -pageSize.getHeight()/4;
         canvas.rectangle(pageSize.getWidth(),
                 pageSize.getHeight(),
                 -RECTANGLE_WIDTH,
-                fullHeight ? -pageSize.getHeight() : -RECTANGLE_HEIGHT_SHORT);
+                fullHeight ? (size *2) + -(RECTANGLE_HEIGHT_SHORT/2): -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
