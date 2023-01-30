@@ -87,15 +87,6 @@ public final class SidePanel {
             }
         }
 
-        if (page.getDocument().getNumberOfPages() == 1) {
-            String reporterVersion = PatientReporterApplication.VERSION != null ? PatientReporterApplication.VERSION : "X.X";
-            cv.add(new Paragraph(qsFormNumber + " v" + reporterVersion).setFixedPosition(
-                            pageSize.getWidth() - RECTANGLE_WIDTH + 4, 40, 60)
-                    .setRotationAngle(Math.PI / 2)
-                    .setFontColor(ReportResources.PALETTE_LIGHT_GREY)
-                    .setFontSize(6));
-        }
-
         canvas.release();
     }
 

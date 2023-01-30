@@ -54,7 +54,7 @@ class PageEventHandlerPanel implements IEventHandler {
             }
 
             SidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar, fullSidebarContent);
-            footer.renderFooter(page, !fullSidebar);
+            footer.renderFooter(page, patientReport.qsFormNumber(), !fullSidebar);
         }
     }
 
