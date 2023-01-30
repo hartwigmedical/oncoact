@@ -132,7 +132,7 @@ public final class HlaAllelesReportingFactory {
         }
 
         String result = joiner.toString();
-        return !result.isEmpty() ? result : "0 mutations";
+        return !result.isEmpty() ? result : "None";
     }
 
     @NotNull
