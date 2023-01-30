@@ -58,6 +58,7 @@ public final class SidePanel {
 
         cv.add(createSidePanelDiv(++sideTextIndex, "HMF sample id", sampleReport.sampleNameForReport()));
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , sampleReport.biopsyLocationString()));
 
         LimsCohortConfig cohort = sampleReport.cohort();
 
@@ -75,6 +76,14 @@ public final class SidePanel {
 
             if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
+            }
+
+            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , sampleReport.hospitalPathologySampleId()));
+            }
+
+            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Name" , sampleReport.hospitalPathologySampleId()));
             }
         }
 
