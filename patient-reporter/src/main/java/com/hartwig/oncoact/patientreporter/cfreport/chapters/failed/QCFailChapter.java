@@ -49,11 +49,8 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createBiopsyLocationAndTumorLocation(failReport.sampleReport()
-                .primaryTumorLocationString(), failReport.sampleReport().biopsyLocationString(), contentWidth()));
-        reportDocument.add(new Paragraph());
-        reportDocument.add(TumorLocationAndTypeTable.createTumorType(failReport.sampleReport().primaryTumorTypeString(),
-                contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.sampleReport()
+                .primaryTumorLocationString(), failReport.sampleReport().primaryTumorTypeString(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));

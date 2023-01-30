@@ -21,8 +21,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.cfreport.data.ClinicalTrials;
-import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
@@ -93,11 +91,8 @@ public class SummaryChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createBiopsyLocationAndTumorLocation(patientReport.sampleReport()
-                .primaryTumorLocationString(), patientReport.sampleReport().biopsyLocationString(), contentWidth()));
-        reportDocument.add(new Paragraph());
-        reportDocument.add(TumorLocationAndTypeTable.createTumorType(patientReport.sampleReport().primaryTumorTypeString(),
-                contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(patientReport.sampleReport()
+                .primaryTumorLocationString(), patientReport.sampleReport().primaryTumorTypeString(), contentWidth()));
         reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(ReportResources.subTextStyle()));
 
