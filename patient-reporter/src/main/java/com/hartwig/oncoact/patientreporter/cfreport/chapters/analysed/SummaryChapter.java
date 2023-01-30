@@ -227,15 +227,13 @@ public class SummaryChapter implements ReportChapter {
 
         Style dataStyle = hasReliablePurity ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
 
-        // TODO evaluate display
-        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus() + " (TML score " + SINGLE_DECIMAL_FORMAT.format(
+        String mutationalLoadString = hasReliablePurity ? analysis().tumorMutationalLoadStatus().name() + " (" + SINGLE_DECIMAL_FORMAT.format(
                 analysis().tumorMutationalLoad()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational load").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalLoadString).addStyle(dataStyle)));
 
-        // TODO evaluate display
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus() + " (MSI score " + DOUBLE_DECIMAL_FORMAT.format(
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().name() + " (" + DOUBLE_DECIMAL_FORMAT.format(
                 analysis().microsatelliteIndelsPerMb()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(ReportResources.bodyTextStyle())));
@@ -244,10 +242,9 @@ public class SummaryChapter implements ReportChapter {
         String hrdString;
         Style hrdStyle;
 
-        // TODO evaluate display
         if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
                 || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus() + " (HRS score " + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
+            hrdString = analysis().hrdStatus().name() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
             hrdStyle = ReportResources.dataHighlightStyle();
         } else {
             hrdString = Formats.NA_STRING;
