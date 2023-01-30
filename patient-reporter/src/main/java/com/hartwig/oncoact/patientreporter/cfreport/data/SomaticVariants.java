@@ -204,10 +204,6 @@ public final class SomaticVariants {
         return genes;
     }
 
-    public static int countReportableVariants(@NotNull List<ReportableVariant> variants) {
-        return variants.size();
-    }
-
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
             @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {

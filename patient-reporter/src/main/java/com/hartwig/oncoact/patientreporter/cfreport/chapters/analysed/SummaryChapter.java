@@ -279,12 +279,6 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Genes with driver mutation").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createGeneSetCell(driverVariantGenes));
 
-        int reportedVariants = SomaticVariants.countReportableVariants(analysis().reportableVariants());
-        Style reportedVariantsStyle =
-                (reportedVariants > 0) ? ReportResources.dataHighlightStyle() : ReportResources.dataHighlightNaStyle();
-        table.addCell(createMiddleAlignedCell().add(new Paragraph("Number of reported variants").addStyle(ReportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell().add(createHighlightParagraph(String.valueOf(reportedVariants)).addStyle(
-                reportedVariantsStyle)));
 
         Set<String> amplifiedGenes = GainsAndLosses.amplifiedGenes(analysis().gainsAndLosses());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
