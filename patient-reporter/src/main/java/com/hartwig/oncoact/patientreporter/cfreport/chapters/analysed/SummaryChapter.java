@@ -103,7 +103,6 @@ public class SummaryChapter implements ReportChapter {
 
         renderClinicalConclusionText(reportDocument);
         renderSpecialRemarkText(reportDocument);
-        renderTreatmentIndications(reportDocument);
         renderTumorCharacteristics(reportDocument);
         renderGenomicAlterations(reportDocument);
         renderPharmacogenetics(reportDocument);
@@ -156,32 +155,6 @@ public class SummaryChapter implements ReportChapter {
 
             reportDocument.add(div);
         }
-    }
-
-    private void renderTreatmentIndications(@NotNull Document reportDocument) {
-        Div div = createSectionStartDiv(contentWidth());
-
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 1 }));
-        table.setWidth(contentWidth());
-        table.addCell(TableUtil.createLayoutCellSummary()
-                .add(new Paragraph("Treatment options (tumor-type specific)").addStyle(ReportResources.sectionTitleStyle())));
-
-        table.addCell(TableUtil.createLayoutCell(4, 2).setHeight(TABLE_SPACER_HEIGHT));
-
-        int therapyEventCount = EvidenceItems.uniqueEventCount(analysis().tumorSpecificEvidence());
-        table.addCell(createMiddleAlignedCell().add(new Paragraph("Number of alterations with therapy indication").addStyle(ReportResources.bodyTextStyle())));
-        table.addCell(createTreatmentIndicationCell(therapyEventCount,
-                EvidenceItems.onLabelTreatmentString(analysis().tumorSpecificEvidence()),
-                "treatment(s)"));
-
-        int trialEventCount = ClinicalTrials.uniqueEventCount(analysis().clinicalTrials());
-        int trialCount = ClinicalTrials.uniqueTrialCount(analysis().clinicalTrials());
-        table.addCell(createMiddleAlignedCell().add(new Paragraph("Number of alterations with clinical trial eligibility").addStyle(
-                ReportResources.bodyTextStyle())));
-        table.addCell(createStudyIndicationCell(trialEventCount, trialCount, "trial(s)"));
-        div.add(table);
-
-        reportDocument.add(div);
     }
 
     private void renderTumorCharacteristics(@NotNull Document reportDocument) {
