@@ -58,18 +58,12 @@ public final class SidePanel {
 
         cv.add(createSidePanelDiv(++sideTextIndex, "HMF sample id", sampleReport.sampleNameForReport()));
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , sampleReport.biopsyLocationString()));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Name" , "Name"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , "Birth date"));
 
         LimsCohortConfig cohort = sampleReport.cohort();
 
         if (fullHeight && fullContent) {
-            if (cohort.requireAdditionalInformationForSidePanel()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", sampleReport.hospitalContactData().requesterName()));
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", sampleReport.hospitalContactData().requesterEmail()));
-            }
-
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", sampleReport.hospitalContactData().hospitalName()));
-
             if (cohort.requireHospitalId() && !sampleReport.hospitalPatientId().isEmpty()) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", sampleReport.hospitalPatientId()));
             }
@@ -78,13 +72,15 @@ public final class SidePanel {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
             }
 
-            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , sampleReport.hospitalPathologySampleId()));
+
+            if (cohort.requireAdditionalInformationForSidePanel()) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", sampleReport.hospitalContactData().requesterName()));
+                cv.add(createSidePanelDiv(++sideTextIndex, "Email", sampleReport.hospitalContactData().requesterEmail()));
             }
 
-            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Name" , sampleReport.hospitalPathologySampleId()));
-            }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", sampleReport.hospitalContactData().hospitalName()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , sampleReport.biopsyLocationString()));
+
         }
 
         canvas.release();
