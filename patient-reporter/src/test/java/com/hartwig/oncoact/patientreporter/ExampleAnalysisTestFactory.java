@@ -75,7 +75,7 @@ public final class ExampleAnalysisTestFactory {
     private static final String CIRCOS_PLOT_PATH = Resources.getResource("test_run/orange/plot/sample.circos.png").getPath();
     private static final String CUPPA_PLOT_PATH = Resources.getResource("test_run/cuppa/sample.cuppa.chart.png").getPath();
 
-    private static final String UDI_DI = "(01) 8720299486010(8012)v5.25";
+    private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
     private ExampleAnalysisTestFactory() {
     }
