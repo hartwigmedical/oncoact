@@ -786,7 +786,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19571295", "http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024", "http://www.ncbi.nlm.nih.gov/pubmed/19571295"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -808,7 +808,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -830,17 +830,17 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/19884556",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/25666295"))))
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19884556",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/19001320",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/25666295",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -950,9 +950,9 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20619739",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/21163703",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600",
                                 Sets.newHashSet(),
@@ -1006,7 +1006,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21882184", "http://www.ncbi.nlm.nih.gov/pubmed/18682506"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -1144,12 +1144,12 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970")),
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334"))))
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970"))))
                 .build());
         return evidenceItemsOffLabel;
     }
