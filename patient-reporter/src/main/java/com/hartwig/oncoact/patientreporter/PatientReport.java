@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 
 import org.jetbrains.annotations.NotNull;
@@ -83,6 +84,9 @@ public interface PatientReport {
 
     @NotNull
     Map<String, List<PeachEntry>> pharmacogeneticsGenotypes();
+
+    @NotNull
+    HlaAllelesReportingData hlaAllelesReportingData();
 
     @NotNull
     String reportDate();
