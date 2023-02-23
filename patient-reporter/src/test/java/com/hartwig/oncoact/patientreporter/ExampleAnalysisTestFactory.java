@@ -1469,7 +1469,7 @@ public final class ExampleAnalysisTestFactory {
                 Lists.newArrayList(hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder()
                                 .gene("HLA-C")
                                 .germlineAllele("C*07:01")
-                                .build()).germlineCopies(1D).tumorCopies(1.83).somaticMutations("None").interpretation("yes").build(),
+                                .build()).germlineCopies(1D).tumorCopies(1.83).somaticMutations("None").interpretation("Yes").build(),
                         hlaReportingBuilder().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-C").germlineAllele("C*03:04").build())
                                 .germlineCopies(1D)
                                 .tumorCopies(2D)
