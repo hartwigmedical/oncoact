@@ -17,6 +17,8 @@ import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.orange.OrangeRecord;
@@ -111,7 +113,32 @@ public class AnalysedPatientReporter {
             }
         }
 
-        AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder().sampleReport(sampleReport).qsFormNumber(qcForm).clinicalSummary(clinicalSummary).specialRemark(specialRemark).pipelineVersion(pipelineVersion).genomicAnalysis(curatedAnalysis).molecularTissueOriginReporting(curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity() ? null : molecularTissueOriginReporting).molecularTissueOriginPlotPath(config.cuppaPlot()).circosPlotPath(orange.plots().purpleFinalCircosPlot()).comments(Optional.ofNullable(config.comments())).isCorrectedReport(config.isCorrectedReport()).isCorrectedReportExtern(config.isCorrectedReportExtern()).signaturePath(reportData.signaturePath()).logoRVAPath(reportData.logoRVAPath()).logoCompanyPath(reportData.logoCompanyPath()).udiDi(reportData.udiDi()).pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap).reportDate(reportDate).isWGSReport(true).build();
+        HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.purpleQCStatus());
+
+        AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
+                .sampleReport(sampleReport)
+                .qsFormNumber(qcForm)
+                .clinicalSummary(clinicalSummary)
+                .specialRemark(specialRemark)
+                .pipelineVersion(pipelineVersion)
+                .genomicAnalysis(curatedAnalysis)
+                .molecularTissueOriginReporting(curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
+                        ? null
+                        : molecularTissueOriginReporting)
+                .molecularTissueOriginPlotPath(config.cuppaPlot())
+                .circosPlotPath(orange.plots().purpleFinalCircosPlot())
+                .comments(Optional.ofNullable(config.comments()))
+                .isCorrectedReport(config.isCorrectedReport())
+                .isCorrectedReportExtern(config.isCorrectedReportExtern())
+                .signaturePath(reportData.signaturePath())
+                .logoRVAPath(reportData.logoRVAPath())
+                .logoCompanyPath(reportData.logoCompanyPath())
+                .udiDi(reportData.udiDi())
+                .pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap)
+                .hlaAllelesReportingData(hlaReportingData)
+                .reportDate(reportDate)
+                .isWGSReport(true)
+                .build();
 
         printReportState(report);
 

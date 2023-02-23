@@ -8,6 +8,7 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface PatientReport {
 
@@ -85,7 +86,7 @@ public interface PatientReport {
     @NotNull
     Map<String, List<PeachEntry>> pharmacogeneticsGenotypes();
 
-    @NotNull
+    @Nullable
     HlaAllelesReportingData hlaAllelesReportingData();
 
     @NotNull

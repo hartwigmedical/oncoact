@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.orange.OrangeJson;
@@ -74,31 +77,39 @@ public class QCFailReporter {
 
         String wgsPurityString = null;
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
-        Set<PeachEntry> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();
+        boolean hasReliablePurity = false;
+        HlaAllelesReportingData hlaReportingData = null;
+        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
+
         if (reason.isDeepWGSDataAvailable()) {
-            LOGGER.info("Loading ORANGE data from {}", new File(config.orangeJson()).getParent());
             OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
             String formattedPurity = new DecimalFormat("#'%'").format(orange.purple().fit().purity() * 100);
+            hasReliablePurity = orange.purple().fit().containsTumorCells();
 
-            wgsPurityString = orange.purple().fit().containsTumorCells() ? formattedPurity : Lims.PURITY_NOT_RELIABLE_STRING;
+            wgsPurityString = hasReliablePurity ? formattedPurity : Lims.PURITY_NOT_RELIABLE_STRING;
             purpleQc = orange.purple().fit().qcStatus();
 
-            pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? orange.peach().entries() : Sets.newHashSet();
+            Set<PeachEntry> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();
+            if (reason.isDeepWGSDataAvailable() && !purpleQc.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
+                Set<PeachEntry> pharmacogeneticsGenotypes = orange.peach().entries();
+                pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
+            }
+
+
+            for (PeachEntry pharmacogenetics : pharmacogeneticsGenotypesOverrule) {
+                if (pharmacogeneticsMap.containsKey(pharmacogenetics.gene())) {
+                    List<PeachEntry> curent = pharmacogeneticsMap.get(pharmacogenetics.gene());
+                    curent.add(pharmacogenetics);
+                    pharmacogeneticsMap.put(pharmacogenetics.gene(), curent);
+                } else {
+                    pharmacogeneticsMap.put(pharmacogenetics.gene(), Lists.newArrayList(pharmacogenetics));
+                }
+            }
+            hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), hasReliablePurity, purpleQc);
         }
 
         LOGGER.info("  QC status: {}", purpleQc.toString());
-
-        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
-        for (PeachEntry pharmacogenetics : pharmacogeneticsGenotypesOverrule) {
-            if (pharmacogeneticsMap.containsKey(pharmacogenetics.gene())) {
-                List<PeachEntry> current = pharmacogeneticsMap.get(pharmacogenetics.gene());
-                current.add(pharmacogenetics);
-                pharmacogeneticsMap.put(pharmacogenetics.gene(), current);
-            } else {
-                pharmacogeneticsMap.put(pharmacogenetics.gene(), com.google.common.collect.Lists.newArrayList(pharmacogenetics));
-            }
-        }
 
         return ImmutableQCFailReport.builder()
                 .sampleReport(sampleReport)
@@ -113,6 +124,7 @@ public class QCFailReporter {
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .udiDi(reportData.udiDi())
                 .pharmacogeneticsGenotypes(pharmacogeneticsMap)
+                .hlaAllelesReportingData(hlaReportingData)
                 .purpleQC(purpleQc)
                 .reportDate(reportDate)
                 .isWGSReport(true)

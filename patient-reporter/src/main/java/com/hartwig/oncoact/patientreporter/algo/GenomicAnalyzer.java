@@ -68,9 +68,6 @@ public class GenomicAnalyzer {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
                 determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
 
-        HlaAllelesReportingData hlaReportingData =
-                HlaAllelesReportingFactory.convertToReportData(orange.lilac(), orange.purple().fit().containsTumorCells());
-
         List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidences);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
@@ -104,7 +101,6 @@ public class GenomicAnalyzer {
                 .geneDisruptions(reportableGeneDisruptions)
                 .homozygousDisruptions(orange.linx().homozygousDisruptions())
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
-                .hlaAlleles(hlaReportingData)
                 .suspectGeneCopyNumbersWithLOH(suspectGeneCopyNumbersWithLOH)
                 .build();
     }

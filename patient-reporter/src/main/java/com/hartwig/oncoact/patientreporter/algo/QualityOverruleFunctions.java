@@ -49,14 +49,11 @@ public final class QualityOverruleFunctions {
             newNotifyPerVariant.put(overruled.variant(), overruled.notifyVariant());
         }
 
-        HlaAllelesReportingData hlaAllelesReportingData = overruleHla(genomicAnalysis.hlaAlleles(), genomicAnalysis.hasReliablePurity());
-
         return ImmutableGenomicAnalysis.builder()
                 .from(genomicAnalysis)
                 .reportableVariants(overruledVariants)
                 .notifyGermlineStatusPerVariant(newNotifyPerVariant)
                 .cnPerChromosome(cnPerChromosomeDataSort)
-                .hlaAlleles(hlaAllelesReportingData)
                 .suspectGeneCopyNumbersWithLOH(overruleSuspectedLOH(genomicAnalysis.suspectGeneCopyNumbersWithLOH(),
                         genomicAnalysis.hasReliablePurity()))
                 .build();
@@ -88,31 +85,6 @@ public final class QualityOverruleFunctions {
                 return item1.chromosome().compareTo(item2.chromosome());
             }
         }).collect(Collectors.toList());
-    }
-
-    @NotNull
-    private static HlaAllelesReportingData overruleHla(@NotNull HlaAllelesReportingData hlaAllelesReportingData,
-            boolean hasReliablePurity) {
-        Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
-
-        Set<String> hlaAlleles = Sets.newTreeSet(hlaAllelesReportingData.hlaAllelesReporting().keySet());
-        for (String allele : hlaAlleles) {
-            List<HlaReporting> hlaReportingList = hlaAllelesReportingData.hlaAllelesReporting().get(allele);
-            List<HlaReporting> hlaReportingListCurated = Lists.newArrayList();
-            for (HlaReporting hlaReporting : hlaReportingList) {
-                hlaReportingListCurated.add(ImmutableHlaReporting.builder()
-                        .from(hlaReporting)
-                        .germlineCopies(hasReliablePurity ? hlaReporting.germlineCopies() : Double.NaN)
-                        .tumorCopies(hasReliablePurity ? hlaReporting.tumorCopies() : Double.NaN)
-                        .interpretation(hasReliablePurity ? hlaReporting.interpretation() : "Unknown")
-                        .build());
-            }
-            alleles.put(allele, hlaReportingListCurated);
-        }
-        return ImmutableHlaAllelesReportingData.builder()
-                .from(hlaAllelesReportingData)
-                .hlaAllelesReporting(hlaAllelesReportingData.hlaQC().equals("PASS") ? alleles : Maps.newHashMap())
-                .build();
     }
 
     @NotNull

@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.linx.LinxFusion;
 import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
@@ -82,9 +81,6 @@ public abstract class GenomicAnalysis {
 
     @NotNull
     public abstract List<VirusInterpreterEntry> reportableViruses();
-
-    @NotNull
-    public abstract HlaAllelesReportingData hlaAlleles();
 
     @NotNull
     public abstract List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH();

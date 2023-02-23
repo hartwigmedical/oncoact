@@ -2,18 +2,18 @@ package com.hartwig.oncoact.hla;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
+import com.ctc.wstx.util.DataUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
 import com.hartwig.oncoact.orange.lilac.LilacRecord;
+import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.util.Doubles;
 
+import com.hartwig.oncoact.util.Formats;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -44,7 +44,7 @@ public final class HlaAllelesReportingFactory {
     }
 
     @NotNull
-    public static HlaAllelesReportingData convertToReportData(@NotNull LilacRecord lilac, boolean containsTumorCells) {
+    public static HlaAllelesReportingData convertToReportData(@NotNull LilacRecord lilac, boolean containsTumorCells, Set<PurpleQCStatus> purpleQCStatus) {
         List<HlaReporting> lilacReportingList = Lists.newArrayList();
 
         Map<String, List<LilacHlaAllele>> mapLilacReportingAlleles = generateLilacMap(lilac);
@@ -66,16 +66,25 @@ public final class HlaAllelesReportingFactory {
                 LOGGER.warn("To many hla alleles of allele '{}'", keyMap.getKey());
             }
 
-            lilacReportingList.add(ImmutableHlaReporting.builder()
-                    .hlaAllele(ImmutableHlaAllele.builder()
-                            .germlineAllele(keyMap.getValue().get(0).allele())
-                            .gene(extractHLAGene(keyMap.getValue().get(0)))
-                            .build())
-                    .germlineCopies(germlineCopies)
-                    .tumorCopies(tumorCopies)
-                    .somaticMutations(mutationString)
-                    .interpretation(HLAPresenceInTumor(keyMap.getValue().get(0), mutationString, containsTumorCells))
-                    .build());
+            boolean contamination = purpleQCStatus.contains(PurpleQCStatus.FAIL_CONTAMINATION);
+            boolean failure = purpleQCStatus.contains(PurpleQCStatus.FAIL_NO_TUMOR);
+
+            String interpretation = HLAPresenceInTumor(keyMap.getValue().get(0), mutationString, containsTumorCells);
+            String interpretInterpretation = containsTumorCells ? interpretation : "Unknown";
+
+            if (!contamination) {
+                lilacReportingList.add(ImmutableHlaReporting.builder()
+                        .hlaAllele(ImmutableHlaAllele.builder()
+                                .germlineAllele(keyMap.getValue().get(0).allele())
+                                .gene(extractHLAGene(keyMap.getValue().get(0)))
+                                .build())
+                        .germlineCopies(germlineCopies)
+                        .tumorCopies(containsTumorCells && !failure ? tumorCopies : Double.NaN)
+                        .somaticMutations(!failure ? mutationString : Formats.NA_STRING)
+                        .interpretation(!failure ? interpretInterpretation  : Formats.NA_STRING)
+                        .build());
+            }
+
         }
 
         Map<String, List<HlaReporting>> hlaAlleleMap = Maps.newHashMap();
@@ -137,7 +146,7 @@ public final class HlaAllelesReportingFactory {
 
     @NotNull
     @VisibleForTesting
-    static String HLAPresenceInTumor(@NotNull LilacHlaAllele allele, @NotNull String mutationString, boolean hasReliablePurity) {
+    static String HLAPresenceInTumor(@NotNull LilacHlaAllele allele, @NotNull String mutationString, Boolean hasReliablePurity) {
         double tumorCopies = Double.parseDouble(SINGLE_DIGIT.format(allele.tumorCopyNumber()));
         boolean mutation = mutationString.contains("missense") || mutationString.contains("nonsense or frameshift")
                 || mutationString.contains("splice") || mutationString.contains("inframe indel");
