@@ -169,7 +169,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateFusionConclusion() {
-        List<LinxFusion> fusions = createTestFusions();
+        Set<LinxFusion> fusions = createTestFusions();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("BRAF", TypeAlteration.INTERNAL_DELETION, "BRAF", Condition.ALWAYS, "BRAF");
@@ -187,7 +187,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
-        List<LinxHomozygousDisruption> homozygousDisruptions = List.of(createHomozygousDisruption("PTEN"));
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"));
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PTEN", TypeAlteration.INACTIVATION, "PTEN", Condition.ALWAYS, "PTEN");
@@ -529,8 +529,8 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static List<LinxFusion> createTestFusions() {
-        List<LinxFusion> fusions = Lists.newArrayList();
+    private static Set<LinxFusion> createTestFusions() {
+        Set<LinxFusion> fusions = Sets.newHashSet();
         fusions.add(linxFusionBuilder("BRAF", "BRAF", true).type(LinxFusionType.EXON_DEL_DUP).build());
         fusions.add(linxFusionBuilder("CAV2", "MET", true).type(LinxFusionType.KNOWN_PAIR).build());
         fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25).fusedExonDown(14).type(LinxFusionType.EXON_DEL_DUP).build());

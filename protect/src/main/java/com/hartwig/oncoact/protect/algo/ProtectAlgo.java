@@ -137,9 +137,9 @@ public class ProtectAlgo {
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().reportableSomaticGainsLosses(),
-                Sets.newHashSet(orange.linx().reportableSomaticFusions()),
-                Sets.newHashSet(orange.linx().somaticHomozygousDisruptions()),
-                Sets.newHashSet(orange.linx().reportableSomaticBreakends()),
+                orange.linx().reportableSomaticFusions(),
+                orange.linx().somaticHomozygousDisruptions(),
+                orange.linx().reportableSomaticBreakends(),
                 orange.purple().fit().qcStatus());
         printExtraction("wild-type", wildTypeEvidence);
 

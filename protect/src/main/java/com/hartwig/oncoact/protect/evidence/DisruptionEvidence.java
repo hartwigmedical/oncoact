@@ -31,7 +31,7 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
+    public List<ProtectEvidence> evidence(@NotNull Set<LinxHomozygousDisruption> homozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             result.addAll(evidence(homozygousDisruption));

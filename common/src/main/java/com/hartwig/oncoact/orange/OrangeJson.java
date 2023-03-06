@@ -338,16 +338,13 @@ public final class OrangeJson {
         private static LinxRecord toLinxRecord(@NotNull JsonObject linx) {
             return ImmutableLinxRecord.builder()
                     .allSomaticStructuralVariants(toLinxStructuralVariants(array(linx, "allSomaticStructuralVariants")))
-                    .allSomaticFusions(toLinxFusions(array(linx, "allSomaticFusions")))
-                    .additionalSuspectSomaticFusions(toLinxFusions(array(linx, "additionalSuspectSomaticFusions")))
+                    .somaticHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "somaticHomozygousDisruptions")))
+                    .additionalSuspectSomaticBreakends(toLinxBreakends(array(linx, "additionalSuspectSomaticBreakends")))
                     .allSomaticBreakends(toLinxBreakends(array(linx, "allSomaticBreakends")))
                     .reportableSomaticBreakends(toLinxBreakends(array(linx, "reportableSomaticBreakends")))
-                    .additionalSuspectSomaticBreakends(toLinxBreakends(array(linx, "additionalSuspectSomaticBreakends")))
-                    .somaticHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "somaticHomozygousDisruptions")))
-                    .allGermlineStructuralVariants(toLinxStructuralVariants(array(linx, "allGermlineStructuralVariants")))
-                    .allGermlineBreakends(toLinxBreakends(array(linx, "allGermlineBreakends")))
-                    .reportableGermlineBreakends(toLinxBreakends(array(linx, "reportableGermlineBreakends")))
-                    .germlineHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "germlineHomozygousDisruptions")))
+                    .allSomaticFusions(toLinxFusions(array(linx, "allSomaticFusions")))
+                    .reportableSomaticFusions(toLinxFusions(array(linx, "reportableSomaticFusions")))
+                    .additionalSuspectSomaticFusions(toLinxFusions(array(linx, "additionalSuspectSomaticFusions")))
                     .build();
         }
 

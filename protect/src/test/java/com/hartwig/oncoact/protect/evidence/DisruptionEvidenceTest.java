@@ -39,7 +39,7 @@ public class DisruptionEvidenceTest {
         LinxHomozygousDisruption matchInact = create(geneInact);
         LinxHomozygousDisruption nonMatch = create("other gene");
 
-        List<ProtectEvidence> evidences = disruptionEvidence.evidence(List.of(matchAmp, matchInact, nonMatch));
+        List<ProtectEvidence> evidences = disruptionEvidence.evidence(Sets.newHashSet(matchAmp, matchInact, nonMatch));
 
         assertEquals(1, evidences.size());
         ProtectEvidence evidence = evidences.get(0);

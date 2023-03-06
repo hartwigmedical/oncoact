@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.protect.evidence;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -35,7 +36,7 @@ public class FusionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<LinxFusion> reportableFusions, @NotNull List<LinxFusion> allFusions) {
+    public List<ProtectEvidence> evidence(@NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxFusion> allFusions) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (LinxFusion reportable : reportableFusions) {
             evidences.addAll(evidence(reportable));

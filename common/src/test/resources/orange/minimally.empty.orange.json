@@ -38,13 +38,14 @@
     "suspectGeneCopyNumbersWithLOH": []
   },
   "linx": {
-    "allStructuralVariants": [],
-    "allFusions": [],
-    "reportableFusions": [],
-    "allBreakends": [],
-    "reportableBreakends": [],
-    "homozygousDisruptions": [],
-    "additionalSuspectBreakends": []
+    "allSomaticStructuralVariants": [],
+    "allSomaticFusions": [],
+    "reportableSomaticFusions": [],
+    "allSomaticBreakends": [],
+    "reportableSomaticBreakends": [],
+    "somaticHomozygousDisruptions": [],
+    "additionalSuspectSomaticBreakends": [],
+    "additionalSuspectSomaticFusions": []
   },
   "virusInterpreter": {
     "allViruses": [],
