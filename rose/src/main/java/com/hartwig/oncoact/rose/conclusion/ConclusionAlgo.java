@@ -85,8 +85,8 @@ public final class ConclusionAlgo {
 
         Set<PurpleGainLoss> reportableGainLosses = purple.reportableSomaticGainsLosses();
 
-        Set<LinxFusion> reportableFusions = rose.orange().linx().reportableFusions();
-        Set<LinxHomozygousDisruption> homozygousDisruptions = rose.orange().linx().homozygousDisruptions();
+        List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
+        List<LinxHomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         Set<VirusInterpreterEntry> reportableViruses = rose.orange().virusInterpreter().reportableViruses();
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
@@ -341,7 +341,7 @@ public final class ConclusionAlgo {
     }
 
     @VisibleForTesting
-    static void generateFusionConclusion(@NotNull List<String> conclusion, @NotNull Set<LinxFusion> reportableFusions,
+    static void generateFusionConclusion(@NotNull List<String> conclusion, @NotNull List<LinxFusion> reportableFusions,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
         for (LinxFusion fusion : reportableFusions) {
@@ -392,7 +392,7 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
-            @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
+            @NotNull List<LinxHomozygousDisruption> homozygousDisruptions,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
 

@@ -337,13 +337,17 @@ public final class OrangeJson {
         @NotNull
         private static LinxRecord toLinxRecord(@NotNull JsonObject linx) {
             return ImmutableLinxRecord.builder()
-                    .structuralVariants(toLinxStructuralVariants(array(linx, "allStructuralVariants")))
-                    .homozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "homozygousDisruptions")))
-                    .allBreakends(toLinxBreakends(array(linx, "allBreakends")))
-                    .reportableBreakends(toLinxBreakends(array(linx, "reportableBreakends")))
-                    .additionalSuspectBreakends(toLinxBreakends(array(linx, "additionalSuspectBreakends")))
-                    .allFusions(toLinxFusions(array(linx, "allFusions")))
-                    .reportableFusions(toLinxFusions(array(linx, "reportableFusions")))
+                    .allSomaticStructuralVariants(toLinxStructuralVariants(array(linx, "allSomaticStructuralVariants")))
+                    .allSomaticFusions(toLinxFusions(array(linx, "allSomaticFusions")))
+                    .additionalSuspectSomaticFusions(toLinxFusions(array(linx, "additionalSuspectSomaticFusions")))
+                    .allSomaticBreakends(toLinxBreakends(array(linx, "allSomaticBreakends")))
+                    .reportableSomaticBreakends(toLinxBreakends(array(linx, "reportableSomaticBreakends")))
+                    .additionalSuspectSomaticBreakends(toLinxBreakends(array(linx, "additionalSuspectSomaticBreakends")))
+                    .somaticHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "somaticHomozygousDisruptions")))
+                    .allGermlineStructuralVariants(toLinxStructuralVariants(array(linx, "allGermlineStructuralVariants")))
+                    .allGermlineBreakends(toLinxBreakends(array(linx, "allGermlineBreakends")))
+                    .reportableGermlineBreakends(toLinxBreakends(array(linx, "reportableGermlineBreakends")))
+                    .germlineHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "germlineHomozygousDisruptions")))
                     .build();
         }
 

@@ -12,23 +12,38 @@ import org.jetbrains.annotations.Nullable;
 public abstract class LinxRecord {
 
     @NotNull
-    public abstract Set<LinxStructuralVariant> structuralVariants();
+    public abstract List<LinxStructuralVariant> allSomaticStructuralVariants();
 
     @NotNull
-    public abstract Set<LinxHomozygousDisruption> homozygousDisruptions();
+    public abstract List<LinxFusion> allSomaticFusions();
 
     @NotNull
-    public abstract List<LinxBreakend> additionalSuspectBreakends();
+    public abstract List<LinxFusion> reportableSomaticFusions();
 
     @NotNull
-    public abstract Set<LinxBreakend> allBreakends();
+    public abstract List<LinxFusion> additionalSuspectSomaticFusions();
 
     @NotNull
-    public abstract Set<LinxBreakend> reportableBreakends();
+    public abstract List<LinxBreakend> allSomaticBreakends();
 
     @NotNull
-    public abstract Set<LinxFusion> allFusions();
+    public abstract List<LinxBreakend> reportableSomaticBreakends();
 
     @NotNull
-    public abstract Set<LinxFusion> reportableFusions();
+    public abstract List<LinxBreakend> additionalSuspectSomaticBreakends();
+
+    @NotNull
+    public abstract List<LinxHomozygousDisruption> somaticHomozygousDisruptions();
+
+    @Nullable
+    public abstract List<LinxStructuralVariant> allGermlineStructuralVariants();
+
+    @Nullable
+    public abstract List<LinxBreakend> allGermlineBreakends();
+
+    @Nullable
+    public abstract List<LinxBreakend> reportableGermlineBreakends();
+
+    @Nullable
+    public abstract List<LinxHomozygousDisruption> germlineHomozygousDisruptions();
 }

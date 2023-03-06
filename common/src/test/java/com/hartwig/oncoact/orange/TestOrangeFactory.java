@@ -218,12 +218,12 @@ public final class TestOrangeFactory {
                 .build();
 
         return ImmutableLinxRecord.builder()
-                .addStructuralVariants(TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(1).build())
-                .addHomozygousDisruptions(TestLinxFactory.homozygousDisruptionBuilder().gene("TP53").build())
-                .addAllBreakends(breakend1, breakend2)
-                .addReportableBreakends(breakend1, breakend2)
-                .addAllFusions(fusion)
-                .addReportableFusions(fusion)
+                .addAllSomaticStructuralVariants(TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(1).build())
+                .addSomaticHomozygousDisruptions(TestLinxFactory.homozygousDisruptionBuilder().gene("TP53").build())
+                .addAllSomaticBreakends(breakend1, breakend2)
+                .addReportableSomaticBreakends(breakend1, breakend2)
+                .addAllSomaticFusions(fusion)
+                .addReportableSomaticFusions(fusion)
                 .build();
     }
 

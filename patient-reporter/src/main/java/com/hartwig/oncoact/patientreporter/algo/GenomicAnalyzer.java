@@ -51,10 +51,10 @@ public class GenomicAnalyzer {
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
                                @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
         List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(orange.linx().additionalSuspectBreakends(), orange.linx().structuralVariants());
+                GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
 
         List<GeneDisruption> reportableGeneDisruptions =
-                GeneDisruptionFactory.convert(orange.linx().reportableBreakends(), orange.linx().structuralVariants());
+                GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
         reportableGeneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
@@ -97,9 +97,9 @@ public class GenomicAnalyzer {
                 .hrdStatus(orange.chord().hrStatus())
                 .gainsAndLosses(orange.purple().reportableSomaticGainsLosses())
                 .cnPerChromosome(copyNumberPerChromosome)
-                .geneFusions(orange.linx().reportableFusions())
+                .geneFusions(orange.linx().reportableSomaticFusions())
                 .geneDisruptions(reportableGeneDisruptions)
-                .homozygousDisruptions(orange.linx().homozygousDisruptions())
+                .homozygousDisruptions(orange.linx().somaticHomozygousDisruptions())
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .suspectGeneCopyNumbersWithLOH(suspectGeneCopyNumbersWithLOH)
                 .build();

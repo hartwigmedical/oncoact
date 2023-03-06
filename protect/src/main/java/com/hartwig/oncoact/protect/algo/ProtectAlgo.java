@@ -115,11 +115,11 @@ public class ProtectAlgo {
                 copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(), orange.purple().allSomaticGainsLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
-        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().homozygousDisruptions());
+        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions());
         printExtraction("homozygous disruptions", disruptionEvidence);
 
         List<ProtectEvidence> fusionEvidence =
-                fusionEvidenceFactory.evidence(orange.linx().reportableFusions(), orange.linx().allFusions());
+                fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions());
         printExtraction("fusions", fusionEvidence);
 
         List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics());
@@ -137,9 +137,9 @@ public class ProtectAlgo {
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().reportableSomaticGainsLosses(),
-                orange.linx().reportableFusions(),
-                orange.linx().homozygousDisruptions(),
-                orange.linx().reportableBreakends(),
+                Sets.newHashSet(orange.linx().reportableSomaticFusions()),
+                Sets.newHashSet(orange.linx().somaticHomozygousDisruptions()),
+                Sets.newHashSet(orange.linx().reportableSomaticBreakends()),
                 orange.purple().fit().qcStatus());
         printExtraction("wild-type", wildTypeEvidence);
 
