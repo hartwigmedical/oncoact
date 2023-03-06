@@ -34,7 +34,7 @@ public interface RoseConfig {
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the data of the report will be written to.");
 
-        options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data oof the actionability database can be found.");
+        options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data of the actionability database can be found.");
         options.addOption(DRIVER_GENE_TSV, true, "Path to driver gene TSV");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
@@ -86,7 +86,7 @@ public interface RoseConfig {
     static String nonOptionalDir(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
         String value = nonOptionalValue(cmd, param);
 
-        if (!pathExists(value) || !pathIsDirectory(value)) {
+        if (pathDoesNotExist(value) || !pathIsDirectory(value)) {
             throw new ParseException("Parameter '" + param + "' must be an existing directory: " + value);
         }
 
@@ -97,15 +97,15 @@ public interface RoseConfig {
     static String nonOptionalFile(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
         String value = nonOptionalValue(cmd, param);
 
-        if (!pathExists(value)) {
+        if (pathDoesNotExist(value)) {
             throw new ParseException("Parameter '" + param + "' must be an existing file: " + value);
         }
 
         return value;
     }
 
-    static boolean pathExists(@NotNull String path) {
-        return Files.exists(new File(path).toPath());
+    static boolean pathDoesNotExist(@NotNull String path) {
+        return !Files.exists(new File(path).toPath());
     }
 
     static boolean pathIsDirectory(@NotNull String path) {
