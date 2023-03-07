@@ -132,6 +132,36 @@ The list of sources contains the following information per source:
 | rangeRank    | In case of EXON or CODON, the index of the exon or codon on which this evidence was based | 600                             |
 | evidenceUrls | A list of urls with additional information about the evidence                             | https://pubmed.ncbi.nlm.nih.gov |
 
+## Building Protect
+Build a docker image for protect:
+```shell
+docker build . -t protect:latest
+```
+
+Copy the orange JSON input to the input volume.
+```shell
+docker container create --name temp -v protect-input:/input -v serve-db:/serve busybox
+docker cp /path/to/orange.json temp:/input/orange.json
+docker cp /path/to/serve_db/ temp:/serve/
+docker rm temp
+```
+
+Run protect with the expected arguments.
+```shell
+docker run --rm \
+--name protect \
+--mount source=protect-output,target=/out \
+--mount source=protect-input,target=/in \
+--mount source=serve-db,target=/serve \
+protect:latest \
+-orange_json /in/orange.json \
+-output_dir /out \
+-primary_tumor_doids 162 \
+-serve_actionability_dir /serve \
+-doid_json /data/resources/public/disease_ontology/doid.json \
+-driver_gene_tsv /data/resources/public/gene_panel/38/DriverGenePanel.38.tsv
+```
+
 ## Version History and Download Links
 - Upcoming
   - Switch to SERVE 2.0
