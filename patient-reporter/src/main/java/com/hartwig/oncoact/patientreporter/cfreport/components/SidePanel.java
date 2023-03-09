@@ -55,12 +55,6 @@ public final class SidePanel {
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
-
-        cv.add(createSidePanelDiv(++sideTextIndex, "HMF sample id", sampleReport.sampleNameForReport()));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name" , "Name"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , "Birth date"));
-
         LimsCohortConfig cohort = sampleReport.cohort();
 
         if (fullHeight && fullContent) {
@@ -71,7 +65,14 @@ public final class SidePanel {
             if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
             }
+        }
 
+        cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Name" , "Name"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , "Birth date"));
+
+
+        if (fullHeight && fullContent) {
 
             if (cohort.requireAdditionalInformationForSidePanel()) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", sampleReport.hospitalContactData().requesterName()));

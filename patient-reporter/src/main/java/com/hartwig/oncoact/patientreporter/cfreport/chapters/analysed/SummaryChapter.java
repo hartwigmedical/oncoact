@@ -104,7 +104,7 @@ public class SummaryChapter implements ReportChapter {
 
     @NotNull
     private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 2, 0.1f, 1 }));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE);
         table.addCell(TableUtil.createLayoutCell().add(createTumorColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -354,7 +354,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderPharmacogenetics(@NotNull Div divGermline) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
         String title = "Pharmacogenetics";
 
         if (patientReport.sampleReport().reportPharmogenetics()) {
@@ -395,7 +395,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderHla(@NotNull Div divHla) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
         String title = "HLA Alleles";
         if (!patientReport.hlaAllelesReportingData().hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
