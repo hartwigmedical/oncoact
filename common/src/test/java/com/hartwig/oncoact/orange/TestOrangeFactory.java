@@ -70,10 +70,10 @@ public final class TestOrangeFactory {
                 .purple(createMinimalTestPurpleRecord())
                 .linx(ImmutableLinxRecord.builder().build())
                 .peach(ImmutablePeachRecord.builder().build())
-                .cuppa(ImmutableCuppaData.builder().build())
+                .cuppa(createTestCuppaRecord())
                 .virusInterpreter(ImmutableVirusInterpreterData.builder().build())
                 .lilac(createMinimalTestLilacRecord())
-                .chord(TestChordFactory.builder().build())
+                .chord(createTestChordRecord())
                 .plots(createMinimalTestOrangePlots())
                 .build();
     }
@@ -93,7 +93,15 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static OrangePlots createMinimalTestOrangePlots() {
-        return ImmutableOrangePlots.builder().purpleFinalCircosPlot(EMPTY_CIRCOS_PLOT).build();
+        return ImmutableOrangePlots.builder()
+                .sageTumorBQRPlot(Strings.EMPTY)
+                .purpleInputPlot(Strings.EMPTY)
+                .purpleClonalityPlot(Strings.EMPTY)
+                .purpleCopyNumberPlot(Strings.EMPTY)
+                .purpleVariantCopyNumberPlot(Strings.EMPTY)
+                .purplePurityRangePlot(Strings.EMPTY)
+                .purpleFinalCircosPlot(EMPTY_CIRCOS_PLOT)
+                .build();
     }
 
     @NotNull
@@ -245,6 +253,10 @@ public final class TestOrangeFactory {
     private static CuppaData createTestCuppaRecord() {
         return ImmutableCuppaData.builder()
                 .addPredictions(TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.996).build())
+                .simpleDups32To200B(0)
+                .maxComplexSize(0)
+                .telomericSGLs(0)
+                .lineCount(0)
                 .build();
     }
 
@@ -257,6 +269,7 @@ public final class TestOrangeFactory {
                 .interpretation(VirusInterpretation.HPV)
                 .integrations(3)
                 .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .meanCoverage(0)
                 .build();
 
         return ImmutableVirusInterpreterData.builder().addAllViruses(virus).addReportableViruses(virus).build();
@@ -272,6 +285,10 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static ChordRecord createTestChordRecord() {
-        return TestChordFactory.builder().hrStatus(ChordStatus.HR_PROFICIENT).build();
+        return TestChordFactory.builder()
+                .brca1Value(0)
+                .brca2Value(0)
+                .hrdType(Strings.EMPTY)
+                .hrStatus(ChordStatus.HR_PROFICIENT).build();
     }
 }

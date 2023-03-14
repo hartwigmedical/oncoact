@@ -21,7 +21,27 @@ public final class TestLinxFactory {
 
     @NotNull
     public static ImmutableLinxSvAnnotation.Builder structuralVariantBuilder() {
-        return ImmutableLinxSvAnnotation.builder().svId(0).clusterId(0);
+        return ImmutableLinxSvAnnotation.builder()
+                .vcfId(Strings.EMPTY)
+                .svId(0)
+                .clusterId(0)
+                .clusterReason(Strings.EMPTY)
+                .fragileSiteStart(false)
+                .fragileSiteEnd(false)
+                .isFoldback(false)
+                .lineTypeStart(Strings.EMPTY)
+                .lineTypeEnd(Strings.EMPTY)
+                .junctionCopyNumberMin(0)
+                .junctionCopyNumberMax(0)
+                .geneStart(Strings.EMPTY)
+                .geneEnd(Strings.EMPTY)
+                .localTopologyIdStart(0)
+                .localTopologyIdEnd(0)
+                .localTopologyStart(Strings.EMPTY)
+                .localTopologyEnd(Strings.EMPTY)
+                .localTICountStart(0)
+                .localTICountEnd(0)
+                ;
     }
 
     @NotNull
@@ -39,6 +59,7 @@ public final class TestLinxFactory {
         return ImmutableLinxBreakend.builder()
                 .reportedDisruption(true)
                 .disruptive(false)
+                .id(0)
                 .svId(0)
                 .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
@@ -74,6 +95,10 @@ public final class TestLinxFactory {
                 .fusedExonDown(0)
                 .likelihood(FusionLikelihoodType.LOW)
                 .phased(FusionPhasedType.OUT_OF_FRAME)
-                .junctionCopyNumber(0D);
+                .junctionCopyNumber(0D)
+                .chainLinks(0)
+                .chainTerminated(false)
+                .domainsKept(Strings.EMPTY)
+                .domainsLost(Strings.EMPTY);
     }
 }
