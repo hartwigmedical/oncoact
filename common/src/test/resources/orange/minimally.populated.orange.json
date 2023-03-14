@@ -253,13 +253,13 @@
     ]
   },
   "linx": {
-    "allStructuralVariants": [
+    "allSomaticStructuralVariants": [
       {
         "svId": 1,
         "clusterId": 2
       }
     ],
-    "allFusions": [
+    "allSomaticFusions": [
       {
         "reported": true,
         "reportedType": "KNOWN_PAIR",
@@ -277,7 +277,7 @@
         "junctionCopyNumber": 1.1
       }
     ],
-    "reportableFusions": [
+    "reportableSomaticFusions": [
       {
         "reported": true,
         "reportedType": "KNOWN_PAIR",
@@ -295,7 +295,7 @@
         "junctionCopyNumber": 1.1
       }
     ],
-    "allBreakends": [
+    "allSomaticBreakends": [
       {
         "reportedDisruption": false,
         "disruptive": false,
@@ -318,7 +318,7 @@
         "codingType": "UTR_3P"
       }
     ],
-    "reportableBreakends": [
+    "reportableSomaticBreakends": [
       {
         "reportedDisruption": false,
         "disruptive": false,
@@ -341,7 +341,7 @@
         "codingType": "UTR_3P"
       }
     ],
-    "homozygousDisruptions": [
+    "somaticHomozygousDisruptions": [
       {
         "chromosome": "4",
         "chromosomeBand": "p1.12",
@@ -350,7 +350,7 @@
         "isCanonical": true
       }
     ],
-    "additionalSuspectBreakends": [
+    "additionalSuspectSomaticBreakends": [
       {
         "reportedDisruption": false,
         "disruptive": false,
@@ -372,7 +372,8 @@
         "regionType": "EXONIC",
         "codingType": "UTR_3P"
       }
-    ]
+    ],
+    "additionalSuspectSomaticFusions": []
   },
   "virusInterpreter": {
     "allViruses": [

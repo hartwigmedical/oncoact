@@ -1273,7 +1273,7 @@
     "reportableGermlineDeletions": []
   },
   "linx": {
-    "allStructuralVariants": [
+    "allSomaticStructuralVariants": [
       {
         "vcfId": "gridss708fb_105o",
         "svId": 125,
@@ -1296,10 +1296,10 @@
         "localTICountEnd": 0
       }
     ],
-    "allFusions": [],
-    "reportableFusions": [],
-    "additionalSuspectFusions": [],
-    "allBreakends": [
+    "allSomaticFusions": [],
+    "reportableSomaticFusions": [],
+    "additionalSuspectSomaticFusions": [],
+    "allSomaticBreakends": [
       {
         "id": 171,
         "svId": 125,
@@ -1357,7 +1357,7 @@
         "junctionCopyNumber": 2.005
       }
     ],
-    "reportableBreakends": [
+    "reportableSomaticBreakends": [
       {
         "id": 171,
         "svId": 125,
@@ -1415,10 +1415,8 @@
         "junctionCopyNumber": 2.005
       }
     ],
-    "additionalSuspectBreakends": [],
-    "homozygousDisruptions": [],
-    "allGermlineDisruptions": [],
-    "reportableGermlineDisruptions": []
+    "additionalSuspectSomaticBreakends": [],
+    "somaticHomozygousDisruptions": []
   },
   "wildTypeGenes": [
     {
