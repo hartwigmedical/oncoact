@@ -1,14 +1,15 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.purple.PurpleVariantType;
-import com.hartwig.oncoact.orange.purple.Variant;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
@@ -53,8 +54,8 @@ public class VariantEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Set<ReportableVariant> reportableGermline,
-            @NotNull Set<ReportableVariant> reportableSomatic, @NotNull Set<PurpleVariant> allSomaticVariants) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
+            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant));

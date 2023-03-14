@@ -3,14 +3,14 @@ package com.hartwig.oncoact.protect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import com.hartwig.oncoact.orange.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
-import com.hartwig.oncoact.orange.purple.Variant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 
@@ -69,7 +69,7 @@ public class EventGeneratorTest {
 
     @Test
     public void canGenerateEventForGainLoss() {
-        PurpleGainLoss gainLoss = TestPurpleFactory.gainLossBuilder().interpretation(PurpleGainLossInterpretation.FULL_LOSS).build();
+        PurpleGainLoss gainLoss = TestPurpleFactory.gainLossBuilder().interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         assertEquals("full loss", EventGenerator.gainLossEvent(gainLoss));
     }
 

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableLohGenesReporting;
 import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 

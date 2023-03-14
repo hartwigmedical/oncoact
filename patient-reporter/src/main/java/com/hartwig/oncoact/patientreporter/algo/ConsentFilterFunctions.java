@@ -7,7 +7,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
@@ -36,7 +36,7 @@ public final class ConsentFilterFunctions {
             notifyPerVariant.put(filtered.variant(), filtered.notifyVariant());
         }
 
-        List<VirusInterpreterEntry> filteredViruses =
+        List<AnnotatedVirus> filteredViruses =
                 reportViralPresence ? genomicAnalysis.reportableViruses() : Lists.newArrayList();
 
         List<ProtectEvidence> filteredTumorSpecificEvidence =

@@ -1,12 +1,13 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.ActionableEvent;
@@ -36,7 +37,7 @@ public class FusionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxFusion> allFusions) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxFusion> allFusions) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (LinxFusion reportable : reportableFusions) {
             evidences.addAll(evidence(reportable));
@@ -80,7 +81,7 @@ public class FusionEvidence {
                 .reported(false)
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
-                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.driverLikelihood()))
+                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))
                 .build();
     }
 
@@ -90,14 +91,14 @@ public class FusionEvidence {
                 .reported(fusion.reported())
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
-                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.driverLikelihood()))
+                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))
                 .build();
     }
 
     private boolean match(@NotNull LinxFusion fusion, @NotNull ActionableGene actionable) {
-        if (fusion.type().equals(LinxFusionType.PROMISCUOUS_3)) {
+        if (fusion.reportedType().equals(LinxFusionType.PROMISCUOUS_3)) {
             return actionable.gene().equals(fusion.geneEnd());
-        } else if (fusion.type().equals(LinxFusionType.PROMISCUOUS_5)) {
+        } else if (fusion.reportedType().equals(LinxFusionType.PROMISCUOUS_5)) {
             return actionable.gene().equals(fusion.geneStart());
         } else {
             return actionable.gene().equals(fusion.geneStart()) || actionable.gene().equals(fusion.geneEnd());
@@ -105,7 +106,7 @@ public class FusionEvidence {
     }
 
     private static boolean match(@NotNull LinxFusion fusion, @NotNull ActionableFusion actionable) {
-        if (fusion.type().equals(LinxFusionType.KNOWN_PAIR) || fusion.type().equals(LinxFusionType.EXON_DEL_DUP) || fusion.type()
+        if (fusion.reportedType().equals(LinxFusionType.KNOWN_PAIR) || fusion.reportedType().equals(LinxFusionType.EXON_DEL_DUP) || fusion.reportedType()
                 .equals(LinxFusionType.IG_KNOWN_PAIR)) {
             if (!actionable.geneDown().equals(fusion.geneEnd())) {
                 return false;

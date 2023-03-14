@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -7,20 +8,18 @@ import java.util.Set;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.knownfusion.KnownFusionCache;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.orange.OrangeRecord;
-import com.hartwig.oncoact.orange.OrangeRefGenomeVersion;
-import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
-import com.hartwig.oncoact.orange.purple.PurpleRecord;
-import com.hartwig.oncoact.orange.purple.PurpleVariant;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
@@ -51,10 +50,10 @@ public class GenomicAnalyzer {
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
                                @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
         List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(orange.linx().additionalSuspectBreakends(), orange.linx().structuralVariants());
+                GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
 
         List<GeneDisruption> reportableGeneDisruptions =
-                GeneDisruptionFactory.convert(orange.linx().reportableBreakends(), orange.linx().structuralVariants());
+                GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
         reportableGeneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
@@ -97,9 +96,9 @@ public class GenomicAnalyzer {
                 .hrdStatus(orange.chord().hrStatus())
                 .gainsAndLosses(orange.purple().reportableSomaticGainsLosses())
                 .cnPerChromosome(copyNumberPerChromosome)
-                .geneFusions(orange.linx().reportableFusions())
+                .geneFusions(orange.linx().reportableSomaticFusions())
                 .geneDisruptions(reportableGeneDisruptions)
-                .homozygousDisruptions(orange.linx().homozygousDisruptions())
+                .homozygousDisruptions(orange.linx().somaticHomozygousDisruptions())
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .suspectGeneCopyNumbersWithLOH(suspectGeneCopyNumbersWithLOH)
                 .build();
@@ -112,7 +111,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Set<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
+        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
         if (reportableGermlineVariants == null) {
             return Sets.newHashSet();
         }

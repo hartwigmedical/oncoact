@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.orange.lilac;
 
+import com.hartwig.hmftools.datamodel.hla.ImmutableLilacAllele;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,8 +11,8 @@ public final class TestLilacFactory {
     }
 
     @NotNull
-    public static ImmutableLilacHlaAllele.Builder builder() {
-        return ImmutableLilacHlaAllele.builder()
+    public static ImmutableLilacAllele.Builder builder() {
+        return ImmutableLilacAllele.builder()
                 .allele(Strings.EMPTY)
                 .tumorCopyNumber(0D)
                 .somaticMissense(0D)

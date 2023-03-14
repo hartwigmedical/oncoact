@@ -13,6 +13,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
@@ -21,12 +22,11 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.orange.OrangeRecord;
-import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
-import com.hartwig.oncoact.orange.cuppa.CuppaRecord;
-import com.hartwig.oncoact.orange.cuppa.ImmutableCuppaPrediction;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
+import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
@@ -98,14 +98,14 @@ public class AnalysedPatientReporter {
         MolecularTissueOriginReporting molecularTissueOriginReporting = MolecularTissueOriginReportingFactory.create(best);
         LOGGER.info(" Predicted cancer type '{}' with likelihood {}", best.cancerType(), best.likelihood());
 
-        Set<PeachEntry> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach().entries();
+        Set<PeachGenotype> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach().entries();
 
-        Set<PeachEntry> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
+        Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
 
-        Map<String, List<PeachEntry>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
-        for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
+        Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
+        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
             if (pharmacogeneticsGenotypesMap.containsKey(pharmacogeneticsGenotype.gene())) {
-                List<PeachEntry> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
+                List<PeachGenotype> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
                 current.add(pharmacogeneticsGenotype);
                 pharmacogeneticsGenotypesMap.put(pharmacogeneticsGenotype.gene(), current);
             } else {
@@ -173,7 +173,7 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    private static CuppaPrediction bestPrediction(@NotNull CuppaRecord cuppa) {
+    private static CuppaPrediction bestPrediction(@NotNull CuppaData cuppa) {
         CuppaPrediction best = null;
         for (CuppaPrediction prediction : cuppa.predictions()) {
             if (best == null || prediction.likelihood() > best.likelihood()) {

@@ -8,12 +8,12 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.lilac.ImmutableLilacRecord;
-import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
-import com.hartwig.oncoact.orange.lilac.LilacRecord;
-import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
+import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
 import com.hartwig.oncoact.util.Formats;
 import junit.framework.TestCase;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class HlaAllelesReportingFactoryTest {
 
     @Test
     public void testGene() {
-        Map<String, List<LilacHlaAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
+        Map<String, List<LilacAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
         assertEquals(HlaAllelesReportingFactory.extractHLAGene(mapLilac.get("A*03:01").get(0)), "HLA-A");
         assertEquals(HlaAllelesReportingFactory.extractHLAGene(mapLilac.get("B*18:02").get(0)), "HLA-B");
         assertEquals(HlaAllelesReportingFactory.extractHLAGene(mapLilac.get("B*35:02").get(0)), "HLA-B");
@@ -35,7 +35,7 @@ public class HlaAllelesReportingFactoryTest {
 
     @Test
     public void testMutationString() {
-        Map<String, List<LilacHlaAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
+        Map<String, List<LilacAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
         assertEquals(HlaAllelesReportingFactory.mutationString(mapLilac.get("A*03:01").get(0)), "2 missense");
         assertEquals(HlaAllelesReportingFactory.mutationString(mapLilac.get("B*18:02").get(0)), "1 nonsense or frameshift, 1 splice");
         assertEquals(HlaAllelesReportingFactory.mutationString(mapLilac.get("B*35:02").get(0)), "None");
@@ -45,7 +45,7 @@ public class HlaAllelesReportingFactoryTest {
 
     @Test
     public void testReliableInterpretation() {
-        Map<String, List<LilacHlaAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
+        Map<String, List<LilacAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
         assertEquals(HlaAllelesReportingFactory.HLAPresenceInTumor(mapLilac.get("A*03:01").get(0),
                 HlaAllelesReportingFactory.mutationString(mapLilac.get("A*03:01").get(0)),
                 true), "Yes, but mutation(s) detected");
@@ -65,7 +65,7 @@ public class HlaAllelesReportingFactoryTest {
 
     @Test
     public void testUnreliableInterpretation() {
-        Map<String, List<LilacHlaAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
+        Map<String, List<LilacAllele>> mapLilac = HlaAllelesReportingFactory.generateLilacMap(createTestLilacRecord());
         assertEquals(HlaAllelesReportingFactory.HLAPresenceInTumor(mapLilac.get("A*03:01").get(0),
                 HlaAllelesReportingFactory.mutationString(mapLilac.get("A*03:01").get(0)),
                 false), "Unknown");
@@ -253,7 +253,7 @@ public class HlaAllelesReportingFactoryTest {
 
     @NotNull
     private static LilacRecord createTestLilacRecord() {
-        List<LilacHlaAllele> alleles = Lists.newArrayList();
+        List<LilacAllele> alleles = Lists.newArrayList();
         alleles.add(TestLilacFactory.builder().allele("A*03:01").somaticMissense(2D).tumorCopyNumber(4.7).build());
         alleles.add(TestLilacFactory.builder().allele("A*03:01").somaticMissense(0D).tumorCopyNumber(1.5).build());
         alleles.add(TestLilacFactory.builder()

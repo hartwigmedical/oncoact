@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 

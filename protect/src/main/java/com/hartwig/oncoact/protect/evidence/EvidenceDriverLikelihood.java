@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public final class EvidenceDriverLikelihood {
         }
     }
 
-    public static boolean interpretFusion(@NotNull LinxFusionDriverLikelihood likelihood) {
+    public static boolean interpretFusion(@NotNull FusionLikelihoodType likelihood) {
         switch (likelihood) {
             case HIGH:
                 return true;

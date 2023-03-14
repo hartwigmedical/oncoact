@@ -1,11 +1,12 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
@@ -31,16 +32,16 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Set<LinxHomozygousDisruption> homozygousDisruptions) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<HomozygousDisruption> homozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             result.addAll(evidence(homozygousDisruption));
         }
         return result;
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull LinxHomozygousDisruption homozygousDisruption) {
+    private List<ProtectEvidence> evidence(@NotNull HomozygousDisruption homozygousDisruption) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(homozygousDisruption.gene())) {

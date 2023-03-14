@@ -6,7 +6,7 @@ import java.util.List;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.DriverGeneFile;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
 import com.hartwig.oncoact.rose.actionability.ActionabilityFileReader;
 

@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
@@ -53,22 +53,22 @@ public class SomaticVariantsTest {
         PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("MSH2")
-                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .build();
         PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("MSH6")
-                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
         PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("EPCAM")
-                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
+                .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .build();
 
         List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
+        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
 
         assertEquals(4, SomaticVariants.determineMSIGenes(variants, gainLosses, homozygousDisruption).size());
     }
@@ -84,28 +84,28 @@ public class SomaticVariantsTest {
         PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("BRCA2")
-                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .build();
         PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("PALB2")
-                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
         PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
                 .from(baseGainLoss)
                 .gene("RAD51B")
-                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
+                .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .build();
 
         List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
+        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
 
         assertEquals(4, SomaticVariants.determineHRDGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @NotNull
-    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 

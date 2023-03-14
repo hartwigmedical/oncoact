@@ -3,8 +3,8 @@ package com.hartwig.oncoact.protect.evidence;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
-import com.hartwig.oncoact.orange.lilac.LilacRecord;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 
@@ -25,7 +25,7 @@ public class HlaEvidence {
 
     public List<ProtectEvidence> evidence(@NotNull LilacRecord lilac) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (LilacHlaAllele lilacAllele : lilac.alleles()) {
+        for (LilacAllele lilacAllele : lilac.alleles()) {
             result.addAll(evidence(lilacAllele, lilac.qc()));
         }
 
@@ -33,7 +33,7 @@ public class HlaEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull LilacHlaAllele lilacAllele, @NotNull String lilacQc) {
+    private List<ProtectEvidence> evidence(@NotNull LilacAllele lilacAllele, @NotNull String lilacQc) {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         for (ActionableHLA hla : actionableHLA) {

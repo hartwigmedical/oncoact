@@ -2,7 +2,7 @@ package com.hartwig.oncoact.variant;
 
 import javax.annotation.Nullable;
 
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;

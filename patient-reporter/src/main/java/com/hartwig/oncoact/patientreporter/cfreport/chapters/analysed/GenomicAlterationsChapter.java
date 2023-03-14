@@ -10,15 +10,15 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
-import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
-import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -275,7 +275,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createHomozygousDisruptionsTable(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
+    private static Table createHomozygousDisruptionsTable(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
         String title = "Tumor specific homozygous disruptions";
         String subtitle = "Complete loss of wild type allele";
         if (homozygousDisruptions.isEmpty()) {
@@ -287,7 +287,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         TableUtil.createHeaderCell("Gene") },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        for (LinxHomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
+        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.chromosome()));
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.chromosomeBand()));
             contentTable.addCell(TableUtil.createContentCell(homozygousDisruption.gene()));
@@ -345,14 +345,14 @@ public class GenomicAlterationsChapter implements ReportChapter {
         for (LinxFusion fusion : GeneFusions.sort(fusions)) {
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.name(fusion)));
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.type(fusion)).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(GeneFusions.fusionContentType(fusion.type(), fusion.geneStart(), fusion.geneTranscriptStart()));
-            contentTable.addCell(GeneFusions.fusionContentType(fusion.type(), fusion.geneEnd(), fusion.geneTranscriptEnd()));
+            contentTable.addCell(GeneFusions.fusionContentType(fusion.reportedType(), fusion.geneStart(), fusion.geneTranscriptStart()));
+            contentTable.addCell(GeneFusions.fusionContentType(fusion.reportedType(), fusion.geneEnd(), fusion.geneTranscriptEnd()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextStart()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextEnd()));
             contentTable.addCell(TableUtil.createContentCell(GeneUtil.copyNumberToString(fusion.junctionCopyNumber(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.phased(fusion)).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(GeneFusions.driverLikelihood(fusion)).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(TableUtil.createContentCell(GeneFusions.likelihood(fusion)).setTextAlignment(TextAlignment.CENTER));
         }
 
         return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
@@ -444,7 +444,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createVirusTable(@NotNull List<VirusInterpreterEntry> viruses, boolean reportViralPresence) {
+    private static Table createVirusTable(@NotNull List<AnnotatedVirus> viruses, boolean reportViralPresence) {
         String title = "Tumor specific viral insertions";
 
         if (!reportViralPresence) {
@@ -463,7 +463,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             TableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
-            for (VirusInterpreterEntry virus : viruses) {
+            for (AnnotatedVirus virus : viruses) {
                 contentTable.addCell(TableUtil.createContentCell(virus.name()));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.integrations(virus)).setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.percentageCovered(virus))
@@ -477,7 +477,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachEntry>> pharmacogeneticsMap,
+    private static Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachGenotype>> pharmacogeneticsMap,
             boolean reportPharmacogenetics) {
         String title = "Pharmacogenetics";
 
@@ -493,7 +493,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
                 Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsMap.keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                    List<PeachEntry> pharmacogeneticsGenotypeList = pharmacogeneticsMap.get(sortPharmacogenetics);
+                    List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsMap.get(sortPharmacogenetics);
                     contentTable.addCell(TableUtil.createContentCell(sortPharmacogenetics.equals("UGT1A1") ? sortPharmacogenetics + "#" : sortPharmacogenetics));
 
                     Table tableGenotype = new Table(new float[] { 1 });
@@ -501,7 +501,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     Table tableLinkedDrugs = new Table(new float[] { 1 });
                     Table tableSource = new Table(new float[] { 1 });
 
-                    for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
+                    for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
                         tableGenotype.addCell(TableUtil.createTransparentCell(pharmacogeneticsGenotype.haplotype()));
                         tableFunction.addCell(TableUtil.createTransparentCell(pharmacogeneticsGenotype.function()));
                         tableLinkedDrugs.addCell(TableUtil.createTransparentCell(pharmacogeneticsGenotype.linkedDrugs()));

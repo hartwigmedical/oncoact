@@ -13,8 +13,8 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.orange.purple.ImmutablePurpleGeneCopyNumber;
-import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 

@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.lilac.ImmutableLilacRecord;
-import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
-import com.hartwig.oncoact.orange.lilac.LilacRecord;
+import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
@@ -35,7 +35,7 @@ public class HlaEvidenceTest {
 
     @NotNull
     private static LilacRecord createTestLilacRecord(@NotNull String hlaType) {
-        List<LilacHlaAllele> alleles = Lists.newArrayList();
+        List<LilacAllele> alleles = Lists.newArrayList();
         alleles.add(TestLilacFactory.builder().allele(hlaType).build());
 
         return ImmutableLilacRecord.builder().qc("PASS").alleles(alleles).build();

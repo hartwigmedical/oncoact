@@ -31,19 +31,20 @@ import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
 import com.hartwig.oncoact.lims.hospital.ImmutableHospitalContactData;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
-import com.hartwig.oncoact.orange.linx.LinxFusionType;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.linx.LinxPhasedType;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
-import com.hartwig.oncoact.orange.purple.*;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.orange.virus.VirusInterpretation;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
@@ -104,10 +105,10 @@ public final class ExampleAnalysisTestFactory {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = notifyAllGermlineVariants(reportableVariants);
         List<PurpleGainLoss> gainsAndLosses = createCOLO829GainsLosses();
         List<LinxFusion> fusions = Lists.newArrayList();
-        List<LinxHomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
+        List<HomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
         List<GeneDisruption> disruptions = createCOLO829Disruptions();
-        List<VirusInterpreterEntry> viruses = Lists.newArrayList();
-        Map<String, List<PeachEntry>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
+        List<AnnotatedVirus> viruses = Lists.newArrayList();
+        Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<PurpleGeneCopyNumber> LOHGenes = createLOHGenes();
 
@@ -226,8 +227,8 @@ public final class ExampleAnalysisTestFactory {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus);
 
         List<LinxFusion> fusions = createTestFusions();
-        List<VirusInterpreterEntry> viruses = createTestAnnotatedViruses();
-        List<LinxHomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
+        List<AnnotatedVirus> viruses = createTestAnnotatedViruses();
+        List<HomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
 
         GenomicAnalysis analysis = ImmutableGenomicAnalysis.builder()
                 .from(coloReport.genomicAnalysis())
@@ -1176,7 +1177,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(4.09962)
                 .totalCopyNumber(6.02)
                 .minorAlleleCopyNumber(2.01)
-                .hotspot(PurpleHotspotType.HOTSPOT)
+                .hotspot(Hotspot.HOTSPOT)
                 .driverLikelihood(1D)
                 .clonalLikelihood(1D)
                 .biallelic(false)
@@ -1205,7 +1206,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.0)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
-                .hotspot(PurpleHotspotType.NEAR_HOTSPOT)
+                .hotspot(Hotspot.NEAR_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(1D)
                 .biallelic(true)
@@ -1234,7 +1235,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.0)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
-                .hotspot(PurpleHotspotType.NEAR_HOTSPOT)
+                .hotspot(Hotspot.NEAR_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(1D)
                 .biallelic(true)
@@ -1263,7 +1264,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(1.7404)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
-                .hotspot(PurpleHotspotType.HOTSPOT)
+                .hotspot(Hotspot.HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(1D)
                 .biallelic(true)
@@ -1292,7 +1293,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.026722)
                 .minorAlleleCopyNumber(1.0)
                 .totalCopyNumber(3.02)
-                .hotspot(PurpleHotspotType.NON_HOTSPOT)
+                .hotspot(Hotspot.NON_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0.1458)
                 .biallelic(false)
@@ -1321,7 +1322,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(1.6829820000000002)
                 .minorAlleleCopyNumber(1.98)
                 .totalCopyNumber(3.99)
-                .hotspot(PurpleHotspotType.NON_HOTSPOT)
+                .hotspot(Hotspot.NON_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0)
                 .biallelic(false)
@@ -1343,7 +1344,7 @@ public final class ExampleAnalysisTestFactory {
                 .isCanonical(true)
                 .minCopies(0)
                 .maxCopies(2)
-                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
 
         return Lists.newArrayList(gainLoss1);
@@ -1353,7 +1354,7 @@ public final class ExampleAnalysisTestFactory {
     private static List<LinxFusion> createTestFusions() {
         LinxFusion fusion1 = TestLinxFactory.fusionBuilder()
                 .reported(true)
-                .type(LinxFusionType.KNOWN_PAIR)
+                .reportedType(LinxFusionType.KNOWN_PAIR)
                 .name(Strings.EMPTY)
                 .geneStart("TMPRSS2")
                 .geneContextStart("Intron 5")
@@ -1363,14 +1364,14 @@ public final class ExampleAnalysisTestFactory {
                 .geneContextEnd("Intron 3")
                 .geneTranscriptEnd("ENST00000406427")
                 .fusedExonDown(7)
-                .driverLikelihood(LinxFusionDriverLikelihood.HIGH)
-                .phased(LinxPhasedType.INFRAME)
+                .likelihood(FusionLikelihoodType.HIGH)
+                .phased(FusionPhasedType.INFRAME)
                 .junctionCopyNumber(0.4)
                 .build();
 
         LinxFusion fusion2 = TestLinxFactory.fusionBuilder()
                 .reported(true)
-                .type(LinxFusionType.PROMISCUOUS_5)
+                .reportedType(LinxFusionType.PROMISCUOUS_5)
                 .name(Strings.EMPTY)
                 .geneStart("CLCN6")
                 .geneContextStart("Intron 1")
@@ -1380,8 +1381,8 @@ public final class ExampleAnalysisTestFactory {
                 .geneContextEnd("Intron 8")
                 .geneTranscriptEnd("ENST00000288602")
                 .fusedExonDown(7)
-                .driverLikelihood(LinxFusionDriverLikelihood.LOW)
-                .phased(LinxPhasedType.SKIPPED_EXONS)
+                .likelihood(FusionLikelihoodType.LOW)
+                .phased(FusionPhasedType.SKIPPED_EXONS)
                 .junctionCopyNumber(1D)
                 .build();
 
@@ -1407,7 +1408,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<LinxHomozygousDisruption> createTestHomozygousDisruptions() {
+    private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
         return Lists.newArrayList(TestLinxFactory.homozygousDisruptionBuilder()
                 .chromosome("8")
                 .chromosomeBand("p22")
@@ -1418,8 +1419,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static Map<String, List<PeachEntry>> createTestPharmacogeneticsGenotypes() {
-        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
+    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
+        Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
                         .gene("UGT1A1")
@@ -1491,7 +1492,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<VirusInterpreterEntry> createTestAnnotatedViruses() {
+    private static List<AnnotatedVirus> createTestAnnotatedViruses() {
         return Lists.newArrayList(TestVirusInterpreterFactory.builder()
                 .reported(true)
                 .name("Human papillomavirus type 16")

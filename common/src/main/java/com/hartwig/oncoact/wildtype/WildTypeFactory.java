@@ -1,15 +1,16 @@
 package com.hartwig.oncoact.wildtype;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.orange.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public final class WildTypeFactory {
     }
 
     @NotNull
-    public static List<WildTypeGene> filterQCWildTypes(@NotNull Set<PurpleQCStatus> purpleQCStatus,
+    public static List<WildTypeGene> filterQCWildTypes(@NotNull Collection<PurpleQCStatus> purpleQCStatus,
             @NotNull List<WildTypeGene> wildTypeGenes) {
         if (!purpleQCStatus.contains(PurpleQCStatus.FAIL_NO_TUMOR) && !purpleQCStatus.contains(PurpleQCStatus.WARN_LOW_PURITY)) {
             return wildTypeGenes;
@@ -29,10 +30,10 @@ public final class WildTypeFactory {
     }
 
     @NotNull
-    public static List<WildTypeGene> determineWildTypeGenes(@NotNull Set<ReportableVariant> reportableGermlineVariants,
-            @NotNull Set<ReportableVariant> reportableSomaticVariants, @NotNull Set<PurpleGainLoss> reportableSomaticGainsLosses,
-            @NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
-            @NotNull Set<LinxBreakend> reportableBreakends, @NotNull List<DriverGene> driverGenes) {
+    public static List<WildTypeGene> determineWildTypeGenes(@NotNull Collection<ReportableVariant> reportableGermlineVariants,
+            @NotNull Collection<ReportableVariant> reportableSomaticVariants, @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses,
+            @NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<HomozygousDisruption> homozygousDisruptions,
+            @NotNull Collection<LinxBreakend> reportableBreakends, @NotNull Collection<DriverGene> driverGenes) {
         List<WildTypeGene> wildTypeGenes = Lists.newArrayList();
 
         for (DriverGene driverGene : driverGenes) {
@@ -65,7 +66,7 @@ public final class WildTypeFactory {
             }
 
             boolean hasHomozygousDisruption = false;
-            for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+            for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
                 if (driverGene.gene().equals(homozygousDisruption.gene())) {
                     hasFusion = true;
                 }

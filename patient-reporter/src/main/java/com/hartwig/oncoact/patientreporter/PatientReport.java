@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,7 +84,7 @@ public interface PatientReport {
     String udiDi();
 
     @NotNull
-    Map<String, List<PeachEntry>> pharmacogeneticsGenotypes();
+    Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes();
 
     @Nullable
     HlaAllelesReportingData hlaAllelesReportingData();

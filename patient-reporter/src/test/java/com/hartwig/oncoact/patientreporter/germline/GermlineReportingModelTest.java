@@ -7,8 +7,8 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.orange.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.variant.ReportableVariant;

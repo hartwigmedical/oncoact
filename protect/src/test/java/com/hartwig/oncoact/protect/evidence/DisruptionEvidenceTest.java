@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -35,9 +35,9 @@ public class DisruptionEvidenceTest {
         DisruptionEvidence disruptionEvidence = new DisruptionEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(amp, inactivation, deletion, underexpression));
 
-        LinxHomozygousDisruption matchAmp = create(geneAmp);
-        LinxHomozygousDisruption matchInact = create(geneInact);
-        LinxHomozygousDisruption nonMatch = create("other gene");
+        HomozygousDisruption matchAmp = create(geneAmp);
+        HomozygousDisruption matchInact = create(geneInact);
+        HomozygousDisruption nonMatch = create("other gene");
 
         List<ProtectEvidence> evidences = disruptionEvidence.evidence(Sets.newHashSet(matchAmp, matchInact, nonMatch));
 
@@ -52,7 +52,7 @@ public class DisruptionEvidenceTest {
     }
 
     @NotNull
-    private static LinxHomozygousDisruption create(@NotNull String gene) {
+    private static HomozygousDisruption create(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 }

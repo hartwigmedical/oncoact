@@ -10,9 +10,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
@@ -166,8 +166,8 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateHomozygousDisruptions() {
-        List<LinxHomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
-        List<LinxHomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
+        List<HomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneHomozygousDisruption(curated, "NRAS", true), "NRAS");
@@ -176,9 +176,9 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneHomozygousDisruption(@NotNull List<LinxHomozygousDisruption> disruptions, @NotNull String gene,
+    private static String findByGeneHomozygousDisruption(@NotNull List<HomozygousDisruption> disruptions, @NotNull String gene,
             boolean isCanonical) {
-        for (LinxHomozygousDisruption disruption : disruptions) {
+        for (HomozygousDisruption disruption : disruptions) {
             if (disruption.gene().equals(gene) && disruption.isCanonical() == isCanonical) {
                 return disruption.gene();
             }
@@ -285,12 +285,12 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static List<LinxHomozygousDisruption> createTestHomozygousDisruptions() {
-        LinxHomozygousDisruption homozygousDisruption1 =
+    private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
+        HomozygousDisruption homozygousDisruption1 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        LinxHomozygousDisruption homozygousDisruption2 =
+        HomozygousDisruption homozygousDisruption2 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
-        LinxHomozygousDisruption homozygousDisruption3 =
+        HomozygousDisruption homozygousDisruption3 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(homozygousDisruption1, homozygousDisruption2, homozygousDisruption3);
     }

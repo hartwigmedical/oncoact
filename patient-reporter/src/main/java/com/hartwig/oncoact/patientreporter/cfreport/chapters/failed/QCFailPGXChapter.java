@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
@@ -125,7 +125,7 @@ public class QCFailPGXChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachEntry>> pharmacogeneticsGenotypes,
+    private static Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes,
             boolean reportPharmacogenetics) {
         String title = "Pharmacogenetics";
 
@@ -141,7 +141,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
                 Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsGenotypes.keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                    List<PeachEntry> pharmacogeneticsGenotypeList = pharmacogeneticsGenotypes.get(sortPharmacogenetics);
+                    List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsGenotypes.get(sortPharmacogenetics);
                     contentTable.addCell(TableUtil.createContentCell(sortPharmacogenetics));
 
                     Table tableGenotype = new Table(new float[] { 1 });
@@ -149,7 +149,7 @@ public class QCFailPGXChapter implements ReportChapter {
                     Table tableLinkedDrugs = new Table(new float[] { 1 });
                     Table tableSource = new Table(new float[] { 1 });
 
-                    for (PeachEntry peachGenotype : pharmacogeneticsGenotypeList) {
+                    for (PeachGenotype peachGenotype : pharmacogeneticsGenotypeList) {
                         tableGenotype.addCell(TableUtil.createTransparentCell(peachGenotype.haplotype()));
                         tableFunction.addCell(TableUtil.createTransparentCell(peachGenotype.function()));
                         tableLinkedDrugs.addCell(TableUtil.createTransparentCell(peachGenotype.linkedDrugs()));

@@ -18,9 +18,9 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.orange.OrangeRecord;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.SampleReport;
@@ -79,7 +79,7 @@ public class QCFailReporter {
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
         boolean hasReliablePurity = false;
         HlaAllelesReportingData hlaReportingData = null;
-        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
+        Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
 
         if (reason.isDeepWGSDataAvailable()) {
             OrangeRecord orange = OrangeJson.read(config.orangeJson());
@@ -90,16 +90,16 @@ public class QCFailReporter {
             wgsPurityString = hasReliablePurity ? formattedPurity : Lims.PURITY_NOT_RELIABLE_STRING;
             purpleQc = orange.purple().fit().qcStatus();
 
-            Set<PeachEntry> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();
+            Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();
             if (reason.isDeepWGSDataAvailable() && !purpleQc.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
-                Set<PeachEntry> pharmacogeneticsGenotypes = orange.peach().entries();
+                Set<PeachGenotype> pharmacogeneticsGenotypes = orange.peach().entries();
                 pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
             }
 
 
-            for (PeachEntry pharmacogenetics : pharmacogeneticsGenotypesOverrule) {
+            for (PeachGenotype pharmacogenetics : pharmacogeneticsGenotypesOverrule) {
                 if (pharmacogeneticsMap.containsKey(pharmacogenetics.gene())) {
-                    List<PeachEntry> curent = pharmacogeneticsMap.get(pharmacogenetics.gene());
+                    List<PeachGenotype> curent = pharmacogeneticsMap.get(pharmacogenetics.gene());
                     curent.add(pharmacogenetics);
                     pharmacogeneticsMap.put(pharmacogenetics.gene(), curent);
                 } else {

@@ -1,16 +1,16 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.orange.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.wildtype.WildTypeFactory;
@@ -36,10 +36,11 @@ public class WildTypeEvidence {
         this.driverGenes = driverGenes;
     }
 
-    public List<ProtectEvidence> evidence(@NotNull Set<ReportableVariant> reportableGermlineVariants,
-            @NotNull Set<ReportableVariant> reportableSomaticVariants, @NotNull Set<PurpleGainLoss> reportableSomaticGainsLosses,
-            @NotNull Set<LinxFusion> reportableFusions, @NotNull Set<LinxHomozygousDisruption> homozygousDisruptions,
-            @NotNull Set<LinxBreakend> reportableBreakends, @NotNull Set<PurpleQCStatus> purpleQCStatus) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermlineVariants,
+            @NotNull Collection<ReportableVariant> reportableSomaticVariants,
+            @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses, @NotNull Collection<LinxFusion> reportableFusions,
+            @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
+            @NotNull Collection<PurpleQCStatus> purpleQCStatus) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         List<WildTypeGene> wildTypeGenes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleTranscriptImpact;
-import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 
 import org.jetbrains.annotations.NotNull;
 

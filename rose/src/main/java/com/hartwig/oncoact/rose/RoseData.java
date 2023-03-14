@@ -3,7 +3,7 @@ package com.hartwig.oncoact.rose;
 import java.util.List;
 
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
 
 import org.immutables.value.Value;

@@ -3,7 +3,7 @@ package com.hartwig.oncoact.cuppa;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
 
 import org.junit.Test;
