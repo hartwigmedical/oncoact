@@ -337,13 +337,14 @@ public final class OrangeJson {
         @NotNull
         private static LinxRecord toLinxRecord(@NotNull JsonObject linx) {
             return ImmutableLinxRecord.builder()
-                    .structuralVariants(toLinxStructuralVariants(array(linx, "allStructuralVariants")))
-                    .homozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "homozygousDisruptions")))
-                    .allBreakends(toLinxBreakends(array(linx, "allBreakends")))
-                    .reportableBreakends(toLinxBreakends(array(linx, "reportableBreakends")))
-                    .additionalSuspectBreakends(toLinxBreakends(array(linx, "additionalSuspectBreakends")))
-                    .allFusions(toLinxFusions(array(linx, "allFusions")))
-                    .reportableFusions(toLinxFusions(array(linx, "reportableFusions")))
+                    .allSomaticStructuralVariants(toLinxStructuralVariants(array(linx, "allSomaticStructuralVariants")))
+                    .somaticHomozygousDisruptions(toLinxHomozygousDisruptions(array(linx, "somaticHomozygousDisruptions")))
+                    .additionalSuspectSomaticBreakends(toLinxBreakends(array(linx, "additionalSuspectSomaticBreakends")))
+                    .allSomaticBreakends(toLinxBreakends(array(linx, "allSomaticBreakends")))
+                    .reportableSomaticBreakends(toLinxBreakends(array(linx, "reportableSomaticBreakends")))
+                    .allSomaticFusions(toLinxFusions(array(linx, "allSomaticFusions")))
+                    .reportableSomaticFusions(toLinxFusions(array(linx, "reportableSomaticFusions")))
+                    .additionalSuspectSomaticFusions(toLinxFusions(array(linx, "additionalSuspectSomaticFusions")))
                     .build();
         }
 

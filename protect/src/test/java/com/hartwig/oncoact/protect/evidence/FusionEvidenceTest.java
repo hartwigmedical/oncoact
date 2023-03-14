@@ -198,11 +198,7 @@ public class FusionEvidenceTest {
         ActionableFusion fusion = TestServeFactory.fusionBuilder()
                 .geneUp("EML4")
                 .minExonUp(minExonUp)
-                .maxExonUp(maxExonUp)
-                .geneDown("ALK")
-                .minExonDown(minExonDown)
-                .maxExonDown(maxExonDown)
-                .build();
+                .maxExonUp(maxExonUp).geneDown("ALK").minExonDown(minExonDown).maxExonDown(maxExonDown).build();
 
         FusionEvidence fusionEvidence =
                 new FusionEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(), Lists.newArrayList(fusion));

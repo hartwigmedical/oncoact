@@ -244,21 +244,21 @@ public class OrangeJsonTest {
     }
 
     private static void assertLinx(@NotNull LinxRecord linx) {
-        assertEquals(1, linx.structuralVariants().size());
-        LinxStructuralVariant structuralVariant = linx.structuralVariants().iterator().next();
+        assertEquals(1, linx.allSomaticStructuralVariants().size());
+        LinxStructuralVariant structuralVariant = linx.allSomaticStructuralVariants().iterator().next();
         assertEquals(1, structuralVariant.svId());
         assertEquals(2, structuralVariant.clusterId());
 
-        assertEquals(1, linx.homozygousDisruptions().size());
-        LinxHomozygousDisruption homozygousDisruption = linx.homozygousDisruptions().iterator().next();
+        assertEquals(1, linx.somaticHomozygousDisruptions().size());
+        LinxHomozygousDisruption homozygousDisruption = linx.somaticHomozygousDisruptions().iterator().next();
         assertEquals("4", homozygousDisruption.chromosome());
         assertEquals("p1.12", homozygousDisruption.chromosomeBand());
         assertEquals("NF1", homozygousDisruption.gene());
         assertEquals("ENST00000358273", homozygousDisruption.transcript());
         assertTrue(homozygousDisruption.isCanonical());
 
-        assertEquals(1, linx.allBreakends().size());
-        LinxBreakend breakend = linx.allBreakends().iterator().next();
+        assertEquals(1, linx.allSomaticBreakends().size());
+        LinxBreakend breakend = linx.allSomaticBreakends().iterator().next();
         assertFalse(breakend.reported());
         assertFalse(breakend.disruptive());
         assertEquals(1, breakend.svId());
@@ -278,11 +278,11 @@ public class OrangeJsonTest {
         assertEquals(LinxRegionType.EXONIC, breakend.regionType());
         assertEquals(LinxCodingType.UTR_3P, breakend.codingType());
 
-        assertEquals(1, linx.reportableBreakends().size());
-        assertEquals(breakend, linx.reportableBreakends().iterator().next());
+        assertEquals(1, linx.reportableSomaticBreakends().size());
+        assertEquals(breakend, linx.reportableSomaticBreakends().iterator().next());
 
-        assertEquals(1, linx.allFusions().size());
-        LinxFusion fusion = linx.allFusions().iterator().next();
+        assertEquals(1, linx.allSomaticFusions().size());
+        LinxFusion fusion = linx.allSomaticFusions().iterator().next();
         assertTrue(fusion.reported());
         assertEquals(LinxFusionType.KNOWN_PAIR, fusion.type());
         assertEquals("TMPRSS2-ETV4", fusion.name());
@@ -298,8 +298,8 @@ public class OrangeJsonTest {
         assertEquals(LinxPhasedType.INFRAME, fusion.phased());
         assertEquals(1.1, fusion.junctionCopyNumber(), EPSILON);
 
-        assertEquals(1, linx.reportableFusions().size());
-        assertEquals(fusion, linx.reportableFusions().iterator().next());
+        assertEquals(1, linx.reportableSomaticFusions().size());
+        assertEquals(fusion, linx.reportableSomaticFusions().iterator().next());
     }
 
     private static void assertPeach(@NotNull PeachRecord peach) {

@@ -85,8 +85,8 @@ public final class ConclusionAlgo {
 
         Set<PurpleGainLoss> reportableGainLosses = purple.reportableSomaticGainsLosses();
 
-        Set<LinxFusion> reportableFusions = rose.orange().linx().reportableFusions();
-        Set<LinxHomozygousDisruption> homozygousDisruptions = rose.orange().linx().homozygousDisruptions();
+        Set<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         Set<VirusInterpreterEntry> reportableViruses = rose.orange().virusInterpreter().reportableViruses();
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
