@@ -12,9 +12,6 @@ import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.knownfusion.KnownFusionCache;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeRecord;
 import com.hartwig.oncoact.orange.OrangeRefGenomeVersion;
@@ -39,12 +36,9 @@ public class GenomicAnalyzer {
 
     @NotNull
     private final GermlineReportingModel germlineReportingModel;
-    @NotNull
-    private final KnownFusionCache knownFusionCache;
 
-    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel, @NotNull final KnownFusionCache knownFusionCache) {
+    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel) {
         this.germlineReportingModel = germlineReportingModel;
-        this.knownFusionCache = knownFusionCache;
     }
 
     @NotNull

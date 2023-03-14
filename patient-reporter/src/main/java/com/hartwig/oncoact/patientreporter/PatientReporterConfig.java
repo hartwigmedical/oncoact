@@ -30,7 +30,6 @@ public interface PatientReporterConfig {
     String OUTPUT_DIRECTORY_REPORT = "output_dir_report";
     String OUTPUT_DIRECTORY_DATA = "output_dir_data";
 
-    String KNOWN_FUSION_FILE = "known_fusion_file";
     String PRIMARY_TUMOR_TSV = "primary_tumor_tsv";
     String LIMS_DIRECTORY = "lims_dir";
 
@@ -83,7 +82,6 @@ public interface PatientReporterConfig {
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
-        options.addOption(KNOWN_FUSION_FILE, true, "Path to the known fusion file.");
         options.addOption(PRIMARY_TUMOR_TSV, true, "Path towards the (curated) primary tumor TSV.");
         options.addOption(LIMS_DIRECTORY, true, "Path towards the directory holding the LIMS data");
 
@@ -139,9 +137,6 @@ public interface PatientReporterConfig {
 
     @NotNull
     String outputDirReport();
-
-    @NotNull
-    String knownFusionFile();
 
     @NotNull
     String outputDirData();
@@ -238,7 +233,6 @@ public interface PatientReporterConfig {
         boolean addRose = false;
         String roseTsv = null;
 
-        String knownFusionFile = Strings.EMPTY;
         String germlineReportingTsv = Strings.EMPTY;
         String sampleSpecialRemarkTsv = Strings.EMPTY;
 
@@ -262,7 +256,6 @@ public interface PatientReporterConfig {
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
             sampleSpecialRemarkTsv = nonOptionalFile(cmd, SAMPLE_SPECIAL_REMARK_TSV);
-            knownFusionFile = nonOptionalFile(cmd, KNOWN_FUSION_FILE);
         }
 
         return ImmutablePatientReporterConfig.builder()
@@ -286,7 +279,6 @@ public interface PatientReporterConfig {
                 .addRose(addRose)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
-                .knownFusionFile(knownFusionFile)
                 .sampleSpecialRemarkTsv(sampleSpecialRemarkTsv)
                 .comments(cmd.getOptionValue(COMMENTS))
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
