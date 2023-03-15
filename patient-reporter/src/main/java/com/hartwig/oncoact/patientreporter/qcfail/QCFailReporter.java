@@ -88,11 +88,11 @@ public class QCFailReporter {
             hasReliablePurity = orange.purple().fit().containsTumorCells();
 
             wgsPurityString = hasReliablePurity ? formattedPurity : Lims.PURITY_NOT_RELIABLE_STRING;
-            purpleQc = orange.purple().fit().qcStatus();
+            purpleQc = orange.purple().fit().qc().status();
 
             Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();
             if (reason.isDeepWGSDataAvailable() && !purpleQc.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
-                Set<PeachGenotype> pharmacogeneticsGenotypes = orange.peach().entries();
+                Set<PeachGenotype> pharmacogeneticsGenotypes = orange.peach();
                 pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
             }
 

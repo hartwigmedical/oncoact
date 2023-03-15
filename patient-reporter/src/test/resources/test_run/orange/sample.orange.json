@@ -54,19 +54,17 @@
   "chord": {
     "hrdValue": 0,
     "hrStatus": "HR_PROFICIENT",
-    "brca1Value": 0,
-    "brca2Value": 0,
+    "BRCA1Value": 0,
+    "BRCA2Value": 0,
     "hrdType": "none"
   },
-  "peach": {
-    "entries": []
-  },
+  "peach": [],
   "cuppa": {
     "predictions": [],
     "simpleDups32To200B": 0,
     "maxComplexSize": 0,
     "telomericSGLs": 0,
-    "lineCount": 0
+    "LINECount": 0
   },
   "lilac": {
     "qc": "FAIL",

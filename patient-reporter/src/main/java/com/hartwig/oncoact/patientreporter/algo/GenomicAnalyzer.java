@@ -77,7 +77,7 @@ public class GenomicAnalyzer {
                 CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
 
         return ImmutableGenomicAnalysis.builder()
-                .purpleQCStatus(orange.purple().fit().qcStatus())
+                .purpleQCStatus(orange.purple().fit().qc().status())
                 .impliedPurity(orange.purple().fit().purity())
                 .hasReliablePurity(orange.purple().fit().containsTumorCells())
                 .hasReliableQuality(orange.purple().fit().hasSufficientQuality())

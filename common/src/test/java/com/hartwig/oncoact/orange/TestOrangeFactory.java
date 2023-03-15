@@ -1,28 +1,27 @@
 package com.hartwig.oncoact.orange;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaData;
-import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxRecord;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.sv.LinxBreakendType;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxRecord;
+import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.OrangePlots;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
-import com.hartwig.hmftools.datamodel.peach.ImmutablePeachRecord;
-import com.hartwig.hmftools.datamodel.peach.PeachRecord;
-import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
-import com.hartwig.hmftools.datamodel.orange.OrangePlots;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleRecord;
@@ -37,12 +36,13 @@ import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterData;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.hmftools.datamodel.sv.LinxBreakendType;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusBreakendQCStatus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
 import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
@@ -69,7 +69,7 @@ public final class TestOrangeFactory {
                 .refGenomeVersion(OrangeRefGenomeVersion.V37)
                 .purple(createMinimalTestPurpleRecord())
                 .linx(ImmutableLinxRecord.builder().build())
-                .peach(ImmutablePeachRecord.builder().build())
+                .peach(Set.of())
                 .cuppa(createTestCuppaRecord())
                 .virusInterpreter(ImmutableVirusInterpreterData.builder().build())
                 .lilac(createMinimalTestLilacRecord())
@@ -235,18 +235,16 @@ public final class TestOrangeFactory {
     }
 
     @NotNull
-    private static PeachRecord createTestPeachRecord() {
-        return ImmutablePeachRecord.builder()
-                .addEntries(TestPeachFactory.builder()
-                        .gene("DPYD")
-                        .haplotype("1* HOM")
-                        .function("Normal function")
-                        .linkedDrugs("5-Fluorouracil")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build())
-                .build();
+    private static Set<PeachGenotype> createTestPeachRecord() {
+        return Set.of(TestPeachFactory.builder()
+                .gene("DPYD")
+                .haplotype("1* HOM")
+                .function("Normal function")
+                .linkedDrugs("5-Fluorouracil")
+                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939")
+                .panelVersion("peach_prod_v1.3")
+                .repoVersion("1.7")
+                .build());
     }
 
     @NotNull

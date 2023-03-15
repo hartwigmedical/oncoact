@@ -317,7 +317,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         for (PurpleGeneCopyNumber geneCopyNumber : LohGenes.sort(purpleGeneCopyNumbers)) {
             table.addCell(TableUtil.createContentCell(geneCopyNumber.chromosome() + geneCopyNumber.chromosomeBand()));
-            table.addCell(TableUtil.createContentCell(geneCopyNumber.gene()));
+            table.addCell(TableUtil.createContentCell(geneCopyNumber.geneName()));
             table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minMinorAlleleCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
             table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
         }

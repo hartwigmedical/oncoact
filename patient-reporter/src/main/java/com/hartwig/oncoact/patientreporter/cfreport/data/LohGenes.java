@@ -25,7 +25,7 @@ public final class LohGenes {
     @NotNull
     public static List<PurpleGeneCopyNumber> sort(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers) {
         return purpleGeneCopyNumbers.stream()
-                .sorted(Comparator.comparing((PurpleGeneCopyNumber purpleGeneCopyNumber) -> purpleGeneCopyNumber.gene()))
+                .sorted(Comparator.comparing(PurpleGeneCopyNumber::geneName))
                 .collect(Collectors.toList());
     }
 }

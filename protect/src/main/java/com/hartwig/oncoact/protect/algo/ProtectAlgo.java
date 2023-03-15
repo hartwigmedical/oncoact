@@ -141,7 +141,7 @@ public class ProtectAlgo {
                 orange.linx().reportableSomaticFusions(),
                 orange.linx().somaticHomozygousDisruptions(),
                 orange.linx().reportableSomaticBreakends(),
-                orange.purple().fit().qcStatus());
+                orange.purple().fit().qc().status());
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();

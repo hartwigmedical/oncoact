@@ -53,12 +53,19 @@
   },
   "chord": {
     "hrdValue": 0,
-    "hrStatus": "HR_PROFICIENT"
+    "hrStatus": "HR_PROFICIENT",
+    "BRCA1Value": 0,
+    "BRCA2Value": 0,
+    "hrdType": ""
   },
   "peach": [],
   "cuppa": {
     "predictions": [
-    ]
+    ],
+    "simpleDups32To200B": 0,
+    "maxComplexSize": 0,
+    "telomericSGLs": 0,
+    "LINECount": 0
   },
   "lilac": {
     "qc": "FAIL",
@@ -66,6 +73,12 @@
     ]
   },
   "plots": {
-    "purpleFinalCircosPlot": "plot/empty.circos.png"
+    "purpleFinalCircosPlot": "plot/empty.circos.png",
+    "sageTumorBQRPlot": "",
+    "purpleInputPlot": "",
+    "purpleClonalityPlot": "",
+    "purpleCopyNumberPlot": "",
+    "purpleVariantCopyNumberPlot": "",
+    "purplePurityRangePlot": ""
   }
 }

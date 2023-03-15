@@ -255,8 +255,25 @@
   "linx": {
     "allSomaticStructuralVariants": [
       {
+        "vcfId": "id",
         "svId": 1,
-        "clusterId": 2
+        "clusterId": 2,
+        "clusterReason": "",
+        "fragileSiteStart": false,
+        "fragileSiteEnd": false,
+        "isFoldback": false,
+        "lineTypeStart": "NONE",
+        "lineTypeEnd": "NONE",
+        "junctionCopyNumberMin": 2.0,
+        "junctionCopyNumberMax": 3.0,
+        "geneStart": "PTENR",
+        "geneEnd": "PTEN",
+        "localTopologyIdStart": 0,
+        "localTopologyIdEnd": 1,
+        "localTopologyStart": "ISOLATED_S",
+        "localTopologyEnd": "ISOLATED_BE",
+        "localTICountStart": 3,
+        "localTICountEnd": 4
       }
     ],
     "allSomaticFusions": [
@@ -274,7 +291,11 @@
         "geneTranscriptEnd": "ENST00000319349",
         "geneContextEnd": "Exon 2",
         "phased": "INFRAME",
-        "junctionCopyNumber": 1.1
+        "junctionCopyNumber": 1.1,
+        "chainLinks": 0,
+        "chainTerminated": false,
+        "domainsKept": "",
+        "domainsLost": ""
       }
     ],
     "reportableSomaticFusions": [
@@ -292,13 +313,18 @@
         "geneTranscriptEnd": "ENST00000319349",
         "geneContextEnd": "Exon 2",
         "phased": "INFRAME",
-        "junctionCopyNumber": 1.1
+        "junctionCopyNumber": 1.1,
+        "chainLinks": 0,
+        "chainTerminated": false,
+        "domainsKept": "",
+        "domainsLost": ""
       }
     ],
     "allSomaticBreakends": [
       {
         "reportedDisruption": false,
         "disruptive": false,
+        "id": 0,
         "svId": 1,
         "gene": "NF1",
         "chromosome": "1",
@@ -322,6 +348,7 @@
       {
         "reportedDisruption": false,
         "disruptive": false,
+        "id": 0,
         "svId": 1,
         "gene": "NF1",
         "chromosome": "1",
@@ -354,6 +381,7 @@
       {
         "reportedDisruption": false,
         "disruptive": false,
+        "id": 0,
         "svId": 1,
         "gene": "NF1",
         "chromosome": "1",
@@ -384,7 +412,8 @@
         "interpretation": "HPV",
         "reported": true,
         "virusDriverLikelihoodType": "HIGH",
-        "percentageCovered": 0.9
+        "percentageCovered": 0.9,
+        "meanCoverage": 0
       },
       {
         "name": "Human betaherpesvirus 6B",
@@ -393,7 +422,8 @@
         "interpretation": null,
         "reported": false,
         "virusDriverLikelihoodType": "LOW",
-        "percentageCovered": 0.4
+        "percentageCovered": 0.4,
+        "meanCoverage": 0
       }
     ],
     "reportableViruses": [
@@ -404,13 +434,17 @@
         "interpretation": "HPV",
         "reported": true,
         "virusDriverLikelihoodType": "HIGH",
-        "percentageCovered": 0.9
+        "percentageCovered": 0.9,
+        "meanCoverage": 0
       }
     ]
   },
   "chord": {
     "hrdValue": 0.01,
-    "hrStatus": "HR_PROFICIENT"
+    "hrStatus": "HR_PROFICIENT",
+    "BRCA1Value": 0,
+    "BRCA2Value": 0,
+    "hrdType": ""
   },
   "peach": [
     {
@@ -429,7 +463,11 @@
         "cancerType": "Melanoma",
         "likelihood": 0.996
       }
-    ]
+    ],
+    "simpleDups32To200B": 0,
+    "maxComplexSize": 0,
+    "telomericSGLs": 0,
+    "LINECount": 0
   },
   "lilac": {
     "qc": "PASS",
@@ -441,11 +479,20 @@
         "somaticNonsenseOrFrameshift": 4.0,
         "somaticSplice": 3.0,
         "somaticSynonymous": 0.4,
-        "somaticInframeIndel": 1.0
+        "somaticInframeIndel": 1.0,
+        "refFragments": 210,
+        "tumorFragments": 1602,
+        "rnaFragments": 0
       }
     ]
   },
   "plots": {
-    "purpleFinalCircosPlot": "plot/empty.circos.png"
+    "purpleFinalCircosPlot": "plot/empty.circos.png",
+    "sageTumorBQRPlot": "",
+    "purpleInputPlot": "",
+    "purpleClonalityPlot": "",
+    "purpleCopyNumberPlot": "",
+    "purpleVariantCopyNumberPlot": "",
+    "purplePurityRangePlot": ""
   }
 }

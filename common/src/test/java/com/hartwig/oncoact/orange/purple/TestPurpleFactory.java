@@ -9,12 +9,15 @@ import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleDriver;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleFit;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleQC;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQC;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 
@@ -28,7 +31,12 @@ public final class TestPurpleFactory {
 
     @NotNull
     public static ImmutablePurpleFit.Builder fitBuilder() {
-        return ImmutablePurpleFit.builder().hasSufficientQuality(false).containsTumorCells(false).purity(0).ploidy(0);
+        return ImmutablePurpleFit.builder()
+                .hasSufficientQuality(false)
+                .containsTumorCells(false)
+                .purity(0)
+                .ploidy(0)
+                .qc(ImmutablePurpleQC.builder().addStatus(PurpleQCStatus.PASS).build());
     }
 
     @NotNull
@@ -92,7 +100,7 @@ public final class TestPurpleFactory {
         return ImmutablePurpleGeneCopyNumber.builder()
                 .chromosome(Strings.EMPTY)
                 .chromosomeBand(Strings.EMPTY)
-                .gene(Strings.EMPTY)
+                .geneName(Strings.EMPTY)
                 .minCopyNumber(0D)
                 .minMinorAlleleCopyNumber(0D);
     }
