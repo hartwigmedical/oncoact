@@ -253,8 +253,7 @@ public class SummaryChapter implements ReportChapter {
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Virus").addStyle(ReportResources.bodyTextStyle())));
-        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses()),
-                patientReport.sampleReport().reportViralPresence()));
+        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
 
         div.add(table);
 
@@ -262,17 +261,14 @@ public class SummaryChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Cell createVirusInterpretationString(@NotNull Set<String> virus, boolean reportViralPresence) {
+    private static Cell createVirusInterpretationString(@NotNull Set<String> virus) {
         String virusSummary;
         Style style;
-        if (reportViralPresence && virus.size() == 0) {
-            virusSummary = Formats.NONE_STRING;
-            style = ReportResources.dataHighlightNaStyle();
-        } else if (reportViralPresence && virus.size() > 0) {
+        if (virus.size() > 0) {
             virusSummary = String.join(", ", virus);
             style = ReportResources.dataHighlightStyle();
         } else {
-            virusSummary = Formats.NA_STRING;
+            virusSummary = Formats.NONE_STRING;
             style = ReportResources.dataHighlightNaStyle();
         }
 
@@ -357,7 +353,6 @@ public class SummaryChapter implements ReportChapter {
         Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
         String title = "Pharmacogenetics";
 
-        if (patientReport.sampleReport().reportPharmogenetics()) {
             if (patientReport.pharmacogeneticsGenotypes().isEmpty()) {
                 div.add(TableUtil.createNoneReportTable(title,
                         null,
@@ -383,13 +378,6 @@ public class SummaryChapter implements ReportChapter {
                     contentTable.addCell(TableUtil.createContentCell(concat(function)));
                 }
                 div.add(TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY));
-            }
-        } else {
-            String noConsent = "This patient did not give his/her permission for reporting of pharmacogenomics results.";
-            div.add(TableUtil.createNoConsentReportTable(title,
-                    noConsent,
-                    TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
         }
         divGermline.add(div);
     }
