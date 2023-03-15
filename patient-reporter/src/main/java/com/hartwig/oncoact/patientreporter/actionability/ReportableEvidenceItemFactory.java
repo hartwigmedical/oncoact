@@ -18,7 +18,7 @@ public final class ReportableEvidenceItemFactory {
     }
 
     @NotNull
-    public static List<ProtectEvidence> extractNonTrialsOnLabel(@NotNull List<ProtectEvidence> evidenceItems) {
+    public static List<ProtectEvidence> extractOnLabelEvidence(@NotNull List<ProtectEvidence> evidenceItems) {
         List<ProtectEvidence> nonTrials = Lists.newArrayList();
         for (ProtectEvidence evidence: evidenceItems) {
             Set<KnowledgebaseSource> protectSources = Sets.newHashSet();
@@ -37,7 +37,7 @@ public final class ReportableEvidenceItemFactory {
     }
 
     @NotNull
-    public static List<ProtectEvidence> extractNonTrialsOffLabel(@NotNull List<ProtectEvidence> evidenceItems) {
+    public static List<ProtectEvidence> extractOffLabelEvidence(@NotNull List<ProtectEvidence> evidenceItems) {
         List<ProtectEvidence> nonTrials = Lists.newArrayList();
         for (ProtectEvidence evidence: evidenceItems) {
             Set<KnowledgebaseSource> protectSources = Sets.newHashSet();

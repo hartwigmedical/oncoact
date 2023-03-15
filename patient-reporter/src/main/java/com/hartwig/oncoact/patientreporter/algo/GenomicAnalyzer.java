@@ -62,9 +62,9 @@ public class GenomicAnalyzer {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
                 determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
 
-        List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidences);
+        List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractOnLabelEvidence(reportableEvidences);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
-        List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
+        List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractOffLabelEvidence(reportableEvidences);
 
         RefGenomeCoordinates refGenomeCoordinates =
                 orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
