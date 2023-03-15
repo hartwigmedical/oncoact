@@ -70,7 +70,7 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportChapter[] chapters = new ReportChapter[] { new SummaryChapter(report), new ClinicalEvidenceOnLabelChapter(report),
-                new ClinicalEvidenceOffLabelChapter(report), new GenomicAlterationsChapter(report, report.sampleReport()),
+                new ClinicalEvidenceOffLabelChapter(report), new GenomicAlterationsChapter(report),
                 new TumorCharacteristicsChapter(report), new CircosChapter(report), new ExplanationChapter(),
                 new DetailsAndDisclaimerChapter(report) };
 
