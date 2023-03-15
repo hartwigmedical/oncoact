@@ -30,7 +30,6 @@ public interface PanelReporterConfig {
     String OUTPUT_DIRECTORY_REPORT = "output_dir_report";
     String OUTPUT_DIRECTORY_DATA = "output_dir_data";
 
-    String PRIMARY_TUMOR_TSV = "primary_tumor_tsv";
     String LIMS_DIRECTORY = "lims_dir";
 
     String COMPANY_LOGO = "company_logo";
@@ -65,7 +64,6 @@ public interface PanelReporterConfig {
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
-        options.addOption(PRIMARY_TUMOR_TSV, true, "Path towards the (curated) primary tumor TSV.");
         options.addOption(LIMS_DIRECTORY, true, "Path towards the directory holding the LIMS data");
 
         options.addOption(COMPANY_LOGO, true, "Path towards an image file containing the company logo.");
@@ -105,9 +103,6 @@ public interface PanelReporterConfig {
 
     @NotNull
     String outputDirData();
-
-    @NotNull
-    String primaryTumorTsv();
 
     @NotNull
     String limsDir();
@@ -184,7 +179,6 @@ public interface PanelReporterConfig {
                 .tumorSampleBarcode(nonOptionalValue(cmd, TUMOR_SAMPLE_BARCODE))
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
-                .primaryTumorTsv(nonOptionalFile(cmd, PRIMARY_TUMOR_TSV))
                 .limsDir(nonOptionalDir(cmd, LIMS_DIRECTORY))
                 .companyLogo(nonOptionalFile(cmd, COMPANY_LOGO))
                 .signature(nonOptionalFile(cmd, SIGNATURE))

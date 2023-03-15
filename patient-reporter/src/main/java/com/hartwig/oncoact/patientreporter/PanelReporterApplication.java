@@ -3,10 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
@@ -148,17 +145,12 @@ public class PanelReporterApplication {
 
     @NotNull
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
-        String primaryTumorTsv = config.primaryTumorTsv();
-
-        List<PatientPrimaryTumor> patientPrimaryTumors = PatientPrimaryTumorFile.read(primaryTumorTsv);
-        LOGGER.info("Loaded primary tumors for {} patients from {}", patientPrimaryTumors.size(), primaryTumorTsv);
 
         String limsDirectory = config.limsDir();
         Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
         LOGGER.info("Loaded LIMS data for {} samples from {}", lims.sampleBarcodeCount(), limsDirectory);
 
         return ImmutableQCFailPanelReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
                 .limsModel(lims)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())

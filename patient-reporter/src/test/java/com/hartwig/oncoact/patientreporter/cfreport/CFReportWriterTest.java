@@ -11,7 +11,6 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.clinical.ImmutablePatientPrimaryTumor;
 import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
@@ -455,15 +454,7 @@ public class CFReportWriterTest {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("ST123")
-                .patientPrimaryTumor(ImmutablePatientPrimaryTumor.builder()
-                        .patientIdentifier("test")
-                        .location("Skin")
-                        .subLocation(Strings.EMPTY)
-                        .type("Melanoma")
-                        .subType(Strings.EMPTY)
-                        .extraDetails(Strings.EMPTY)
-                        .isOverridden(false)
-                        .build())
+                .patientPrimaryTumor(Strings.EMPTY)
                 .biopsyLocation(Strings.EMPTY)
                 .germlineReportingLevel(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION)
                 .reportViralPresence(true)
@@ -490,15 +481,7 @@ public class CFReportWriterTest {
                 .sampleMetadata(sampleMetadata)
                 .referenceReceivedSampleId("FB123")
                 .tumorReceivedSampleId("ST001")
-                .patientPrimaryTumor(ImmutablePatientPrimaryTumor.builder()
-                        .patientIdentifier(sampleId)
-                        .location("Skin")
-                        .subLocation(Strings.EMPTY)
-                        .type("Melanoma")
-                        .subType(Strings.EMPTY)
-                        .extraDetails(Strings.EMPTY)
-                        .isOverridden(false)
-                        .build())
+                .patientPrimaryTumor(Strings.EMPTY)
                 .biopsyLocation(Strings.EMPTY)
                 .germlineReportingLevel(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION)
                 .reportViralPresence(true)

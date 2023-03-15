@@ -3,8 +3,6 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
@@ -33,12 +31,9 @@ public class PanelReporter {
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
             @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
             boolean allowDefaultCohortConfig) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
-        PatientPrimaryTumor patientPrimaryTumor =
-                PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
         SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, allowDefaultCohortConfig);
+                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), allowDefaultCohortConfig);
 
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {

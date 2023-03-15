@@ -13,8 +13,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
@@ -64,10 +62,7 @@ public class AnalysedPatientReporter {
 
     @NotNull
     public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
-        PatientPrimaryTumor patientPrimaryTumor = PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
-
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, config.allowDefaultCohortConfig());
+        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), config.allowDefaultCohortConfig());
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;

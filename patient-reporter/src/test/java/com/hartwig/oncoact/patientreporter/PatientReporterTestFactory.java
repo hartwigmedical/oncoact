@@ -1,11 +1,8 @@
 package com.hartwig.oncoact.patientreporter;
 
 import java.io.IOException;
-import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -47,7 +44,6 @@ public final class PatientReporterTestFactory {
                 .tumorSampleBarcode(Strings.EMPTY)
                 .outputDirReport(Strings.EMPTY)
                 .outputDirData(Strings.EMPTY)
-                .primaryTumorTsv(Strings.EMPTY)
                 .limsDir(Strings.EMPTY)
                 .rvaLogo(RVA_LOGO_PATH)
                 .companyLogo(COMPANY_LOGO_PATH)
@@ -74,11 +70,10 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportData() {
-        List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
         return ImmutableQCFailReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
+                .patientPrimaryTumors(Strings.EMPTY)
                 .limsModel(lims)
                 .signaturePath(SIGNATURE_PATH)
                 .logoRVAPath(RVA_LOGO_PATH)
@@ -89,11 +84,10 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportDataPanel() {
-        List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
         return ImmutableQCFailReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
+                .patientPrimaryTumors(Strings.EMPTY)
                 .limsModel(lims)
                 .signaturePath(SIGNATURE_PATH)
                 .logoRVAPath(RVA_LOGO_PATH)

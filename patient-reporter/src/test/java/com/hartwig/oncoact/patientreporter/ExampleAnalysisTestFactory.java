@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.clinical.ImmutablePatientPrimaryTumor;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -48,7 +47,6 @@ import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.protect.EvidenceType;
@@ -333,17 +331,7 @@ public final class ExampleAnalysisTestFactory {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("FB123")
-                .patientPrimaryTumor(ImmutablePatientPrimaryTumor.builder()
-                        .patientIdentifier(sample)
-                        .location("Skin")
-                        .subLocation(Strings.EMPTY)
-                        .type("Melanoma")
-                        .subType(Strings.EMPTY)
-                        .extraDetails(Strings.EMPTY)
-                        .doids(Lists.newArrayList("8923"))
-                        .snomedConceptIds(Lists.newArrayList("93655004"))
-                        .isOverridden(false)
-                        .build())
+                .patientPrimaryTumor(Strings.EMPTY)
                 .biopsyLocation("Skin")
                 .germlineReportingLevel(reportGermline
                         ? LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION
