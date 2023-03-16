@@ -2,7 +2,7 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.IOException;
 
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;

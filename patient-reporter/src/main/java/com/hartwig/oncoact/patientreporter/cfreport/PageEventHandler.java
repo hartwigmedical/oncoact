@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import com.hartwig.oncoact.patientreporter.PatientReport;
+import com.hartwig.oncoact.reporting.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Footer;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Header;
 import com.hartwig.oncoact.patientreporter.cfreport.components.SidePanel;

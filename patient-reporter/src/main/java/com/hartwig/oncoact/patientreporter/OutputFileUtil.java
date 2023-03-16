@@ -4,6 +4,8 @@ import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 
+import com.hartwig.oncoact.reporting.PatientReport;
+import com.hartwig.oncoact.reporting.SampleReport;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 

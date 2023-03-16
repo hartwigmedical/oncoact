@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.panel;
 
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;

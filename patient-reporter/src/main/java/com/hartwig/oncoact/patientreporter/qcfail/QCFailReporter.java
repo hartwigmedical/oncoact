@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -22,8 +21,8 @@ import com.hartwig.oncoact.orange.OrangeRecord;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.SampleMetadata;
+import com.hartwig.oncoact.reporting.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;

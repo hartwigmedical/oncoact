@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-import com.ctc.wstx.util.DataUtil;
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.orange.chord.ChordStatus;
@@ -13,7 +12,7 @@ import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;

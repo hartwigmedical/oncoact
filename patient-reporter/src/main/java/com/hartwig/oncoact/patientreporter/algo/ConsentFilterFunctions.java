@@ -10,6 +10,8 @@ import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.reporting.GenomicAnalysis;
+import com.hartwig.oncoact.reporting.ImmutableGenomicAnalysis;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -24,7 +26,7 @@ public final class ConsentFilterFunctions {
 
     @NotNull
     public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis,
-            @NotNull LimsGermlineReportingLevel germlineReportingLevel, boolean reportViralPresence) {
+                                         @NotNull LimsGermlineReportingLevel germlineReportingLevel, boolean reportViralPresence) {
         List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(genomicAnalysis.reportableVariants(),
                 genomicAnalysis.notifyGermlineStatusPerVariant(),
                 germlineReportingLevel);

@@ -1,8 +1,8 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.SampleReport;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;

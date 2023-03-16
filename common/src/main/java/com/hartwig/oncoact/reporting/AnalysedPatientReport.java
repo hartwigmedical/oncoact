@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.algo;
+package com.hartwig.oncoact.reporting;
 
 import java.util.List;
 import java.util.Map;
@@ -7,8 +7,6 @@ import java.util.Optional;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
-import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

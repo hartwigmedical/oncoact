@@ -8,6 +8,9 @@ import com.hartwig.oncoact.lims.LimsChecker;
 import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 
+import com.hartwig.oncoact.reporting.ImmutableSampleReport;
+import com.hartwig.oncoact.reporting.SampleMetadata;
+import com.hartwig.oncoact.reporting.SampleReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -40,7 +43,7 @@ public final class SampleReportFactory {
 
     @NotNull
     public static SampleReport fromLimsModel(@NotNull SampleMetadata sampleMetadata, @NotNull Lims lims,
-            @Nullable PatientPrimaryTumor patientPrimaryTumor, boolean allowDefaultCohortConfig) {
+                                             @Nullable PatientPrimaryTumor patientPrimaryTumor, boolean allowDefaultCohortConfig) {
         String interpretRefSampleBarcode = interpretRefBarcode(sampleMetadata.refSampleBarcode());
         String refSampleId = sampleMetadata.refSampleId();
         String tumorSampleBarcode = sampleMetadata.tumorSampleBarcode();

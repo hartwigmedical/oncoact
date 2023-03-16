@@ -5,8 +5,8 @@ import java.util.Optional;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.SampleMetadata;
+import com.hartwig.oncoact.reporting.SampleReport;
 import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 
 import org.jetbrains.annotations.NotNull;

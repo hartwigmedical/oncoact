@@ -22,6 +22,8 @@ import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.reporting.GenomicAnalysis;
+import com.hartwig.oncoact.reporting.ImmutableGenomicAnalysis;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.variant.ReportableVariantSource;

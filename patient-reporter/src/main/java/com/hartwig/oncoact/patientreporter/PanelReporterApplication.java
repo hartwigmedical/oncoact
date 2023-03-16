@@ -16,6 +16,8 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
+import com.hartwig.oncoact.reporting.ImmutableSampleMetadata;
+import com.hartwig.oncoact.reporting.SampleMetadata;
 import com.hartwig.oncoact.util.Formats;
 
 import org.apache.commons.cli.DefaultParser;

@@ -14,6 +14,8 @@ import com.hartwig.oncoact.orange.purple.ImmutablePurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.reporting.GenomicAnalysis;
+import com.hartwig.oncoact.reporting.ImmutableGenomicAnalysis;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 

@@ -38,6 +38,9 @@ public class DatabaseAccess implements AutoCloseable {
     @NotNull
     private final ProtectDAO protectDAO;
 
+    @NotNull
+    private final ReportingDAO reportingDAO;
+
     public DatabaseAccess(@NotNull final String userName, @NotNull final String password, @NotNull final String url) throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
@@ -48,6 +51,7 @@ public class DatabaseAccess implements AutoCloseable {
         DSLContext context = DSL.using(connection, SQLDialect.MYSQL, settings(catalog));
 
         this.protectDAO = new ProtectDAO(context);
+        this.reportingDAO = new ReportingDAO(context);
     }
 
     public static void addDatabaseCmdLineArgs(@NotNull Options options) {
@@ -100,6 +104,10 @@ public class DatabaseAccess implements AutoCloseable {
 
     public void writeProtectEvidence(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
         protectDAO.write(sample, evidence);
+    }
+
+    public void writeReporting() {
+        reportingDAO.write();
     }
 }
 

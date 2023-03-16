@@ -6,11 +6,11 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import com.hartwig.oncoact.patientreporter.ImmutableSampleMetadata;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
+import com.hartwig.oncoact.reporting.ImmutableSampleMetadata;
+import com.hartwig.oncoact.reporting.SampleMetadata;
 import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.util.Strings;

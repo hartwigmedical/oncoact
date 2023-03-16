@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.algo;
+package com.hartwig.oncoact.reporting;
 
 import java.util.List;
 import java.util.Map;

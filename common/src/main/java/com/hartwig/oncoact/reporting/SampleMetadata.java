@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter;
+package com.hartwig.oncoact.reporting;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

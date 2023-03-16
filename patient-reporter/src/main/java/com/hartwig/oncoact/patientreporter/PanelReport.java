@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.util.Optional;
 
+import com.hartwig.oncoact.reporting.SampleReport;
 import org.jetbrains.annotations.NotNull;
 
 public interface PanelReport {

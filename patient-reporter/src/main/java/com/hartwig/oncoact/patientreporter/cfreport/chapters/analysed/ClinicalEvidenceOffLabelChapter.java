@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.itextpdf.layout.Document;

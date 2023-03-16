@@ -2,7 +2,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
 import java.net.MalformedURLException;
 
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;

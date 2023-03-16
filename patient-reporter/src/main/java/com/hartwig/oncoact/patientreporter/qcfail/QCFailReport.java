@@ -8,8 +8,8 @@ import java.util.Set;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.orange.peach.PeachEntry;
 import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
-import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.PatientReport;
+import com.hartwig.oncoact.reporting.SampleReport;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

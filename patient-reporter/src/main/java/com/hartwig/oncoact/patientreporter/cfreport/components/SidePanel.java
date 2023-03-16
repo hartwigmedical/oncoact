@@ -2,9 +2,8 @@ package com.hartwig.oncoact.patientreporter.cfreport.components;
 
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.PanelReport;
-import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.PatientReport;
+import com.hartwig.oncoact.reporting.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;

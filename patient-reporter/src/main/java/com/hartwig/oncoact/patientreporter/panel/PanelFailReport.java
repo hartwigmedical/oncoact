@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.PanelReport;
-import com.hartwig.oncoact.patientreporter.SampleReport;
+import com.hartwig.oncoact.reporting.SampleReport;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;

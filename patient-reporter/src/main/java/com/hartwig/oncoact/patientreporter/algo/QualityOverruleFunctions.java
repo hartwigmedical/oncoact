@@ -2,19 +2,15 @@ package com.hartwig.oncoact.patientreporter.algo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
 import com.hartwig.oncoact.orange.purple.ImmutablePurpleGeneCopyNumber;
 import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
+import com.hartwig.oncoact.reporting.GenomicAnalysis;
+import com.hartwig.oncoact.reporting.ImmutableGenomicAnalysis;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
