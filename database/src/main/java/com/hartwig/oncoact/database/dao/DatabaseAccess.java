@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.hartwig.oncoact.protect.ProtectEvidence;
 
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -106,8 +107,8 @@ public class DatabaseAccess implements AutoCloseable {
         protectDAO.write(sample, evidence);
     }
 
-    public void writeReporting() {
-        reportingDAO.write();
+    public void writeReporting(AnalysedPatientReport analysedPatientReport) {
+        reportingDAO.write(analysedPatientReport);
     }
 }
 

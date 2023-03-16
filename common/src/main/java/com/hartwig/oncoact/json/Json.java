@@ -2,8 +2,10 @@ package com.hartwig.oncoact.json;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -59,6 +61,20 @@ public final class Json {
     @NotNull
     public static List<String> stringList(@NotNull JsonObject object, @NotNull String field) {
         List<String> values = Lists.newArrayList();
+        if (object.get(field).isJsonPrimitive()) {
+            values.add(string(object, field));
+        } else {
+            assert object.get(field).isJsonArray();
+            for (JsonElement element : object.getAsJsonArray(field)) {
+                values.add(element.getAsJsonPrimitive().getAsString());
+            }
+        }
+        return values;
+    }
+
+    @NotNull
+    public static Set<String> stringSet(@NotNull JsonObject object, @NotNull String field) {
+        Set<String> values = Sets.newHashSet();
         if (object.get(field).isJsonPrimitive()) {
             values.add(string(object, field));
         } else {

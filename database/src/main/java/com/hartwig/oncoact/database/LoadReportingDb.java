@@ -3,6 +3,8 @@ package com.hartwig.oncoact.database;
 import com.hartwig.oncoact.database.dao.DatabaseAccess;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
+import com.hartwig.oncoact.reporting.ReportingJson;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,8 +39,8 @@ public class LoadReportingDb {
 
         DatabaseAccess dbWriter = databaseAccess(cmd);
         LOGGER.info("Reading reporting json data from {}", reportingJson);
-      //  List<ProtectEvidence> evidences = ProtectEvidenceFile.read(evidenceTsv);
-        dbWriter.writeReporting();
+        AnalysedPatientReport analysedPatientReport = ReportingJson.read(reportingJson);
+        dbWriter.writeReporting(analysedPatientReport);
         LOGGER.info("Done writing reporting data to database");
     }
 

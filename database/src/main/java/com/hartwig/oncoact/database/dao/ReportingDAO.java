@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.database.dao;
 
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.reporting.AnalysedPatientReport;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.DSLContext;
 
@@ -16,6 +17,6 @@ class ReportingDAO {
         this.context = context;
     }
 
-    void write() {
+    void write(AnalysedPatientReport analysedPatientReport) {
     }
 }
