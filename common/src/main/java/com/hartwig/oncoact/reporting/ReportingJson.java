@@ -200,8 +200,24 @@ public class ReportingJson {
                     .geneDisruptions(toGeneDisruption(array(genomicAnalysis, "geneDisruptions")))
                     .homozygousDisruptions(toHomozygousDisruptions(array(genomicAnalysis, "homozygousDisruptions")))
                     .reportableViruses(toVirusInterpreterEntries(array(genomicAnalysis, "reportableViruses")))
-                    .suspectGeneCopyNumbersWithLOH(Lists.newArrayList()) //TODO: implement reading
+                    .suspectGeneCopyNumbersWithLOH(toLohEvents(array(genomicAnalysis, "suspectGeneCopyNumbersHRDWithLOH")))
                     .build();
+        }
+
+        @NotNull
+        private static List<PurpleGeneCopyNumber> toLohEvents(@NotNull JsonArray lohEvents) {
+            List<PurpleGeneCopyNumber> lohEventsList = Lists.newArrayList();
+            for (JsonElement element : lohEvents) {
+                JsonObject lohEvent = element.getAsJsonObject();
+                lohEventsList.add(ImmutablePurpleGeneCopyNumber.builder()
+                        .chromosome(string(lohEvent, "chromosome"))
+                        .chromosomeBand(string(lohEvent, "chromosomeBand"))
+                        .gene(string(lohEvent, "gene"))
+                        .minCopyNumber(nullableNumber(lohEvent, "minCopyNumber"))
+                        .minMinorAlleleCopyNumber(nullableNumber(lohEvent, "minMinorAlleleCopyNumber"))
+                        .build());
+            }
+            return lohEventsList;
         }
 
         @NotNull
@@ -240,7 +256,7 @@ public class ReportingJson {
         @NotNull
         private static Treatment toTreatment(@NotNull JsonObject treatment) {
             return ImmutableTreatment.builder()
-                    .name(Strings.EMPTY)
+                    .name(string(treatment, "treament"))
                     .sourceRelevantTreatmentApproaches(toTreatmentApproaches(treatment, "sourceRelevantTreatmentApproaches"))
                     .relevantTreatmentApproaches(toTreatmentApproaches(treatment, "relevantTreatmentApproaches"))
                     .build();

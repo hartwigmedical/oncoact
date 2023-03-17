@@ -78,7 +78,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                              @NotNull PurpleQCStatus purpleQCStatus) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
@@ -86,8 +86,8 @@ public final class ExampleAnalysisTestFactory {
         double microsatelliteIndelsPerMb = 0.1221;
         PurpleTumorMutationalStatus tumorMutationalLoadStatus = PurpleTumorMutationalStatus.HIGH;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
-        double hrdValue = 0D;
-        ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
+        double hrdValue = 1D;
+        ChordStatus hrdStatus = ChordStatus.HR_DEFICIENT;
         String reportDate = Formats.formatDate(LocalDate.now());
         double impliedPurityPercentage = MathUtil.mapPercentage(config.impliedTumorPurity(), TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
 
@@ -213,12 +213,15 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static List<PurpleGeneCopyNumber> createLOHGenes() {
-        return Lists.newArrayList();
+        List<PurpleGeneCopyNumber> lohGenes = Lists.newArrayList();
+        PurpleGeneCopyNumber gene = ImmutablePurpleGeneCopyNumber.builder().chromosome("1").chromosomeBand("p").gene("TP53").minCopyNumber(1D).minMinorAlleleCopyNumber(0.5).build();
+        lohGenes.add(gene);
+        return lohGenes;
     }
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -246,7 +249,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-            @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -316,7 +319,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline,
-            @NotNull LimsCohortConfig cohort) {
+                                                               @NotNull LimsCohortConfig cohort) {
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
                 .refSampleId(Strings.EMPTY)
                 .refSampleBarcode("FR12123488")
@@ -361,7 +364,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)

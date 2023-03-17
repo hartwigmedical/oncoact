@@ -1676,7 +1676,15 @@
         "virusDriverLikelihoodType": "HIGH"
       }
     ],
-    "suspectGeneCopyNumbersHRDWithLOH": [],
+    "suspectGeneCopyNumbersHRDWithLOH": [
+      {
+        "chromosome": "1",
+        "chromosomeBand": "p",
+        "gene": "TP53",
+        "minCopyNumber": 1.0,
+        "minMinorAlleleCopyNumber": 0.5
+      }
+    ],
     "suspectGeneCopyNumbersMSIWithLOH": []
   },
   "molecularTissueOriginReporting": {
