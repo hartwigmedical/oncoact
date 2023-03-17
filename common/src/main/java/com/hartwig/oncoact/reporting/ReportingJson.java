@@ -31,6 +31,9 @@ import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.serve.datamodel.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +50,8 @@ import static com.hartwig.oncoact.json.Json.*;
 import static com.hartwig.oncoact.json.Json.object;
 
 public class ReportingJson {
+
+    private static final Logger LOGGER = LogManager.getLogger(ReportingJson.class);
 
     private ReportingJson() {
     }
@@ -72,12 +77,12 @@ public class ReportingJson {
                     .clinicalSummary(string(record, "clinicalSummary"))
                     .specialRemark(string(record, "specialRemark"))
                     .pipelineVersion(string(record, "pipelineVersion"))
-                    .genomicAnalysis(toGenomicAnalysis(record))
-                    .molecularTissueOriginReporting(toMolecularTissueOriginReporting(record))
+                    .genomicAnalysis(toGenomicAnalysis(object(record, "genomicAnalysis")))
+                    .molecularTissueOriginReporting(toMolecularTissueOriginReporting(object(record, "molecularTissueOriginReporting")))
                     .molecularTissueOriginPlotPath(string(record, "molecularTissueOriginPlotPath"))
                     .circosPlotPath(string(record, "circosPlotPath"))
-                    .pharmacogeneticsGenotypes(toPgx(record))
-                    .hlaAllelesReportingData(toHla(record))
+                    .pharmacogeneticsGenotypes(toPgx(object(record, "pharmacogeneticsGenotypes")))
+                    .hlaAllelesReportingData(toHla(object(record, "hlaAllelesReportingData")))
                     .comments(string(record, "comments"))
                     .isCorrectedReport(bool(record, "isCorrectedReport"))
                     .isCorrectedReportExtern(bool(record, "isCorrectedReportExtern"))
@@ -86,7 +91,7 @@ public class ReportingJson {
                     .logoCompanyPath(string(record, "logoCompanyPath"))
                     .reportDate(string(record, "reportDate"))
                     .udiDi(string(record, "udiDi"))
-                    .isWGSReport(bool(record, "isWGSReport"))
+                    .isWGSReport(bool(record, "isWGSreport"))
                     .build();
         }
 
@@ -172,7 +177,7 @@ public class ReportingJson {
         @NotNull
         private static GenomicAnalysis toGenomicAnalysis(@NotNull JsonObject genomicAnalysis) {
             return ImmutableGenomicAnalysis.builder()
-                    .purpleQCStatus(toPurpleQCStatus(stringList(genomicAnalysis, "status")))
+                    .purpleQCStatus(toPurpleQCStatus(genomicAnalysis))
                     .impliedPurity(number(genomicAnalysis, "impliedPurity"))
                     .hasReliablePurity(bool(genomicAnalysis, "hasReliablePurity"))
                     .hasReliableQuality(bool(genomicAnalysis, "hasReliableQuality"))
@@ -200,10 +205,11 @@ public class ReportingJson {
         }
 
         @NotNull
-        private static Set<PurpleQCStatus> toPurpleQCStatus(@NotNull List<String> statusEntries) {
+        private static Set<PurpleQCStatus> toPurpleQCStatus(@NotNull JsonObject genomicAnalysis) {
+            JsonArray array = array(genomicAnalysis, "purpleQCStatus");
             Set<PurpleQCStatus> status = Sets.newHashSet();
-            for (String statusEntry : statusEntries) {
-                status.add(PurpleQCStatus.valueOf(statusEntry));
+            for (JsonElement statusEntry : array) {
+                status.add(PurpleQCStatus.valueOf(statusEntry.getAsString()));
             }
             return status;
         }
@@ -234,10 +240,20 @@ public class ReportingJson {
         @NotNull
         private static Treatment toTreatment(@NotNull JsonObject treatment) {
             return ImmutableTreatment.builder()
-                    .name(string(treatment, "treatment"))
-                    .sourceRelevantTreatmentApproaches(stringSet(treatment, "sourceRelevantTreatmentApproaches"))
-                    .relevantTreatmentApproaches(stringSet(treatment, "relevantTreatmentApproaches"))
+                    .name(Strings.EMPTY)
+                    .sourceRelevantTreatmentApproaches(toTreatmentApproaches(treatment, "sourceRelevantTreatmentApproaches"))
+                    .relevantTreatmentApproaches(toTreatmentApproaches(treatment, "relevantTreatmentApproaches"))
                     .build();
+        }
+
+        @NotNull
+        private static Set<String> toTreatmentApproaches(@NotNull JsonObject treatment, @NotNull String key) {
+            JsonArray array = array(treatment, key);
+            Set<String> treatmentApproaches = Sets.newHashSet();
+            for (JsonElement statusEntry : array) {
+                treatmentApproaches.add(statusEntry.getAsString());
+            }
+            return treatmentApproaches;
         }
 
         @NotNull
@@ -433,8 +449,7 @@ public class ReportingJson {
             Map<String, List<PeachEntry>> mapPgx = Maps.newHashMap();
 
             for (Map.Entry<String, JsonElement> entry : pgxObject.entrySet()) {
-
-                mapPgx.put(entry.getKey(), toPgxList(pgxObject.getAsJsonArray(entry.getKey())));
+                mapPgx.put(entry.getKey(), toPgxList(entry.getValue().getAsJsonArray()));
             }
             return mapPgx;
         }
@@ -444,7 +459,7 @@ public class ReportingJson {
             List<PeachEntry> entries = Lists.newArrayList();
             for (JsonElement element : pgxArray) {
                 JsonObject pgx = element.getAsJsonObject();
-                ImmutablePeachEntry.builder()
+                entries.add(ImmutablePeachEntry.builder()
                         .gene(string(pgx, "gene"))
                         .haplotype(string(pgx, "haplotype"))
                         .function(string(pgx, "function"))
@@ -452,7 +467,7 @@ public class ReportingJson {
                         .urlPrescriptionInfo(string(pgx, "urlPrescriptionInfo"))
                         .panelVersion(string(pgx, "panelVersion"))
                         .repoVersion(string(pgx, "repoVersion"))
-                        .build();
+                        .build());
             }
             return entries;
         }
@@ -470,33 +485,36 @@ public class ReportingJson {
             Map<String, List<HlaReporting>> mapPgx = Maps.newHashMap();
 
             for (Map.Entry<String, JsonElement> entry : hlaObject.getAsJsonObject("hlaAllelesReporting").entrySet()) {
-
-                mapPgx.put(entry.getKey(), toHlaList(hlaObject.getAsJsonArray(entry.getKey())));
+                mapPgx.put(entry.getKey(), toHlaList(entry.getValue().getAsJsonArray()));
             }
+
+
             return mapPgx;
         }
 
         @NotNull
         private static List<HlaReporting> toHlaList(@NotNull JsonArray hlaArray) {
             List<HlaReporting> entries = Lists.newArrayList();
+
             for (JsonElement element : hlaArray) {
                 JsonObject hla = element.getAsJsonObject();
-                ImmutableHlaReporting.builder()
+                entries.add(ImmutableHlaReporting.builder()
                         .hlaAllele(toHlaAllele(object(hla, "hlaAllele")))
                         .germlineCopies(number(hla, "germlineCopies"))
                         .tumorCopies(number(hla, "tumorCopies"))
                         .somaticMutations(string(hla, "somaticMutations"))
                         .interpretation(string(hla, "interpretation"))
-                        .build();
+                        .build());
             }
+
             return entries;
         }
 
         @NotNull
         private static HlaAllele toHlaAllele(@NotNull JsonObject hlaAlleleObject) {
             return ImmutableHlaAllele.builder()
-                    .gene(string(hlaAlleleObject, "interpretation"))
-                    .germlineAllele(string(hlaAlleleObject, "interpretation"))
+                    .gene(string(hlaAlleleObject, "gene"))
+                    .germlineAllele(string(hlaAlleleObject, "germlineAllele"))
                     .build();
         }
     }

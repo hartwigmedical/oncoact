@@ -13,7 +13,6 @@ public class ReportingJsonTest {
     private static final String REPORTING_JSON = Resources.getResource("reporting/reporting.json").getPath();
 
     @Test
-    @Ignore
     public void canReadReportingJson() throws IOException {
         assertNotNull(ReportingJson.read(REPORTING_JSON));
     }
