@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.knownfusion.KnownFusionCache;
-import com.hartwig.oncoact.knownfusion.TestKnownFusionFactory;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
@@ -28,8 +26,7 @@ public class GenomicAnalyzerTest {
     @Test
     public void canRunOnExampleData() {
         GermlineReportingModel testGermlineReportingModel = TestGermlineReportingModelFactory.createEmpty();
-        KnownFusionCache testKnownFusionCache = TestKnownFusionFactory.createEmptyCache();
-        GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel, testKnownFusionCache);
+        GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel);
 
         List<ProtectEvidence> noEvidences = Lists.newArrayList();
 

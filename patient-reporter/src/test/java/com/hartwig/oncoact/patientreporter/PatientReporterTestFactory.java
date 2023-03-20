@@ -6,8 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.knownfusion.KnownFusionCache;
-import com.hartwig.oncoact.knownfusion.KnownFusionCacheLoader;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -36,7 +34,6 @@ public final class PatientReporterTestFactory {
 
     private static final String GERMLINE_REPORTING_TSV = Resources.getResource("germline_reporting/germline_reporting.tsv").getPath();
     private static final String SAMPLE_SPECIAL_REMARK_TSV = Resources.getResource("special_remark/sample_special_remark.tsv").getPath();
-    private static final String KNOWN_FUSION_FILE = Resources.getResource("known_fusion_cache/known_fusion_data.csv").getPath();
 
     private static final String UDI_DI = "(01)8720299486027(8012)v5.28";
 
@@ -50,7 +47,6 @@ public final class PatientReporterTestFactory {
                 .tumorSampleBarcode(Strings.EMPTY)
                 .outputDirReport(Strings.EMPTY)
                 .outputDirData(Strings.EMPTY)
-                .knownFusionFile(KNOWN_FUSION_FILE)
                 .primaryTumorTsv(Strings.EMPTY)
                 .limsDir(Strings.EMPTY)
                 .rvaLogo(RVA_LOGO_PATH)
@@ -111,13 +107,11 @@ public final class PatientReporterTestFactory {
         try {
             GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(GERMLINE_REPORTING_TSV);
             SpecialRemarkModel specialRemarkModel = SpecialRemarkFile.buildFromTsv(SAMPLE_SPECIAL_REMARK_TSV);
-            KnownFusionCache knownFusionCache = KnownFusionCacheLoader.load(KNOWN_FUSION_FILE);
 
             return ImmutableAnalysedReportData.builder()
                     .from(loadTestReportData())
                     .germlineReportingModel(germlineReportingModel)
                     .specialRemarkModel(specialRemarkModel)
-                    .knownFusionCache(knownFusionCache)
                     .build();
         } catch (IOException exception) {
             throw new IllegalStateException("Could not load test analysed report data: " + exception.getMessage());
