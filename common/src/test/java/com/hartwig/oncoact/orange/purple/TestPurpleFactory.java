@@ -15,6 +15,7 @@ import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleLikelihoodMethod;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQC;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
@@ -56,6 +57,8 @@ public final class TestPurpleFactory {
                 .gene(Strings.EMPTY)
                 .transcript(Strings.EMPTY)
                 .driver(PurpleDriverType.MUTATION)
+                .likelihoodMethod(PurpleLikelihoodMethod.AMP)
+                .isCanonical(true)
                 .driverLikelihood(0D);
     }
 
@@ -77,7 +80,10 @@ public final class TestPurpleFactory {
                 .subclonalLikelihood(0D)
                 .biallelic(false)
                 .genotypeStatus(PurpleGenotypeStatus.UNKNOWN)
-                .canonicalImpact(transcriptImpactBuilder().build());
+                .canonicalImpact(transcriptImpactBuilder().build())
+                .worstCodingEffect(PurpleCodingEffect.SPLICE)
+                .adjustedVAF(0)
+                .repeatCount(1);
     }
 
     @NotNull

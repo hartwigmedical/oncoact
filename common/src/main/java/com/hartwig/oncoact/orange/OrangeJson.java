@@ -23,12 +23,7 @@ public final class OrangeJson {
     @NotNull
     public static OrangeRecord read(@NotNull String orangeJsonPathName) throws IOException {
         Path orangePath = new File(orangeJsonPathName).toPath();
-        var gsonBuilder = new GsonBuilder();
-        for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) {
-            gsonBuilder.registerTypeAdapterFactory(factory);
-        }
-        var gson = gsonBuilder.create();
-        OrangeRecord orange = gson.fromJson(Files.readString(orangePath), OrangeRecord.class);
+        OrangeRecord orange = com.hartwig.hmftools.datamodel.OrangeJson.getInstance().read(orangeJsonPathName);
         return fixPlotPaths(orange, orangePath.getParent().toString());
     }
 
