@@ -8,6 +8,8 @@ import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaData;
+import com.hartwig.hmftools.datamodel.flagstat.Flagstat;
+import com.hartwig.hmftools.datamodel.flagstat.ImmutableFlagstat;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
@@ -16,11 +18,14 @@ import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxRecord;
+import com.hartwig.hmftools.datamodel.metrics.ImmutableWGSMetrics;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeSample;
 import com.hartwig.hmftools.datamodel.orange.OrangePlots;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.orange.OrangeSample;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
@@ -65,7 +70,8 @@ public final class TestOrangeFactory {
     public static OrangeRecord createMinimalTestOrangeRecord() {
         return ImmutableOrangeRecord.builder()
                 .sampleId("TEST")
-                .experimentDate(LocalDate.of(2021, 5, 6))
+                .tumorSample(createMinimalOrangeSample())
+                .experimentDate(LocalDate.of(2022, 1, 20))
                 .refGenomeVersion(OrangeRefGenomeVersion.V37)
                 .purple(createMinimalTestPurpleRecord())
                 .linx(ImmutableLinxRecord.builder().build())
@@ -75,6 +81,41 @@ public final class TestOrangeFactory {
                 .lilac(createMinimalTestLilacRecord())
                 .chord(createTestChordRecord())
                 .plots(createMinimalTestOrangePlots())
+                .build();
+    }
+
+    @NotNull
+    public static OrangeSample createMinimalOrangeSample() {
+        return ImmutableOrangeSample.builder()
+                .flagstat(createMinimalFlagStat())
+                .metrics(createMinimalWgsMetrics())
+                .build();
+    }
+
+    @NotNull
+    private static ImmutableFlagstat createMinimalFlagStat() {
+        return ImmutableFlagstat.builder()
+                .mappedProportion(0)
+                .secondaryCount(0)
+                .supplementaryCount(0)
+                .uniqueReadCount(0)
+                .build();
+    }
+
+    @NotNull
+    private static ImmutableWGSMetrics createMinimalWgsMetrics() {
+        return ImmutableWGSMetrics.builder()
+                .meanCoverage(0)
+                .sdCoverage(0)
+                .medianCoverage(0)
+                .madCoverage(0)
+                .pctExcMapQ(0)
+                .pctExcDupe(0)
+                .pctExcUnpaired(0)
+                .pctExcBaseQ(0)
+                .pctExcOverlap(0)
+                .pctExcCapped(0)
+                .pctExcTotal(0)
                 .build();
     }
 
@@ -128,6 +169,9 @@ public final class TestOrangeFactory {
                 .hotspot(Hotspot.HOTSPOT)
                 .subclonalLikelihood(0.02)
                 .biallelic(false)
+                .worstCodingEffect(PurpleCodingEffect.SPLICE)
+                .adjustedVAF(0)
+                .repeatCount(0)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder()
                         .hgvsCodingImpact("c.something")
                         .hgvsProteinImpact("p.Val600Glu")
@@ -179,7 +223,12 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static PurpleFit createTestPurpleFit() {
-        return TestPurpleFactory.fitBuilder().hasSufficientQuality(true).containsTumorCells(true).purity(0.98).ploidy(3.1).build();
+        return TestPurpleFactory.fitBuilder()
+                .hasSufficientQuality(true)
+                .containsTumorCells(false)
+                .purity(0.12)
+                .ploidy(3.1)
+                .build();
     }
 
     @NotNull

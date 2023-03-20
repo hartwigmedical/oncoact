@@ -100,7 +100,8 @@ public abstract class ReportableVariant implements Variant {
         return DriverInterpretation.interpret(driverLikelihood());
     }
 
-    public abstract boolean biallelic();
+    @Nullable
+    public abstract Boolean biallelic();
 
     @NotNull
     public abstract PurpleGenotypeStatus genotypeStatus();
