@@ -124,6 +124,11 @@
             </dependency>
 
             <dependency>
+                <groupId>com.hartwig</groupId>
+                <artifactId>orange-datamodel</artifactId>
+                <version>1.0.1-beta.2</version>
+            </dependency>
+            <dependency>
                 <groupId>com.hartwig.serve</groupId>
                 <artifactId>datamodel</artifactId>
                 <version>${serve.version}</version>

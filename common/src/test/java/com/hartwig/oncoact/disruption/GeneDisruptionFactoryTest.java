@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
-import com.hartwig.hmftools.datamodel.sv.LinxBreakendType;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
 import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 
