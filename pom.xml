@@ -55,20 +55,22 @@
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <orange-datamodel.version>1.0.1-beta.3</orange-datamodel.version>
     </properties>
 
     <repositories>
         <repository>
             <id>artifact-registry</id>
             <url>artifactregistry://europe-west4-maven.pkg.dev/hmf-build/hmf-maven</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>artifact-registry</id>
+            <url>artifactregistry://europe-west4-maven.pkg.dev/hmf-build/hmf-maven</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <extensions>
@@ -95,6 +97,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>${maven.assembly.plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.hartwig</groupId>
+                            <artifactId>orange-datamodel</artifactId>
+                            <version>${orange-datamodel.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -126,7 +135,7 @@
             <dependency>
                 <groupId>com.hartwig</groupId>
                 <artifactId>orange-datamodel</artifactId>
-                <version>1.0.1-beta.2</version>
+                <version>${orange-datamodel.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hartwig.serve</groupId>
