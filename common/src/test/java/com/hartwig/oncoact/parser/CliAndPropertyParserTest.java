@@ -45,7 +45,7 @@ public class CliAndPropertyParserTest {
     public void testPropertyFileParsing() throws ParseException {
         var options = new Options();
         options.addOption("opt", true, "My option");
-        String[] args = new String[] { "command", "-property_file", properties.getPath() };
+        String[] args = new String[] { "command", "-properties_file", properties.getPath() };
         var cli = new CliAndPropertyParser().parse(options, args);
         assertTrue(cli.hasOption("opt"));
         assertEquals("value", cli.getOptionValue("opt"));
@@ -55,7 +55,7 @@ public class CliAndPropertyParserTest {
     public void testCliArgTakesPrecedent() throws ParseException {
         var options = new Options();
         options.addOption("opt", true, "My option");
-        String[] args = new String[] { "command", "-opt", "cli-value", "-property_file", properties.getPath() };
+        String[] args = new String[] { "command", "-opt", "cli-value", "-properties_file", properties.getPath() };
         var cli = new CliAndPropertyParser().parse(options, args);
         assertTrue(cli.hasOption("opt"));
         assertEquals("cli-value", cli.getOptionValue("opt"));
@@ -65,7 +65,7 @@ public class CliAndPropertyParserTest {
     public void testPropertiesFileDoesNotExist() {
         var options = new Options();
         options.addOption("opt", true, "My option");
-        String[] args = new String[] { "command", "-property_file", "does-not-exist.properties" };
+        String[] args = new String[] { "command", "-properties_file", "does-not-exist.properties" };
         assertThrows(RuntimeException.class, () -> new CliAndPropertyParser().parse(options, args));
     }
 }

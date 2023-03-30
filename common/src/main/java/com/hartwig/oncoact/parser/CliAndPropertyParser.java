@@ -18,7 +18,7 @@ import org.apache.commons.cli.ParseException;
  * value takes precedent.
  */
 public class CliAndPropertyParser extends DefaultParser {
-    private static final String PROPERTIES_FILE = "property_file";
+    private static final String PROPERTIES_FILE = "properties_file";
 
     @Override
     public CommandLine parse(Options options, String[] args) throws ParseException {

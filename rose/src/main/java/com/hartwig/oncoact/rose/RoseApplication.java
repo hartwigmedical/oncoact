@@ -2,6 +2,7 @@ package com.hartwig.oncoact.rose;
 
 import java.io.IOException;
 
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.rose.conclusion.ConclusionAlgo;
 
 import org.apache.commons.cli.DefaultParser;
@@ -24,7 +25,7 @@ public class RoseApplication {
 
         RoseConfig config = null;
         try {
-            config = RoseConfig.createConfig(new DefaultParser().parse(options, args));
+            config = RoseConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("ROSE", options);

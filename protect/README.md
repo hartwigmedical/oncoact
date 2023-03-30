@@ -135,6 +135,7 @@ The list of sources contains the following information per source:
 ## Building Protect
 Build a docker image for protect:
 ```shell
+mvn clean install
 docker build . -t protect:latest
 ```
 
@@ -154,12 +155,7 @@ docker run --rm \
 --mount source=protect-input,target=/in \
 --mount source=serve-db,target=/serve \
 protect:latest \
--orange_json /in/orange.json \
--output_dir /out \
--primary_tumor_doids 162 \
--serve_actionability_dir /serve \
--doid_json /data/resources/public/disease_ontology/doid.json \
--driver_gene_tsv /data/resources/public/gene_panel/38/DriverGenePanel.38.tsv
+-primary_tumor_doids 162
 ```
 
 ## Version History and Download Links

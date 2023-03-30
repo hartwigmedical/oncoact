@@ -184,6 +184,7 @@ The following field type alteration didn't interpret currently but present in th
 ## Building Rose
 Build a docker image for rose:
 ```shell
+mvn clean install
 docker build . -t rose:latest
 ```
 
@@ -201,10 +202,6 @@ docker run --rm \
 --mount source=rose-output,target=/out \
 --mount source=rose-input,target=/in \
 rose:latest \
--actionability_database_tsv /data/resources/public/rose/actionability.tsv \
--driver_gene_tsv /data/resources/public/gene_panel/38/DriverGenePanel.38.tsv \
--orange_json /in/orange.json \
--output_dir /out \
 -patient_id 123456
 ```
 
