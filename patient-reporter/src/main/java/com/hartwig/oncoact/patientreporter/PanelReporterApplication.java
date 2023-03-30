@@ -9,6 +9,7 @@ import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
@@ -18,7 +19,6 @@ import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -42,7 +42,7 @@ public class PanelReporterApplication {
 
         PanelReporterConfig config;
         try {
-            config = PanelReporterConfig.createConfig(new DefaultParser().parse(options, args));
+            config = PanelReporterConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PanelReporter", options);
