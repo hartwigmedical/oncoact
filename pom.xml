@@ -14,6 +14,7 @@
         <module>protect</module>
         <module>rose</module>
         <module>patient-reporter</module>
+        <module>reporting-pipeline</module>
     </modules>
 
     <properties>
@@ -50,6 +51,7 @@
         <mysqlconnector.version>8.0.16</mysqlconnector.version>
         <itext.version>7.1.5</itext.version>
         <jackson-dataformat-xml.version>2.11.1</jackson-dataformat-xml.version>
+        <jgrapht.core.version>1.5.1</jgrapht.core.version>
 
         <junit.version>4.13.1</junit.version>
 
@@ -221,6 +223,17 @@
                 <artifactId>gson</artifactId>
                 <version>${immutables.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-core</artifactId>
+                <version>${jgrapht.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jgrapht</groupId>
+                <artifactId>jgrapht-io</artifactId>
+                <version>${jgrapht.core.version}</version>
             </dependency>
 
             <!-- Test dependencies -->

@@ -137,6 +137,7 @@ Build a docker image for protect:
 ```shell
 mvn clean install
 docker build . -t protect:latest
+docker tag protect eu.gcr.io/hmf-build/protect:latest
 ```
 
 Copy the orange JSON input to the input volume.
@@ -153,7 +154,6 @@ docker run --rm \
 --name protect \
 --mount source=protect-output,target=/out \
 --mount source=protect-input,target=/in \
---mount source=serve-db,target=/serve \
 protect:latest \
 -primary_tumor_doids 162
 ```
