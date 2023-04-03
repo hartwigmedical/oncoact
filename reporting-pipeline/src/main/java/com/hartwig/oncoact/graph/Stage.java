@@ -12,7 +12,7 @@ public interface Stage {
 
     Collection<Resource> outputs();
 
-    Collection<ExecutionDetails> executionDetails();
+    Collection<SchedulerDetails> executionDetails();
 
     static ImmutableStage.Builder builder() {
         return ImmutableStage.builder();

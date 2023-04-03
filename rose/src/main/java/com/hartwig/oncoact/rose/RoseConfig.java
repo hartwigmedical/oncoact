@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.rose;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 
 import org.apache.commons.cli.CommandLine;
@@ -58,7 +59,7 @@ public interface RoseConfig {
     String driverGeneTsv();
 
     @NotNull
-    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
+    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
         }
@@ -66,7 +67,7 @@ public interface RoseConfig {
         return ImmutableRoseConfig.builder()
                 .patientId(nonOptionalValue(cmd, PATIENT_ID))
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
-                .outputDir(nonOptionalDir(cmd, OUTPUT_DIRECTORY))
+                .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
                 .actionabilityDatabaseTsv(nonOptionalFile(cmd, ACTIONABILITY_DATABASE_TSV))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
                 .build();
@@ -79,6 +80,16 @@ public interface RoseConfig {
             throw new ParseException("Parameter must be provided: " + param);
         }
 
+        return value;
+    }
+
+    @NotNull
+    static String outputDir(@NotNull CommandLine cmd, @NotNull String param) throws ParseException, IOException {
+        String value = nonOptionalValue(cmd, param);
+        File outputDir = new File(value);
+        if (!outputDir.exists() && !outputDir.mkdirs()) {
+            throw new IOException("Unable to write to directory " + value);
+        }
         return value;
     }
 

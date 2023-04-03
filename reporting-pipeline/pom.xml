@@ -31,5 +31,13 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-io</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
     </dependencies>
 </project>

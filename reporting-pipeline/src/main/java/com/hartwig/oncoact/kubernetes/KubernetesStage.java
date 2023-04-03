@@ -1,15 +1,15 @@
 package com.hartwig.oncoact.kubernetes;
 
-import com.hartwig.oncoact.graph.ExecutionDetails;
+import com.hartwig.oncoact.graph.SchedulerDetails;
 
 import org.immutables.value.Value;
 
 @Value.Immutable
-public interface KubernetesStage extends ExecutionDetails {
+public interface KubernetesStage extends SchedulerDetails {
 
     @Override
-    default ExecutionDetailType type() {
-        return ExecutionDetailType.KUBERNETES;
+    default SchedulerDetailType type() {
+        return SchedulerDetailType.KUBERNETES;
     }
 
     String imageVersion();
