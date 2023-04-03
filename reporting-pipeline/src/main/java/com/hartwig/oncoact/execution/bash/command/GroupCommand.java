@@ -12,7 +12,6 @@ public class GroupCommand implements BashCommand {
 
     @Override
     public String asBash() {
-        var commands = bashCommands.stream().map(BashCommand::asBash).collect(Collectors.joining("; "));
-        return "set -e; " + commands;
+        return bashCommands.stream().map(BashCommand::asBash).collect(Collectors.joining("; "));
     }
 }

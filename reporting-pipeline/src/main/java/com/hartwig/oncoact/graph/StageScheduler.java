@@ -4,5 +4,5 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 public interface StageScheduler {
-    CompletableFuture<Boolean> schedule(Stage stage) throws IOException;
+    CompletableFuture<Boolean> schedule(Stage stage);
 }

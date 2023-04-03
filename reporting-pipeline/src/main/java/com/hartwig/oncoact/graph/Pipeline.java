@@ -8,10 +8,6 @@ import org.immutables.value.Value;
 public interface Pipeline {
     List<Stage> stages();
 
-    List<Resource> inputs();
-
-    List<Resource> outputs();
-
     static ImmutablePipeline.Builder builder() {
         return ImmutablePipeline.builder();
     }

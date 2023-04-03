@@ -3,6 +3,7 @@ package com.hartwig.oncoact.pipeline.stage;
 import java.util.List;
 
 import com.hartwig.oncoact.execution.bash.BashDetails;
+import com.hartwig.oncoact.execution.bash.command.CpCommand;
 import com.hartwig.oncoact.execution.bash.command.GroupCommand;
 import com.hartwig.oncoact.execution.bash.command.JavaJarCommand;
 import com.hartwig.oncoact.execution.bash.command.MkDirCommand;
@@ -15,15 +16,12 @@ import com.hartwig.oncoact.pipeline.Arguments;
 public class Stages {
 
     public static Pipeline getStages(Arguments arguments) {
-        return Pipeline.builder()
-                .stages(List.of(roseStage(arguments), protectStage(arguments)))
-                .inputs(List.of(orangeResource(arguments)))
-                .outputs(List.of(roseResource(), protectResource()))
+        return Pipeline.builder().stages(List.of(roseStage(arguments), protectStage(), orangeInputStage(arguments)))
                 .build();
     }
 
-    static FileResource orangeResource(Arguments arguments) {
-        return FileResource.builder().path(arguments.orangePath()).name("orange.json").executionDetails(List.of()).build();
+    static FileResource orangeResource() {
+        return FileResource.builder().name("orange.json").executionDetails(List.of()).build();
     }
 
     static FileResource roseResource() {
@@ -32,6 +30,19 @@ public class Stages {
 
     static FileResource protectResource() {
         return FileResource.builder().name("protect.tsv").executionDetails(List.of()).build();
+    }
+
+    static Stage orangeInputStage(Arguments arguments) {
+        var name = "orange-input";
+        var bashDetails = BashDetails.builder()
+                .command(new GroupCommand(new MkDirCommand("orange"), new CpCommand(arguments.orangePath(), "orange/orange.json")))
+                .build();
+        return Stage.builder()
+                .name(name)
+                .executionDetails(List.of(bashDetails))
+                .inputs(List.of())
+                .outputs(List.of(orangeResource()))
+                .build();
     }
 
     static Stage roseStage(Arguments arguments) {
@@ -45,13 +56,13 @@ public class Stages {
                 .build();
         return Stage.builder()
                 .name(name)
-                .inputs(List.of(orangeResource(arguments)))
+                .inputs(List.of(orangeResource()))
                 .outputs(List.of(roseResource()))
                 .executionDetails(List.of(kubernetesExecutionDetails, bashDetails))
                 .build();
     }
 
-    static Stage protectStage(Arguments arguments) {
+    static Stage protectStage() {
         var name = "protect";
         var kubernetesExecutionDetails = KubernetesStage.builder().imageName(name).imageVersion("1.0.0-alpha.1").build();
         var bashDetails = BashDetails.builder()
@@ -62,7 +73,7 @@ public class Stages {
                 .build();
         return Stage.builder()
                 .name(name)
-                .inputs(List.of(orangeResource(arguments)))
+                .inputs(List.of(orangeResource()))
                 .outputs(List.of(protectResource()))
                 .executionDetails(List.of(kubernetesExecutionDetails, bashDetails))
                 .build();
