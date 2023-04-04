@@ -8,9 +8,9 @@ import org.immutables.value.Value;
 public interface Stage {
     String name();
 
-    Collection<Resource> inputs();
+    Collection<IOResource> inputs();
 
-    Collection<Resource> outputs();
+    Collection<IOResource> outputs();
 
     Collection<SchedulerDetails> executionDetails();
 
