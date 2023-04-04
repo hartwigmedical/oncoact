@@ -1,12 +1,14 @@
 package com.hartwig.oncoact.graph;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,6 +19,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.dot.DOTExporter;
+import org.jgrapht.traverse.DepthFirstIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +28,23 @@ public class ExecutionGraph {
 
     private final Pipeline pipeline;
 
+    private ExecutionGraphRun run;
+
     public ExecutionGraph(final Pipeline pipeline) {
         this.pipeline = pipeline;
     }
 
-    public void start(ExecutorService executorService, StageScheduler stageScheduler) throws ExecutionException, InterruptedException {
+    public Future<?> start(ExecutorService executorService, StageScheduler stageScheduler) {
+        if (run != null) {
+            LOGGER.warn("Run was already started. Cannot start a new run for this execution graph.");
+            return CompletableFuture.completedFuture(null);
+        }
         var g = createGraph();
-        new ExecutionGraphRun(g, executorService, stageScheduler).start().get();
+        run = new ExecutionGraphRun(g, executorService, stageScheduler);
+        return run.start();
     }
 
-    DefaultDirectedGraph<Stage, NamedEdge> createGraph() {
+    private DefaultDirectedGraph<Stage, NamedEdge> createGraph() {
         var g = new DefaultDirectedGraph<Stage, NamedEdge>(NamedEdge.class);
 
         for (final Stage stage : pipeline.stages()) {
@@ -42,51 +52,50 @@ public class ExecutionGraph {
         }
         for (final Stage from : pipeline.stages()) {
             for (final Stage to : pipeline.stages()) {
-                to.inputs()
-                        .stream()
-                        .map(Resource::name)
+                to.inputs().stream().map(Resource::name)
                         .filter(input -> from.outputs().stream().map(Resource::name).anyMatch(output -> output.equals(input)))
                         .forEach(edge -> g.addEdge(from, to, new NamedEdge(edge)));
             }
         }
-        LOGGER.info("Created execution graph. Looks like: {}", exportAsDot(g));
         return g;
     }
 
-    private static String exportAsDot(DefaultDirectedGraph<Stage, NamedEdge> g) {
-        var exporter = new DOTExporter<Stage, NamedEdge>();
-        exporter.setVertexAttributeProvider((v) -> {
-            Map<String, Attribute> map = new LinkedHashMap<>();
-            map.put("label", DefaultAttribute.createAttribute(v.name()));
-            return map;
-        });
-        exporter.setEdgeAttributeProvider((e) -> {
-            Map<String, Attribute> map = new LinkedHashMap<>();
-            map.put("label", DefaultAttribute.createAttribute(e.name()));
-            return map;
-        });
-        var writer = new StringWriter();
-        exporter.exportGraph(g, writer);
-        return writer.toString();
+    private enum StageRunningState {
+        WAITING("black"),
+        RUNNING("orange"),
+        SUCCESS("green"),
+        FAILED("red"),
+        IGNORED("grey");
+
+        final String color;
+
+        StageRunningState(final String color) {
+            this.color = color;
+        }
     }
 
     private static class ExecutionGraphRun {
-        private final Set<String> runningStageTags = new HashSet<>();
+        private final Map<String, StageRunningState> stageTagToRunningState = new HashMap<>();
         private final BlockingQueue<Pair<Stage, Boolean>> stageDoneQueue = new LinkedBlockingQueue<>();
-
+        private final DefaultDirectedGraph<Stage, NamedEdge> fullGraph;
         private final DefaultDirectedGraph<Stage, NamedEdge> runGraph;
         private final ExecutorService executorService;
         private final StageScheduler stageScheduler;
 
-        public ExecutionGraphRun(final DefaultDirectedGraph<Stage, NamedEdge> runGraph, final ExecutorService executorService,
+        public ExecutionGraphRun(final DefaultDirectedGraph<Stage, NamedEdge> g, final ExecutorService executorService,
                 final StageScheduler stageScheduler) {
-            this.runGraph = runGraph;
+            fullGraph = g;
+            runGraph = (DefaultDirectedGraph<Stage, NamedEdge>) g.clone();
+            for (final Stage stage : g.vertexSet()) {
+                stageTagToRunningState.put(stage.name(), StageRunningState.WAITING);
+            }
             this.executorService = executorService;
             this.stageScheduler = stageScheduler;
         }
 
         Future<?> start() {
             return this.executorService.submit(() -> {
+                LOGGER.info("Starting execution graph. Looks like: {}", toDotFormat());
                 while (!runGraph.vertexSet().isEmpty()) {
                     runRound();
                     try {
@@ -96,28 +105,60 @@ public class ExecutionGraph {
                         throw new RuntimeException(e);
                     }
                 }
-                LOGGER.info("Finished running execution graph.");
+                LOGGER.info("Finished running execution graph. Final result: {}", toDotFormat());
             });
         }
 
         private void runRound() {
             var readyStages = runGraph.vertexSet().stream()
                     .filter(stage -> runGraph.incomingEdgesOf(stage).size() == 0)
-                    .filter(stage -> !runningStageTags.contains(stage.name()))
+                    .filter(stage -> stageTagToRunningState.get(stage.name()) == StageRunningState.WAITING)
                     .collect(Collectors.toList());
             for (Stage stage : readyStages) {
                 LOGGER.info("Starting graph vertex {}", stage.name());
-                var tag = stage.name();
-                runningStageTags.add(tag);
-                stageScheduler.schedule(stage)
-                        .thenAccept(result -> stageDoneQueue.add(Pair.of(stage, result)));
+                stageTagToRunningState.put(stage.name(), StageRunningState.RUNNING);
+                stageScheduler.schedule(stage).thenAccept(result -> stageDoneQueue.add(Pair.of(stage, result)));
+            }
+            LOGGER.info("Execution graph updated: {}", toDotFormat());
+        }
+
+        private void onStageDone(Stage stage, boolean success) {
+            LOGGER.info("Finished running stage {}, result was {}", stage.name(), success ? "Success" : "Fail");
+            if (!success) {
+                stageTagToRunningState.put(stage.name(), StageRunningState.FAILED);
+
+                var iterator = new DepthFirstIterator<>(runGraph, stage);
+                var ignoredStages = new ArrayList<Stage>();
+                while (iterator.hasNext()) {
+                    ignoredStages.add(iterator.next());
+                }
+                runGraph.removeAllVertices(ignoredStages);
+                for (Stage ignored : ignoredStages) {
+                    stageTagToRunningState.put(ignored.name(), StageRunningState.IGNORED);
+                }
+            } else {
+                runGraph.removeVertex(stage);
+                stageTagToRunningState.put(stage.name(), StageRunningState.SUCCESS);
             }
         }
 
-        private void onStageDone(Stage stage, boolean result) {
-            LOGGER.info("Finished running stage {}, result was {}", stage.name(), result ? "Success" : "Fail");
-            runningStageTags.remove(stage.name());
-            runGraph.removeVertex(stage);
+        public String toDotFormat() {
+            var exporter = new DOTExporter<Stage, NamedEdge>();
+            exporter.setVertexAttributeProvider((v) -> {
+                Map<String, Attribute> map = new LinkedHashMap<>();
+                var name = v.name();
+                map.put("label", DefaultAttribute.createAttribute(name));
+                map.put("color", DefaultAttribute.createAttribute(stageTagToRunningState.get(name).color));
+                return map;
+            });
+            exporter.setEdgeAttributeProvider((e) -> {
+                Map<String, Attribute> map = new LinkedHashMap<>();
+                map.put("label", DefaultAttribute.createAttribute(e.name()));
+                return map;
+            });
+            var writer = new StringWriter();
+            exporter.exportGraph(fullGraph, writer);
+            return writer.toString();
         }
     }
 }

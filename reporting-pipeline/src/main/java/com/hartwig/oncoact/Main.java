@@ -1,7 +1,6 @@
 package com.hartwig.oncoact;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.hartwig.oncoact.execution.bash.BashScheduler;
@@ -20,7 +19,7 @@ public class Main {
         var executorService = Executors.newCachedThreadPool();
         var bashScheduler = new BashScheduler(executorService);
         var executionGraph = new ExecutionGraph(Stages.getStages(arguments));
-        executionGraph.start(executorService, bashScheduler);
+        executionGraph.start(executorService, bashScheduler).get();
         executorService.shutdown();
     }
 }
