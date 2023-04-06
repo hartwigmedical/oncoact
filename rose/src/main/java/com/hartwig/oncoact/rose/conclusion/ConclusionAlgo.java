@@ -309,7 +309,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(keyLoss);
 
                 if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.ALWAYS_NO_ACTIONABLE)) {
-                    String copies = " (copies: " + gainLoss.minCopies() + ")";
+                    String copies = " (copies: " + (int) gainLoss.minCopies() + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
                 }
@@ -322,7 +322,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(keyGain);
 
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    String copies = " (copies: " + gainLoss.maxCopies() + ")";
+                    String copies = " (copies: " + (int) gainLoss.maxCopies() + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
                 }
