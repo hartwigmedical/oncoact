@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
-import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 import com.hartwig.oncoact.util.Formats;
@@ -144,7 +144,7 @@ public final class SomaticVariants {
     }
 
     @NotNull
-    public static String hotspotString(@NotNull PurpleHotspotType hotspot) {
+    public static String hotspotString(@NotNull Hotspot hotspot) {
         switch (hotspot) {
             case HOTSPOT:
                 return "Yes";
@@ -206,7 +206,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -216,13 +216,13 @@ public final class SomaticVariants {
         }
 
         for (PurpleGainLoss gainLoss : gainsAndLosses) {
-            if (Genes.MSI_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS
-                    || gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS)) {
+            if (Genes.MSI_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
+                    || gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS)) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
 
-        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.MSI_GENES.contains(homozygousDisruption.gene())) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }
@@ -232,7 +232,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -242,13 +242,13 @@ public final class SomaticVariants {
         }
 
         for (PurpleGainLoss gainLoss : gainsAndLosses) {
-            if (Genes.HRD_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS
-                    || gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS)) {
+            if (Genes.HRD_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
+                    || gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS)) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
 
-        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.HRD_GENES.contains(homozygousDisruption.gene())) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }

@@ -3,7 +3,7 @@ package com.hartwig.oncoact.protect.evidence;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 
 import org.junit.Test;
@@ -19,9 +19,9 @@ public class EvidenceDriverLikelihoodTest {
 
     @Test
     public void canInterpretFusions() {
-        assertTrue(EvidenceDriverLikelihood.interpretFusion(LinxFusionDriverLikelihood.HIGH));
-        assertFalse(EvidenceDriverLikelihood.interpretFusion(LinxFusionDriverLikelihood.LOW));
-        assertFalse(EvidenceDriverLikelihood.interpretFusion(LinxFusionDriverLikelihood.NA));
+        assertTrue(EvidenceDriverLikelihood.interpretFusion(FusionLikelihoodType.HIGH));
+        assertFalse(EvidenceDriverLikelihood.interpretFusion(FusionLikelihoodType.LOW));
+        assertFalse(EvidenceDriverLikelihood.interpretFusion(FusionLikelihoodType.NA));
     }
 
     @Test

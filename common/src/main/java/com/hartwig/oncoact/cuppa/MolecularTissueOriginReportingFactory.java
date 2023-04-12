@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.cuppa;
 
-import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -8,8 +8,8 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.util.Formats;
 
@@ -38,8 +38,8 @@ public final class GainsAndLosses {
     public static Set<String> amplifiedGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = Sets.newTreeSet();
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
-            if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_GAIN
-                    || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_GAIN) {
+            if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_GAIN
+                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN) {
                 genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }
@@ -50,8 +50,8 @@ public final class GainsAndLosses {
     public static Set<String> lostGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = Sets.newTreeSet();
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
-            if (gainLoss.interpretation() == PurpleGainLossInterpretation.FULL_LOSS
-                    || gainLoss.interpretation() == PurpleGainLossInterpretation.PARTIAL_LOSS) {
+            if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS
+                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS) {
                 genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
             }
         }

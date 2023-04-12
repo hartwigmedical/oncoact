@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxFusionDriverLikelihood;
-import com.hartwig.oncoact.orange.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
@@ -25,14 +25,14 @@ public final class GeneFusions {
     @NotNull
     public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
         return fusions.stream().sorted((fusion1, fusion2) -> {
-            if (fusion1.driverLikelihood() == fusion2.driverLikelihood()) {
+            if (fusion1.likelihood() == fusion2.likelihood()) {
                 if (fusion1.geneStart().equals(fusion2.geneStart())) {
                     return fusion1.geneEnd().compareTo(fusion2.geneEnd());
                 } else {
                     return fusion1.geneStart().compareTo(fusion2.geneStart());
                 }
             } else {
-                return fusion1.driverLikelihood() == LinxFusionDriverLikelihood.HIGH ? -1 : 1;
+                return fusion1.likelihood() == FusionLikelihoodType.HIGH ? -1 : 1;
             }
         }).collect(Collectors.toList());
     }
@@ -75,7 +75,7 @@ public final class GeneFusions {
 
     @NotNull
     public static String type(@NotNull LinxFusion fusion) {
-        LinxFusionType type = fusion.type();
+        LinxFusionType type = fusion.reportedType();
         if (type.equals(LinxFusionType.NONE)) {
             return "None";
         } else if (type.equals(LinxFusionType.KNOWN_PAIR)) {
@@ -116,8 +116,8 @@ public final class GeneFusions {
     }
 
     @NotNull
-    public static String driverLikelihood(@NotNull LinxFusion fusion) {
-        switch (fusion.driverLikelihood()) {
+    public static String likelihood(@NotNull LinxFusion fusion) {
+        switch (fusion.likelihood()) {
             case HIGH: {
                 return "High";
             }

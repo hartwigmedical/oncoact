@@ -19,9 +19,9 @@ import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
 import com.hartwig.oncoact.lims.hospital.ImmutableHospitalContactData;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.ImmutableSampleMetadata;
@@ -587,8 +587,8 @@ public class CFReportWriterTest {
     }
 
     @NotNull
-    private static Map<String, List<PeachEntry>> createTestPharmacogeneticsGenotypes() {
-        Map<String, List<PeachEntry>> pharmacogeneticsMap = Maps.newHashMap();
+    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
+        Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
                                 .gene("DPYD")

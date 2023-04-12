@@ -8,9 +8,9 @@ import com.ctc.wstx.util.DataUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.orange.lilac.LilacHlaAllele;
-import com.hartwig.oncoact.orange.lilac.LilacRecord;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.util.Doubles;
 
 import com.hartwig.oncoact.util.Formats;
@@ -29,11 +29,11 @@ public final class HlaAllelesReportingFactory {
     }
 
     @NotNull
-    public static Map<String, List<LilacHlaAllele>> generateLilacMap(@NotNull LilacRecord lilac) {
-        Map<String, List<LilacHlaAllele>> mapLilacReportingAlleles = Maps.newHashMap();
-        for (LilacHlaAllele lilacAllele : lilac.alleles()) {
+    public static Map<String, List<LilacAllele>> generateLilacMap(@NotNull LilacRecord lilac) {
+        Map<String, List<LilacAllele>> mapLilacReportingAlleles = Maps.newHashMap();
+        for (LilacAllele lilacAllele : lilac.alleles()) {
             if (mapLilacReportingAlleles.containsKey(lilacAllele.allele())) {
-                List<LilacHlaAllele> current = mapLilacReportingAlleles.get(lilacAllele.allele());
+                List<LilacAllele> current = mapLilacReportingAlleles.get(lilacAllele.allele());
                 current.add(lilacAllele);
                 mapLilacReportingAlleles.put(lilacAllele.allele(), current);
             } else {
@@ -47,9 +47,9 @@ public final class HlaAllelesReportingFactory {
     public static HlaAllelesReportingData convertToReportData(@NotNull LilacRecord lilac, boolean containsTumorCells, Set<PurpleQCStatus> purpleQCStatus) {
         List<HlaReporting> lilacReportingList = Lists.newArrayList();
 
-        Map<String, List<LilacHlaAllele>> mapLilacReportingAlleles = generateLilacMap(lilac);
+        Map<String, List<LilacAllele>> mapLilacReportingAlleles = generateLilacMap(lilac);
 
-        for (Map.Entry<String, List<LilacHlaAllele>> keyMap : mapLilacReportingAlleles.entrySet()) {
+        for (Map.Entry<String, List<LilacAllele>> keyMap : mapLilacReportingAlleles.entrySet()) {
             double germlineCopies = 0;
             double tumorCopies = 0;
             String mutationString = Strings.EMPTY;
@@ -107,7 +107,7 @@ public final class HlaAllelesReportingFactory {
 
     @NotNull
     @VisibleForTesting
-    static String extractHLAGene(@NotNull LilacHlaAllele lilacAllele) {
+    static String extractHLAGene(@NotNull LilacAllele lilacAllele) {
         if (lilacAllele.allele().startsWith("A*")) {
             return "HLA-A";
         } else if (lilacAllele.allele().startsWith("B*")) {
@@ -122,7 +122,7 @@ public final class HlaAllelesReportingFactory {
 
     @NotNull
     @VisibleForTesting
-    static String mutationString(@NotNull LilacHlaAllele allele) {
+    static String mutationString(@NotNull LilacAllele allele) {
         StringJoiner joiner = new StringJoiner(", ");
         if (Doubles.positive(allele.somaticMissense())) {
             joiner.add(SINGLE_DIGIT.format(allele.somaticMissense()) + " missense");
@@ -146,7 +146,7 @@ public final class HlaAllelesReportingFactory {
 
     @NotNull
     @VisibleForTesting
-    static String HLAPresenceInTumor(@NotNull LilacHlaAllele allele, @NotNull String mutationString, Boolean hasReliablePurity) {
+    static String HLAPresenceInTumor(@NotNull LilacAllele allele, @NotNull String mutationString, Boolean hasReliablePurity) {
         double tumorCopies = Double.parseDouble(SINGLE_DIGIT.format(allele.tumorCopyNumber()));
         boolean mutation = mutationString.contains("missense") || mutationString.contains("nonsense or frameshift")
                 || mutationString.contains("splice") || mutationString.contains("inframe indel");

@@ -7,8 +7,8 @@ import java.util.Objects;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.orange.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxStructuralVariant;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.oncoact.util.Doubles;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,7 +26,7 @@ public final class GeneDisruptionFactory {
 
     @NotNull
     public static List<GeneDisruption> convert(@NotNull Iterable<LinxBreakend> breakends,
-            @NotNull Iterable<LinxStructuralVariant> structuralVariants) {
+            @NotNull Iterable<LinxSvAnnotation> structuralVariants) {
         List<GeneDisruption> reportableDisruptions = Lists.newArrayList();
         Map<SvAndTranscriptKey, Pair<LinxBreakend, LinxBreakend>> pairedMap = mapBreakendsPerStructuralVariant(breakends);
 
@@ -75,8 +75,8 @@ public final class GeneDisruptionFactory {
 
     @VisibleForTesting
     @Nullable
-    static Integer determineClusterId(@NotNull Iterable<LinxStructuralVariant> structuralVariants, @NotNull LinxBreakend breakend) {
-        for (LinxStructuralVariant structuralVariant : structuralVariants) {
+    static Integer determineClusterId(@NotNull Iterable<LinxSvAnnotation> structuralVariants, @NotNull LinxBreakend breakend) {
+        for (LinxSvAnnotation structuralVariant : structuralVariants) {
             if (structuralVariant.svId() == breakend.svId()) {
                 return structuralVariant.clusterId();
             }

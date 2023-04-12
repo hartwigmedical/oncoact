@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
 
 import org.jetbrains.annotations.NotNull;
 

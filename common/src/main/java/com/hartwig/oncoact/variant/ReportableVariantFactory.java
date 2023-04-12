@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.variant;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,11 +10,11 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.purple.PurpleDriver;
-import com.hartwig.oncoact.orange.purple.PurpleDriverType;
-import com.hartwig.oncoact.orange.purple.PurpleTranscriptImpact;
-import com.hartwig.oncoact.orange.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleDriver;
+import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,18 +29,18 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    public static Set<ReportableVariant> toReportableGermlineVariants(@NotNull Set<PurpleVariant> germlineVariants,
-            @NotNull Set<PurpleDriver> germlineDrivers) {
+    public static Set<ReportableVariant> toReportableGermlineVariants(@NotNull Collection<PurpleVariant> germlineVariants,
+            @NotNull Collection<PurpleDriver> germlineDrivers) {
         List<PurpleDriver> germlineMutationDrivers =
-                germlineDrivers.stream().filter(x -> x.type() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
+                germlineDrivers.stream().filter(x -> x.driver() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
         return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE);
     }
 
     @NotNull
-    public static Set<ReportableVariant> toReportableSomaticVariants(@NotNull Set<PurpleVariant> somaticVariants,
-            @NotNull Set<PurpleDriver> somaticDrivers) {
+    public static Set<ReportableVariant> toReportableSomaticVariants(@NotNull Collection<PurpleVariant> somaticVariants,
+            @NotNull Collection<PurpleDriver> somaticDrivers) {
         List<PurpleDriver> somaticMutationDrivers =
-                somaticDrivers.stream().filter(x -> x.type() == PurpleDriverType.MUTATION).collect(Collectors.toList());
+                somaticDrivers.stream().filter(x -> x.driver() == PurpleDriverType.MUTATION).collect(Collectors.toList());
         return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC);
     }
 

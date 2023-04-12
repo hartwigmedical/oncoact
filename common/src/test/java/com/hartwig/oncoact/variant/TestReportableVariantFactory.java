@@ -1,9 +1,9 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
-import com.hartwig.oncoact.orange.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public final class TestReportableVariantFactory {
                 .totalCopyNumber(0)
                 .alleleCopyNumber(0D)
                 .minorAlleleCopyNumber(0D)
-                .hotspot(PurpleHotspotType.HOTSPOT)
+                .hotspot(Hotspot.HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0D)
                 .biallelic(false);

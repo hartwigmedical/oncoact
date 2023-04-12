@@ -14,27 +14,27 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
+import com.hartwig.hmftools.datamodel.chord.ChordRecord;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
-import com.hartwig.oncoact.orange.chord.ChordRecord;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
-import com.hartwig.oncoact.orange.cuppa.CuppaPrediction;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
-import com.hartwig.oncoact.orange.linx.ImmutableLinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxFusionType;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.oncoact.orange.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.orange.virus.VirusDriverLikelihood;
-import com.hartwig.oncoact.orange.virus.VirusInterpretation;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.rose.ImmutableRoseData;
 import com.hartwig.oncoact.rose.RoseData;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
@@ -187,7 +187,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
-        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"));
+        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"));
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PTEN", TypeAlteration.INACTIVATION, "PTEN", Condition.ALWAYS, "PTEN");
@@ -204,7 +204,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateVirusConclusion() {
-        Set<VirusInterpreterEntry> viruses = createTestVirusInterpreterEntries();
+        Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ALWAYS, "EBV");
         actionabilityMap = append(actionabilityMap, "HPV", TypeAlteration.POSITIVE, "HPV", Condition.ALWAYS, "HPV");
@@ -482,25 +482,25 @@ public class ConclusionAlgoTest {
     private static Set<PurpleGainLoss> createTestGainsLosses() {
         PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
                 .gene("BRAF")
-                .interpretation(PurpleGainLossInterpretation.FULL_GAIN)
+                .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .minCopies(4)
                 .maxCopies(4)
                 .build();
         PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
                 .gene("KRAS")
-                .interpretation(PurpleGainLossInterpretation.PARTIAL_GAIN)
+                .interpretation(CopyNumberInterpretation.PARTIAL_GAIN)
                 .minCopies(3)
                 .maxCopies(8)
                 .build();
         PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
                 .gene("CDKN2A")
-                .interpretation(PurpleGainLossInterpretation.FULL_LOSS)
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
         PurpleGainLoss gainLoss4 = TestPurpleFactory.gainLossBuilder()
                 .gene("EGFR")
-                .interpretation(PurpleGainLossInterpretation.PARTIAL_LOSS)
+                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .minCopies(0)
                 .maxCopies(3)
                 .build();
@@ -508,13 +508,13 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static Set<VirusInterpreterEntry> createTestVirusInterpreterEntries() {
-        Set<VirusInterpreterEntry> virusEntries = Sets.newHashSet();
-        VirusInterpreterEntry virus1 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.EBV).build();
-        VirusInterpreterEntry virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).build();
-        VirusInterpreterEntry virus3 = TestVirusInterpreterFactory.builder()
+    private static Set<AnnotatedVirus> createTestVirusInterpreterEntries() {
+        Set<AnnotatedVirus> virusEntries = Sets.newHashSet();
+        AnnotatedVirus virus1 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.EBV).build();
+        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).build();
+        AnnotatedVirus virus3 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.MCV)
-                .driverLikelihood(VirusDriverLikelihood.HIGH)
+                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
                 .build();
 
         virusEntries.add(virus1);
@@ -524,18 +524,18 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 
     @NotNull
     private static Set<LinxFusion> createTestFusions() {
         Set<LinxFusion> fusions = Sets.newHashSet();
-        fusions.add(linxFusionBuilder("BRAF", "BRAF", true).type(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("CAV2", "MET", true).type(LinxFusionType.KNOWN_PAIR).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25).fusedExonDown(14).type(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26).fusedExonDown(18).type(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15).fusedExonDown(23).type(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("BRAF", "BRAF", true).reportedType(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("CAV2", "MET", true).reportedType(LinxFusionType.KNOWN_PAIR).build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25).fusedExonDown(14).reportedType(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26).fusedExonDown(18).reportedType(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15).fusedExonDown(23).reportedType(LinxFusionType.EXON_DEL_DUP).build());
         return fusions;
     }
 

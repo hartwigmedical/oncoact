@@ -8,9 +8,9 @@ import java.util.StringJoiner;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.peach.PeachEntry;
-import com.hartwig.oncoact.orange.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -371,11 +371,11 @@ public class SummaryChapter implements ReportChapter {
 
                 Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
                 for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                    List<PeachEntry> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
+                    List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
 
                     Set<String> function = Sets.newHashSet();
 
-                    for (PeachEntry pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
+                    for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
                         function.add(pharmacogeneticsGenotype.function());
                     }
 

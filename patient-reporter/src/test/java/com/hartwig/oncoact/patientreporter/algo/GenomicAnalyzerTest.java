@@ -8,8 +8,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.germline.TestGermlineReportingModelFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;

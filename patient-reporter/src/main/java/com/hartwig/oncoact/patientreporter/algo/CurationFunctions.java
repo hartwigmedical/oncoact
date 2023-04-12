@@ -8,10 +8,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.ImmutableGeneDisruption;
-import com.hartwig.oncoact.orange.linx.ImmutableLinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.ImmutablePurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.linx.ImmutableHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
@@ -144,16 +144,16 @@ public final class CurationFunctions {
 
     @NotNull
     @VisibleForTesting
-    static List<LinxHomozygousDisruption> curateHomozygousDisruptions(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
-        List<LinxHomozygousDisruption> curateHomozygousDisruptions = Lists.newArrayList();
-        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+    static List<HomozygousDisruption> curateHomozygousDisruptions(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
+        List<HomozygousDisruption> curateHomozygousDisruptions = Lists.newArrayList();
+        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (homozygousDisruption.gene().equals(GENE_CDKN2A) && homozygousDisruption.isCanonical()) {
-                curateHomozygousDisruptions.add(ImmutableLinxHomozygousDisruption.builder()
+                curateHomozygousDisruptions.add(ImmutableHomozygousDisruption.builder()
                         .from(homozygousDisruption)
                         .gene(GENE_CDKN2A_CANONICAL)
                         .build());
             } else if (homozygousDisruption.gene().equals(GENE_CDKN2A) && !homozygousDisruption.isCanonical()) {
-                curateHomozygousDisruptions.add(ImmutableLinxHomozygousDisruption.builder()
+                curateHomozygousDisruptions.add(ImmutableHomozygousDisruption.builder()
                         .from(homozygousDisruption)
                         .gene(GENE_CDKN2A_NON_CANONICAL)
                         .build());

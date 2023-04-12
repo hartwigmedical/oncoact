@@ -7,10 +7,10 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.linx.ImmutableLinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxBreakendType;
-import com.hartwig.oncoact.orange.linx.LinxStructuralVariant;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
+import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 
 import org.junit.Test;
@@ -23,10 +23,10 @@ public class GeneDisruptionFactoryTest {
     public void canDetermineClusterId() {
         LinxBreakend breakend = TestLinxFactory.breakendBuilder().svId(1).build();
 
-        LinxStructuralVariant match = TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(2).build();
+        LinxSvAnnotation match = TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(2).build();
         assertEquals(2, (int) GeneDisruptionFactory.determineClusterId(Lists.newArrayList(match), breakend));
 
-        LinxStructuralVariant noMatch = TestLinxFactory.structuralVariantBuilder().svId(2).clusterId(1).build();
+        LinxSvAnnotation noMatch = TestLinxFactory.structuralVariantBuilder().svId(2).clusterId(1).build();
         assertNull(GeneDisruptionFactory.determineClusterId(Lists.newArrayList(noMatch), breakend));
     }
 

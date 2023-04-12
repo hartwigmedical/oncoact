@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleDriver;
-import com.hartwig.oncoact.orange.purple.PurpleDriverType;
-import com.hartwig.oncoact.orange.purple.PurpleVariant;
-import com.hartwig.oncoact.orange.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleDriver;
+import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class ReportableVariantFactoryTest {
                 .gene("gene 1")
                 .transcript("transcript 1")
                 .driverLikelihood(0.6)
-                .type(PurpleDriverType.MUTATION)
+                .driver(PurpleDriverType.MUTATION)
                 .build();
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableSomaticVariants(variants, Sets.newHashSet(driverGene1));
@@ -59,10 +59,10 @@ public class ReportableVariantFactoryTest {
                 .gene("gene")
                 .driverLikelihood(0.6)
                 .transcript("transcript 1")
-                .type(PurpleDriverType.GERMLINE_MUTATION)
+                .driver(PurpleDriverType.GERMLINE_MUTATION)
                 .build();
         PurpleDriver driver2 =
-                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).type(PurpleDriverType.GERMLINE_DELETION).build();
+                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).driver(PurpleDriverType.GERMLINE_DELETION).build();
         Set<PurpleDriver> drivers = Sets.newHashSet(driver1, driver2);
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1), drivers);

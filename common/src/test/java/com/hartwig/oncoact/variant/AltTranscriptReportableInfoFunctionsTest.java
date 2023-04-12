@@ -2,7 +2,7 @@ package com.hartwig.oncoact.variant;
 
 import static org.junit.Assert.assertEquals;
 
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.orange.purple.PurpleCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
 import org.jetbrains.annotations.NotNull;

@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.protect.algo;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -7,9 +8,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.orange.OrangeRecord;
-import com.hartwig.oncoact.orange.purple.PurpleRecord;
-import com.hartwig.oncoact.orange.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.evidence.ChordEvidence;
 import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
@@ -140,7 +141,7 @@ public class ProtectAlgo {
                 orange.linx().reportableSomaticFusions(),
                 orange.linx().somaticHomozygousDisruptions(),
                 orange.linx().reportableSomaticBreakends(),
-                orange.purple().fit().qcStatus());
+                orange.purple().fit().qc().status());
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();
@@ -182,7 +183,7 @@ public class ProtectAlgo {
 
     @NotNull
     private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Set<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
+        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
         if (reportableGermlineVariants == null) {
             return Sets.newHashSet();
         }

@@ -7,11 +7,11 @@ import java.util.Map;
 import com.ctc.wstx.util.DataUtil;
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -190,10 +190,10 @@ public class XMLFactory {
         }
     }
 
-    public static void addHomozygousDisruptionsToXML(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions,
+    public static void addHomozygousDisruptionsToXML(@NotNull List<HomozygousDisruption> homozygousDisruptions,
                                                      @NotNull List<KeyXML> xmlList) {
         int count = 1;
-        for (LinxHomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
+        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgshzy.line[" + count + "]gen")
                     .valuePath(Map.of("value", homozygousDisruption.gene()))
@@ -258,9 +258,9 @@ public class XMLFactory {
         }
     }
 
-    public static void addVirussesToXML(@NotNull List<VirusInterpreterEntry> annotatedVirusList, @NotNull List<KeyXML> xmlList) {
+    public static void addVirussesToXML(@NotNull List<AnnotatedVirus> annotatedVirusList, @NotNull List<KeyXML> xmlList) {
         int count = 1;
-        for (VirusInterpreterEntry virus : annotatedVirusList) {
+        for (AnnotatedVirus virus : annotatedVirusList) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsvrs.line[" + count + "]name")
                     .valuePath(Map.of("value", virus.name()))
@@ -311,7 +311,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsfusie.line[" + count + "]driver")
-                    .valuePath(Map.of("value", fusion.driverLikelihood().name()))
+                    .valuePath(Map.of("value", fusion.likelihood().name()))
                     .build());
             count += 1;
         }

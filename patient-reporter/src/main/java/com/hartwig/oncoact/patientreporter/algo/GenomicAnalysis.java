@@ -6,11 +6,11 @@ import java.util.Set;
 
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
-import com.hartwig.oncoact.orange.chord.ChordStatus;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
-import com.hartwig.oncoact.orange.purple.*;
-import com.hartwig.oncoact.orange.virus.VirusInterpreterEntry;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
@@ -77,11 +77,11 @@ public abstract class GenomicAnalysis {
     public abstract List<GeneDisruption> geneDisruptions();
 
     @NotNull
-    public abstract List<LinxHomozygousDisruption> homozygousDisruptions();
+    public abstract List<HomozygousDisruption> homozygousDisruptions();
 
     @NotNull
-    public abstract List<VirusInterpreterEntry> reportableViruses();
+    public abstract List<AnnotatedVirus> reportableViruses();
 
     @NotNull
-    public abstract List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH();
+    public abstract List<InterpretPurpleGeneCopyNumbers> suspectGeneCopyNumbersWithLOH();
 }

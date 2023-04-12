@@ -1,10 +1,10 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.oncoact.orange.purple.PurpleCodingEffect;
-import com.hartwig.oncoact.orange.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.orange.purple.PurpleHotspotType;
-import com.hartwig.oncoact.orange.purple.PurpleVariantType;
-import com.hartwig.oncoact.orange.purple.Variant;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.util.Formats;
 
 import org.immutables.value.Value;
@@ -88,7 +88,7 @@ public abstract class ReportableVariant implements Variant {
     }
 
     @NotNull
-    public abstract PurpleHotspotType hotspot();
+    public abstract Hotspot hotspot();
 
     public abstract double clonalLikelihood();
 
@@ -100,7 +100,8 @@ public abstract class ReportableVariant implements Variant {
         return DriverInterpretation.interpret(driverLikelihood());
     }
 
-    public abstract boolean biallelic();
+    @Nullable
+    public abstract Boolean biallelic();
 
     @NotNull
     public abstract PurpleGenotypeStatus genotypeStatus();

@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.orange.cuppa;
 
+import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 

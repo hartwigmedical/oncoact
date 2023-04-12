@@ -9,14 +9,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
-import com.hartwig.oncoact.orange.linx.ImmutableLinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxBreakend;
-import com.hartwig.oncoact.orange.linx.LinxFusion;
-import com.hartwig.oncoact.orange.linx.LinxHomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
-import com.hartwig.oncoact.orange.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
@@ -41,16 +41,16 @@ public class WildTypeEvidenceTest {
         Set<ReportableVariant> reportableSomaticVariant = Sets.newHashSet(variantSomatic);
 
         PurpleGainLoss reportableAmp =
-                TestPurpleFactory.gainLossBuilder().gene("KRAS").interpretation(PurpleGainLossInterpretation.FULL_GAIN).build();
+                TestPurpleFactory.gainLossBuilder().gene("KRAS").interpretation(CopyNumberInterpretation.FULL_GAIN).build();
         PurpleGainLoss reportableDel =
-                TestPurpleFactory.gainLossBuilder().gene("APC").interpretation(PurpleGainLossInterpretation.FULL_LOSS).build();
+                TestPurpleFactory.gainLossBuilder().gene("APC").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet(reportableAmp, reportableDel);
 
         LinxFusion reportedFusionMatch = createFusion("BAG4", "FGFR1");
         Set<LinxFusion> reportableFusions = Sets.newHashSet(reportedFusionMatch);
 
-        LinxHomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
-        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
+        HomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
+        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
 
         LinxBreakend breakend = TestLinxFactory.breakendBuilder().gene("MYC").build();
         Set<LinxBreakend> breakends = Sets.newHashSet(breakend);
@@ -200,7 +200,7 @@ public class WildTypeEvidenceTest {
     }
 
     @NotNull
-    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 

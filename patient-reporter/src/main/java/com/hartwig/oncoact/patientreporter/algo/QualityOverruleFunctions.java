@@ -2,19 +2,11 @@ package com.hartwig.oncoact.patientreporter.algo;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.orange.purple.ImmutablePurpleGeneCopyNumber;
-import com.hartwig.oncoact.orange.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
@@ -60,14 +52,14 @@ public final class QualityOverruleFunctions {
     }
 
     @NotNull
-    public static List<PurpleGeneCopyNumber> overruleSuspectedLOH(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers, boolean hasReliablePurity) {
-        List<PurpleGeneCopyNumber> suspectedGenesCurated = Lists.newArrayList();
+    public static List<InterpretPurpleGeneCopyNumbers> overruleSuspectedLOH(@NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers, boolean hasReliablePurity) {
+        List<InterpretPurpleGeneCopyNumbers> suspectedGenesCurated = Lists.newArrayList();
 
-        for (PurpleGeneCopyNumber purpleGeneCopyNumber : purpleGeneCopyNumbers) {
-            suspectedGenesCurated.add(ImmutablePurpleGeneCopyNumber.builder()
-                    .from(purpleGeneCopyNumber)
-                    .minCopyNumber(hasReliablePurity ? purpleGeneCopyNumber.minCopyNumber() : null)
-                    .minMinorAlleleCopyNumber(hasReliablePurity ? purpleGeneCopyNumber.minMinorAlleleCopyNumber() : null)
+        for (InterpretPurpleGeneCopyNumbers LOHGene : LOHPurpleGeneCopyNumbers) {
+            suspectedGenesCurated.add(ImmutableInterpretPurpleGeneCopyNumbers.builder()
+                    .from(LOHGene)
+                    .minCopyNumber(hasReliablePurity ? LOHGene.minCopyNumber() : null)
+                    .minMinorAlleleCopyNumber(hasReliablePurity ? LOHGene.minMinorAlleleCopyNumber() : null)
                     .build());
         }
         return suspectedGenesCurated;

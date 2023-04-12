@@ -8,8 +8,8 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.orange.purple.PurpleGainLoss;
-import com.hartwig.oncoact.orange.purple.PurpleGainLossInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -34,11 +34,11 @@ public class CopyNumberEvidenceTest {
                 new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion));
 
         PurpleGainLoss reportableAmp =
-                TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(PurpleGainLossInterpretation.FULL_GAIN).build();
+                TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(CopyNumberInterpretation.FULL_GAIN).build();
         PurpleGainLoss reportableDel =
-                TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(PurpleGainLossInterpretation.FULL_LOSS).build();
+                TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         PurpleGainLoss ampOnOtherGene =
-                TestPurpleFactory.gainLossBuilder().gene("other gene").interpretation(PurpleGainLossInterpretation.PARTIAL_GAIN).build();
+                TestPurpleFactory.gainLossBuilder().gene("other gene").interpretation(CopyNumberInterpretation.PARTIAL_GAIN).build();
 
         Set<PurpleGainLoss> reportableGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
         Set<PurpleGainLoss> unreportedGainLosses = Sets.newHashSet();

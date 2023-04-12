@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.protect.serve;
 
-import com.hartwig.oncoact.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.serve.datamodel.RefGenome;
 
 import org.jetbrains.annotations.NotNull;
