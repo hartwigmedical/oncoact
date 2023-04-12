@@ -49,6 +49,7 @@ public interface PatientReporterConfig {
 
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
+    String LAMA_JSON = "lama_json";
     String CUPPA_PLOT = "cuppa_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
     String ADD_ROSE = "add_rose";
@@ -98,6 +99,7 @@ public interface PatientReporterConfig {
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
+        options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
         options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
@@ -166,6 +168,9 @@ public interface PatientReporterConfig {
 
     @NotNull
     String orangeJson();
+
+    @NotNull
+    String lamaJson();
 
     @NotNull
     String cuppaPlot();
@@ -274,6 +279,7 @@ public interface PatientReporterConfig {
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
                 .orangeJson(orangeJson)
+                .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .cuppaPlot(cuppaPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .addRose(addRose)

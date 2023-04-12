@@ -40,6 +40,7 @@ public interface PanelReporterConfig {
     String PANEL_QC_FAIL = "panel_qc_fail";
     String PANEL_QC_FAIL_REASON = "panel_qc_fail_reason";
     String PANEL_VCF_NAME = "panel_vcf_name";
+    String LAMA_JSON = "lama_json";
 
     // Some additional optional params and flags
     String COMMENTS = "comments";
@@ -76,6 +77,7 @@ public interface PanelReporterConfig {
                 true,
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
+        options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
 
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
@@ -122,6 +124,9 @@ public interface PanelReporterConfig {
 
     @NotNull
     String panelVCFname();
+
+    @NotNull
+    String lamaJson();
 
     @Nullable
     PanelFailReason panelQcFailReason();
@@ -191,6 +196,7 @@ public interface PanelReporterConfig {
                 .panelQcFail(isPanelQCFail)
                 .panelQcFailReason(panelQcFailReason)
                 .panelVCFname(panelVCFFile)
+                .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .comments(cmd.getOptionValue(COMMENTS))
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
