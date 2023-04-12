@@ -49,7 +49,7 @@ import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
+import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.protect.EvidenceType;
@@ -110,7 +110,7 @@ public final class ExampleAnalysisTestFactory {
         List<AnnotatedVirus> viruses = Lists.newArrayList();
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
         HlaAllelesReportingData hlaData = createTestHlaData();
-        List<PurpleGeneCopyNumber> LOHGenes = createLOHGenes();
+        List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
         SampleReport sampleReport = createSkinMelanomaSampleReport(config.sampleId(), config.reportGermline(), config.limsCohortConfig());
 
@@ -217,7 +217,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<PurpleGeneCopyNumber> createLOHGenes() {
+    private static List<InterpretPurpleGeneCopyNumbers> createLOHGenes() {
         return Lists.newArrayList();
     }
 

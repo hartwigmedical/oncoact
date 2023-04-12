@@ -14,15 +14,13 @@ import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
+import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -297,7 +295,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createLOHTable(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers, @NotNull String signature) {
+    private static Table createLOHTable(@NotNull List<InterpretPurpleGeneCopyNumbers> suspectGeneCopyNumbersWithLOH, @NotNull String signature) {
         String title = Strings.EMPTY;
         if (signature.equals("HRD")) {
             title = "Interesting LOH events in case of HRD";
@@ -305,7 +303,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
             title = "Interesting LOH events in case of MSI";
         }
 
-        if (purpleGeneCopyNumbers.isEmpty() || title.equals(Strings.EMPTY)) {
+        if (suspectGeneCopyNumbersWithLOH.isEmpty() || title.equals(Strings.EMPTY)) {
             return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
@@ -315,11 +313,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         TableUtil.createHeaderCell("Tumor copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        for (PurpleGeneCopyNumber geneCopyNumber : LohGenes.sort(purpleGeneCopyNumbers)) {
-            table.addCell(TableUtil.createContentCell(geneCopyNumber.chromosome() + geneCopyNumber.chromosomeBand()));
-            table.addCell(TableUtil.createContentCell(geneCopyNumber.geneName()));
-            table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minMinorAlleleCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(TableUtil.createContentCell(String.valueOf(LohGenes.round(geneCopyNumber.minCopyNumber()))).setTextAlignment(TextAlignment.CENTER));
+        for (InterpretPurpleGeneCopyNumbers LOHgenes : LohGenes.sort(suspectGeneCopyNumbersWithLOH)) {
+            table.addCell(TableUtil.createContentCell(LOHgenes.chromosome() + LOHgenes.chromosomeBand()));
+            table.addCell(TableUtil.createContentCell(LOHgenes.geneName()));
+            table.addCell(TableUtil.createContentCell(LohGenes.round(LOHgenes.minMinorAlleleCopyNumber())).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(TableUtil.createContentCell(LohGenes.round(LOHgenes.minCopyNumber())).setTextAlignment(TextAlignment.CENTER));
         }
 
         return TableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);

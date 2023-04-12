@@ -83,5 +83,5 @@ public abstract class GenomicAnalysis {
     public abstract List<AnnotatedVirus> reportableViruses();
 
     @NotNull
-    public abstract List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH();
+    public abstract List<InterpretPurpleGeneCopyNumbers> suspectGeneCopyNumbersWithLOH();
 }

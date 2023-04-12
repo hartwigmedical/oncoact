@@ -4,13 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableLohGenesReporting;
-import com.hartwig.oncoact.patientreporter.algo.LohGenesReporting;
-
-import com.hartwig.oncoact.patientreporter.util.Genes;
+import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
+import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 public final class LohGenes {
@@ -18,14 +13,14 @@ public final class LohGenes {
     private LohGenes() {
     }
 
-    public static long round(double copyNumber) {
-        return Math.round(Math.max(0, copyNumber));
+    public static String round(Double copyNumber) {
+        return copyNumber == null ? Formats.NA_STRING :  String.valueOf(Math.round(Math.max(0, copyNumber)));
     }
 
     @NotNull
-    public static List<PurpleGeneCopyNumber> sort(@NotNull List<PurpleGeneCopyNumber> purpleGeneCopyNumbers) {
-        return purpleGeneCopyNumbers.stream()
-                .sorted(Comparator.comparing(PurpleGeneCopyNumber::geneName))
+    public static List<InterpretPurpleGeneCopyNumbers> sort(@NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers) {
+        return LOHPurpleGeneCopyNumbers.stream()
+                .sorted(Comparator.comparing(InterpretPurpleGeneCopyNumbers::geneName))
                 .collect(Collectors.toList());
     }
 }

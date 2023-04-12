@@ -55,6 +55,8 @@ public class GenomicAnalyzer {
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
         LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
 
+        List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH = InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
+
         Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
         Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
         List<ReportableVariant> reportableVariants =
@@ -96,7 +98,7 @@ public class GenomicAnalyzer {
                 .geneDisruptions(reportableGeneDisruptions)
                 .homozygousDisruptions(orange.linx().somaticHomozygousDisruptions())
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
-                .suspectGeneCopyNumbersWithLOH(suspectGeneCopyNumbersWithLOH)
+                .suspectGeneCopyNumbersWithLOH(interpretSuspectGeneCopyNumbersWithLOH)
                 .build();
     }
 
