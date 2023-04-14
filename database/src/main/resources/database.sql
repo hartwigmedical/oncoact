@@ -23,3 +23,4 @@ CREATE TABLE protect
     evidenceUrls varchar(2500),
     PRIMARY KEY (id)
 );
+CREATE INDEX protect_sampleId ON protect (sampleId);
