@@ -42,12 +42,12 @@ public class LoadProtectData {
             System.exit(1);
         }
 
-        DatabaseAccess dbWriter = databaseAccess(cmd);
-
-        LOGGER.info("Reading PROTECT data for {} from {}", sample, evidenceTsv);
-        List<ProtectEvidence> evidences = ProtectEvidenceFile.read(evidenceTsv);
-        dbWriter.writeProtectEvidence(sample, evidences);
-        LOGGER.info("Done writing {} PROTECT evidence items to database for {}", evidences.size(), sample);
+        try (DatabaseAccess dbWriter = databaseAccess(cmd)) {
+            LOGGER.info("Reading PROTECT data for {} from {}", sample, evidenceTsv);
+            List<ProtectEvidence> evidences = ProtectEvidenceFile.read(evidenceTsv);
+            dbWriter.writeProtectEvidence(sample, evidences);
+            LOGGER.info("Done writing {} PROTECT evidence items to database for {}", evidences.size(), sample);
+        }
     }
 
     @NotNull

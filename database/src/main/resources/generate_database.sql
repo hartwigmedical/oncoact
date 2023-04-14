@@ -1,5 +1,3 @@
-SET FOREIGN_KEY_CHECKS = 0;
-
 DROP TABLE IF EXISTS protect;
 CREATE TABLE protect
 (   id int NOT NULL AUTO_INCREMENT,
@@ -23,8 +21,5 @@ CREATE TABLE protect
     sourceUrls varchar(2500),
     evidenceType varchar(50) NOT NULL,
     evidenceUrls varchar(2500),
-    PRIMARY KEY (id),
-    INDEX(sampleId)
+    PRIMARY KEY (id)
 );
-
-SET FOREIGN_KEY_CHECKS = 1;
