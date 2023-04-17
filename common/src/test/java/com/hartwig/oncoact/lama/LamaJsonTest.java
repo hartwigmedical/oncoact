@@ -16,9 +16,10 @@ public class LamaJsonTest {
 
     private static final String LAMA_JSON = Resources.getResource("lama/lama.sample.json").getPath();
     private static final double EPSILON = 1.0E-2;
+
     @Test
     public void canReadLamaJson() throws IOException {
-       PatientReporterData patientReporterData = LamaJson.read(LAMA_JSON);
+        PatientReporterData patientReporterData = LamaJson.read(LAMA_JSON);
         assertEquals(patientReporterData.getHospitalName(), "string");
         assertEquals(patientReporterData.getHospitalPostalCode(), "string");
         assertEquals(patientReporterData.getStudyPI(), "string");
@@ -35,13 +36,13 @@ public class LamaJsonTest {
         assertEquals(patientReporterData.getPatientId(), "string");
         assertEquals(patientReporterData.getReferenceSampleBarcode(), "string");
         assertEquals(patientReporterData.getReferenceIsolationBarcode(), "string");
-        assertEquals(patientReporterData.getReferenceArrivalDate(), LocalDate.of(2023,4,17));
-        assertEquals(patientReporterData.getReferenceSamplingDate(), LocalDate.of(2023,4,17));
+        assertEquals(patientReporterData.getReferenceArrivalDate(), LocalDate.of(2023, 4, 17));
+        assertEquals(patientReporterData.getReferenceSamplingDate(), LocalDate.of(2023, 4, 17));
         assertEquals(patientReporterData.getTumorSampleId(), "string");
         assertEquals(patientReporterData.getTumorSampleBarcode(), "string");
         assertEquals(patientReporterData.getTumorIsolationBarcode(), "string");
-        assertEquals(patientReporterData.getTumorArrivalDate(), LocalDate.of(2023,4,17));
-        assertEquals(patientReporterData.getTumorSamplingDate(), LocalDate.of(2023,4,17));
+        assertEquals(patientReporterData.getTumorArrivalDate(), LocalDate.of(2023, 4, 17));
+        assertEquals(patientReporterData.getTumorSamplingDate(), LocalDate.of(2023, 4, 17));
         assertEquals(patientReporterData.getPathologyId(), "string");
         assertEquals(patientReporterData.getPrimaryTumorType().getId(), "string");
         assertEquals(patientReporterData.getPrimaryTumorType().getLocation(), "string");

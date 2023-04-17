@@ -1,11 +1,16 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import com.hartwig.lama.client.LamaClient;
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -82,6 +87,7 @@ public final class PatientReporterTestFactory {
         return ImmutableQCFailReportData.builder()
                 .patientPrimaryTumors(patientPrimaryTumors)
                 .limsModel(lims)
+                .patientReporterData(null)
                 .signaturePath(SIGNATURE_PATH)
                 .logoRVAPath(RVA_LOGO_PATH)
                 .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)

@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
+import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
@@ -155,9 +157,12 @@ public class PatientReporterApplication {
         Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
         LOGGER.info("Loaded LIMS data for {} samples from {}", lims.sampleBarcodeCount(), limsDirectory);
 
+        PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
+
         return ImmutableQCFailReportData.builder()
                 .patientPrimaryTumors(patientPrimaryTumors)
                 .limsModel(lims)
+                .patientReporterData(patientReporterData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())
                 .logoCompanyPath(config.companyLogo())
