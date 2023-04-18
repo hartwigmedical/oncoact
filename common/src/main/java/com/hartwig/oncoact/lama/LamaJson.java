@@ -16,7 +16,6 @@ public final class LamaJson {
     @NotNull
     public static PatientReporterData read(@NotNull String lamaJsonPathName) throws IOException {
         BufferedReader lamaFileReader = new BufferedReader(new FileReader(lamaJsonPathName));
-        PatientReporterData patientReporterData = LamaClient.getJsonMapper().readValue(lamaFileReader, PatientReporterData.class);
-        return patientReporterData;
+        return LamaClient.getJsonMapper().readValue(lamaFileReader, PatientReporterData.class);
     }
 }

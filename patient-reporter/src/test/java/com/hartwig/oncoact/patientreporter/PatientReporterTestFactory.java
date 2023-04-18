@@ -1,14 +1,10 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.hartwig.lama.client.LamaClient;
-import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
@@ -84,15 +80,19 @@ public final class PatientReporterTestFactory {
         List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
-        return ImmutableQCFailReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
-                .limsModel(lims)
-                .patientReporterData(null)
-                .signaturePath(SIGNATURE_PATH)
-                .logoRVAPath(RVA_LOGO_PATH)
-                .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
-                .udiDi(UDI_DI)
-                .build();
+        try {
+            return ImmutableQCFailReportData.builder()
+                    .patientPrimaryTumors(patientPrimaryTumors)
+                    .limsModel(lims)
+                    .patientReporterData(LamaJson.read(LAMA_JSON))
+                    .signaturePath(SIGNATURE_PATH)
+                    .logoRVAPath(RVA_LOGO_PATH)
+                    .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
+                    .udiDi(UDI_DI)
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @NotNull
