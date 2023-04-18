@@ -38,6 +38,7 @@
     </dependencies>
 
     <build>
+        <finalName>rose</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
