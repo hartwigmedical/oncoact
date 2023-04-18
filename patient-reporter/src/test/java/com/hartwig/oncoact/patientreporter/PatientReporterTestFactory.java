@@ -100,14 +100,19 @@ public final class PatientReporterTestFactory {
         List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
-        return ImmutableQCFailReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
-                .limsModel(lims)
-                .signaturePath(SIGNATURE_PATH)
-                .logoRVAPath(RVA_LOGO_PATH)
-                .logoCompanyPath(COMPANY_LOGO_PATH)
-                .udiDi(UDI_DI)
-                .build();
+        try {
+            return ImmutableQCFailReportData.builder()
+                    .patientPrimaryTumors(patientPrimaryTumors)
+                    .limsModel(lims)
+                    .patientReporterData(LamaJson.read(LAMA_JSON))
+                    .signaturePath(SIGNATURE_PATH)
+                    .logoRVAPath(RVA_LOGO_PATH)
+                    .logoCompanyPath(COMPANY_LOGO_PATH)
+                    .udiDi(UDI_DI)
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @NotNull

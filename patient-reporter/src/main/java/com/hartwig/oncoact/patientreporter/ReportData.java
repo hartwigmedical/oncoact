@@ -17,8 +17,7 @@ public interface ReportData {
     @NotNull
     Lims limsModel();
 
-    @Nullable
-    //TODO: move not NotNull object
+    @NotNull
     PatientReporterData patientReporterData();
 
     @NotNull
