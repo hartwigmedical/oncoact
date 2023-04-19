@@ -83,15 +83,14 @@ public final class SampleReportFactory {
 
         String hospitalPatientId = lims.hospitalPatientId(tumorSampleBarcode);
         LimsChecker.checkHospitalPatientId(hospitalPatientId, tumorSampleId, cohortConfig);
-        String biopsyLocation = lims.biopsyLocation(tumorSampleBarcode);
-        String curatedBiopsyLocation = curateBiopsyLocation(biopsyLocation);
+        String biopsyLocation = patientReporterData.getBiopsySite().getBiopsyLocation();
 
         return ImmutableSampleReport.builder()
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId(tumorReceivedSampleId)
                 .referenceReceivedSampleId(referenceReceivedSampleId)
                 .tumorType(patientReporterData.getPrimaryTumorType())
-                .biopsyLocation(curatedBiopsyLocation)
+                .biopsyLocation(biopsyLocation)
                 .germlineReportingLevel(lims.germlineReportingChoice(tumorSampleBarcode, allowDefaultCohortConfig))
                 .reportViralPresence(allowDefaultCohortConfig || lims.reportViralPresence(tumorSampleBarcode))
                 .reportPharmogenetics(allowDefaultCohortConfig || lims.reportPgx(tumorSampleBarcode))
@@ -108,26 +107,6 @@ public final class SampleReportFactory {
                         tumorSampleId,
                         cohortConfig))
                 .build();
-    }
-
-    @Nullable
-    public static String curateBiopsyLocation(@Nullable String biopsyLocation) {
-        String curated = null;
-        if (biopsyLocation != null && biopsyLocation.startsWith("Other (please specify below)")) {
-            String[] curatedBiopsyLocation = biopsyLocation.split("_");
-            if (curatedBiopsyLocation.length == 2) {
-                curated = curatedBiopsyLocation[1];
-                curated = curated.substring(0, 1).toUpperCase() + curated.substring(1);
-            } else if (curatedBiopsyLocation.length == 1) {
-                curated = "Other";
-            }
-        } else {
-            if (biopsyLocation != null && !biopsyLocation.equals(Strings.EMPTY)) {
-                curated = biopsyLocation;
-                curated = curated.substring(0, 1).toUpperCase() + curated.substring(1);
-            }
-        }
-        return curated;
     }
 
     @NotNull
