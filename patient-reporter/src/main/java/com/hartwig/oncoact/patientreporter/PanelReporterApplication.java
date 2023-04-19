@@ -3,11 +3,8 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
 import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
@@ -150,10 +147,6 @@ public class PanelReporterApplication {
 
     @NotNull
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
-        String primaryTumorTsv = config.primaryTumorTsv();
-
-        List<PatientPrimaryTumor> patientPrimaryTumors = PatientPrimaryTumorFile.read(primaryTumorTsv);
-        LOGGER.info("Loaded primary tumors for {} patients from {}", patientPrimaryTumors.size(), primaryTumorTsv);
 
         String limsDirectory = config.limsDir();
         Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
@@ -162,7 +155,6 @@ public class PanelReporterApplication {
         PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
 
         return ImmutableQCFailPanelReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
                 .limsModel(lims)
                 .patientReporterData(patientReporterData)
                 .signaturePath(config.signature())

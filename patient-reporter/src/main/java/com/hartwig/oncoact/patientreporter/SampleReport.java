@@ -2,7 +2,7 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.time.LocalDate;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
@@ -28,7 +28,7 @@ public abstract class SampleReport {
     public abstract String referenceReceivedSampleId();
 
     @Nullable
-    public abstract PatientPrimaryTumor patientPrimaryTumor();
+    public abstract TumorType tumorType();
 
     @Nullable
     public abstract String biopsyLocation();
@@ -114,36 +114,6 @@ public abstract class SampleReport {
     public String biopsyLocationString() {
         String biopsyLocation = biopsyLocation();
         return biopsyLocation != null ? biopsyLocation : Strings.EMPTY;
-    }
-
-    @NotNull
-    @Value.Derived
-    public String primaryTumorLocationString() {
-        PatientPrimaryTumor entry = patientPrimaryTumor();
-        if (entry != null) {
-            if (!entry.subLocation().isEmpty()) {
-                return entry.location() + " (" + entry.subLocation() + ")";
-            } else {
-                return entry.location();
-            }
-        } else {
-            return Strings.EMPTY;
-        }
-    }
-
-    @NotNull
-    @Value.Derived
-    public String primaryTumorTypeString() {
-        PatientPrimaryTumor entry = patientPrimaryTumor();
-        if (entry != null) {
-            if (!entry.subType().isEmpty()) {
-                return entry.subType();
-            } else {
-                return entry.type();
-            }
-        } else {
-            return Strings.EMPTY;
-        }
     }
 
     @NotNull

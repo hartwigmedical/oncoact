@@ -1,11 +1,9 @@
 package com.hartwig.oncoact.patientreporter;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
 import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsFactory;
@@ -77,12 +75,10 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportData() {
-        List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
         try {
             return ImmutableQCFailReportData.builder()
-                    .patientPrimaryTumors(patientPrimaryTumors)
                     .limsModel(lims)
                     .patientReporterData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)
@@ -97,12 +93,10 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportDataPanel() {
-        List<PatientPrimaryTumor> patientPrimaryTumors = Lists.newArrayList();
         Lims lims = LimsFactory.empty();
 
         try {
             return ImmutableQCFailReportData.builder()
-                    .patientPrimaryTumors(patientPrimaryTumors)
                     .limsModel(lims)
                     .patientReporterData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)

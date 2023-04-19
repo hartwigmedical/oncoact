@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.lims.Lims;
@@ -53,11 +50,9 @@ public class QCFailReporter {
 
         String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
-        PatientPrimaryTumor patientPrimaryTumor =
-                PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
         SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata,
                 reportData.limsModel(),
-                patientPrimaryTumor,
+                reportData.patientReporterData(),
                 config.allowDefaultCohortConfig());
 
         if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {

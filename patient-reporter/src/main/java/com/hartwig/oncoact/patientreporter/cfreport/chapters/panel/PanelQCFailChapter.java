@@ -53,8 +53,7 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.sampleReport()
-                .primaryTumorLocationString(), report.sampleReport().primaryTumorTypeString(), contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(Strings.EMPTY, Strings.EMPTY, contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));

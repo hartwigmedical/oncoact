@@ -2,7 +2,7 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.time.LocalDate;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsChecker;
 import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortConfig;
@@ -40,7 +40,7 @@ public final class SampleReportFactory {
 
     @NotNull
     public static SampleReport fromLimsModel(@NotNull SampleMetadata sampleMetadata, @NotNull Lims lims,
-            @Nullable PatientPrimaryTumor patientPrimaryTumor, boolean allowDefaultCohortConfig) {
+                                             @Nullable PatientReporterData patientReporterData, boolean allowDefaultCohortConfig) {
         String interpretRefSampleBarcode = interpretRefBarcode(sampleMetadata.refSampleBarcode());
         String refSampleId = sampleMetadata.refSampleId();
         String tumorSampleBarcode = sampleMetadata.tumorSampleBarcode();
@@ -90,7 +90,7 @@ public final class SampleReportFactory {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId(tumorReceivedSampleId)
                 .referenceReceivedSampleId(referenceReceivedSampleId)
-                .patientPrimaryTumor(patientPrimaryTumor)
+                .tumorType(patientReporterData.getPrimaryTumorType())
                 .biopsyLocation(curatedBiopsyLocation)
                 .germlineReportingLevel(lims.germlineReportingChoice(tumorSampleBarcode, allowDefaultCohortConfig))
                 .reportViralPresence(allowDefaultCohortConfig || lims.reportViralPresence(tumorSampleBarcode))

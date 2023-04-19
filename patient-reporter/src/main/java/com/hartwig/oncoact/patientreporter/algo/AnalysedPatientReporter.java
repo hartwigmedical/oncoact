@@ -14,8 +14,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
@@ -65,9 +63,8 @@ public class AnalysedPatientReporter {
     @NotNull
     public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
         String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
-        PatientPrimaryTumor patientPrimaryTumor = PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
 
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, config.allowDefaultCohortConfig());
+        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), reportData.patientReporterData(), config.allowDefaultCohortConfig());
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
@@ -195,7 +192,7 @@ public class AnalysedPatientReporter {
 
         LOGGER.info("Printing clinical and laboratory data for {}", report.sampleReport().tumorSampleId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
-        LOGGER.info(" Primary tumor details: {}{}", report.sampleReport().primaryTumorLocationString(), !report.sampleReport().primaryTumorTypeString().isEmpty() ? " (" + report.sampleReport().primaryTumorTypeString() + ")" : Strings.EMPTY);
+        LOGGER.info(" Primary tumor details: {}{}", report.sampleReport().tumorType().getLocation(), !report.sampleReport().tumorType().getLocation().isEmpty() ? " (" + report.sampleReport().tumorType().getType() + ")" : Strings.EMPTY);
         LOGGER.info(" Shallow seq purity: {}", report.sampleReport().shallowSeqPurityString());
         LOGGER.info(" Lab SOPs used: {}", report.sampleReport().labProcedures());
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
