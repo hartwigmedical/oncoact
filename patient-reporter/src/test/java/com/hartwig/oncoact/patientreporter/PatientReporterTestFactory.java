@@ -2,7 +2,6 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.IOException;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.lama.LamaJson;
 import com.hartwig.oncoact.lims.Lims;
@@ -47,7 +46,6 @@ public final class PatientReporterTestFactory {
                 .tumorSampleBarcode(Strings.EMPTY)
                 .outputDirReport(Strings.EMPTY)
                 .outputDirData(Strings.EMPTY)
-                .primaryTumorTsv(Strings.EMPTY)
                 .limsDir(Strings.EMPTY)
                 .rvaLogo(RVA_LOGO_PATH)
                 .companyLogo(COMPANY_LOGO_PATH)
