@@ -3,13 +3,11 @@ package com.hartwig.oncoact.patientreporter;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.TumorType;
-import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.hospital.HospitalContactData;
 import com.hartwig.oncoact.util.Formats;
 
-import org.apache.logging.log4j.util.Strings;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -106,24 +104,6 @@ public abstract class SampleReport {
             return Formats.formatDate(sampleDate);
         } else {
             return Formats.formatDate(refDate);
-        }
-    }
-
-    @NotNull
-    @Value.Derived
-    public String biopsyLocationString() {
-        String biopsyLocation = biopsyLocation();
-        return biopsyLocation != null ? biopsyLocation : Strings.EMPTY;
-    }
-
-    @NotNull
-    @Value.Derived
-    public String addressee() {
-        if (!hospitalContactData().hospitalPI().equals(Lims.NOT_AVAILABLE_STRING)) {
-            return hospitalContactData().hospitalPI() + ", " + hospitalContactData().hospitalName() + ", "
-                    + hospitalContactData().hospitalAddress();
-        } else {
-            return hospitalContactData().hospitalName() + ", " + hospitalContactData().hospitalAddress();
         }
     }
 }

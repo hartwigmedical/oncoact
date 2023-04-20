@@ -81,7 +81,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", sampleReport.addressee()));
+        div.add(createContentParagraph("This report is addressed to: ", report.patientReporterData().getHospitalAddress()));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;

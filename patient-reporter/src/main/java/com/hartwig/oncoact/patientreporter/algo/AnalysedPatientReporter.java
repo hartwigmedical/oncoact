@@ -114,6 +114,7 @@ public class AnalysedPatientReporter {
 
         AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
                 .sampleReport(sampleReport)
+                .patientReporterData(reportData.patientReporterData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)

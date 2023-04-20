@@ -92,7 +92,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", sampleReport.addressee()));
+        div.add(createContentParagraph("This report is addressed to: ", patientReport.patientReporterData().getHospitalAddress()));
 
         if (cohort.requireHospitalId()) {
             div.add(createContentParagraph("The hospital patient ID is: ", sampleReport.hospitalPatientId()));

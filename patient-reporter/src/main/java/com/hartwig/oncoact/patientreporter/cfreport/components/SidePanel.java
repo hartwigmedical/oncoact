@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
@@ -29,6 +30,7 @@ public final class SidePanel {
             boolean fullContent) {
         renderSidePanel(page,
                 patientReport.sampleReport(),
+                patientReport.patientReporterData(),
                 patientReport.reportDate(),
                 patientReport.qsFormNumber(),
                 fullHeight,
@@ -39,6 +41,7 @@ public final class SidePanel {
             boolean fullContent) {
         renderSidePanel(page,
                 patientReport.sampleReport(),
+                patientReport.patientReporterData(),
                 patientReport.reportDate(),
                 patientReport.qsFormNumber(),
                 fullHeight,
@@ -46,7 +49,7 @@ public final class SidePanel {
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull SampleReport sampleReport, @NotNull String reportDate,
+    public static void renderSidePanel(@NotNull PdfPage page, @NotNull SampleReport sampleReport, @NotNull PatientReporterData patientReporterData, @NotNull String reportDate,
             @NotNull String qsFormNumber, boolean fullHeight, boolean fullContent) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
@@ -75,12 +78,12 @@ public final class SidePanel {
         if (fullHeight && fullContent) {
 
             if (cohort.requireAdditionalInformationForSidePanel()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", sampleReport.hospitalContactData().requesterName()));
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", sampleReport.hospitalContactData().requesterEmail()));
+                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", patientReporterData.getRequesterName()));
+                cv.add(createSidePanelDiv(++sideTextIndex, "Email", patientReporterData.getRequesterEmail()));
             }
 
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", sampleReport.hospitalContactData().hospitalName()));
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , sampleReport.biopsyLocationString()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", patientReporterData.getHospitalName()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , patientReporterData.getBiopsySite().getBiopsyLocation()));
 
         }
 

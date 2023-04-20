@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.patientreporter.PatientReport;
@@ -21,6 +22,10 @@ public abstract class AnalysedPatientReport implements PatientReport {
     @Override
     @NotNull
     public abstract SampleReport sampleReport();
+
+    @Override
+    @NotNull
+    public abstract PatientReporterData patientReporterData();
 
     @NotNull
     @Override

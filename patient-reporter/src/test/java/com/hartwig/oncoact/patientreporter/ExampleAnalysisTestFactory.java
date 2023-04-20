@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
+import com.hartwig.oncoact.lama.LamaJsonTest;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
@@ -82,7 +84,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                              @NotNull PurpleQCStatus purpleQCStatus) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
@@ -193,6 +195,7 @@ public final class ExampleAnalysisTestFactory {
 
         return ImmutableAnalysedPatientReport.builder()
                 .sampleReport(sampleReport)
+                .patientReporterData(reportData.patientReporterData())
                 .qsFormNumber(config.qcForNumber().display())
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
@@ -222,7 +225,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -250,7 +253,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-            @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -320,7 +323,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline,
-            @NotNull LimsCohortConfig cohort) {
+                                                               @NotNull LimsCohortConfig cohort) {
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
                 .refSampleId(Strings.EMPTY)
                 .refSampleBarcode("FR12123488")
@@ -355,7 +358,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)

@@ -3,6 +3,7 @@ package com.hartwig.oncoact.lama;
 import com.google.common.io.Resources;
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -17,9 +18,14 @@ public class LamaJsonTest {
     private static final String LAMA_JSON = Resources.getResource("lama/lama.sample.json").getPath();
     private static final double EPSILON = 1.0E-2;
 
+    @NotNull
+    public static PatientReporterData canReadLamaJsonEmpty() throws IOException {
+        return LamaJson.read(LAMA_JSON);
+    }
+
     @Test
     public void canReadLamaJson() throws IOException {
-        PatientReporterData patientReporterData = LamaJson.read(LAMA_JSON);
+        PatientReporterData patientReporterData = canReadLamaJsonEmpty();
         assertEquals(patientReporterData.getHospitalName(), "string");
         assertEquals(patientReporterData.getHospitalPostalCode(), "string");
         assertEquals(patientReporterData.getStudyPI(), "string");

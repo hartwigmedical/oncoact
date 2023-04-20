@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.*;
+import com.hartwig.oncoact.lama.LamaJsonTest;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
@@ -397,6 +398,7 @@ public class CFReportWriterTest {
 
         PanelReport patientReport = ImmutablePanelReport.builder()
                 .sampleReport(sampleReport)
+                .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber("form")
                 .VCFFilename("test.vcf")
                 .isCorrectedReport(false)
@@ -422,6 +424,7 @@ public class CFReportWriterTest {
         SampleReport sampleReport = generateSampleReport(sampleMetadata);
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .sampleReport(sampleReport)
+                .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
                 .isCorrectedReport(false)
@@ -501,6 +504,7 @@ public class CFReportWriterTest {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         QCFailReport patientReport = ImmutableQCFailReport.builder()
                 .sampleReport(sampleReport)
+                .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
                 .wgsPurityString(wgsPurityString)

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
@@ -22,6 +23,10 @@ public abstract class QCFailReport implements PatientReport {
     @Override
     @NotNull
     public abstract SampleReport sampleReport();
+
+    @Override
+    @NotNull
+    public abstract PatientReporterData patientReporterData();
 
     @Override
     @NotNull

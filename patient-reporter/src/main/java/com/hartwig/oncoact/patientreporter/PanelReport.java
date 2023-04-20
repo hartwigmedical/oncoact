@@ -2,12 +2,16 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.util.Optional;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import org.jetbrains.annotations.NotNull;
 
 public interface PanelReport {
 
     @NotNull
     SampleReport sampleReport();
+
+    @NotNull
+    PatientReporterData patientReporterData();
 
     @NotNull
     default String user() {
