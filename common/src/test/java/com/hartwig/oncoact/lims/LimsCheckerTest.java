@@ -3,9 +3,6 @@ package com.hartwig.oncoact.lims;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
-
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 
@@ -24,7 +21,6 @@ public class LimsCheckerTest {
         String correctIdC_part = "C18-124 I 1";
         String correctIdT_part_small = "T20-1 (I-6)";
         String correctIdC_part_small = "C18-2 I 1";
-        LimsCohortConfig cohortConfigWIDE = TestLimsCohortConfigFactory.createWIDECohortConfig();
         assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, wideSampleId));
         assertEquals(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, wideSampleId));
         assertEquals(correctIdT_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part, wideSampleId));

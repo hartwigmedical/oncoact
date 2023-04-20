@@ -27,7 +27,6 @@ import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
@@ -109,7 +108,7 @@ public final class ExampleAnalysisTestFactory {
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
-        SampleReport sampleReport = createSkinMelanomaSampleReport(config.sampleId(), config.reportGermline(), config.limsCohortConfig());
+        SampleReport sampleReport = createSkinMelanomaSampleReport(config.sampleId(), config.reportGermline());
 
         String summaryWithoutGermline = "Melanoma sample showing:\n"
                 + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
@@ -307,8 +306,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline,
-                                                               @NotNull LimsCohortConfig cohort) {
+    private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline) {
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
                 .refSampleId(Strings.EMPTY)
                 .refSampleBarcode("FR12123488")

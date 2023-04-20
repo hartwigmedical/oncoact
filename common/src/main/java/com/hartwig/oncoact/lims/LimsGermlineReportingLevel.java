@@ -1,9 +1,6 @@
 package com.hartwig.oncoact.lims;
 
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public enum LimsGermlineReportingLevel {
     REPORT_WITH_NOTIFICATION("report with notification"),
@@ -20,11 +17,5 @@ public enum LimsGermlineReportingLevel {
     @NotNull
     public String display() {
         return display;
-    }
-
-    @NotNull
-    static LimsGermlineReportingLevel fromLimsInputs(boolean limsSampleReportGermlineVariants, @NotNull String germlineReportingLevelString,
-            @NotNull String sampleId, @Nullable LimsCohortConfig cohort) {
-        return REPORT_WITHOUT_NOTIFICATION;
     }
 }

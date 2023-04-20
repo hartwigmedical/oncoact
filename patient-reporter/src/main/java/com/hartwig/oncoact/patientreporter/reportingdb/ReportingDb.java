@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;

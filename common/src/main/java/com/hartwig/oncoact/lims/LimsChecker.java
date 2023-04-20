@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.lims;
 
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -13,25 +11,6 @@ public final class LimsChecker {
     private static final Logger LOGGER = LogManager.getLogger(LimsChecker.class);
 
     private LimsChecker() {
-    }
-
-    public static boolean checkGermlineVariants(@Nullable LimsJsonSampleData sampleData, @Nullable LimsCohortConfig cohort,
-            @NotNull String sampleId) {
-        if (sampleData != null && cohort != null) {
-            if (sampleData.reportGermlineVariants()) {
-                if (!cohort.reportGermline()) {
-                    LOGGER.warn("Consent of report germline variants is true, but must be false for sample '{}'", sampleId);
-                }
-                return true;
-            } else {
-                if (cohort.reportGermline()) {
-                    LOGGER.warn("Consent of report germline variants is false, but must be true for sample '{}'", sampleId);
-                }
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
     @Nullable

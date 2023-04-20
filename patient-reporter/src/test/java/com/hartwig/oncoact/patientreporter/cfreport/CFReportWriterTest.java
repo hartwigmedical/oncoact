@@ -14,9 +14,6 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.lims.LimsTest;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
@@ -68,7 +65,6 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForCOLO829() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
                 .comments(COLO_COMMENT_STRING)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOLOCohortConfig())
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -82,7 +78,6 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForCOLO829DisabledConfig() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_disabled_config")
                 .comments(COLO_COMMENT_STRING)
-                .limsCohortConfig(LimsTest.createAllDisabledCohortConfig("COLO"))
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -97,7 +92,6 @@ public class CFReportWriterTest {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
                 .isCorrectionReport(true)
                 .comments(COLO_COMMENT_STRING_CORRECTED)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOLOCohortConfig())
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -112,7 +106,6 @@ public class CFReportWriterTest {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_GERMLINE")
                 .comments(COLO_COMMENT_STRING)
                 .reportGermline(true)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOLOCohortConfig())
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -129,7 +122,6 @@ public class CFReportWriterTest {
                 .qcForNumber(QsFormNumber.FOR_209)
                 .hasReliablePurity(false)
                 .includeSummary(false)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOLOCohortConfig())
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -147,7 +139,6 @@ public class CFReportWriterTest {
                 .impliedTumorPurity(0.19)
                 .includeSummary(false)
                 .hasReliablePurity(true)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOLOCohortConfig())
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -161,7 +152,6 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForCPCTSample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_FULL")
                 .comments(FULL_TABLES_COMMENT_STRING)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCPCTCohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -174,7 +164,6 @@ public class CFReportWriterTest {
     @Test
     public void canGeneratePatientReportForACTINSample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("ACTIN_FULL")
-                .limsCohortConfig(TestLimsCohortConfigFactory.createACTINCohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -187,7 +176,6 @@ public class CFReportWriterTest {
     @Test
     public void canGeneratePatientReportForCORESample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CORE01_FULL")
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCORECohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -201,7 +189,6 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForWIDESample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("WIDE01_FULL")
                 .comments(FULL_TABLES_COMMENT_STRING)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createWIDECohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -215,7 +202,6 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForCOREDBSample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("COREDB01_FULL")
                 .comments(FULL_TABLES_COMMENT_STRING)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCOREDBCohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -231,7 +217,6 @@ public class CFReportWriterTest {
                 .comments(FULL_TABLES_COMMENT_STRING)
                 .hasReliablePurity(false)
                 .qcForNumber(QsFormNumber.FOR_209)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCPCTCohortConfig())
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -247,7 +232,6 @@ public class CFReportWriterTest {
                 .comments(FULL_TABLES_COMMENT_STRING)
                 .impliedTumorPurity(0.19)
                 .qcForNumber(QsFormNumber.FOR_209)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createCPCTCohortConfig())
                 .build();
         AnalysedPatientReport patientReport =
                 ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.WARN_LOW_PURITY);
@@ -267,7 +251,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -280,7 +263,6 @@ public class CFReportWriterTest {
                 true,
                 true,
                 COMMENT_STRING_QC_FAIL_CORRECTED,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -293,7 +275,6 @@ public class CFReportWriterTest {
                 true,
                 false,
                 COMMENT_STRING_QC_FAIL_CORRECTED,
-                TestLimsCohortConfigFactory.createCOREDBCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -306,7 +287,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -319,7 +299,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.FAIL_CONTAMINATION);
     }
 
@@ -332,7 +311,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -345,7 +323,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -358,7 +335,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCPCTCohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -371,7 +347,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createCORECohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -384,7 +359,6 @@ public class CFReportWriterTest {
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                TestLimsCohortConfigFactory.createWIDECohortConfig(),
                 PurpleQCStatus.PASS);
     }
 
@@ -473,7 +447,7 @@ public class CFReportWriterTest {
 
     private static void generateQCFailReport(@NotNull String sampleId, @NotNull String shallowSeqPurity, @Nullable String wgsPurityString,
             @NotNull QCFailReason reason, boolean correctedReport, boolean correctionReportExtern, @NotNull String comments,
-            @NotNull LimsCohortConfig limsCohortConfig, @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
+                                             @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
         SampleMetadata sampleMetadata = generateSampleMetadata(sampleId);
 
         SampleReport sampleReport = ImmutableSampleReport.builder()

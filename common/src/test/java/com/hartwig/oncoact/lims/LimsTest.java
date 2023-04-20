@@ -12,7 +12,6 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.lims.cohort.*;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -417,44 +416,5 @@ public class LimsTest {
                 preLimsArrivalDatesPerSampleId,
                 sampleIdsWithoutSamplingDate,
                 blacklistedPatients);
-    }
-
-    @NotNull
-    public static LimsCohortConfig createAllDisabledCohortConfig(@NotNull String cohortId) {
-        return allDisabledBuilder().cohortId(cohortId).build();
-    }
-
-    @NotNull
-    public static LimsCohortConfig createConfigForHospitalModel(@NotNull String cohortId, boolean requireHospitalPersonsStudy,
-                                                                boolean requireHospitalPersonsRequester) {
-        return allDisabledBuilder().cohortId(cohortId)
-                .sampleContainsHospitalCenterId(true)
-                .requireHospitalPersonsStudy(requireHospitalPersonsStudy)
-                .requireHospitalPersonsRequester(requireHospitalPersonsRequester)
-                .build();
-    }
-
-
-    @NotNull
-    public static ImmutableLimsCohortConfig.Builder allDisabledBuilder() {
-        return ImmutableLimsCohortConfig.builder()
-                .sampleContainsHospitalCenterId(false)
-                .reportGermline(false)
-                .reportGermlineFlag(false)
-                .reportConclusion(false)
-                .reportViral(false)
-                .reportPeach(false)
-                .requireHospitalId(false)
-                .requireHospitalPAId(false)
-                .requireHospitalPersonsStudy(false)
-                .requireHospitalPersonsRequester(false)
-                .requireAdditionalInformationForSidePanel(false);
-    }
-
-    @NotNull
-    private static LimsCohortModel buildCohortModelFromSampleCohort(@NotNull String sampleCohort) {
-        Map<String, LimsCohortConfig> configMap = Maps.newHashMap();
-        configMap.put(sampleCohort, createAllDisabledCohortConfig(sampleCohort));
-        return ImmutableLimsCohortModel.builder().limsCohortMap(configMap).build();
     }
 }

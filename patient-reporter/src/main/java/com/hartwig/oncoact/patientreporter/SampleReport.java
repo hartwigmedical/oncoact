@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.util.Formats;
 
 import org.immutables.value.Value;
