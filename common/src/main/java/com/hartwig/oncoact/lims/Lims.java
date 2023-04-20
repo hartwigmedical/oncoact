@@ -8,9 +8,6 @@ import java.util.Set;
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
-import com.hartwig.oncoact.lims.hospital.HospitalContactData;
-import com.hartwig.oncoact.lims.hospital.HospitalModel;
-import com.hartwig.oncoact.lims.hospital.ImmutableHospitalContactData;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,8 +25,6 @@ public class Lims {
     @NotNull
     private final LimsCohortModel limsCohortModel;
     @NotNull
-    private final HospitalModel hospitalModel;
-    @NotNull
     private final Map<String, LimsJsonSampleData> dataPerSampleBarcode;
     @NotNull
     private final Map<String, LimsJsonSubmissionData> dataPerSubmission;
@@ -42,14 +37,13 @@ public class Lims {
     @NotNull
     private final Set<String> blacklistedPatients;
 
-    public Lims(@NotNull final LimsCohortModel limsCohortModel, @NotNull final HospitalModel hospitalModel,
+    public Lims(@NotNull final LimsCohortModel limsCohortModel,
             @NotNull final Map<String, LimsJsonSampleData> dataPerSampleBarcode,
             @NotNull final Map<String, LimsJsonSubmissionData> dataPerSubmission,
             @NotNull final Map<String, LimsShallowSeqData> shallowSeqPerSampleBarcode,
             @NotNull final Map<String, LocalDate> preLimsArrivalDatesPerSampleId, @NotNull final Set<String> samplesWithoutSamplingDate,
             @NotNull final Set<String> blacklistedPatients) {
         this.limsCohortModel = limsCohortModel;
-        this.hospitalModel = hospitalModel;
         this.dataPerSampleBarcode = dataPerSampleBarcode;
         this.dataPerSubmission = dataPerSubmission;
         this.shallowSeqPerSampleBarcode = shallowSeqPerSampleBarcode;
@@ -273,28 +267,6 @@ public class Lims {
         String cohortString = sampleData != null ? sampleData.cohort() : null;
 
         return limsCohortModel.queryCohortData(cohortString, sampleId(sampleBarcode));
-    }
-
-    @NotNull
-    public HospitalContactData hospitalContactData(@NotNull String sampleBarcode) {
-        String sampleId = sampleId(sampleBarcode);
-        HospitalContactData data = hospitalModel.queryHospitalData(sampleId,
-                cohortConfig(sampleBarcode),
-                requesterName(sampleBarcode),
-                requesterEmail(sampleBarcode));
-
-        if (data == null) {
-            LOGGER.warn("Could not find hospital data for sample '{}' with barcode '{}'", sampleId, sampleBarcode);
-            data = ImmutableHospitalContactData.builder()
-                    .hospitalPI(NOT_AVAILABLE_STRING)
-                    .requesterName(NOT_AVAILABLE_STRING)
-                    .requesterEmail(NOT_AVAILABLE_STRING)
-                    .hospitalName(NOT_AVAILABLE_STRING)
-                    .hospitalAddress(NOT_AVAILABLE_STRING)
-                    .build();
-        }
-
-        return data;
     }
 
     @NotNull

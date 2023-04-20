@@ -25,9 +25,6 @@ import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModelFactory;
-import com.hartwig.oncoact.lims.hospital.HospitalModel;
-import com.hartwig.oncoact.lims.hospital.HospitalModelFactory;
-import com.hartwig.oncoact.lims.hospital.ImmutableHospitalModel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,12 +61,9 @@ public final class LimsFactory {
         Set<String> samplesWithoutSamplingDate = readSingleColumnTsv(limsDirectory + File.separator + SAMPLES_WITHOUT_SAMPLING_DATE_TSV);
         Set<String> blacklistedPatients = readSingleColumnTsv(limsDirectory + File.separator + PATIENT_BLACKLIST_TSV);
 
-        HospitalModel hospitalModel = HospitalModelFactory.fromLimsDirectory(limsDirectory);
-
         LimsCohortModel cohortModel = LimsCohortModelFactory.read(limsDirectory + File.separator + COHORT_CONFIG_TSV);
 
         return new Lims(cohortModel,
-                hospitalModel,
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqPerSampleBarcode,
@@ -108,7 +102,6 @@ public final class LimsFactory {
         };
 
         return new Lims(alwaysDisabledCohortModel,
-                ImmutableHospitalModel.builder().build(),
                 Maps.newHashMap(),
                 Maps.newHashMap(),
                 Maps.newHashMap(),

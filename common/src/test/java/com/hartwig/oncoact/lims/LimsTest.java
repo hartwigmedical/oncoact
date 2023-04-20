@@ -16,10 +16,6 @@ import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortModel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
 import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
-import com.hartwig.oncoact.lims.hospital.HospitalContactData;
-import com.hartwig.oncoact.lims.hospital.HospitalModel;
-import com.hartwig.oncoact.lims.hospital.ImmutableHospitalAddress;
-import com.hartwig.oncoact.lims.hospital.ImmutableHospitalModel;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -187,35 +183,6 @@ public class LimsTest {
     }
 
     @Test
-    public void canReadHospitalData() {
-        LimsJsonSampleData sample = LimsTestUtil.createLimsSampleDataBuilder()
-                .sampleId(TUMOR_SAMPLE_ID)
-                .tumorBarcode(TUMOR_SAMPLE_BARCODE)
-                .cohort(TEST_COHORT)
-                .build();
-
-        Lims emptyHospitalModel = buildTestLimsWithWithHospitalModel(sample, ImmutableHospitalModel.builder().build());
-
-        HospitalContactData emptyContact = emptyHospitalModel.hospitalContactData(TUMOR_SAMPLE_BARCODE);
-        assertEquals(Lims.NOT_AVAILABLE_STRING, emptyContact.hospitalPI());
-        assertEquals(Lims.NOT_AVAILABLE_STRING, emptyContact.requesterName());
-        assertEquals(Lims.NOT_AVAILABLE_STRING, emptyContact.requesterEmail());
-        assertEquals(Lims.NOT_AVAILABLE_STRING, emptyContact.hospitalName());
-        assertEquals(Lims.NOT_AVAILABLE_STRING, emptyContact.hospitalAddress());
-
-        HospitalModel testHospitalModel = ImmutableHospitalModel.builder()
-                .putHospitalAddressMap("1",
-                        ImmutableHospitalAddress.builder().hospitalName("Name").hospitalZip("Zip").hospitalCity("City").build())
-                .putSampleToHospitalMapping(TUMOR_SAMPLE_ID, "1")
-                .build();
-
-        Lims withHospitalModel = buildTestLimsWithWithHospitalModel(sample, testHospitalModel);
-        HospitalContactData contact = withHospitalModel.hospitalContactData(TUMOR_SAMPLE_BARCODE);
-        assertEquals("Name", contact.hospitalName());
-        assertEquals("Zip City", contact.hospitalAddress());
-    }
-
-    @Test
     public void canExtractLimsViralInsertionsChoice() {
         LimsJsonSampleData sampleDataTrue = LimsTestUtil.createLimsSampleDataBuilder()
                 .tumorBarcode(TUMOR_SAMPLE_BARCODE)
@@ -374,10 +341,8 @@ public class LimsTest {
         Map<String, LocalDate> preLimsArrivalDatesPerSampleId = Maps.newHashMap();
         Set<String> sampleIdsWithoutSamplingDates = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
-        HospitalModel hospitalModel = ImmutableHospitalModel.builder().build();
 
         return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
-                hospitalModel,
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -396,10 +361,8 @@ public class LimsTest {
         Map<String, LocalDate> preLimsArrivalDatesPerSampleId = Maps.newHashMap();
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
-        HospitalModel hospitalModel = ImmutableHospitalModel.builder().build();
 
         return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
-                hospitalModel,
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -428,10 +391,8 @@ public class LimsTest {
         Map<String, LocalDate> preLimsArrivalDatesPerSampleId = Maps.newHashMap();
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
-        HospitalModel hospitalModel = ImmutableHospitalModel.builder().build();
 
         return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
-                hospitalModel,
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -451,32 +412,9 @@ public class LimsTest {
 
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
-        HospitalModel hospitalModel = ImmutableHospitalModel.builder().build();
         LimsCohortModel cohortModel = ImmutableLimsCohortModel.builder().build();
 
         return new Lims(cohortModel,
-                hospitalModel,
-                dataPerSampleBarcode,
-                dataPerSubmission,
-                shallowSeqDataPerSampleBarcode,
-                preLimsArrivalDatesPerSampleId,
-                sampleIdsWithoutSamplingDate,
-                blacklistedPatients);
-    }
-
-    @NotNull
-    private static Lims buildTestLimsWithWithHospitalModel(@NotNull LimsJsonSampleData sample, @NotNull HospitalModel hospitalModel) {
-        Map<String, LimsJsonSampleData> dataPerSampleBarcode = Maps.newHashMap();
-        dataPerSampleBarcode.put(sample.tumorBarcode(), sample);
-        Map<String, LimsJsonSubmissionData> dataPerSubmission = Maps.newHashMap();
-        Map<String, LimsShallowSeqData> shallowSeqDataPerSampleBarcode = Maps.newHashMap();
-
-        Map<String, LocalDate> preLimsArrivalDatesPerSampleId = Maps.newHashMap();
-        Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
-        Set<String> blacklistedPatients = Sets.newHashSet();
-
-        return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
-                hospitalModel,
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
