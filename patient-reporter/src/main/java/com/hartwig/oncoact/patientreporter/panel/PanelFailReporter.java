@@ -29,13 +29,6 @@ public class PanelFailReporter {
         SampleReport sampleReport =
                 SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), reportData.patientReporterData(), allowDefaultCohortConfig);
 
-
-        LimsCohortConfig cohort = sampleReport.cohort();
-
-        if (cohort.cohortId().isEmpty()) {
-            throw new IllegalStateException("QC fail report not supported for non-cancer study samples: " + sampleMetadata.tumorSampleId());
-        }
-
         return ImmutablePanelFailReport.builder()
                 .sampleReport(sampleReport)
                 .qsFormNumber(reason.qcFormNumber())

@@ -326,13 +326,12 @@ public final class ExampleAnalysisTestFactory {
                 .germlineReportingLevel(reportGermline
                         ? LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION
                         : LimsGermlineReportingLevel.NO_REPORTING)
-                .reportViralPresence(cohort.reportViral())
-                .reportPharmogenetics(cohort.reportPeach())
+                .reportViralPresence(true)
+                .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
                 .shallowSeqPurityString(Lims.NOT_PERFORMED_STRING)
                 .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .cohort(cohort)
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
                 .hospitalPatientId("HOSP1")

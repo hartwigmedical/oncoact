@@ -62,7 +62,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     @NotNull
     private static Div createSampleDetailsDiv(@NotNull AnalysedPatientReport patientReport) {
         SampleReport sampleReport = patientReport.sampleReport();
-        LimsCohortConfig cohort = sampleReport.cohort();
 
         Div div = new Div();
 
@@ -94,11 +93,11 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraph(whoVerified));
         div.add(createContentParagraph("This report is addressed to: ", patientReport.patientReporterData().getHospitalAddress()));
 
-        if (cohort.requireHospitalId()) {
+        if (!sampleReport.hospitalPatientId().equals(Strings.EMPTY)) {
             div.add(createContentParagraph("The hospital patient ID is: ", sampleReport.hospitalPatientId()));
         }
 
-        if (cohort.requireHospitalPersonsRequester()) {
+        if (!sampleReport.projectName().isEmpty() && !sampleReport.submissionId().isEmpty()) {
             div.add(createContentParagraphTwice("The project name of sample is: ",
                     sampleReport.projectName(),
                     " and the submission ID is ",
@@ -162,7 +161,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull SampleReport sampleReport) {
-        if (sampleReport.hospitalPathologySampleId() != null && sampleReport.cohort().requireHospitalPAId()) {
+        if (sampleReport.hospitalPathologySampleId() != null && !sampleReport.hospitalPathologySampleId().isEmpty()) {
             return createContentParagraphTwice("The HMF sample ID is: ",
                     sampleReport.sampleNameForReport(),
                     " and the pathology tissue ID is: ",

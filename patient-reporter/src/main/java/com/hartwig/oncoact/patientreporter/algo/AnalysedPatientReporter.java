@@ -199,7 +199,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 
-        LOGGER.info(" Cohort: {}", report.sampleReport().cohort().cohortId());
+        LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
         LOGGER.info(" Germline reporting level: {}", report.sampleReport().germlineReportingLevel());
 
         GenomicAnalysis analysis = report.genomicAnalysis();

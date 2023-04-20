@@ -43,12 +43,6 @@ public class PanelReporter {
             PipelineVersion.checkPipelineVersion(pipelineVersion, expectedPipelineVersion, overridePipelineVersion);
         }
 
-        LimsCohortConfig cohort = sampleReport.cohort();
-
-        if (cohort.cohortId().isEmpty()) {
-            throw new IllegalStateException("QC fail report not supported for non-cancer study samples: " + sampleMetadata.tumorSampleId());
-        }
-
         return ImmutablePanelReport.builder()
                 .sampleReport(sampleReport)
                 .qsFormNumber(QsFormNumber.FOR_344.display())

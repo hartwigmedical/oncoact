@@ -61,9 +61,7 @@ public final class LimsFactory {
         Set<String> samplesWithoutSamplingDate = readSingleColumnTsv(limsDirectory + File.separator + SAMPLES_WITHOUT_SAMPLING_DATE_TSV);
         Set<String> blacklistedPatients = readSingleColumnTsv(limsDirectory + File.separator + PATIENT_BLACKLIST_TSV);
 
-        LimsCohortModel cohortModel = LimsCohortModelFactory.read(limsDirectory + File.separator + COHORT_CONFIG_TSV);
-
-        return new Lims(cohortModel,
+        return new Lims(
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqPerSampleBarcode,
@@ -74,34 +72,7 @@ public final class LimsFactory {
 
     @NotNull
     public static Lims empty() {
-        LimsCohortModel alwaysDisabledCohortModel = new LimsCohortModel() {
-            @NotNull
-            @Override
-            protected Map<String, LimsCohortConfig> limsCohortMap() {
-                return Maps.newHashMap();
-            }
-
-            @Nullable
-            @Override
-            public LimsCohortConfig queryCohortData(@Nullable final String cohortString, @NotNull final String sampleId) {
-                return ImmutableLimsCohortConfig.builder()
-                        .cohortId(sampleId)
-                        .sampleContainsHospitalCenterId(false)
-                        .reportGermline(false)
-                        .reportGermlineFlag(false)
-                        .reportConclusion(false)
-                        .reportViral(false)
-                        .reportPeach(false)
-                        .requireHospitalId(false)
-                        .requireHospitalPAId(false)
-                        .requireHospitalPersonsStudy(false)
-                        .requireHospitalPersonsRequester(false)
-                        .requireAdditionalInformationForSidePanel(false)
-                        .build();
-            }
-        };
-
-        return new Lims(alwaysDisabledCohortModel,
+        return new Lims(
                 Maps.newHashMap(),
                 Maps.newHashMap(),
                 Maps.newHashMap(),

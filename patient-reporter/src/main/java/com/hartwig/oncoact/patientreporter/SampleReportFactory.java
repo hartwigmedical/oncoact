@@ -70,19 +70,7 @@ public final class SampleReportFactory {
 
         String hospitalPathologySampleId = lims.hospitalPathologySampleId(tumorSampleBarcode);
 
-        LimsCohortConfig cohortConfig = lims.cohortConfig(tumorSampleBarcode);
-        if (cohortConfig == null) {
-            if (allowDefaultCohortConfig) {
-                LOGGER.warn("Using DEFAULT cohort config for tumor sample (non-production only!): {}", tumorSampleId);
-                cohortConfig = buildDefaultCohortConfig();
-            } else {
-                throw new IllegalStateException(
-                        "Cohort not configured in LIMS for sample '" + tumorSampleId + "' with barcode " + tumorSampleBarcode);
-            }
-        }
-
         String hospitalPatientId = lims.hospitalPatientId(tumorSampleBarcode);
-        LimsChecker.checkHospitalPatientId(hospitalPatientId, tumorSampleId, cohortConfig);
         String biopsyLocation = patientReporterData.getBiopsySite().getBiopsyLocation();
 
         return ImmutableSampleReport.builder()
@@ -98,13 +86,11 @@ public final class SampleReportFactory {
                 .tumorArrivalDate(arrivalDateTumorSample)
                 .shallowSeqPurityString(lims.purityShallowSeq(tumorSampleBarcode))
                 .labProcedures(lims.labProcedures(tumorSampleBarcode))
-                .cohort(cohortConfig)
                 .projectName(lims.projectName(tumorSampleBarcode))
                 .submissionId(lims.submissionId(tumorSampleBarcode))
                 .hospitalPatientId(hospitalPatientId)
                 .hospitalPathologySampleId(LimsChecker.toHospitalPathologySampleIdForReport(hospitalPathologySampleId,
-                        tumorSampleId,
-                        cohortConfig))
+                        tumorSampleId))
                 .build();
     }
 

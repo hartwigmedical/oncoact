@@ -64,12 +64,6 @@ public class QCFailReporter {
             }
         }
 
-        LimsCohortConfig cohort = sampleReport.cohort();
-
-        if (cohort.cohortId().isEmpty()) {
-            throw new IllegalStateException("QC fail report not supported for non-cancer study samples: " + sampleMetadata.tumorSampleId());
-        }
-
         String wgsPurityString = null;
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
         boolean hasReliablePurity = false;

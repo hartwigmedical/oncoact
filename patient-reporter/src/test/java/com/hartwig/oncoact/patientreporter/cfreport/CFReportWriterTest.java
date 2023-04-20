@@ -14,6 +14,7 @@ import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
+import com.hartwig.oncoact.lims.LimsTest;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
@@ -81,7 +82,7 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForCOLO829DisabledConfig() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_disabled_config")
                 .comments(COLO_COMMENT_STRING)
-                .limsCohortConfig(TestLimsCohortConfigFactory.createAllDisabledCohortConfig("COLO"))
+                .limsCohortConfig(LimsTest.createAllDisabledCohortConfig("COLO"))
                 .build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
 
@@ -463,7 +464,6 @@ public class CFReportWriterTest {
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .shallowSeqPurityString("")
                 .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .cohort(TestLimsCohortConfigFactory.createCOREDBCohortConfig())
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
                 .hospitalPatientId("HOSP1")
@@ -489,7 +489,6 @@ public class CFReportWriterTest {
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .shallowSeqPurityString(shallowSeqPurity)
                 .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .cohort(limsCohortConfig)
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
                 .hospitalPatientId("HOSP1")

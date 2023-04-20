@@ -38,43 +38,6 @@ public final class TestLimsCohortConfigFactory {
     }
 
     @NotNull
-    public static LimsCohortConfig createAllDisabledCohortConfig(@NotNull String cohortId) {
-        return allDisabledBuilder().cohortId(cohortId).build();
-    }
-
-    @NotNull
-    public static LimsCohortConfig createConfigForHospitalModel(@NotNull String cohortId, boolean requireHospitalPersonsStudy,
-            boolean requireHospitalPersonsRequester) {
-        return allDisabledBuilder().cohortId(cohortId)
-                .sampleContainsHospitalCenterId(true)
-                .requireHospitalPersonsStudy(requireHospitalPersonsStudy)
-                .requireHospitalPersonsRequester(requireHospitalPersonsRequester)
-                .build();
-    }
-
-    @NotNull
-    public static LimsCohortConfig createConfigForGermlineReporting(@NotNull String cohortId, boolean reportGermline,
-            boolean reportGermlineFlag) {
-        return allDisabledBuilder().cohortId(cohortId).reportGermline(reportGermline).reportGermlineFlag(reportGermlineFlag).build();
-    }
-
-    @NotNull
-    public static ImmutableLimsCohortConfig.Builder allDisabledBuilder() {
-        return ImmutableLimsCohortConfig.builder()
-                .sampleContainsHospitalCenterId(false)
-                .reportGermline(false)
-                .reportGermlineFlag(false)
-                .reportConclusion(false)
-                .reportViral(false)
-                .reportPeach(false)
-                .requireHospitalId(false)
-                .requireHospitalPAId(false)
-                .requireHospitalPersonsStudy(false)
-                .requireHospitalPersonsRequester(false)
-                .requireAdditionalInformationForSidePanel(false);
-    }
-
-    @NotNull
     private static LimsCohortConfig createCohortConfig(@NotNull String cohortId, boolean sampleContainsHospitalCenterId,
             boolean reportGermline, boolean reportGermlineFlag, boolean reportConclusion, boolean reportViral, boolean reportPeach,
             boolean requireHospitalId, boolean requireHospitalPAId, boolean requireHospitalPersonsStudy,

@@ -4,6 +4,7 @@ import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,44 +13,6 @@ public final class LimsChecker {
     private static final Logger LOGGER = LogManager.getLogger(LimsChecker.class);
 
     private LimsChecker() {
-    }
-
-    public static boolean checkViralInsertions(@Nullable LimsJsonSampleData sampleData, @Nullable LimsCohortConfig cohort,
-            @NotNull String sampleId) {
-        if (sampleData != null && cohort != null) {
-            if (sampleData.reportViralPresence()) {
-                if (!cohort.reportViral()) {
-                    LOGGER.warn("Consent of viral insertions is true, but must be false for sample '{}'", sampleId);
-                }
-                return true;
-            } else {
-                if (cohort.reportViral()) {
-                    LOGGER.warn("Consent of viral insertions is false, but must be true for sample '{}'", sampleId);
-                }
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    public static boolean checkReportPgx(@Nullable LimsJsonSampleData sampleData, @Nullable LimsCohortConfig cohort,
-            @NotNull String sampleId) {
-        if (sampleData != null && cohort != null) {
-            if (sampleData.reportPgx()) {
-                if (!cohort.reportPeach()) {
-                    LOGGER.warn("Consent of pharmogenetics is true, but must be false for sample '{}'", sampleId);
-                }
-                return true;
-            } else {
-                if (cohort.reportPeach()) {
-                    LOGGER.warn("Consent of pharmogenetics is false, but must be true for sample '{}'", sampleId);
-                }
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
     public static boolean checkGermlineVariants(@Nullable LimsJsonSampleData sampleData, @Nullable LimsCohortConfig cohort,
@@ -72,10 +35,8 @@ public final class LimsChecker {
     }
 
     @Nullable
-    public static String toHospitalPathologySampleIdForReport(@NotNull String hospitalPathologySampleId, @NotNull String tumorSampleId,
-            @NotNull LimsCohortConfig cohortConfig) {
-        if (cohortConfig.requireHospitalPAId()) {
-            if (!hospitalPathologySampleId.equals(Lims.NOT_AVAILABLE_STRING) && !hospitalPathologySampleId.isEmpty()) {
+    public static String toHospitalPathologySampleIdForReport(@NotNull String hospitalPathologySampleId, @NotNull String tumorSampleId) {
+            if (!hospitalPathologySampleId.equals(Lims.NOT_AVAILABLE_STRING) && !hospitalPathologySampleId.equals(Strings.EMPTY)) {
                 return hospitalPathologySampleId;
             } else {
 
@@ -85,21 +46,5 @@ public final class LimsChecker {
 
                 return null;
             }
-        } else {
-            if (!hospitalPathologySampleId.isEmpty() && !hospitalPathologySampleId.equals(Lims.NOT_AVAILABLE_STRING)) {
-                LOGGER.info("Skipping hospital pathology sample ID for sample '{}': {}", hospitalPathologySampleId, tumorSampleId);
-            }
-
-            return null;
-        }
-    }
-
-    public static void checkHospitalPatientId(@NotNull String hospitalPatientId, @NotNull String sampleId,
-            @NotNull LimsCohortConfig cohortConfig) {
-        if (cohortConfig.requireHospitalId()) {
-            if (hospitalPatientId.equals(Lims.NOT_AVAILABLE_STRING) || hospitalPatientId.isEmpty()) {
-                LOGGER.warn("Missing hospital patient sample ID for sample '{}': {}. Please fix!", sampleId, hospitalPatientId);
-            }
-        }
     }
 }

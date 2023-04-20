@@ -56,7 +56,7 @@ public class ReportingDbTest {
         assertEquals(output.get("has_reliable_quality"), true);
         assertEquals(output.get("has_reliable_purity"), true);
         assertEquals(output.get("purity"), 1.0);
-        assertEquals(output.get("cohort"), "CPCT");
+        assertEquals(output.get("cohort"), "string");
         assertEquals(output.get("report_type"), "dna_analysis_report");
         assertEquals(output.get("barcode"), "FR12345678");
         assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));

@@ -25,44 +25,24 @@ public class LimsCheckerTest {
         String correctIdT_part_small = "T20-1 (I-6)";
         String correctIdC_part_small = "C18-2 I 1";
         LimsCohortConfig cohortConfigWIDE = TestLimsCohortConfigFactory.createWIDECohortConfig();
-        assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, wideSampleId, cohortConfigWIDE));
-        assertEquals(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, wideSampleId, cohortConfigWIDE));
-        assertEquals(correctIdT_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part, wideSampleId, cohortConfigWIDE));
-        assertEquals(correctIdC_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC_part, wideSampleId, cohortConfigWIDE));
+        assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, wideSampleId));
+        assertEquals(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, wideSampleId));
+        assertEquals(correctIdT_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part, wideSampleId));
+        assertEquals(correctIdC_part, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC_part, wideSampleId));
         assertEquals(correctIdT_part_small,
-                LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part_small, wideSampleId, cohortConfigWIDE));
+                LimsChecker.toHospitalPathologySampleIdForReport(correctIdT_part_small, wideSampleId));
         assertEquals(correctIdC_part_small,
-                LimsChecker.toHospitalPathologySampleIdForReport(correctIdC_part_small, wideSampleId, cohortConfigWIDE));
+                LimsChecker.toHospitalPathologySampleIdForReport(correctIdC_part_small, wideSampleId));
 
-        assertEquals(wrongId, LimsChecker.toHospitalPathologySampleIdForReport(wrongId, wideSampleId, cohortConfigWIDE));
-        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Lims.NOT_AVAILABLE_STRING, wideSampleId, cohortConfigWIDE));
-        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, wideSampleId, cohortConfigWIDE));
+        assertEquals(wrongId, LimsChecker.toHospitalPathologySampleIdForReport(wrongId, wideSampleId));
+        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Lims.NOT_AVAILABLE_STRING, wideSampleId));
+        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, wideSampleId));
 
-        LimsCohortConfig cohortConfigCORE = TestLimsCohortConfigFactory.createCORECohortConfig();
-        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, coreSampleId, cohortConfigCORE));
-        assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, coreSampleId, cohortConfigCORE));
-        assertEquals(wrongId, LimsChecker.toHospitalPathologySampleIdForReport(wrongId, coreSampleId, cohortConfigCORE));
+        assertNull(LimsChecker.toHospitalPathologySampleIdForReport(Strings.EMPTY, coreSampleId));
+        assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, coreSampleId));
+        assertEquals(wrongId, LimsChecker.toHospitalPathologySampleIdForReport(wrongId, coreSampleId));
 
-        LimsCohortConfig cohortConfigCPCT = TestLimsCohortConfigFactory.createCPCTCohortConfig();
-        assertNull(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, cpctSampleId, cohortConfigCPCT));
-        assertNull(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, cpctSampleId, cohortConfigCPCT));
-    }
-
-    @Test
-    public void canCheckHospitalPatientId() {
-        String coreSampleId = "CORE020000001T";
-        String wideSampleId = "WIDE020000001T";
-
-        String hospitalIdNA = Lims.NOT_AVAILABLE_STRING;
-        String hospitalIDEmpty = Strings.EMPTY;
-        String hospitalId = "1234";
-
-        LimsCohortConfig cohortConfigCORE = TestLimsCohortConfigFactory.createCORECohortConfig();
-        LimsChecker.checkHospitalPatientId(hospitalIdNA, coreSampleId, cohortConfigCORE);
-        LimsChecker.checkHospitalPatientId(hospitalIDEmpty, coreSampleId, cohortConfigCORE);
-        LimsChecker.checkHospitalPatientId(hospitalId, coreSampleId, cohortConfigCORE);
-
-        LimsCohortConfig cohortConfigWIDE = TestLimsCohortConfigFactory.createWIDECohortConfig();
-        LimsChecker.checkHospitalPatientId(hospitalIdNA, wideSampleId, cohortConfigWIDE);
+        assertEquals(correctIdT, LimsChecker.toHospitalPathologySampleIdForReport(correctIdT, cpctSampleId));
+        assertEquals(correctIdC, LimsChecker.toHospitalPathologySampleIdForReport(correctIdC, cpctSampleId));
     }
 }

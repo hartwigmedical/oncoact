@@ -102,7 +102,7 @@ public class PatientReporterApplication {
     private void generateQCFail(@NotNull SampleMetadata sampleMetadata) throws IOException {
         QCFailReporter reporter = new QCFailReporter(buildBaseReportData(config), reportDate);
         QCFailReport report = reporter.run(sampleMetadata, config);
-        LOGGER.info("Cohort of this sample is: {}", report.sampleReport().cohort().cohortId());
+        LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);

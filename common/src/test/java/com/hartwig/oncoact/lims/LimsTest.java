@@ -12,10 +12,7 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortModel;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
-import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
+import com.hartwig.oncoact.lims.cohort.*;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +42,8 @@ public class LimsTest {
         String requesterEmail = "henk@hmf.nl";
         String hospitalPatientId = "Henkie";
         String hospitalPathologySampleId = "Henkie's sample";
-        boolean reportGermlineVariants = false;
-        boolean reportViralPresence = false;
+        boolean reportGermlineVariants = true;
+        boolean reportViralPresence = true;
 
         LimsJsonSampleData sampleData = LimsTestUtil.createLimsSampleDataBuilder()
                 .sampleId(TUMOR_SAMPLE_ID)
@@ -115,9 +112,9 @@ public class LimsTest {
 
         assertEquals(hospitalPatientId, lims.hospitalPatientId(TUMOR_SAMPLE_BARCODE));
         assertEquals(hospitalPathologySampleId, lims.hospitalPathologySampleId(TUMOR_SAMPLE_BARCODE));
-        assertEquals(LimsGermlineReportingLevel.NO_REPORTING, lims.germlineReportingChoice(TUMOR_SAMPLE_BARCODE, false));
+        assertEquals(LimsGermlineReportingLevel.REPORT_WITHOUT_NOTIFICATION, lims.germlineReportingChoice(TUMOR_SAMPLE_BARCODE, false));
 
-        assertEquals(LimsGermlineReportingLevel.NO_REPORTING, lims.germlineReportingChoice(TUMOR_SAMPLE_BARCODE, false));
+        assertEquals(LimsGermlineReportingLevel.REPORT_WITHOUT_NOTIFICATION, lims.germlineReportingChoice(TUMOR_SAMPLE_BARCODE, false));
         assertEquals(reportGermlineVariants, lims.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
         assertEquals(reportViralPresence, lims.reportViralPresence(TUMOR_SAMPLE_BARCODE));
     }
@@ -144,8 +141,8 @@ public class LimsTest {
         assertEquals(Lims.NOT_AVAILABLE_STRING, lims.hospitalPatientId(doesNotExistSample));
         assertEquals(Lims.NOT_AVAILABLE_STRING, lims.hospitalPathologySampleId(doesNotExistSample));
         assertEquals(LimsGermlineReportingLevel.NO_REPORTING, lims.germlineReportingChoice(doesNotExistSample, false));
-        assertFalse(lims.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
-        assertFalse(lims.reportViralPresence(TUMOR_SAMPLE_BARCODE));
+        assertTrue(lims.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
+        assertTrue(lims.reportViralPresence(TUMOR_SAMPLE_BARCODE));
     }
 
     @Test
@@ -202,7 +199,7 @@ public class LimsTest {
 
         assertTrue(limsTrue.reportViralPresence(TUMOR_SAMPLE_BARCODE));
 
-        assertFalse(limsFalse.reportViralPresence(TUMOR_SAMPLE_BARCODE));
+        assertTrue(limsFalse.reportViralPresence(TUMOR_SAMPLE_BARCODE));
     }
 
     @Test
@@ -215,7 +212,7 @@ public class LimsTest {
                 .build();
         Lims limsTrue = buildTestLimsWithSample(sampleDataTrue);
 
-        assertFalse(limsTrue.reportViralPresence("does not exist"));
+        assertTrue(limsTrue.reportViralPresence("does not exist"));
     }
 
     @Test
@@ -252,9 +249,9 @@ public class LimsTest {
         Lims limsWIDEFalse = buildTestLimsWithSample(sampleDataWIDEFalse);
 
         assertTrue(limsCPCTTrue.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
-        assertFalse(limsCPCTFalse.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
+        assertTrue(limsCPCTFalse.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
         assertTrue(limsWIDETrue.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
-        assertFalse(limsWIDEFalse.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
+        assertTrue(limsWIDEFalse.reportGermlineVariants(TUMOR_SAMPLE_BARCODE));
     }
 
     @Test
@@ -267,7 +264,7 @@ public class LimsTest {
                 .build();
         Lims limsCPCTTrue = buildTestLimsWithSample(sampleDataCPCTTrue);
 
-        assertFalse(limsCPCTTrue.reportGermlineVariants("does not exist"));
+        assertTrue(limsCPCTTrue.reportGermlineVariants("does not exist"));
     }
 
     @Test
@@ -342,7 +339,7 @@ public class LimsTest {
         Set<String> sampleIdsWithoutSamplingDates = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
 
-        return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
+        return new Lims(
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -362,7 +359,7 @@ public class LimsTest {
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
 
-        return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
+        return new Lims(
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -392,7 +389,7 @@ public class LimsTest {
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
 
-        return new Lims(buildCohortModelFromSampleCohort(sample.cohort()),
+        return new Lims(
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -412,9 +409,8 @@ public class LimsTest {
 
         Set<String> sampleIdsWithoutSamplingDate = Sets.newHashSet();
         Set<String> blacklistedPatients = Sets.newHashSet();
-        LimsCohortModel cohortModel = ImmutableLimsCohortModel.builder().build();
 
-        return new Lims(cohortModel,
+        return new Lims(
                 dataPerSampleBarcode,
                 dataPerSubmission,
                 shallowSeqDataPerSampleBarcode,
@@ -424,9 +420,41 @@ public class LimsTest {
     }
 
     @NotNull
+    public static LimsCohortConfig createAllDisabledCohortConfig(@NotNull String cohortId) {
+        return allDisabledBuilder().cohortId(cohortId).build();
+    }
+
+    @NotNull
+    public static LimsCohortConfig createConfigForHospitalModel(@NotNull String cohortId, boolean requireHospitalPersonsStudy,
+                                                                boolean requireHospitalPersonsRequester) {
+        return allDisabledBuilder().cohortId(cohortId)
+                .sampleContainsHospitalCenterId(true)
+                .requireHospitalPersonsStudy(requireHospitalPersonsStudy)
+                .requireHospitalPersonsRequester(requireHospitalPersonsRequester)
+                .build();
+    }
+
+
+    @NotNull
+    public static ImmutableLimsCohortConfig.Builder allDisabledBuilder() {
+        return ImmutableLimsCohortConfig.builder()
+                .sampleContainsHospitalCenterId(false)
+                .reportGermline(false)
+                .reportGermlineFlag(false)
+                .reportConclusion(false)
+                .reportViral(false)
+                .reportPeach(false)
+                .requireHospitalId(false)
+                .requireHospitalPAId(false)
+                .requireHospitalPersonsStudy(false)
+                .requireHospitalPersonsRequester(false)
+                .requireAdditionalInformationForSidePanel(false);
+    }
+
+    @NotNull
     private static LimsCohortModel buildCohortModelFromSampleCohort(@NotNull String sampleCohort) {
         Map<String, LimsCohortConfig> configMap = Maps.newHashMap();
-        configMap.put(sampleCohort, TestLimsCohortConfigFactory.createAllDisabledCohortConfig(sampleCohort));
+        configMap.put(sampleCohort, createAllDisabledCohortConfig(sampleCohort));
         return ImmutableLimsCohortModel.builder().limsCohortMap(configMap).build();
     }
 }

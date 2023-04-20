@@ -67,18 +67,18 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
-        if (failReport.sampleReport().cohort().requireHospitalPAId() && !failReport.sampleReport().cohort().requireHospitalId()) {
+        if (!failReport.sampleReport().hospitalPathologySampleId().isEmpty() && !failReport.sampleReport().hospitalPatientId().isEmpty()) {
             if (failReport.sampleReport().hospitalPathologySampleId() != null) {
                 div.add(reportIsForPathologySampleID());
             }
         }
-        if (failReport.sampleReport().cohort().requireHospitalPAId() && failReport.sampleReport().cohort().requireHospitalId()) {
+        if (!failReport.sampleReport().hospitalPathologySampleId().isEmpty() && failReport.sampleReport().hospitalPatientId().isEmpty()) {
             if (failReport.sampleReport().hospitalPathologySampleId() != null && failReport.sampleReport().hospitalPatientId() != null) {
                 div.add(reportHospitalPatientIDAndPathologySampleId());
             }
         }
 
-        if (failReport.sampleReport().cohort().requireHospitalPersonsRequester()) {
+        if (!failReport.sampleReport().projectName().isEmpty() && !failReport.sampleReport().submissionId().isEmpty()) {
             div.add(reportIsForProjectAndSubmission());
         }
 

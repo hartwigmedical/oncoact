@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
+import com.hartwig.oncoact.lims.cohort.ImmutableLimsCohortModel;
 import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.lims.cohort.LimsCohortModel;
 
@@ -23,8 +25,6 @@ public class Lims {
     public static final String PURITY_NOT_RELIABLE_STRING = "below detection threshold";
 
     @NotNull
-    private final LimsCohortModel limsCohortModel;
-    @NotNull
     private final Map<String, LimsJsonSampleData> dataPerSampleBarcode;
     @NotNull
     private final Map<String, LimsJsonSubmissionData> dataPerSubmission;
@@ -37,13 +37,12 @@ public class Lims {
     @NotNull
     private final Set<String> blacklistedPatients;
 
-    public Lims(@NotNull final LimsCohortModel limsCohortModel,
+    public Lims(
             @NotNull final Map<String, LimsJsonSampleData> dataPerSampleBarcode,
             @NotNull final Map<String, LimsJsonSubmissionData> dataPerSubmission,
             @NotNull final Map<String, LimsShallowSeqData> shallowSeqPerSampleBarcode,
             @NotNull final Map<String, LocalDate> preLimsArrivalDatesPerSampleId, @NotNull final Set<String> samplesWithoutSamplingDate,
             @NotNull final Set<String> blacklistedPatients) {
-        this.limsCohortModel = limsCohortModel;
         this.dataPerSampleBarcode = dataPerSampleBarcode;
         this.dataPerSubmission = dataPerSubmission;
         this.shallowSeqPerSampleBarcode = shallowSeqPerSampleBarcode;
@@ -261,14 +260,6 @@ public class Lims {
         return NOT_AVAILABLE_STRING;
     }
 
-    @Nullable
-    public LimsCohortConfig cohortConfig(@NotNull String sampleBarcode) {
-        LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
-        String cohortString = sampleData != null ? sampleData.cohort() : null;
-
-        return limsCohortModel.queryCohortData(cohortString, sampleId(sampleBarcode));
-    }
-
     @NotNull
     public String hospitalPatientId(@NotNull String sampleBarcode) {
         LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
@@ -295,19 +286,11 @@ public class Lims {
         if (sampleData != null) {
             String germlineReportingLevelString = sampleData.germlineReportingLevel();
 
-            if (cohortConfig(sampleBarcode) != null) {
-                if (cohortConfig(sampleBarcode).reportGermline() && germlineReportingLevelString == null) {
-                    LOGGER.warn("Germline choice is unknown but is expected");
-                }
-            }
 
             if (allowDefaultCohortConfig) {
                 return LimsGermlineReportingLevel.REPORT_WITHOUT_NOTIFICATION;
             } else {
-                return germlineReportingLevelString != null ? LimsGermlineReportingLevel.fromLimsInputs(reportGermlineVariants(sampleBarcode),
-                        germlineReportingLevelString,
-                        sampleId(sampleBarcode),
-                        cohortConfig(sampleBarcode)) : LimsGermlineReportingLevel.NO_REPORTING;
+                return germlineReportingLevelString != null ? LimsGermlineReportingLevel.REPORT_WITHOUT_NOTIFICATION : LimsGermlineReportingLevel.NO_REPORTING;
             }
         } else {
             return LimsGermlineReportingLevel.NO_REPORTING;
@@ -316,24 +299,15 @@ public class Lims {
 
     @VisibleForTesting
     boolean reportGermlineVariants(@NotNull String sampleBarcode) {
-        LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
-        LimsCohortConfig cohort = cohortConfig(sampleBarcode);
-
-        return LimsChecker.checkGermlineVariants(sampleData, cohort, sampleId(sampleBarcode));
+        return true;
     }
 
     public boolean reportViralPresence(@NotNull String sampleBarcode) {
-        LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
-        LimsCohortConfig cohort = cohortConfig(sampleBarcode);
-
-        return LimsChecker.checkViralInsertions(sampleData, cohort, sampleId(sampleBarcode));
+        return true;
     }
 
     public boolean reportPgx(@NotNull String sampleBarcode) {
-        LimsJsonSampleData sampleData = dataPerSampleBarcode.get(sampleBarcode);
-        LimsCohortConfig cohort = cohortConfig(sampleBarcode);
-
-        return LimsChecker.checkReportPgx(sampleData, cohort, sampleId(sampleBarcode));
+        return true;
     }
 
     @Nullable

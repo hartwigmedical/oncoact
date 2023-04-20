@@ -58,14 +58,13 @@ public final class SidePanel {
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
-        LimsCohortConfig cohort = sampleReport.cohort();
 
         if (fullHeight && fullContent) {
-            if (cohort.requireHospitalId() && !sampleReport.hospitalPatientId().isEmpty()) {
+            if (!sampleReport.hospitalPatientId().isEmpty()) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", sampleReport.hospitalPatientId()));
             }
 
-            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
+            if (!sampleReport.hospitalPathologySampleId().isEmpty() && sampleReport.hospitalPathologySampleId() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
             }
         }
@@ -77,7 +76,7 @@ public final class SidePanel {
 
         if (fullHeight && fullContent) {
 
-            if (cohort.requireAdditionalInformationForSidePanel()) {
+            if (!patientReporterData.getRequesterName().isEmpty() && !patientReporterData.getRequesterEmail().isEmpty()) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", patientReporterData.getRequesterName()));
                 cv.add(createSidePanelDiv(++sideTextIndex, "Email", patientReporterData.getRequesterEmail()));
             }

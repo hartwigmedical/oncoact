@@ -50,9 +50,6 @@ public abstract class SampleReport {
     public abstract String labProcedures();
 
     @NotNull
-    public abstract LimsCohortConfig cohort();
-
-    @NotNull
     public abstract String projectName();
 
     @NotNull

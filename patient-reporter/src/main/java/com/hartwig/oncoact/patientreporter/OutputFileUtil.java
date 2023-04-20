@@ -15,9 +15,8 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
         SampleReport sampleReport = report.sampleReport();
-        LimsCohortConfig cohort = report.sampleReport().cohort();
 
-        String filePrefix = cohort.requireHospitalId()
+        String filePrefix = !sampleReport.hospitalPatientId().equals(Strings.EMPTY)
                 ? sampleReport.sampleNameForReport() + "_" + sampleReport.hospitalPatientId().replace(" ", "_")
                 : sampleReport.sampleNameForReport();
 
@@ -31,9 +30,8 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
         SampleReport sampleReport = report.sampleReport();
-        LimsCohortConfig cohort = report.sampleReport().cohort();
 
-        String filePrefix = cohort.requireHospitalId()
+        String filePrefix = !sampleReport.hospitalPatientId().equals(Strings.EMPTY)
                 ? sampleReport.sampleNameForReport() + "_" + sampleReport.hospitalPatientId().replace(" ", "_")
                 : sampleReport.sampleNameForReport();
 
