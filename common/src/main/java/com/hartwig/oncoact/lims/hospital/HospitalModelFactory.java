@@ -116,8 +116,6 @@ public final class HospitalModelFactory {
                 .sampleToHospitalMapping(sampleHospitalMapping)
                 .build();
 
-        HospitalChecker.validateModelIntegrity(hospitalModel);
-
         return hospitalModel;
     }
 

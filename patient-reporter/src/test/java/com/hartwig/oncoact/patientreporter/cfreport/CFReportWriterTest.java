@@ -469,7 +469,6 @@ public class CFReportWriterTest {
                 .cohort(TestLimsCohortConfigFactory.createCOREDBCohortConfig())
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
-                .hospitalContactData(createTestHospitalContactData())
                 .hospitalPatientId("HOSP1")
                 .hospitalPathologySampleId("PA1")
                 .build();
@@ -496,7 +495,6 @@ public class CFReportWriterTest {
                 .cohort(limsCohortConfig)
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
-                .hospitalContactData(createTestHospitalContactData())
                 .hospitalPatientId("HOSP1")
                 .hospitalPathologySampleId("PA1")
                 .build();
@@ -600,17 +598,6 @@ public class CFReportWriterTest {
                                 .repoVersion("1.6")
                                 .build()));
         return pharmacogeneticsMap;
-    }
-
-    @NotNull
-    private static HospitalContactData createTestHospitalContactData() {
-        return ImmutableHospitalContactData.builder()
-                .hospitalPI("PI")
-                .requesterName("Paul")
-                .requesterEmail("paul@hartwig.com")
-                .hospitalName("HMF Testing Center")
-                .hospitalAddress("1000 AB AMSTERDAM")
-                .build();
     }
 
     @NotNull

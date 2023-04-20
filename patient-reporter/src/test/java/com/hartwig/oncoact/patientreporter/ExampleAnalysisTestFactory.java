@@ -311,17 +311,6 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static HospitalContactData createTestHospitalContactData() {
-        return ImmutableHospitalContactData.builder()
-                .hospitalPI("PI")
-                .requesterName("Paul")
-                .requesterEmail("paul@hartwig.com")
-                .hospitalName("HMF Testing Center")
-                .hospitalAddress("1000 AB AMSTERDAM")
-                .build();
-    }
-
-    @NotNull
     private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline,
                                                                @NotNull LimsCohortConfig cohort) {
         SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
@@ -350,7 +339,6 @@ public final class ExampleAnalysisTestFactory {
                 .cohort(cohort)
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")
-                .hospitalContactData(createTestHospitalContactData())
                 .hospitalPatientId("HOSP1")
                 .hospitalPathologySampleId("PA1")
                 .build();
