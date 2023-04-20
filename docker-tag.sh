@@ -2,14 +2,16 @@
 
 set -e
 
-if [ $# -ne 2 ]; then
-  echo "Invalid arguments. Usage: docker-tag.sh image-name semver-version"
+if (( $# < 2 || $# > 4 )); then
+  echo "Invalid arguments. Usage: docker-tag.sh image-name semver-version [dockerfile-name] [prefix]"
   exit 1
 fi
 
 IMAGE_NAME="$1"
-SEMVER_VERSION="$2"
-DOCKERFILE_NAME="$3:-Dockerfile"
+DOCKERFILE_NAME=${3:-"Dockerfile"}
+# Get the semver version, and optionally strip a prefix from it, if there is a prefix defined.
+PREFIX=${4:-}
+SEMVER_VERSION=${2#$PREFIX}
 
 # Validate the semver version using a regex, only allowing alpha and beta as prerelease tags.
 SEMVER_REGEX="^([0-9]+)\.([0-9]+)\.([0-9]+)(-(alpha|beta)\.[0-9]+)?$"
