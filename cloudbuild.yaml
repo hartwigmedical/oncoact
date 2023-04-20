@@ -37,7 +37,7 @@ steps:
     id: 'Building image with public resources'
     dir: '${_CHILD_PROJECT}'
     entrypoint: 'bash'
-    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-build/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePublic', 'rose-' ]
+    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-build/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePublic', '${_CHILD_PROJECT}-' ]
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Pushing public image'
@@ -47,7 +47,7 @@ steps:
     id: 'Building image with private resources'
     dir: '${_CHILD_PROJECT}'
     entrypoint: 'bash'
-    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePrivate', 'rose-' ]
+    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePrivate', '${_CHILD_PROJECT}-' ]
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Pushing private image'

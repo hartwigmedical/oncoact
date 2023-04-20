@@ -201,7 +201,7 @@ docker run --rm \
 --name rose \
 --mount source=rose-output,target=/out \
 --mount source=rose-input,target=/in \
-rose:latest \
+eu.gcr.io/hmf-build/rose:2.0.0-alpha.6 \
 -patient_id 123456
 ```
 
