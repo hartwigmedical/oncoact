@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.lama;
+package com.hartwig.oncoact.patientreporter.lama;
 
 import com.hartwig.lama.client.LamaClient;
 import com.hartwig.lama.client.model.PatientReporterData;

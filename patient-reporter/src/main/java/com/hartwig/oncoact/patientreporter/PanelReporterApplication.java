@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.lama.LamaJson;
+import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;

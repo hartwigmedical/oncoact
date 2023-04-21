@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.lama.LamaJson;
+import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedReportData;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;

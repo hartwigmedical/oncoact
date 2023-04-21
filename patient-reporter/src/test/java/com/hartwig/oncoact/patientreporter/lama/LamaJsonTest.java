@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.lama;
+package com.hartwig.oncoact.patientreporter.lama;
 
 import com.google.common.io.Resources;
 import com.hartwig.lama.client.model.BiopsySite;
@@ -6,16 +6,16 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-public class LamaJsonTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-    private static final String LAMA_JSON = Resources.getResource("lama/lama.sample.json").getPath();
+public class LamaJsonTest {
+    private static final String RUN_DIRECTORY = Resources.getResource("test_run").getPath();
+    private static final String LAMA_JSON = RUN_DIRECTORY + "/lama/sample.lama.json";
     private static final double EPSILON = 1.0E-2;
 
     @NotNull
@@ -65,4 +65,5 @@ public class LamaJsonTest {
         assertEquals(patientReporterData.getSopString(), "string");
         assertEquals(patientReporterData.getShallowPurity(), 0, EPSILON);
     }
+
 }
