@@ -3,7 +3,6 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import java.util.List;
 import java.util.Map;
 
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -54,7 +53,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     }
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION);
+        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(true);
         boolean requireOnLabel = true;
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, reportGermline, requireOnLabel);
@@ -62,7 +61,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION);
+        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(true);
         boolean requireOnLabel = true;
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, reportGermline, requireOnLabel);

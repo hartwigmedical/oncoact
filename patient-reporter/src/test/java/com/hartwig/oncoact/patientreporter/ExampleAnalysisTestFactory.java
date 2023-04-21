@@ -25,8 +25,6 @@ import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
@@ -321,14 +319,12 @@ public final class ExampleAnalysisTestFactory {
                 .referenceReceivedSampleId("FB123")
                 .tumorType(null)
                 .biopsyLocation("Skin")
-                .germlineReportingLevel(reportGermline
-                        ? LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION
-                        : LimsGermlineReportingLevel.NO_REPORTING)
+                .germlineReportingLevel(true)
                 .reportViralPresence(true)
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
-                .shallowSeqPurityString(Lims.NOT_PERFORMED_STRING)
+                .shallowSeqPurityString("N/A")
                 .labProcedures("PREP013V23-QC037V20-SEQ008V25")
                 .projectName("TEST-001-002")
                 .submissionId("SUBM")

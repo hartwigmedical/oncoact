@@ -30,10 +30,9 @@ public class PanelReporter {
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
             @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
             boolean allowDefaultCohortConfig) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
         SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), reportData.patientReporterData(), allowDefaultCohortConfig);
+                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), allowDefaultCohortConfig);
 
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {

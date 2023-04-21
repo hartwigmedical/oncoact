@@ -12,7 +12,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
@@ -47,10 +46,8 @@ public class QCFailReporter {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
         SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata,
-                reportData.limsModel(),
                 reportData.patientReporterData(),
                 config.allowDefaultCohortConfig());
 
@@ -75,7 +72,7 @@ public class QCFailReporter {
             String formattedPurity = new DecimalFormat("#'%'").format(orange.purple().fit().purity() * 100);
             hasReliablePurity = orange.purple().fit().containsTumorCells();
 
-            wgsPurityString = hasReliablePurity ? formattedPurity : Lims.PURITY_NOT_RELIABLE_STRING;
+            wgsPurityString = hasReliablePurity ? formattedPurity : "N/A";
             purpleQc = orange.purple().fit().qc().status();
 
             Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = Sets.newHashSet();

@@ -3,7 +3,6 @@ package com.hartwig.oncoact.patientreporter;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.TumorType;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.util.Formats;
 
 import org.immutables.value.Value;
@@ -30,7 +29,7 @@ public abstract class SampleReport {
     public abstract String biopsyLocation();
 
     @NotNull
-    public abstract LimsGermlineReportingLevel germlineReportingLevel();
+    public abstract Boolean germlineReportingLevel();
 
     public abstract boolean reportViralPresence();
 

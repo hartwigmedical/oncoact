@@ -12,8 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.*;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
@@ -245,7 +243,7 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateInsufficientDNAReport() throws IOException {
         generateQCFailReport("CPCT01_insufficient_dna-FOR-082",
-                Lims.NOT_PERFORMED_STRING,
+                "N/A",
                 null,
                 QCFailReason.INSUFFICIENT_DNA,
                 false,
@@ -257,7 +255,7 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateCorrectedInsufficientDNAReport() throws IOException {
         generateQCFailReport("CPCT01",
-                Lims.NOT_PERFORMED_STRING,
+                "N/A",
                 null,
                 QCFailReason.INSUFFICIENT_DNA,
                 true,
@@ -269,7 +267,7 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateCorrectedInsufficientDNAReportCOREDB() throws IOException {
         generateQCFailReport("COREDB",
-                Lims.NOT_PERFORMED_STRING,
+                "N/A",
                 null,
                 QCFailReason.INSUFFICIENT_DNA,
                 true,
@@ -431,7 +429,7 @@ public class CFReportWriterTest {
                 .referenceReceivedSampleId("ST123")
                 .tumorType(null)
                 .biopsyLocation(Strings.EMPTY)
-                .germlineReportingLevel(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION)
+                .germlineReportingLevel(true)
                 .reportViralPresence(true)
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
@@ -456,7 +454,7 @@ public class CFReportWriterTest {
                 .tumorReceivedSampleId("ST001")
                 .tumorType(null)
                 .biopsyLocation(Strings.EMPTY)
-                .germlineReportingLevel(LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION)
+                .germlineReportingLevel(true)
                 .reportViralPresence(true)
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))

@@ -18,7 +18,6 @@ import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
@@ -44,7 +43,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
+                               @NotNull Boolean germlineReportingLevel) {
         List<GeneDisruption> additionalSuspectBreakends =
                 GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
 
@@ -119,7 +118,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel, @NotNull LimsGermlineReportingLevel germlineReportingLevel) {
+                                                                   @NotNull GermlineReportingModel germlineReportingModel, @NotNull Boolean germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();

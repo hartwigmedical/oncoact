@@ -7,7 +7,6 @@ import java.util.StringJoiner;
 
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
@@ -288,7 +287,7 @@ public class SummaryChapter implements ReportChapter {
             table.addCell(createMiddleAlignedCell().add(createHighlightParagraph(valueLabel).addStyle(ReportResources.dataHighlightStyle())));
             table.addCell(createMiddleAlignedCell().add(createInlineBarChart(value, min, max)));
         } else {
-            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(Lims.PURITY_NOT_RELIABLE_STRING).addStyle(ReportResources.dataHighlightNaStyle())));
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph("N/A").addStyle(ReportResources.dataHighlightNaStyle())));
         }
     }
 

@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.lama.LamaJson;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedReportData;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
@@ -73,11 +71,8 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportData() {
-        Lims lims = LimsFactory.empty();
-
         try {
             return ImmutableQCFailReportData.builder()
-                    .limsModel(lims)
                     .patientReporterData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
@@ -91,11 +86,9 @@ public final class PatientReporterTestFactory {
 
     @NotNull
     public static ReportData loadTestReportDataPanel() {
-        Lims lims = LimsFactory.empty();
 
         try {
             return ImmutableQCFailReportData.builder()
-                    .limsModel(lims)
                     .patientReporterData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)

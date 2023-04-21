@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
@@ -32,11 +31,11 @@ public class GenomicAnalyzerTest {
 
         assertNotNull(analyzer.run(TestOrangeFactory.createMinimalTestOrangeRecord(),
                 noEvidences,
-                LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION));
+                true));
 
         assertNotNull(analyzer.run(TestOrangeFactory.createProperTestOrangeRecord(),
                 noEvidences,
-                LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION));
+                true));
     }
 
     @Test

@@ -18,7 +18,6 @@ import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
@@ -62,9 +61,8 @@ public class AnalysedPatientReporter {
 
     @NotNull
     public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
 
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), reportData.patientReporterData(), config.allowDefaultCohortConfig());
+        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), config.allowDefaultCohortConfig());
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
@@ -83,9 +81,9 @@ public class AnalysedPatientReporter {
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
-        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, sampleReport.germlineReportingLevel());
+        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, true);
 
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, sampleReport.germlineReportingLevel(), sampleReport.reportViralPresence());
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, true, sampleReport.reportViralPresence());
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
@@ -209,7 +207,7 @@ public class AnalysedPatientReporter {
             LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
         }
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
-        if (report.sampleReport().germlineReportingLevel() != LimsGermlineReportingLevel.NO_REPORTING) {
+        if (report.sampleReport().germlineReportingLevel()) {
             LOGGER.info("  Number of variants known to exist in germline: {}", germlineOnly(analysis.reportableVariants()).size());
         } else {
             LOGGER.info("  Germline variants and evidence have been removed since no consent has been given");

@@ -26,7 +26,7 @@ public class PanelFailReporter {
             boolean correctedReportExtern, @Nullable PanelFailReason reason, boolean allowDefaultCohortConfig)  {
 
         SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), reportData.patientReporterData(), allowDefaultCohortConfig);
+                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), allowDefaultCohortConfig);
 
         return ImmutablePanelFailReport.builder()
                 .sampleReport(sampleReport)

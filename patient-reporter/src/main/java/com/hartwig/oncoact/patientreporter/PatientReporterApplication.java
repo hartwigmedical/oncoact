@@ -6,8 +6,6 @@ import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.lama.LamaJson;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -146,14 +144,9 @@ public class PatientReporterApplication {
     @NotNull
     private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
 
-        String limsDirectory = config.limsDir();
-        Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
-        LOGGER.info("Loaded LIMS data for {} samples from {}", lims.sampleBarcodeCount(), limsDirectory);
-
         PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
 
         return ImmutableQCFailReportData.builder()
-                .limsModel(lims)
                 .patientReporterData(patientReporterData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())

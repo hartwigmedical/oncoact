@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -180,7 +179,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph sampleHasMolecularTumorPercentage() {
         String effectivePurity =
                 failReport.wgsPurityString() != null ? failReport.wgsPurityString() : failReport.sampleReport().shallowSeqPurityString();
-        if (effectivePurity.equals(Lims.PURITY_NOT_RELIABLE_STRING) || effectivePurity.equals(Lims.NOT_PERFORMED_STRING)) {
+        if (effectivePurity.equals("N/A") || effectivePurity.equals("N/A")) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
             return createContentParagraph("The tumor percentage based on molecular estimation is ", effectivePurity);

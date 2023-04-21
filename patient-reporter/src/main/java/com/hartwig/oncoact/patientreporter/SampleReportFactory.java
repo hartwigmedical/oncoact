@@ -3,8 +3,6 @@ package com.hartwig.oncoact.patientreporter;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsChecker;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,38 +34,36 @@ public final class SampleReportFactory {
     }
 
     @NotNull
-    public static SampleReport fromLimsModel(@NotNull SampleMetadata sampleMetadata, @NotNull Lims lims,
+    public static SampleReport fromLimsModel(@NotNull SampleMetadata sampleMetadata,
                                              @Nullable PatientReporterData patientReporterData, boolean allowDefaultCohortConfig) {
         String interpretRefSampleBarcode = interpretRefBarcode(sampleMetadata.refSampleBarcode());
         String refSampleId = sampleMetadata.refSampleId();
         String tumorSampleBarcode = sampleMetadata.tumorSampleBarcode();
         String tumorSampleId = sampleMetadata.tumorSampleId();
-        String tumorReceivedSampleId = lims.tumorReceivedSampleId(tumorSampleBarcode);
-        String referenceReceivedSampleId =
-                interpretRefSampleBarcode != null ? lims.referenceTumorSampleId(interpretRefSampleBarcode) : null;
+        String tumorReceivedSampleId = patientReporterData.getTumorSampleBarcode();
+        String referenceReceivedSampleId = patientReporterData.getReferenceSampleBarcode();
 
         LocalDate arrivalDateRefSample = null;
 
         if (interpretRefSampleBarcode != null && refSampleId != null) {
             if (!interpretRefSampleBarcode.equals(refSampleId) || !tumorSampleBarcode.equals(tumorSampleId)) {
                 // Don't need to check for anonymized runs
-                lims.validateSampleBarcodeCombination(interpretRefSampleBarcode, refSampleId, tumorSampleBarcode, tumorSampleId);
             }
 
-            arrivalDateRefSample = lims.arrivalDate(interpretRefSampleBarcode, refSampleId);
+            arrivalDateRefSample = patientReporterData.getReferenceArrivalDate();
             if (arrivalDateRefSample == null) {
                 LOGGER.warn("Could not find arrival date for ref sample: {}", refSampleId);
             }
         }
 
-        LocalDate arrivalDateTumorSample = lims.arrivalDate(tumorSampleBarcode, tumorSampleId);
+        LocalDate arrivalDateTumorSample = patientReporterData.getTumorArrivalDate();
         if (arrivalDateTumorSample == null) {
             LOGGER.warn("Could not find arrival date for tumor sample: {}", tumorSampleId);
         }
 
-        String hospitalPathologySampleId = lims.hospitalPathologySampleId(tumorSampleBarcode);
+        String hospitalPathologySampleId = patientReporterData.getPathologyId();
 
-        String hospitalPatientId = lims.hospitalPatientId(tumorSampleBarcode);
+        String hospitalPatientId = patientReporterData.getPatientId();
         String biopsyLocation = patientReporterData.getBiopsySite().getBiopsyLocation();
 
         return ImmutableSampleReport.builder()
@@ -76,18 +72,17 @@ public final class SampleReportFactory {
                 .referenceReceivedSampleId(referenceReceivedSampleId)
                 .tumorType(patientReporterData.getPrimaryTumorType())
                 .biopsyLocation(biopsyLocation)
-                .germlineReportingLevel(lims.germlineReportingChoice(tumorSampleBarcode, allowDefaultCohortConfig))
-                .reportViralPresence(allowDefaultCohortConfig || lims.reportViralPresence(tumorSampleBarcode))
-                .reportPharmogenetics(allowDefaultCohortConfig || lims.reportPgx(tumorSampleBarcode))
+                .germlineReportingLevel(true)
+                .reportViralPresence(true)
+                .reportPharmogenetics(true)
                 .refArrivalDate(arrivalDateRefSample)
                 .tumorArrivalDate(arrivalDateTumorSample)
-                .shallowSeqPurityString(lims.purityShallowSeq(tumorSampleBarcode))
-                .labProcedures(lims.labProcedures(tumorSampleBarcode))
-                .projectName(lims.projectName(tumorSampleBarcode))
-                .submissionId(lims.submissionId(tumorSampleBarcode))
+                .shallowSeqPurityString(Integer.toString(patientReporterData.getShallowPurity()))
+                .labProcedures(patientReporterData.getSopString())
+                .projectName(patientReporterData.getSubmissionNr())
+                .submissionId(patientReporterData.getSubmissionNr())
                 .hospitalPatientId(hospitalPatientId)
-                .hospitalPathologySampleId(LimsChecker.toHospitalPathologySampleIdForReport(hospitalPathologySampleId,
-                        tumorSampleId))
+                .hospitalPathologySampleId(hospitalPathologySampleId)
                 .build();
     }
 }

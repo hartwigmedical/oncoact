@@ -9,7 +9,6 @@ import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.lims.Lims;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -159,7 +158,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     .setPadding(8)
                     .setTextAlignment(TextAlignment.CENTER));
         } else {
-            table.addCell(TableUtil.createContentCell(Lims.PURITY_NOT_RELIABLE_STRING));
+            table.addCell(TableUtil.createContentCell("N/A"));
             table.addCell(TableUtil.createContentCell(Strings.EMPTY));
         }
     }
