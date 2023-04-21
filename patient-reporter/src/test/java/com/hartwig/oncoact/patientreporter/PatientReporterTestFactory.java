@@ -44,7 +44,6 @@ public final class PatientReporterTestFactory {
                 .tumorSampleBarcode(Strings.EMPTY)
                 .outputDirReport(Strings.EMPTY)
                 .outputDirData(Strings.EMPTY)
-                .limsDir(Strings.EMPTY)
                 .rvaLogo(RVA_LOGO_PATH)
                 .companyLogo(COMPANY_LOGO_PATH)
                 .signature(SIGNATURE_PATH)
