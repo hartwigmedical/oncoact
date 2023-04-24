@@ -64,14 +64,11 @@ public final class SampleReportFactory {
         String hospitalPathologySampleId = patientReporterData.getPathologyId();
 
         String hospitalPatientId = patientReporterData.getPatientId();
-        String biopsyLocation = patientReporterData.getBiopsySite().getBiopsyLocation();
 
         return ImmutableSampleReport.builder()
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId(tumorReceivedSampleId)
                 .referenceReceivedSampleId(referenceReceivedSampleId)
-                .tumorType(patientReporterData.getPrimaryTumorType())
-                .biopsyLocation(biopsyLocation)
                 .germlineReportingLevel(true)
                 .reportViralPresence(true)
                 .reportPharmogenetics(true)

@@ -22,12 +22,6 @@ public abstract class SampleReport {
     @Nullable
     public abstract String referenceReceivedSampleId();
 
-    @Nullable
-    public abstract TumorType tumorType();
-
-    @Nullable
-    public abstract String biopsyLocation();
-
     @NotNull
     public abstract Boolean germlineReportingLevel();
 

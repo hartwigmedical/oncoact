@@ -317,8 +317,6 @@ public final class ExampleAnalysisTestFactory {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("FB123")
-                .tumorType(null)
-                .biopsyLocation("Skin")
                 .germlineReportingLevel(true)
                 .reportViralPresence(true)
                 .reportPharmogenetics(true)
