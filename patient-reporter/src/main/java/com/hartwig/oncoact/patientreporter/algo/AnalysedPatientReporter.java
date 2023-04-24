@@ -192,8 +192,8 @@ public class AnalysedPatientReporter {
         LOGGER.info("Printing clinical and laboratory data for {}", report.sampleReport().tumorSampleId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
         LOGGER.info(" Primary tumor details: {}{}", report.patientReporterData().getPrimaryTumorType().getLocation(), !report.patientReporterData().getPrimaryTumorType().getLocation().isEmpty() ? " (" + report.patientReporterData().getPrimaryTumorType().getType() + ")" : Strings.EMPTY);
-        LOGGER.info(" Shallow seq purity: {}", report.sampleReport().shallowSeqPurityString());
-        LOGGER.info(" Lab SOPs used: {}", report.sampleReport().labProcedures());
+        LOGGER.info(" Shallow seq purity: {}", report.patientReporterData().getShallowPurity());
+        LOGGER.info(" Lab SOPs used: {}", report.patientReporterData().getSopString());
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 

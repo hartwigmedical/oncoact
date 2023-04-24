@@ -69,7 +69,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The samples have been analyzed by Next Generation Sequencing using Whole Genome Sequencing"));
 
-        div.add(generateHMFAndPathologySampleIDParagraph(patientReport.sampleReport()));
+        div.add(generateHMFAndPathologySampleIDParagraph(patientReport, sampleReport));
 
         String earliestArrivalDate = sampleReport.earliestArrivalDate();
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
@@ -86,21 +86,21 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 " with barcode ",
                 Formats.formatNullableString(sampleReport.referenceReceivedSampleId())));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", sampleReport.labProcedures()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", patientReport.patientReporterData().getSopString()));
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
         div.add(createContentParagraph("This report is addressed to: ", patientReport.patientReporterData().getHospitalAddress()));
 
-        if (!sampleReport.hospitalPatientId().equals(Strings.EMPTY)) {
-            div.add(createContentParagraph("The hospital patient ID is: ", sampleReport.hospitalPatientId()));
+        if (!patientReport.patientReporterData().getPatientId().equals(Strings.EMPTY)) {
+            div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getPatientId()));
         }
 
-        if (!sampleReport.projectName().isEmpty() && !sampleReport.submissionId().isEmpty()) {
+        if (!patientReport.patientReporterData().getSubmissionNr().isEmpty() && !patientReport.patientReporterData().getSubmissionNr().isEmpty()) {
             div.add(createContentParagraphTwice("The project name of sample is: ",
-                    sampleReport.projectName(),
+                    patientReport.patientReporterData().getSubmissionNr(),
                     " and the submission ID is ",
-                    sampleReport.submissionId()));
+                    patientReport.patientReporterData().getSubmissionNr()));
         }
 
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
@@ -159,12 +159,12 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull SampleReport sampleReport) {
-        if (sampleReport.hospitalPathologySampleId() != null && !sampleReport.hospitalPathologySampleId().isEmpty()) {
+    private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport, @NotNull SampleReport sampleReport) {
+        if (patientReport.patientReporterData().getPathologyId() != null && !patientReport.patientReporterData().getPathologyId().isEmpty()) {
             return createContentParagraphTwice("The HMF sample ID is: ",
                     sampleReport.sampleNameForReport(),
                     " and the pathology tissue ID is: ",
-                    sampleReport.hospitalPathologySampleId());
+                    patientReport.patientReporterData().getPathologyId());
         } else {
             return createContentParagraph("The HMF sample ID is: ", sampleReport.sampleNameForReport());
         }

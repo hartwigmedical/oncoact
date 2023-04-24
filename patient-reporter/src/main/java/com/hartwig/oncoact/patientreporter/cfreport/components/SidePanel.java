@@ -58,12 +58,12 @@ public final class SidePanel {
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
 
         if (fullHeight && fullContent) {
-            if (!sampleReport.hospitalPatientId().isEmpty()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", sampleReport.hospitalPatientId()));
+            if (!patientReporterData.getPatientId().isEmpty()) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", patientReporterData.getPatientId()));
             }
 
-            if (!sampleReport.hospitalPathologySampleId().isEmpty() && sampleReport.hospitalPathologySampleId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
+            if (!patientReporterData.getPathologyId().isEmpty() && patientReporterData.getPathologyId() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyId()));
             }
         }
 

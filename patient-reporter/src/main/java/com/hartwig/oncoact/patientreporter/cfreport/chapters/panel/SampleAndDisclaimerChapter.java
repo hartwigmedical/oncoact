@@ -77,7 +77,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
                 " with barcode ",
                 sampleReport.tumorReceivedSampleId()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", sampleReport.labProcedures()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.patientReporterData().getSopString()));
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));

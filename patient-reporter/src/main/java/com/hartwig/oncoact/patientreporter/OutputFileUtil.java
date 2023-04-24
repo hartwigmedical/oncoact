@@ -15,8 +15,8 @@ public final class OutputFileUtil {
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
         SampleReport sampleReport = report.sampleReport();
 
-        String filePrefix = !sampleReport.hospitalPatientId().equals(Strings.EMPTY)
-                ? sampleReport.sampleNameForReport() + "_" + sampleReport.hospitalPatientId().replace(" ", "_")
+        String filePrefix = !report.patientReporterData().getPatientId().equals(Strings.EMPTY)
+                ? sampleReport.sampleNameForReport() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
                 : sampleReport.sampleNameForReport();
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
@@ -30,8 +30,8 @@ public final class OutputFileUtil {
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
         SampleReport sampleReport = report.sampleReport();
 
-        String filePrefix = !sampleReport.hospitalPatientId().equals(Strings.EMPTY)
-                ? sampleReport.sampleNameForReport() + "_" + sampleReport.hospitalPatientId().replace(" ", "_")
+        String filePrefix = !report.patientReporterData().getPatientId().equals(Strings.EMPTY)
+                ? sampleReport.sampleNameForReport() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
                 : sampleReport.sampleNameForReport();
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";

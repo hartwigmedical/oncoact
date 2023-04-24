@@ -322,12 +322,6 @@ public final class ExampleAnalysisTestFactory {
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
-                .shallowSeqPurityString("N/A")
-                .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .projectName("TEST-001-002")
-                .submissionId("SUBM")
-                .hospitalPatientId("HOSP1")
-                .hospitalPathologySampleId("PA1")
                 .build();
     }
 

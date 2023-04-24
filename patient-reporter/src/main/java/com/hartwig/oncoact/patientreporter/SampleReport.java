@@ -35,24 +35,6 @@ public abstract class SampleReport {
     @Nullable
     public abstract LocalDate tumorArrivalDate();
 
-    @NotNull
-    public abstract String shallowSeqPurityString();
-
-    @NotNull
-    public abstract String labProcedures();
-
-    @NotNull
-    public abstract String projectName();
-
-    @NotNull
-    public abstract String submissionId();
-
-    @NotNull
-    public abstract String hospitalPatientId();
-
-    @Nullable
-    public abstract String hospitalPathologySampleId();
-
     @Nullable
     @Value.Derived
     public String refSampleBarcode() {

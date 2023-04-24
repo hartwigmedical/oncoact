@@ -50,15 +50,15 @@ public class XMLFactory {
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("RefNummerWgs")
                 .valuePath(Map.of("value",
-                        !report.sampleReport().hospitalPatientId().isEmpty()
-                                ? report.sampleReport().hospitalPatientId()
+                        !report.patientReporterData().getPatientId().isEmpty()
+                                ? report.patientReporterData().getPatientId()
                                 : report.sampleReport().tumorSampleId()))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgs_reference_number")
                 .valuePath(Map.of("value",
-                        !report.sampleReport().hospitalPatientId().isEmpty()
-                                ? report.sampleReport().hospitalPatientId()
+                        !report.patientReporterData().getPatientId().isEmpty()
+                                ? report.patientReporterData().getPatientId()
                                 : report.sampleReport().tumorSampleId()))
                 .build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());

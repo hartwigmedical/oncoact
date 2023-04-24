@@ -432,12 +432,6 @@ public class CFReportWriterTest {
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
-                .shallowSeqPurityString("")
-                .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .projectName("TEST-001-002")
-                .submissionId("SUBM")
-                .hospitalPatientId("HOSP1")
-                .hospitalPathologySampleId("PA1")
                 .build();
     }
 
@@ -455,12 +449,6 @@ public class CFReportWriterTest {
                 .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
-                .shallowSeqPurityString(shallowSeqPurity)
-                .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .projectName("TEST-001-002")
-                .submissionId("SUBM")
-                .hospitalPatientId("HOSP1")
-                .hospitalPathologySampleId("PA1")
                 .build();
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();

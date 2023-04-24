@@ -61,9 +61,7 @@ public final class SampleReportFactory {
             LOGGER.warn("Could not find arrival date for tumor sample: {}", tumorSampleId);
         }
 
-        String hospitalPathologySampleId = patientReporterData.getPathologyId();
 
-        String hospitalPatientId = patientReporterData.getPatientId();
 
         return ImmutableSampleReport.builder()
                 .sampleMetadata(sampleMetadata)
@@ -74,12 +72,6 @@ public final class SampleReportFactory {
                 .reportPharmogenetics(true)
                 .refArrivalDate(arrivalDateRefSample)
                 .tumorArrivalDate(arrivalDateTumorSample)
-                .shallowSeqPurityString(Integer.toString(patientReporterData.getShallowPurity()))
-                .labProcedures(patientReporterData.getSopString())
-                .projectName(patientReporterData.getSubmissionNr())
-                .submissionId(patientReporterData.getSubmissionNr())
-                .hospitalPatientId(hospitalPatientId)
-                .hospitalPathologySampleId(hospitalPathologySampleId)
                 .build();
     }
 }

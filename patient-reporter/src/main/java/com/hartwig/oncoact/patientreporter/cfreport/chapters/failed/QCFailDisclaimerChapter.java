@@ -66,18 +66,18 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
-        if (!failReport.sampleReport().hospitalPathologySampleId().isEmpty() && !failReport.sampleReport().hospitalPatientId().isEmpty()) {
-            if (failReport.sampleReport().hospitalPathologySampleId() != null) {
+        if (!failReport.patientReporterData().getPathologyId().isEmpty() && !failReport.patientReporterData().getPatientId().isEmpty()) {
+            if (failReport.patientReporterData().getPathologyId() != null) {
                 div.add(reportIsForPathologySampleID());
             }
         }
-        if (!failReport.sampleReport().hospitalPathologySampleId().isEmpty() && failReport.sampleReport().hospitalPatientId().isEmpty()) {
-            if (failReport.sampleReport().hospitalPathologySampleId() != null && failReport.sampleReport().hospitalPatientId() != null) {
+        if (!failReport.patientReporterData().getPathologyId().isEmpty() && failReport.patientReporterData().getPatientId().isEmpty()) {
+            if (failReport.patientReporterData().getPathologyId() != null && failReport.patientReporterData().getPatientId() != null) {
                 div.add(reportHospitalPatientIDAndPathologySampleId());
             }
         }
 
-        if (!failReport.sampleReport().projectName().isEmpty() && !failReport.sampleReport().submissionId().isEmpty()) {
+        if (!failReport.patientReporterData().getSubmissionNr().isEmpty() && !failReport.patientReporterData().getSubmissionNr().isEmpty()) {
             div.add(reportIsForProjectAndSubmission());
         }
 
@@ -112,23 +112,23 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportHospitalPatientIDAndPathologySampleId() {
         return createContentParagraphTwice("The hospital patient ID is ",
-                failReport.sampleReport().hospitalPatientId(),
+                failReport.patientReporterData().getPatientId(),
                 " and the pathology tissue ID is: ",
-                failReport.sampleReport().hospitalPathologySampleId());
+                failReport.patientReporterData().getPathologyId());
 
     }
 
     @NotNull
     private Paragraph reportIsForPathologySampleID() {
-        return createContentParagraph("The pathology tissue ID is: ", failReport.sampleReport().hospitalPathologySampleId());
+        return createContentParagraph("The pathology tissue ID is: ", failReport.patientReporterData().getPathologyId());
     }
 
     @NotNull
     private Paragraph reportIsForProjectAndSubmission() {
         return createContentParagraphTwice("The project name of the sample is ",
-                failReport.sampleReport().projectName(),
+                failReport.patientReporterData().getSubmissionNr(),
                 " and the submission ID is ",
-                failReport.sampleReport().submissionId());
+                failReport.patientReporterData().getSubmissionNr());
     }
 
     @NotNull
@@ -178,7 +178,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph sampleHasMolecularTumorPercentage() {
         String effectivePurity =
-                failReport.wgsPurityString() != null ? failReport.wgsPurityString() : failReport.sampleReport().shallowSeqPurityString();
+                failReport.wgsPurityString() != null ? failReport.wgsPurityString() : Integer.toString(failReport.patientReporterData().getShallowPurity());
         if (effectivePurity.equals("N/A") || effectivePurity.equals("N/A")) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
