@@ -22,9 +22,6 @@ public abstract class SampleReport {
     @Nullable
     public abstract String referenceReceivedSampleId();
 
-    @NotNull
-    public abstract Boolean germlineReportingLevel();
-
     @Nullable
     public abstract LocalDate refArrivalDate();
 

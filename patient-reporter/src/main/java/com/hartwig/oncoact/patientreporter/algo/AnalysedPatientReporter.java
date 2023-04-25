@@ -196,7 +196,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 
         LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
-        LOGGER.info(" Germline reporting level: {}", report.sampleReport().germlineReportingLevel());
+        LOGGER.info(" Germline reporting level: {}", report.patientReporterData().getReportSettings().getFlagGermlineOnReport());
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
@@ -205,7 +205,7 @@ public class AnalysedPatientReporter {
             LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
         }
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
-        if (report.sampleReport().germlineReportingLevel()) {
+        if (report.patientReporterData().getReportSettings().getFlagGermlineOnReport()) {
             LOGGER.info("  Number of variants known to exist in germline: {}", germlineOnly(analysis.reportableVariants()).size());
         } else {
             LOGGER.info("  Germline variants and evidence have been removed since no consent has been given");

@@ -53,18 +53,16 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     }
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(true);
         boolean requireOnLabel = true;
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, reportGermline, requireOnLabel);
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, report.patientReporterData().getReportSettings().getFlagGermlineOnReport(), requireOnLabel);
         document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth()));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean reportGermline = report.sampleReport().germlineReportingLevel().equals(true);
         boolean requireOnLabel = true;
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, reportGermline, requireOnLabel);
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, report.patientReporterData().getReportSettings().getFlagGermlineOnReport(), requireOnLabel);
         document.add(ClinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
     }
 }

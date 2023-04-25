@@ -67,7 +67,6 @@ public final class SampleReportFactory {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId(tumorReceivedSampleId)
                 .referenceReceivedSampleId(referenceReceivedSampleId)
-                .germlineReportingLevel(true)
                 .refArrivalDate(arrivalDateRefSample)
                 .tumorArrivalDate(arrivalDateTumorSample)
                 .build();
