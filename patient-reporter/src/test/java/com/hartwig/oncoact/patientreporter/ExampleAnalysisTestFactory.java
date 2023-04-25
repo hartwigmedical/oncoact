@@ -318,8 +318,6 @@ public final class ExampleAnalysisTestFactory {
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("FB123")
                 .germlineReportingLevel(true)
-                .reportViralPresence(true)
-                .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
                 .build();

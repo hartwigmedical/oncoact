@@ -23,7 +23,7 @@ public final class ConsentFilterFunctions {
 
     @NotNull
     public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis,
-            @NotNull Boolean germlineReportingLevel, boolean reportViralPresence) {
+            @NotNull Boolean germlineReportingLevel) {
         List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(genomicAnalysis.reportableVariants(),
                 genomicAnalysis.notifyGermlineStatusPerVariant(),
                 germlineReportingLevel);
@@ -34,9 +34,6 @@ public final class ConsentFilterFunctions {
             filteredVariants.add(filtered.variant());
             notifyPerVariant.put(filtered.variant(), filtered.notifyVariant());
         }
-
-        List<AnnotatedVirus> filteredViruses =
-                reportViralPresence ? genomicAnalysis.reportableViruses() : Lists.newArrayList();
 
         List<ProtectEvidence> filteredTumorSpecificEvidence =
                 filterEvidenceForGermlineConsent(genomicAnalysis.tumorSpecificEvidence(), germlineReportingLevel);
@@ -51,7 +48,6 @@ public final class ConsentFilterFunctions {
                 .from(genomicAnalysis)
                 .reportableVariants(filteredVariants)
                 .notifyGermlineStatusPerVariant(notifyPerVariant)
-                .reportableViruses(filteredViruses)
                 .tumorSpecificEvidence(filteredTumorSpecificEvidence)
                 .clinicalTrials(filteredClinicalTrials)
                 .offLabelEvidence(filteredOffLabelEvidence)

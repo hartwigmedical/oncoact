@@ -83,7 +83,7 @@ public class AnalysedPatientReporter {
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
         GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, true);
 
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, true, sampleReport.reportViralPresence());
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, true);
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
@@ -95,10 +95,8 @@ public class AnalysedPatientReporter {
 
         Set<PeachGenotype> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach();
 
-        Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
-
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
-        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
+        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypes) {
             if (pharmacogeneticsGenotypesMap.containsKey(pharmacogeneticsGenotype.gene())) {
                 List<PeachGenotype> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
                 current.add(pharmacogeneticsGenotype);

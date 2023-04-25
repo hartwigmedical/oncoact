@@ -428,8 +428,6 @@ public class CFReportWriterTest {
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("ST123")
                 .germlineReportingLevel(true)
-                .reportViralPresence(true)
-                .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .build();
@@ -445,8 +443,6 @@ public class CFReportWriterTest {
                 .referenceReceivedSampleId("FB123")
                 .tumorReceivedSampleId("ST001")
                 .germlineReportingLevel(true)
-                .reportViralPresence(true)
-                .reportPharmogenetics(true)
                 .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
                 .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .build();

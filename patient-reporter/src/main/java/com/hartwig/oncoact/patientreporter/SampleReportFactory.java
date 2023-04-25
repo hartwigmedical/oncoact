@@ -68,8 +68,6 @@ public final class SampleReportFactory {
                 .tumorReceivedSampleId(tumorReceivedSampleId)
                 .referenceReceivedSampleId(referenceReceivedSampleId)
                 .germlineReportingLevel(true)
-                .reportViralPresence(true)
-                .reportPharmogenetics(true)
                 .refArrivalDate(arrivalDateRefSample)
                 .tumorArrivalDate(arrivalDateTumorSample)
                 .build();

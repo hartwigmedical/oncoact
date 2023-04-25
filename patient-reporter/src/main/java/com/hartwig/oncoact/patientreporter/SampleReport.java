@@ -25,10 +25,6 @@ public abstract class SampleReport {
     @NotNull
     public abstract Boolean germlineReportingLevel();
 
-    public abstract boolean reportViralPresence();
-
-    public abstract boolean reportPharmogenetics();
-
     @Nullable
     public abstract LocalDate refArrivalDate();
 

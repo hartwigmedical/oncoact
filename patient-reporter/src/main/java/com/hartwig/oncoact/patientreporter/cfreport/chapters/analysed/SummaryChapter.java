@@ -103,7 +103,7 @@ public class SummaryChapter implements ReportChapter {
 
     @NotNull
     private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 2, 0.1f, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{2, 0.1f, 1}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE);
         table.addCell(TableUtil.createLayoutCell().add(createTumorColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -184,7 +184,7 @@ public class SummaryChapter implements ReportChapter {
 
         Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, .33f, .66f }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, .33f, .66f}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Paragraph("Tumor characteristics").setVerticalAlignment(VerticalAlignment.TOP)
@@ -252,8 +252,7 @@ public class SummaryChapter implements ReportChapter {
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Virus").addStyle(ReportResources.bodyTextStyle())));
-        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses()),
-                patientReport.sampleReport().reportViralPresence()));
+        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
 
         div.add(table);
 
@@ -261,25 +260,22 @@ public class SummaryChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Cell createVirusInterpretationString(@NotNull Set<String> virus, boolean reportViralPresence) {
+    private static Cell createVirusInterpretationString(@NotNull Set<String> virus) {
         String virusSummary;
         Style style;
-        if (reportViralPresence && virus.size() == 0) {
+        if (virus.size() == 0) {
             virusSummary = Formats.NONE_STRING;
             style = ReportResources.dataHighlightNaStyle();
-        } else if (reportViralPresence && virus.size() > 0) {
+        } else {
             virusSummary = String.join(", ", virus);
             style = ReportResources.dataHighlightStyle();
-        } else {
-            virusSummary = Formats.NA_STRING;
-            style = ReportResources.dataHighlightNaStyle();
         }
 
         return createMiddleAlignedCell(2).add(createHighlightParagraph(virusSummary)).addStyle(style);
     }
 
     private static void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-            @NotNull Table table) {
+                                          @NotNull Table table) {
         String label = "Tumor purity";
         table.addCell(createMiddleAlignedCell().add(new Paragraph(label).addStyle(ReportResources.bodyTextStyle())));
 
@@ -294,7 +290,7 @@ public class SummaryChapter implements ReportChapter {
     private void renderGenomicAlterations(@NotNull Div divTumor) {
         Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
         table.addCell(TableUtil.createLayoutCellSummary()
                 .add(new Paragraph("Genomic alterations in cancer genes").addStyle(ReportResources.sectionTitleStyle())));
@@ -356,39 +352,31 @@ public class SummaryChapter implements ReportChapter {
         Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
         String title = "Pharmacogenetics";
 
-        if (patientReport.sampleReport().reportPharmogenetics()) {
-            if (patientReport.pharmacogeneticsGenotypes().isEmpty()) {
-                div.add(TableUtil.createNoneReportTable(title,
-                        null,
-                        TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                        ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
-            } else {
-                Table contentTable = TableUtil.createReportContentTable(new float[] { 5, 10 },
-                        new Cell[] { TableUtil.createHeaderCell("Gene"),
-                                TableUtil.createHeaderCell("Function") },
-                        ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
-
-                Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
-                for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                    List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
-
-                    Set<String> function = Sets.newHashSet();
-
-                    for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
-                        function.add(pharmacogeneticsGenotype.function());
-                    }
-
-                    contentTable.addCell(TableUtil.createContentCell(sortPharmacogenetics));
-                    contentTable.addCell(TableUtil.createContentCell(concat(function)));
-                }
-                div.add(TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY));
-            }
-        } else {
-            String noConsent = "This patient did not give his/her permission for reporting of pharmacogenomics results.";
-            div.add(TableUtil.createNoConsentReportTable(title,
-                    noConsent,
+        if (patientReport.pharmacogeneticsGenotypes().isEmpty()) {
+            div.add(TableUtil.createNoneReportTable(title,
+                    null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
+        } else {
+            Table contentTable = TableUtil.createReportContentTable(new float[]{5, 10},
+                    new Cell[]{TableUtil.createHeaderCell("Gene"),
+                            TableUtil.createHeaderCell("Function")},
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+
+            Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
+            for (String sortPharmacogenetics : sortedPharmacogenetics) {
+                List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
+
+                Set<String> function = Sets.newHashSet();
+
+                for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
+                    function.add(pharmacogeneticsGenotype.function());
+                }
+
+                contentTable.addCell(TableUtil.createContentCell(sortPharmacogenetics));
+                contentTable.addCell(TableUtil.createContentCell(concat(function)));
+            }
+            div.add(TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY));
         }
         divGermline.add(div);
     }
@@ -408,8 +396,8 @@ public class SummaryChapter implements ReportChapter {
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
         } else {
-            Table table = TableUtil.createReportContentTable(new float[] { 8, 10 },
-                    new Cell[] { TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele")},
+            Table table = TableUtil.createReportContentTable(new float[]{8, 10},
+                    new Cell[]{TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
 
             Set<String> sortedAlleles = Sets.newTreeSet(patientReport.hlaAllelesReportingData().hlaAllelesReporting().keySet());
