@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.time.LocalDate;
