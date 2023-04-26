@@ -6,6 +6,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.kernel.pdf.action.PdfAction;
@@ -71,7 +72,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport, sampleReport));
 
-        String earliestArrivalDate = sampleReport.earliestArrivalDate();
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.patientReporterData().getReferenceArrivalDate(), patientReport.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",

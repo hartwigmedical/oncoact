@@ -2,9 +2,6 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.time.LocalDate;
 
-import com.hartwig.lama.client.model.TumorType;
-import com.hartwig.oncoact.util.Formats;
-
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,20 +47,5 @@ public abstract class SampleReport {
     @Value.Derived
     public String sampleNameForReport() {
         return sampleMetadata().sampleNameForReport();
-    }
-
-    @Nullable
-    @Value.Derived
-    public String earliestArrivalDate() {
-        LocalDate refDate = refArrivalDate();
-        LocalDate sampleDate = tumorArrivalDate();
-
-        if (sampleDate == null) {
-            return null;
-        } else if (refDate == null || sampleDate.isBefore(refDate)) {
-            return Formats.formatDate(sampleDate);
-        } else {
-            return Formats.formatDate(refDate);
-        }
     }
 }

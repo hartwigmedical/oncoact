@@ -4,6 +4,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailType;
 import com.hartwig.oncoact.util.Formats;
@@ -133,7 +134,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph resultsAreObtainedBetweenDates() {
-        String earliestArrivalDate = failReport.sampleReport().earliestArrivalDate();
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(failReport.patientReporterData().getReferenceArrivalDate(), failReport.patientReporterData().getTumorArrivalDate());
         return createContentParagraphTwice("The results in this report have been obtained between ",
                 earliestArrivalDate != null ? earliestArrivalDate : Formats.NA_STRING,
                 " and ",

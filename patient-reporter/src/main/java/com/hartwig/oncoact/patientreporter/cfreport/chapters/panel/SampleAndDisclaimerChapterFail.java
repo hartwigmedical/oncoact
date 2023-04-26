@@ -5,6 +5,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
@@ -46,7 +47,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -66,7 +67,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         div.add(createContentParagraph("The sample(s) have been analyzed by Next Generation Sequencing using targeted enrichment."));
         div.add(generateHMFSampleIDParagraph(report.sampleReport()));
 
-        String earliestArrivalDate = sampleReport.earliestArrivalDate();
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.patientReporterData().getReferenceArrivalDate(), report.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
@@ -135,7 +136,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
     @NotNull
     private static Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(ReportResources.smallBodyBoldTextStyle()))
