@@ -48,7 +48,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsDiv(patientReport)));
         table.addCell(TableUtil.createLayoutCell());
@@ -91,7 +91,11 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", Strings.EMPTY)); //patientReport.patientReporterData().getHospitalAddress()
+        div.add(createContentParagraph("This report is addressed to: ",
+                LamaInterpretation.hospitalContactReport(patientReport.patientReporterData().getStudyPI(),
+                        patientReport.patientReporterData().getRequesterName(), patientReport.patientReporterData().getHospitalName(),
+                        patientReport.patientReporterData().getHospitalPostalCode(), patientReport.patientReporterData().getHospitalCity(),
+                        patientReport.patientReporterData().getHospitalAddress())));
 
         if (!patientReport.patientReporterData().getPatientId().equals(Strings.EMPTY)) {
             div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getPatientId()));
@@ -191,7 +195,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(ReportResources.smallBodyBoldTextStyle()))
