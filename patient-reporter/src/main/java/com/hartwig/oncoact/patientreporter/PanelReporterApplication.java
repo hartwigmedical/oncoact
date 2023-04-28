@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.lama.LamaChecker;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
@@ -147,6 +148,7 @@ public class PanelReporterApplication {
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
         PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
+        LamaChecker.lamaCheck(patientReporterData.getReferenceArrivalDate(), patientReporterData.getTumorArrivalDate());
 
         return ImmutableQCFailPanelReportData.builder()
                 .patientReporterData(patientReporterData)

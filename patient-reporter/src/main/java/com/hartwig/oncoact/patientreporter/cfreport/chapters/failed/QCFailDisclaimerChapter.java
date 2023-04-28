@@ -144,7 +144,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                Formats.formatDate(failReport.sampleReport().tumorArrivalDate()),
+                Formats.formatDate(failReport.patientReporterData().getTumorArrivalDate()),
                 " with barcode ",
                 failReport.sampleReport().tumorReceivedSampleId());
     }
@@ -152,7 +152,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
-                Formats.formatDate(failReport.sampleReport().refArrivalDate()),
+                Formats.formatDate(failReport.patientReporterData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(failReport.sampleReport().referenceReceivedSampleId()));
     }

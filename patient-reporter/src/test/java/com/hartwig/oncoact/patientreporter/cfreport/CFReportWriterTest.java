@@ -427,8 +427,6 @@ public class CFReportWriterTest {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("ST123")
-                .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
-                .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .build();
     }
 
@@ -441,8 +439,6 @@ public class CFReportWriterTest {
                 .sampleMetadata(sampleMetadata)
                 .referenceReceivedSampleId("FB123")
                 .tumorReceivedSampleId("ST001")
-                .refArrivalDate(LocalDate.parse("10-Jan-2020", DATE_FORMATTER))
-                .tumorArrivalDate(LocalDate.parse("05-Jan-2020", DATE_FORMATTER))
                 .build();
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();

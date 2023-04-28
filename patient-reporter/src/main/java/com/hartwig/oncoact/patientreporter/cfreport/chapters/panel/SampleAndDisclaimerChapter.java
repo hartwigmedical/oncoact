@@ -74,7 +74,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
                 report.reportDate()));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                Formats.formatDate(sampleReport.tumorArrivalDate()),
+                Formats.formatDate(report.patientReporterData().getTumorArrivalDate()),
                 " with barcode ",
                 sampleReport.tumorReceivedSampleId()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));

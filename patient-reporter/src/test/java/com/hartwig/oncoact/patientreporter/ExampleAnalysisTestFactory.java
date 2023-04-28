@@ -317,8 +317,6 @@ public final class ExampleAnalysisTestFactory {
                 .sampleMetadata(sampleMetadata)
                 .tumorReceivedSampleId("FB123")
                 .referenceReceivedSampleId("FB123")
-                .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
-                .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
                 .build();
     }
 

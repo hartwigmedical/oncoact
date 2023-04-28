@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.time.LocalDate;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -18,12 +17,6 @@ public abstract class SampleReport {
 
     @Nullable
     public abstract String referenceReceivedSampleId();
-
-    @Nullable
-    public abstract LocalDate refArrivalDate();
-
-    @Nullable
-    public abstract LocalDate tumorArrivalDate();
 
     @Nullable
     @Value.Derived
