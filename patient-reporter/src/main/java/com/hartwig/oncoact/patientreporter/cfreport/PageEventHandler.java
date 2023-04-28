@@ -25,7 +25,6 @@ class PageEventHandler implements IEventHandler {
     private final Header header;
 
     private boolean fullSidebar;
-    private boolean fullSidebarContent;
 
     private String chapterTitle = "Undefined";
     private String pdfTitle = "Undefined";
@@ -53,7 +52,7 @@ class PageEventHandler implements IEventHandler {
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
 
-            SidePanel.renderSidePatientReport(page, patientReport, fullSidebar, fullSidebarContent);
+            SidePanel.renderSidePatientReport(page, patientReport, fullSidebar);
             footer.renderFooter(page, patientReport.qsFormNumber(), !fullSidebar);
         }
     }
@@ -66,9 +65,8 @@ class PageEventHandler implements IEventHandler {
         this.chapterTitle = chapterTitle;
     }
 
-    void sidebarType(boolean full, boolean fullContent) {
+    void sidebarType(boolean full) {
         fullSidebar = full;
-        fullSidebarContent = fullSidebar && fullContent;
     }
 
     void resetChapterPageCounter() {

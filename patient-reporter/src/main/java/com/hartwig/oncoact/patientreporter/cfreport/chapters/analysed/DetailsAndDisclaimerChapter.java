@@ -91,7 +91,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", patientReport.patientReporterData().getHospitalAddress()));
+        div.add(createContentParagraph("This report is addressed to: ", Strings.EMPTY)); //patientReport.patientReporterData().getHospitalAddress()
 
         if (!patientReport.patientReporterData().getPatientId().equals(Strings.EMPTY)) {
             div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getPatientId()));
@@ -161,7 +161,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport, @NotNull SampleReport sampleReport) {
-        if (patientReport.patientReporterData().getPathologyId() != null && !patientReport.patientReporterData().getPathologyId().isEmpty()) {
+        if (patientReport.patientReporterData().getPathologyId() != null && !patientReport.patientReporterData().getPathologyId().equals(Strings.EMPTY)) {
             return createContentParagraphTwice("The HMF sample ID is: ",
                     sampleReport.sampleNameForReport(),
                     " and the pathology tissue ID is: ",

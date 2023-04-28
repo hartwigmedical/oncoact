@@ -12,6 +12,7 @@ import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public final class SidePanel {
@@ -24,31 +25,23 @@ public final class SidePanel {
     private SidePanel() {
     }
 
-    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight,
-            boolean fullContent) {
+    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
-                patientReport.sampleReport(),
                 patientReport.patientReporterData(),
                 patientReport.reportDate(),
-                patientReport.qsFormNumber(),
-                fullHeight,
-                fullContent);
+                fullHeight);
     }
 
-    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight,
-            boolean fullContent) {
+    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
-                patientReport.sampleReport(),
                 patientReport.patientReporterData(),
                 patientReport.reportDate(),
-                patientReport.qsFormNumber(),
-                fullHeight,
-                fullContent);
+                fullHeight);
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull SampleReport sampleReport, @NotNull PatientReporterData patientReporterData, @NotNull String reportDate,
-            @NotNull String qsFormNumber, boolean fullHeight, boolean fullContent) {
+    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData patientReporterData, @NotNull String reportDate,
+                                       boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
@@ -57,42 +50,40 @@ public final class SidePanel {
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
 
-        if (fullHeight && fullContent) {
-            if (!patientReporterData.getPatientId().isEmpty()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", patientReporterData.getPatientId()));
-            }
 
-            if (!patientReporterData.getPathologyId().isEmpty() && patientReporterData.getPathologyId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyId()));
-            }
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", "hospital ID"));
+
+        if (patientReporterData.getPathologyId() != null && !patientReporterData.getPathologyId().equals(Strings.EMPTY)) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyId()));
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name" , "Name"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , "Birth date"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Name", "Name"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", "Birth date"));
 
 
-        if (fullHeight && fullContent) {
-
-            if (!patientReporterData.getRequesterName().isEmpty() && !patientReporterData.getRequesterEmail().isEmpty()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", patientReporterData.getRequesterName()));
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", patientReporterData.getRequesterEmail()));
-            }
-
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", patientReporterData.getHospitalName()));
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , patientReporterData.getBiopsySite().getBiopsyLocation()));
+        if (patientReporterData.getRequesterName() != null && !patientReporterData.getRequesterName().equals(Strings.EMPTY)) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", patientReporterData.getRequesterName()));
 
         }
+        if (patientReporterData.getRequesterEmail() != null && !patientReporterData.getRequesterEmail().equals(Strings.EMPTY)) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Email", patientReporterData.getRequesterEmail()));
+
+        }
+
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", "hospitalName"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", "biopsy"));
+
 
         canvas.release();
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
-        float size = -pageSize.getHeight()/4;
+        float size = -pageSize.getHeight() / 4;
         canvas.rectangle(pageSize.getWidth(),
                 pageSize.getHeight(),
                 -RECTANGLE_WIDTH,
-                fullHeight ? (size *2) + -(RECTANGLE_HEIGHT_SHORT/2): -RECTANGLE_HEIGHT_SHORT);
+                fullHeight ? (size * 2) + -(RECTANGLE_HEIGHT_SHORT / 2) : -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
