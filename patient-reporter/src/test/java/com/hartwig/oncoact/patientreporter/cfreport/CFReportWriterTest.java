@@ -3,9 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
@@ -72,83 +70,8 @@ public class CFReportWriterTest {
     }
 
     @Test
-    public void canGeneratePatientReportForCOLO829DisabledConfig() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_disabled_config")
-                .comments(COLO_COMMENT_STRING)
-                .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCOLO829Corrected() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
-                .isCorrectionReport(true)
-                .comments(COLO_COMMENT_STRING_CORRECTED)
-                .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCOLO829WithGermline() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_GERMLINE")
-                .comments(COLO_COMMENT_STRING)
-                .reportGermline(true)
-                .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCOLO829BelowDetectionThreshold() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_NO_TUMOR")
-                .comments(COLO_COMMENT_STRING)
-                .qcForNumber(QsFormNumber.FOR_209)
-                .hasReliablePurity(false)
-                .includeSummary(false)
-                .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCOLO829InsufficientTCP() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T_INSUFFICIENT_TUMOR")
-                .comments(COLO_COMMENT_STRING)
-                .qcForNumber(QsFormNumber.FOR_209)
-                .impliedTumorPurity(0.19)
-                .includeSummary(false)
-                .hasReliablePurity(true)
-                .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCPCTSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_FULL")
-                .comments(FULL_TABLES_COMMENT_STRING)
+    public void canGeneratePatientReportForStudySample() throws IOException {
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study")
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -159,61 +82,8 @@ public class CFReportWriterTest {
     }
 
     @Test
-    public void canGeneratePatientReportForACTINSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("ACTIN_FULL")
-                .build();
-        AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
-        writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCORESample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CORE01_FULL")
-                .build();
-        AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
-        writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForWIDESample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("WIDE01_FULL")
-                .comments(FULL_TABLES_COMMENT_STRING)
-                .build();
-        AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
-        writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForCOREDBSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("COREDB01_FULL")
-                .comments(FULL_TABLES_COMMENT_STRING)
-                .build();
-        AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
-        writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @Test
-    public void canGeneratePatientReportForBelowDetectionSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_NO_TUMOR_FOR-209")
-                .comments(FULL_TABLES_COMMENT_STRING)
-                .hasReliablePurity(false)
-                .qcForNumber(QsFormNumber.FOR_209)
+    public void canGeneratePatientReportForDiagnosticSample() throws IOException {
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic")
                 .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
@@ -242,7 +112,6 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateInsufficientDNAReport() throws IOException {
         generateQCFailReport("CPCT01_insufficient_dna-FOR-082",
-                "N/A",
                 null,
                 QCFailReason.INSUFFICIENT_DNA,
                 false,
@@ -252,33 +121,8 @@ public class CFReportWriterTest {
     }
 
     @Test
-    public void canGenerateCorrectedInsufficientDNAReport() throws IOException {
-        generateQCFailReport("CPCT01",
-                "N/A",
-                null,
-                QCFailReason.INSUFFICIENT_DNA,
-                true,
-                true,
-                COMMENT_STRING_QC_FAIL_CORRECTED,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    public void canGenerateCorrectedInsufficientDNAReportCOREDB() throws IOException {
-        generateQCFailReport("COREDB",
-                "N/A",
-                null,
-                QCFailReason.INSUFFICIENT_DNA,
-                true,
-                false,
-                COMMENT_STRING_QC_FAIL_CORRECTED,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
     public void canGenerateTechnicalFailureReport() throws IOException {
         generateQCFailReport("CPCT02-technical_failure-FOR-102",
-                "60%",
                 null,
                 QCFailReason.TECHNICAL_FAILURE,
                 false,
@@ -290,7 +134,6 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateSufficientTCPQCFailReport() throws IOException {
         generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Fail",
-                "60%",
                 "70%",
                 QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
                 false,
@@ -302,7 +145,6 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateSufficientTCPQCFailReportPASS() throws IOException {
         generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Pass",
-                "60%",
                 "70%",
                 QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
                 false,
@@ -314,7 +156,6 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateInsufficientTCPAfterDeepWGSReport() throws IOException {
         generateQCFailReport("CPCT04-insufficient_tcp_deep_wgs-FOR-100",
-                "22%",
                 "18%",
                 QCFailReason.INSUFFICIENT_TCP_DEEP_WGS,
                 false,
@@ -326,7 +167,6 @@ public class CFReportWriterTest {
     @Test
     public void canGenerateInsufficientTCPAfterShallowReport() throws IOException {
         generateQCFailReport("CPCT05-insufficient_tcp_shallow_wgs-FOR-100",
-                "15%",
                 null,
                 QCFailReason.INSUFFICIENT_TCP_SHALLOW_WGS,
                 false,
@@ -335,29 +175,6 @@ public class CFReportWriterTest {
                 PurpleQCStatus.PASS);
     }
 
-    @Test
-    public void canGenerateInsufficientTCPAfterShallowReportCORE() throws IOException {
-        generateQCFailReport("CORE01",
-                "15%",
-                null,
-                QCFailReason.INSUFFICIENT_TCP_SHALLOW_WGS,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    public void canGenerateInsufficientTCPAfterShallowReportWIDE() throws IOException {
-        generateQCFailReport("WIDE01",
-                "15%",
-                null,
-                QCFailReason.INSUFFICIENT_TCP_SHALLOW_WGS,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
 
     @Test
     public void generatePanelReport() throws IOException {
@@ -429,7 +246,7 @@ public class CFReportWriterTest {
                 .build();
     }
 
-    private static void generateQCFailReport(@NotNull String sampleId, @NotNull String shallowSeqPurity, @Nullable String wgsPurityString,
+    private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString,
             @NotNull QCFailReason reason, boolean correctedReport, boolean correctionReportExtern, @NotNull String comments,
                                              @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
         SampleMetadata sampleMetadata = generateSampleMetadata(sampleId);
