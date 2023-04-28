@@ -48,7 +48,6 @@ public class CFReportWriterTest {
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
     private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829. Where is referred to CKB, "
             + "VICC evidence is listed due to licensing restrictions.";
     private static final String COLO_COMMENT_STRING_CORRECTED = "This is a corrected test report and is based on COLO829";
