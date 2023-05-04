@@ -14,9 +14,6 @@ import org.jetbrains.annotations.Nullable;
 public interface PatientReport {
 
     @NotNull
-    SampleReport sampleReport();
-
-    @NotNull
     PatientReporterData patientReporterData();
 
     @NotNull

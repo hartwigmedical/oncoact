@@ -9,7 +9,6 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +17,6 @@ import org.jetbrains.annotations.Nullable;
 @Value.Immutable
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class AnalysedPatientReport implements PatientReport {
-
-    @Override
-    @NotNull
-    public abstract SampleReport sampleReport();
 
     @Override
     @NotNull

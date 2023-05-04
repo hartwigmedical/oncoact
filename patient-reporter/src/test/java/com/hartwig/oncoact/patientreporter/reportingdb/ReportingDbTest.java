@@ -38,7 +38,7 @@ public class ReportingDbTest {
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/CPCT01_SUCCESS_FR12345678_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/string_string_dna_analysis_report_api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
@@ -55,7 +55,7 @@ public class ReportingDbTest {
         assertEquals(output.get("purity"), 1.0);
         assertEquals(output.get("cohort"), "string");
         assertEquals(output.get("report_type"), "dna_analysis_report");
-        assertEquals(output.get("barcode"), "FR12345678");
+        assertEquals(output.get("barcode"), "string");
         assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
     }
 }

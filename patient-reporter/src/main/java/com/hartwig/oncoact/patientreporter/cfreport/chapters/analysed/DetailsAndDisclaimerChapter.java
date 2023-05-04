@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -61,8 +60,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Div createSampleDetailsDiv(@NotNull AnalysedPatientReport patientReport) {
-        SampleReport sampleReport = patientReport.sampleReport();
-
         Div div = new Div();
 
         div.add(new Paragraph("Sample details").addStyle(ReportResources.smallBodyHeadingStyle()));
@@ -70,7 +67,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The samples have been analyzed by Next Generation Sequencing using Whole Genome Sequencing"));
 
-        div.add(generateHMFAndPathologySampleIDParagraph(patientReport, sampleReport));
+        div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 
         String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.patientReporterData().getReferenceArrivalDate(), patientReport.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
@@ -81,11 +78,11 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
                 Formats.formatDate(patientReport.patientReporterData().getTumorArrivalDate()),
                 " with barcode ",
-                sampleReport.tumorReceivedSampleId()));
+                patientReport.patientReporterData().getTumorSampleBarcode()));
         div.add(createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
                 Formats.formatDate(patientReport.patientReporterData().getReferenceArrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(sampleReport.referenceReceivedSampleId())));
+                Formats.formatNullableString(patientReport.patientReporterData().getReferenceSampleBarcode())));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
         div.add(createContentParagraph("This experiment is performed according to lab procedures: ", patientReport.patientReporterData().getSopString()));
         String whoVerified = "This report was generated " + patientReport.user();
@@ -164,15 +161,16 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport, @NotNull SampleReport sampleReport) {
+    private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
         String pathologyId = patientReport.patientReporterData().getPathologyId();
+        String patientId = patientReport.patientReporterData().getPatientId();
         if (pathologyId != null && !pathologyId.equals(Strings.EMPTY)) {
-            return createContentParagraphTwice("The HMF sample ID is: ",
-                    sampleReport.sampleNameForReport(),
+            return createContentParagraphTwice("The patient ID is: ",
+                    patientId,
                     " and the pathology tissue ID is: ",
                     pathologyId);
         } else {
-            return createContentParagraph("The HMF sample ID is: ", sampleReport.sampleNameForReport());
+            return createContentParagraph("The patient ID is: ", patientId);
         }
     }
 

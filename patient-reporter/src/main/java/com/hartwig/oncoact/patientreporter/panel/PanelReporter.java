@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -31,9 +29,6 @@ public class PanelReporter {
             @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
             boolean allowDefaultCohortConfig) throws IOException {
 
-        SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), allowDefaultCohortConfig);
-
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {
             assert pipelineVersionFile != null;
@@ -42,7 +37,6 @@ public class PanelReporter {
         }
 
         return ImmutablePanelReport.builder()
-                .sampleReport(sampleReport)
                 .qsFormNumber(QsFormNumber.FOR_344.display())
                 .pipelineVersion(pipelineVersion)
                 .VCFFilename(panelVCFname)

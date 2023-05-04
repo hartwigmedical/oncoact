@@ -3,8 +3,6 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,11 +23,7 @@ public class PanelFailReporter {
     public PanelFailReport run(@NotNull SampleMetadata sampleMetadata, @Nullable String comments, boolean correctedReport,
             boolean correctedReportExtern, @Nullable PanelFailReason reason, boolean allowDefaultCohortConfig)  {
 
-        SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), allowDefaultCohortConfig);
-
         return ImmutablePanelFailReport.builder()
-                .sampleReport(sampleReport)
                 .qsFormNumber(reason.qcFormNumber())
                 .comments(Optional.ofNullable(comments))
                 .isCorrectedReport(correctedReport)

@@ -18,8 +18,6 @@ import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -45,11 +43,6 @@ public class QCFailReporter {
     public QCFailReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
-
-
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata,
-                reportData.patientReporterData(),
-                config.allowDefaultCohortConfig());
 
         if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
             if (config.requirePipelineVersionFile()) {
@@ -95,7 +88,6 @@ public class QCFailReporter {
         LOGGER.info("  QC status: {}", purpleQc.toString());
 
         return ImmutableQCFailReport.builder()
-                .sampleReport(sampleReport)
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
                 .wgsPurityString(wgsPurityString)

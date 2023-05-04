@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.panel;
 
-import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -60,12 +59,11 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Div createSampleDetailsColumn() {
-        SampleReport sampleReport = report.sampleReport();
 
         Div div = createSampleDetailsDiv();
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The sample(s) have been analyzed by Next Generation Sequencing using targeted enrichment."));
-        div.add(generateHMFSampleIDParagraph(report.sampleReport()));
+        div.add(generateHMFSampleIDParagraph(report.patientReporterData().getReportingId()));
 
         String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.patientReporterData().getReferenceArrivalDate(), report.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
@@ -76,7 +74,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
                 Formats.formatDate(report.patientReporterData().getTumorArrivalDate()),
                 " with barcode ",
-                sampleReport.tumorReceivedSampleId()));
+                report.patientReporterData().getTumorSampleBarcode()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));
         div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.patientReporterData().getSopString()));
         String whoVerified = "This report was generated " + report.user();
@@ -94,8 +92,8 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph generateHMFSampleIDParagraph(@NotNull SampleReport sampleReport) {
-        return createContentParagraph("The HMF sample ID is: ", sampleReport.sampleNameForReport());
+    private static Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId) {
+        return createContentParagraph("The HMF sample ID is: ", reportingId);
     }
 
     @NotNull

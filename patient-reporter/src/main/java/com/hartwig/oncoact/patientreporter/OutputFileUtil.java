@@ -13,11 +13,9 @@ public final class OutputFileUtil {
 
     @NotNull
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
-        SampleReport sampleReport = report.sampleReport();
-
         String filePrefix = !report.patientReporterData().getPatientId().equals(Strings.EMPTY)
-                ? sampleReport.sampleNameForReport() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
-                : sampleReport.sampleNameForReport();
+                ? report.patientReporterData().getReportingId() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
+                : report.patientReporterData().getReportingId();
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
 
@@ -28,11 +26,9 @@ public final class OutputFileUtil {
 
     @NotNull
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
-        SampleReport sampleReport = report.sampleReport();
-
         String filePrefix = !report.patientReporterData().getPatientId().equals(Strings.EMPTY)
-                ? sampleReport.sampleNameForReport() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
-                : sampleReport.sampleNameForReport();
+                ? report.patientReporterData().getReportingId() + "_" + report.patientReporterData().getPatientId().replace(" ", "_")
+                : report.patientReporterData().getReportingId();
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
 
@@ -44,7 +40,7 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForJson(@NotNull PatientReport report) {
         String filePrefix =
-                report.sampleReport().sampleNameForReport() + "_" + report.sampleReport().tumorSampleBarcode() + "_oncoact";
+                report.patientReporterData().getReportingId() + "_" + report.patientReporterData().getTumorIsolationBarcode() + "_oncoact";
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
         if (report.isCorrectedReport()) {
@@ -62,7 +58,7 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForXML(@NotNull PatientReport report) {
         String filePrefix =
-                report.sampleReport().sampleNameForReport() + "_" + report.sampleReport().tumorSampleBarcode() + "_oncoact";
+                report.patientReporterData().getReportingId() + "_" + report.patientReporterData().getTumorIsolationBarcode() + "_oncoact";
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
         if (report.isCorrectedReport()) {
@@ -80,7 +76,7 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForJsonPanel(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report) {
         String filePrefix =
-                report.sampleReport().sampleNameForReport() + "_" + report.sampleReport().tumorSampleBarcode() + "_oncopanel";
+                report.patientReporterData().getReportingId() + "_" + report.patientReporterData().getTumorIsolationBarcode() + "_oncopanel";
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
         if (report.isCorrectedReport()) {

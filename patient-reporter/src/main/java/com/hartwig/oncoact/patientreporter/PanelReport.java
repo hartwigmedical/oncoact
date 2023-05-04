@@ -8,9 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public interface PanelReport {
 
     @NotNull
-    SampleReport sampleReport();
-
-    @NotNull
     PatientReporterData patientReporterData();
 
     @NotNull

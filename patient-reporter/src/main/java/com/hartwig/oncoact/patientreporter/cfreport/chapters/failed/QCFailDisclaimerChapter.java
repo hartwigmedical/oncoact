@@ -146,7 +146,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
                 Formats.formatDate(failReport.patientReporterData().getTumorArrivalDate()),
                 " with barcode ",
-                failReport.sampleReport().tumorReceivedSampleId());
+                failReport.patientReporterData().getTumorSampleBarcode());
     }
 
     @NotNull
@@ -154,7 +154,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
                 Formats.formatDate(failReport.patientReporterData().getReferenceArrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(failReport.sampleReport().referenceReceivedSampleId()));
+                Formats.formatNullableString(failReport.patientReporterData().getReferenceSampleBarcode()));
     }
 
     @NotNull
@@ -192,7 +192,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraphTwice("The biomaterials are evaluated at ",
                 ReportResources.HARTWIG_ADDRESS,
                 " and are known as HMF sample ID  ",
-                failReport.sampleReport().sampleNameForReport());
+                failReport.patientReporterData().getReportingId());
     }
 
     @NotNull

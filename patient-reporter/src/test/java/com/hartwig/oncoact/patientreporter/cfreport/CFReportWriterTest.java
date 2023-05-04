@@ -16,14 +16,12 @@ import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.ImmutableSampleMetadata;
-import com.hartwig.oncoact.patientreporter.ImmutableSampleReport;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
@@ -178,12 +176,9 @@ public class CFReportWriterTest {
 
     @Test
     public void generatePanelReport() throws IOException {
-        SampleMetadata sampleMetadata = generateSampleMetadata("Sample_panel");
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
-        SampleReport sampleReport = generateSampleReport(sampleMetadata);
 
         PanelReport patientReport = ImmutablePanelReport.builder()
-                .sampleReport(sampleReport)
                 .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber("form")
                 .VCFFilename("test.vcf")
@@ -204,12 +199,9 @@ public class CFReportWriterTest {
 
     @Test
     public void generateFailPanelReport() throws IOException {
-        SampleMetadata sampleMetadata = generateSampleMetadata("sample_panel_failed");
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
-        SampleReport sampleReport = generateSampleReport(sampleMetadata);
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
-                .sampleReport(sampleReport)
                 .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
@@ -228,38 +220,12 @@ public class CFReportWriterTest {
         writer.writePanelQCFailReport(patientReport, filename);
     }
 
-    private static SampleMetadata generateSampleMetadata(@NotNull String sampleId) {
-        return ImmutableSampleMetadata.builder()
-                .refSampleId("x")
-                .refSampleBarcode("FR12123488")
-                .tumorSampleId(sampleId)
-                .tumorSampleBarcode("FR12345678")
-                .sampleNameForReport(sampleId)
-                .build();
-    }
-
-    private static SampleReport generateSampleReport(@NotNull SampleMetadata sampleMetadata) {
-        return ImmutableSampleReport.builder()
-                .sampleMetadata(sampleMetadata)
-                .tumorReceivedSampleId("FB123")
-                .referenceReceivedSampleId("ST123")
-                .build();
-    }
-
     private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString,
             @NotNull QCFailReason reason, boolean correctedReport, boolean correctionReportExtern, @NotNull String comments,
                                              @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
-        SampleMetadata sampleMetadata = generateSampleMetadata(sampleId);
-
-        SampleReport sampleReport = ImmutableSampleReport.builder()
-                .sampleMetadata(sampleMetadata)
-                .referenceReceivedSampleId("FB123")
-                .tumorReceivedSampleId("ST001")
-                .build();
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         QCFailReport patientReport = ImmutableQCFailReport.builder()
-                .sampleReport(sampleReport)
                 .patientReporterData(testReportData.patientReporterData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)

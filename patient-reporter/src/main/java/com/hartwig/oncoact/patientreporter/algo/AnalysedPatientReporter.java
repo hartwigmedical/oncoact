@@ -27,8 +27,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
@@ -61,8 +59,6 @@ public class AnalysedPatientReporter {
 
     @NotNull
     public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
-
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.patientReporterData(), config.allowDefaultCohortConfig());
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
@@ -109,7 +105,6 @@ public class AnalysedPatientReporter {
         HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.purpleQCStatus());
 
         AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
-                .sampleReport(sampleReport)
                 .patientReporterData(reportData.patientReporterData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
@@ -187,7 +182,7 @@ public class AnalysedPatientReporter {
         LocalDate tumorArrivalDate = report.patientReporterData().getTumorArrivalDate();
         String formattedTumorArrivalDate = tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
 
-        LOGGER.info("Printing clinical and laboratory data for {}", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing clinical and laboratory data for {}", report.patientReporterData().getReportingId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
         LOGGER.info(" Primary tumor details: {}{}", report.patientReporterData().getPrimaryTumorType().getLocation(), !report.patientReporterData().getPrimaryTumorType().getLocation().isEmpty() ? " (" + report.patientReporterData().getPrimaryTumorType().getType() + ")" : Strings.EMPTY);
         LOGGER.info(" Shallow seq purity: {}", report.patientReporterData().getShallowPurity());
@@ -200,7 +195,7 @@ public class AnalysedPatientReporter {
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
-        LOGGER.info("Printing genomic analysis results for {}:", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing genomic analysis results for {}:", report.patientReporterData().getReportingId());
         if (report.molecularTissueOriginReporting() != null) {
             LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
         }
@@ -222,7 +217,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Tumor mutational load: {} ({})", analysis.tumorMutationalLoad(), analysis.tumorMutationalLoadStatus());
         LOGGER.info(" Tumor mutational burden: {}", analysis.tumorMutationalBurden());
 
-        LOGGER.info("Printing actionability results for {}", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing actionability results for {}", report.patientReporterData().getReportingId());
         LOGGER.info(" Tumor-specific evidence items found: {}", analysis.tumorSpecificEvidence().size());
         LOGGER.info(" Clinical trials matched to molecular profile: {}", analysis.clinicalTrials().size());
         LOGGER.info(" Off-label evidence items found: {}", analysis.offLabelEvidence().size());

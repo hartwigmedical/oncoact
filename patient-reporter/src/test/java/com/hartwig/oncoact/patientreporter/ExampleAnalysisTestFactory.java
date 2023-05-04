@@ -106,8 +106,6 @@ public final class ExampleAnalysisTestFactory {
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
-        SampleReport sampleReport = createSkinMelanomaSampleReport(config.sampleId(), config.reportGermline());
-
         String summaryWithoutGermline = "Melanoma sample showing:\n"
                 + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
                 + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
@@ -187,7 +185,6 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return ImmutableAnalysedPatientReport.builder()
-                .sampleReport(sampleReport)
                 .patientReporterData(reportData.patientReporterData())
                 .qsFormNumber(config.qcForNumber().display())
                 .clinicalSummary(clinicalSummary)
@@ -301,23 +298,6 @@ public final class ExampleAnalysisTestFactory {
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("X"), ChromosomeArm.Q_ARM, 1.9547000205458256));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("Y"), ChromosomeArm.P_ARM, 0.23189998001646422));
         return cnPerChromosomeArm;
-    }
-
-    @NotNull
-    private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline) {
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(Strings.EMPTY)
-                .refSampleBarcode("FR12123488")
-                .tumorSampleId(sample)
-                .tumorSampleBarcode("FR12345678")
-                .sampleNameForReport(sample)
-                .build();
-
-        return ImmutableSampleReport.builder()
-                .sampleMetadata(sampleMetadata)
-                .tumorReceivedSampleId("FB123")
-                .referenceReceivedSampleId("FB123")
-                .build();
     }
 
     @NotNull

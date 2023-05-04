@@ -16,7 +16,6 @@ import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
@@ -57,12 +56,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private final AnalysedPatientReport patientReport;
 
-    @NotNull
-    private final SampleReport sampleReport;
 
-    public GenomicAlterationsChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final SampleReport sampleReport) {
+    public GenomicAlterationsChapter(@NotNull final AnalysedPatientReport patientReport) {
         this.patientReport = patientReport;
-        this.sampleReport = sampleReport;
     }
 
     @NotNull

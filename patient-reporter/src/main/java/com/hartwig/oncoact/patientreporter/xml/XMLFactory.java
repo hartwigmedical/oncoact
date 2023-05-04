@@ -52,14 +52,14 @@ public class XMLFactory {
                 .valuePath(Map.of("value",
                         !report.patientReporterData().getPatientId().isEmpty()
                                 ? report.patientReporterData().getPatientId()
-                                : report.sampleReport().tumorSampleId()))
+                                : report.patientReporterData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgs_reference_number")
                 .valuePath(Map.of("value",
                         !report.patientReporterData().getPatientId().isEmpty()
                                 ? report.patientReporterData().getPatientId()
-                                : report.sampleReport().tumorSampleId()))
+                                : report.patientReporterData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTher").valuePath(Map.of("value", Strings.EMPTY)).build());

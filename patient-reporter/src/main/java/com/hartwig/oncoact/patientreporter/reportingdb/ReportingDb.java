@@ -33,9 +33,9 @@ public class ReportingDb {
     }
 
     public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.sampleReport().sampleNameForReport();
+        String sampleName = report.patientReporterData().getReportingId();
         String displayName = report.patientReporterData().getCohort();
-        String tumorBarcode = report.sampleReport().tumorSampleBarcode();
+        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
 
         String reportType = "oncopanel_result_report";
 
@@ -51,9 +51,9 @@ public class ReportingDb {
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.sampleReport().sampleNameForReport();
+        String sampleName = report.patientReporterData().getReportingId();
         String cohort = report.patientReporterData().getCohort();
-        String tumorBarcode = report.sampleReport().tumorSampleBarcode();
+        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
 
         String reportType = report.panelFailReason().identifier();
 
@@ -69,10 +69,9 @@ public class ReportingDb {
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.sampleReport().sampleNameForReport();
         String cohort = report.patientReporterData().getCohort();
 
-        String tumorBarcode = report.sampleReport().tumorSampleBarcode();
+        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
@@ -82,7 +81,7 @@ public class ReportingDb {
 
         String reportType;
         if (report.clinicalSummary().isEmpty()) {
-            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", sampleName);
+            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.patientReporterData().getReportingId());
             reportType = "report_without_conclusion";
         } else {
             if (hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF) {
@@ -101,7 +100,7 @@ public class ReportingDb {
         }
         writeApiUpdateJson(outputDirectory,
                 tumorBarcode,
-                sampleName,
+                report.patientReporterData().getReportingId(),
                 cohort,
                 reportType,
                 report.reportDate(),
@@ -114,6 +113,7 @@ public class ReportingDb {
             final String displayName, final String reportType, final String reportDate, final String purity,
             final Boolean hasReliableQuality, final Boolean hasReliablePurity) throws IOException {
         File outputFile = new File(outputDirectory, format("%s_%s_%s_api-update.json", sampleName, tumorBarcode, reportType));
+        LOGGER.info(outputFile);
         Map<String, Object> payload = new HashMap<>();
         payload.put("barcode", tumorBarcode);
         payload.put("report_type", reportType);
@@ -133,9 +133,9 @@ public class ReportingDb {
     }
 
     public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.sampleReport().sampleNameForReport();
+        String sampleName = report.patientReporterData().getReportingId();
         String displayName = report.patientReporterData().getCohort();
-        String tumorBarcode = report.sampleReport().tumorSampleBarcode();
+        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
 
         String reportType = report.reason().identifier();
 
