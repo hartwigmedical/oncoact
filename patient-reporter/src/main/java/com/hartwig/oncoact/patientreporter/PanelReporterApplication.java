@@ -61,20 +61,19 @@ public class PanelReporterApplication {
     }
 
     public void run() throws IOException {
-        SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.panelQcFail()) {
             LOGGER.info("Generating qc-fail panel report");
-            generatePanelQCFail(sampleMetadata);
+            generatePanelQCFail();
         } else {
             LOGGER.info("Generating panel report");
-            generatePanelAnalysedReport(sampleMetadata);
+            generatePanelAnalysedReport();
         }
     }
 
-    private void generatePanelAnalysedReport(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generatePanelAnalysedReport() throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(sampleMetadata,
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
@@ -97,9 +96,9 @@ public class PanelReporterApplication {
         }
     }
 
-    private void generatePanelQCFail(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generatePanelQCFail() throws IOException {
         PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config), reportDate);
-        PanelFailReport report = reporter.run(sampleMetadata,
+        PanelFailReport report = reporter.run(
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
@@ -122,26 +121,6 @@ public class PanelReporterApplication {
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
             @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(panelReport);
-    }
-
-    @NotNull
-    private static SampleMetadata buildSampleMetadata(@NotNull PanelReporterConfig config) {
-        String sampleNameForReport = config.sampleNameForReport();
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(null)
-                .refSampleBarcode(null)
-                .tumorSampleId(config.tumorSampleId())
-                .tumorSampleBarcode(config.tumorSampleBarcode())
-                .sampleNameForReport(sampleNameForReport != null ? sampleNameForReport : config.tumorSampleId())
-                .build();
-
-        LOGGER.info("Printing sample meta data for {}", sampleMetadata.tumorSampleId());
-        LOGGER.info(" Tumor sample barcode: {}", sampleMetadata.tumorSampleBarcode());
-        LOGGER.info(" Ref sample: {}", sampleMetadata.refSampleId());
-        LOGGER.info(" Ref sample barcode: {}", sampleMetadata.refSampleBarcode());
-        LOGGER.info(" Sample name for report: {}", sampleMetadata.sampleNameForReport());
-
-        return sampleMetadata;
     }
 
     @NotNull

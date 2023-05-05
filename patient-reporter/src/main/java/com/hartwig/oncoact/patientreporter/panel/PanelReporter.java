@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -24,7 +23,7 @@ public class PanelReporter {
     }
 
     @NotNull
-    public PanelReport run(@NotNull SampleMetadata sampleMetadata, @Nullable String comments, boolean correctedReport,
+    public PanelReport run(@Nullable String comments, boolean correctedReport,
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
             @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
             boolean allowDefaultCohortConfig) throws IOException {

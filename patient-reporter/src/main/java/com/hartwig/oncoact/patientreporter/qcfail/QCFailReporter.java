@@ -17,7 +17,6 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -40,7 +39,7 @@ public class QCFailReporter {
     }
 
     @NotNull
-    public QCFailReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
+    public QCFailReport run(@NotNull PatientReporterConfig config) throws IOException {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 

@@ -26,7 +26,6 @@ import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
@@ -58,12 +57,12 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
+    public AnalysedPatientReport run(@NotNull PatientReporterConfig config) throws IOException {
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(sampleMetadata.tumorSampleId());
+        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(reportData.patientReporterData().getTumorSampleId());
 
         String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {

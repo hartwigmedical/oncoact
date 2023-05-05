@@ -64,22 +64,21 @@ public class PatientReporterApplication {
     }
 
     public void run() throws IOException {
-        SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.qcFail()) {
             LOGGER.info("Generating qc-fail report");
-            generateQCFail(sampleMetadata);
+            generateQCFail();
         } else {
             LOGGER.info("Generating patient report");
-            generateAnalysedReport(sampleMetadata);
+            generateAnalysedReport();
         }
     }
 
-    private void generateAnalysedReport(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generateAnalysedReport() throws IOException {
         AnalysedReportData reportData = buildAnalysedReportData(config);
         AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData, reportDate);
 
-        AnalysedPatientReport report = reporter.run(sampleMetadata, config);
+        AnalysedPatientReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
@@ -98,9 +97,9 @@ public class PatientReporterApplication {
         }
     }
 
-    private void generateQCFail(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generateQCFail() throws IOException {
         QCFailReporter reporter = new QCFailReporter(buildBaseReportData(config), reportDate);
-        QCFailReport report = reporter.run(sampleMetadata, config);
+        QCFailReport report = reporter.run(config);
         LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
@@ -120,26 +119,6 @@ public class PatientReporterApplication {
     @NotNull
     private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport, @NotNull PatientReport patientReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
-    }
-
-    @NotNull
-    private static SampleMetadata buildSampleMetadata(@NotNull PatientReporterConfig config) {
-        String sampleNameForReport = config.sampleNameForReport();
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(config.refSampleId())
-                .refSampleBarcode(config.refSampleBarcode())
-                .tumorSampleId(config.tumorSampleId())
-                .tumorSampleBarcode(config.tumorSampleBarcode())
-                .sampleNameForReport(sampleNameForReport != null ? sampleNameForReport : config.tumorSampleId())
-                .build();
-
-        LOGGER.info("Printing sample meta data for {}", sampleMetadata.tumorSampleId());
-        LOGGER.info(" Tumor sample barcode: {}", sampleMetadata.tumorSampleBarcode());
-        LOGGER.info(" Ref sample: {}", sampleMetadata.refSampleId());
-        LOGGER.info(" Ref sample barcode: {}", sampleMetadata.refSampleBarcode());
-        LOGGER.info(" Sample name for report: {}", sampleMetadata.sampleNameForReport());
-
-        return sampleMetadata;
     }
 
     @NotNull

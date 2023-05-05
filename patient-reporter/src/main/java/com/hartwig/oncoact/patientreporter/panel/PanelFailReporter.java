@@ -2,8 +2,6 @@ package com.hartwig.oncoact.patientreporter.panel;
 
 import java.util.Optional;
 
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +18,7 @@ public class PanelFailReporter {
     }
 
     @NotNull
-    public PanelFailReport run(@NotNull SampleMetadata sampleMetadata, @Nullable String comments, boolean correctedReport,
+    public PanelFailReport run(@Nullable String comments, boolean correctedReport,
             boolean correctedReportExtern, @Nullable PanelFailReason reason, boolean allowDefaultCohortConfig)  {
 
         return ImmutablePanelFailReport.builder()
