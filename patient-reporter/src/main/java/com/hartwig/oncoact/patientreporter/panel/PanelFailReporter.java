@@ -19,7 +19,7 @@ public class PanelFailReporter {
 
     @NotNull
     public PanelFailReport run(@Nullable String comments, boolean correctedReport,
-            boolean correctedReportExtern, @Nullable PanelFailReason reason, boolean allowDefaultCohortConfig)  {
+            boolean correctedReportExtern, @Nullable PanelFailReason reason)  {
 
         return ImmutablePanelFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())

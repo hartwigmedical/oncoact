@@ -40,8 +40,6 @@ public final class PatientReporterTestFactory {
     @NotNull
     public static PatientReporterConfig createTestReporterConfig() {
         return ImmutablePatientReporterConfig.builder()
-                .tumorSampleId(Strings.EMPTY)
-                .tumorSampleBarcode(Strings.EMPTY)
                 .outputDirReport(Strings.EMPTY)
                 .outputDirData(Strings.EMPTY)
                 .rvaLogo(RVA_LOGO_PATH)
@@ -64,7 +62,6 @@ public final class PatientReporterTestFactory {
                 .pipelineVersionFile(PIPELINE_VERSION_FILE)
                 .expectedPipelineVersion("5.31")
                 .overridePipelineVersion(false)
-                .allowDefaultCohortConfig(false)
                 .build();
     }
 

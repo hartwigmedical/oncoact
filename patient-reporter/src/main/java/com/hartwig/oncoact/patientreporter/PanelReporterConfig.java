@@ -25,8 +25,6 @@ public interface PanelReporterConfig {
     Logger LOGGER = LogManager.getLogger(PanelReporterConfig.class);
 
     // General params needed for every report
-    String TUMOR_SAMPLE_ID = "tumor_sample_id";
-    String TUMOR_SAMPLE_BARCODE = "tumor_sample_barcode";
     String OUTPUT_DIRECTORY_REPORT = "output_dir_report";
     String OUTPUT_DIRECTORY_DATA = "output_dir_data";
 
@@ -45,8 +43,6 @@ public interface PanelReporterConfig {
     String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
-    String SAMPLE_NAME_FOR_REPORT = "sample_name_for_report";
-    String ALLOW_DEFAULT_COHORT_CONFIG = "allow_default_cohort_config";
 
     // parameters for pipeline version
     String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
@@ -58,8 +54,6 @@ public interface PanelReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(TUMOR_SAMPLE_ID, true, "The sample ID for which a patient report will be generated.");
-        options.addOption(TUMOR_SAMPLE_BARCODE, true, "The sample barcode for which a patient report will be generated.");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
@@ -79,8 +73,6 @@ public interface PanelReporterConfig {
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
-        options.addOption(SAMPLE_NAME_FOR_REPORT, true, String.format("Sample name used for printing on the report and for report file name. By default use value of %s.", TUMOR_SAMPLE_ID));
-        options.addOption(ALLOW_DEFAULT_COHORT_CONFIG, false, "If provided, use a default cohort config if for this sample no cohort is configured in LIMS.");
 
         options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
@@ -89,12 +81,6 @@ public interface PanelReporterConfig {
 
         return options;
     }
-
-    @NotNull
-    String tumorSampleId();
-
-    @NotNull
-    String tumorSampleBarcode();
 
     @NotNull
     String outputDirReport();
@@ -127,11 +113,6 @@ public interface PanelReporterConfig {
     boolean isCorrectedReportExtern();
 
     boolean onlyCreatePDF();
-
-    @Nullable
-    String sampleNameForReport();
-
-    boolean allowDefaultCohortConfig();
 
     boolean requirePipelineVersionFile();
 
@@ -173,8 +154,6 @@ public interface PanelReporterConfig {
         }
 
         return ImmutablePanelReporterConfig.builder()
-                .tumorSampleId(nonOptionalValue(cmd, TUMOR_SAMPLE_ID))
-                .tumorSampleBarcode(nonOptionalValue(cmd, TUMOR_SAMPLE_BARCODE))
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
                 .companyLogo(nonOptionalFile(cmd, COMPANY_LOGO))
@@ -187,8 +166,6 @@ public interface PanelReporterConfig {
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
-                .sampleNameForReport(cmd.getOptionValue(SAMPLE_NAME_FOR_REPORT))
-                .allowDefaultCohortConfig(cmd.hasOption(ALLOW_DEFAULT_COHORT_CONFIG))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)
                 .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))

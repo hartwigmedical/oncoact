@@ -25,8 +25,7 @@ public class PanelReporter {
     @NotNull
     public PanelReport run(@Nullable String comments, boolean correctedReport,
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
-            @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
-            boolean allowDefaultCohortConfig) throws IOException {
+            @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname) throws IOException {
 
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {

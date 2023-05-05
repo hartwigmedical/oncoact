@@ -25,8 +25,6 @@ public interface PatientReporterConfig {
     Logger LOGGER = LogManager.getLogger(PatientReporterConfig.class);
 
     // General params needed for every report
-    String TUMOR_SAMPLE_ID = "tumor_sample_id";
-    String TUMOR_SAMPLE_BARCODE = "tumor_sample_barcode";
     String OUTPUT_DIRECTORY_REPORT = "output_dir_report";
     String OUTPUT_DIRECTORY_DATA = "output_dir_data";
 
@@ -35,10 +33,6 @@ public interface PatientReporterConfig {
     String SIGNATURE = "signature";
 
     String UDI_DI = "udi_di";
-
-    // General params needed for every report but for QC fail it can be optional in some cases
-    String REF_SAMPLE_ID = "ref_sample_id";
-    String REF_SAMPLE_BARCODE = "ref_sample_barcode";
 
     // Params specific for QC Fail reports
     String QC_FAIL = "qc_fail";
@@ -62,8 +56,6 @@ public interface PatientReporterConfig {
     String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
-    String SAMPLE_NAME_FOR_REPORT = "sample_name_for_report";
-    String ALLOW_DEFAULT_COHORT_CONFIG = "allow_default_cohort_config";
 
     // parameters for pipeline version
     String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
@@ -75,8 +67,6 @@ public interface PatientReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(TUMOR_SAMPLE_ID, true, "The tumor sample ID for which a report is generated.");
-        options.addOption(TUMOR_SAMPLE_BARCODE, true, "The sample barcode for which a patient report will be generated.");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
@@ -85,9 +75,6 @@ public interface PatientReporterConfig {
         options.addOption(SIGNATURE, true, "Path towards an image file containing the signature to be appended at the end of the report.");
 
         options.addOption(UDI_DI, true, "Code of the UDI DI code");
-
-        options.addOption(REF_SAMPLE_ID, true, "The reference sample ID for the tumor sample for which a report is generated.");
-        options.addOption(REF_SAMPLE_BARCODE, true, "The reference sample barcode for the tumor sample for which a report is generated.");
 
         options.addOption(QC_FAIL, false, "If set, generates a qc-fail report.");
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
@@ -108,8 +95,6 @@ public interface PatientReporterConfig {
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
-        options.addOption(SAMPLE_NAME_FOR_REPORT, true, "Sample name used for printing on the report and for report file name.");
-        options.addOption(ALLOW_DEFAULT_COHORT_CONFIG, false, "If provided, use a default cohort config if for this sample no cohort is configured in LIMS.");
 
         options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
@@ -119,17 +104,6 @@ public interface PatientReporterConfig {
         return options;
     }
 
-    @Nullable
-    String refSampleId();
-
-    @Nullable
-    String refSampleBarcode();
-
-    @NotNull
-    String tumorSampleId();
-
-    @NotNull
-    String tumorSampleBarcode();
 
     @NotNull
     String outputDirReport();
@@ -185,11 +159,6 @@ public interface PatientReporterConfig {
     boolean isCorrectedReportExtern();
 
     boolean onlyCreatePDF();
-
-    @Nullable
-    String sampleNameForReport();
-
-    boolean allowDefaultCohortConfig();
 
     boolean requirePipelineVersionFile();
 
@@ -252,10 +221,6 @@ public interface PatientReporterConfig {
         }
 
         return ImmutablePatientReporterConfig.builder()
-                .refSampleId(cmd.hasOption(REF_SAMPLE_ID) ? nonOptionalValue(cmd, REF_SAMPLE_ID) : null)
-                .refSampleBarcode(cmd.hasOption(REF_SAMPLE_BARCODE) ? nonOptionalValue(cmd, REF_SAMPLE_BARCODE) : null)
-                .tumorSampleId(nonOptionalValue(cmd, TUMOR_SAMPLE_ID))
-                .tumorSampleBarcode(nonOptionalValue(cmd, TUMOR_SAMPLE_BARCODE))
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
                 .rvaLogo(nonOptionalFile(cmd, RVA_LOGO))
@@ -276,8 +241,6 @@ public interface PatientReporterConfig {
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
-                .sampleNameForReport(cmd.getOptionValue(SAMPLE_NAME_FOR_REPORT))
-                .allowDefaultCohortConfig(cmd.hasOption(ALLOW_DEFAULT_COHORT_CONFIG))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)
                 .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))
