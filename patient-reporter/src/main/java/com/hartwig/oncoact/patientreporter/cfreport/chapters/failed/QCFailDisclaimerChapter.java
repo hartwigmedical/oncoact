@@ -67,13 +67,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
-        if (!failReport.patientReporterData().getPathologyId().isEmpty() && !failReport.patientReporterData().getPatientId().isEmpty()) {
-            if (failReport.patientReporterData().getPathologyId() != null) {
+        if (!failReport.patientReporterData().getPathologyNumber().isEmpty() && !failReport.patientReporterData().getPatientId().isEmpty()) {
+            if (failReport.patientReporterData().getPathologyNumber() != null) {
                 div.add(reportIsForPathologySampleID());
             }
         }
-        if (!failReport.patientReporterData().getPathologyId().isEmpty() && failReport.patientReporterData().getPatientId().isEmpty()) {
-            if (failReport.patientReporterData().getPathologyId() != null && failReport.patientReporterData().getPatientId() != null) {
+        if (!failReport.patientReporterData().getPathologyNumber().isEmpty() && failReport.patientReporterData().getPatientId().isEmpty()) {
+            if (failReport.patientReporterData().getPathologyNumber() != null && failReport.patientReporterData().getPatientId() != null) {
                 div.add(reportHospitalPatientIDAndPathologySampleId());
             }
         }
@@ -115,13 +115,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraphTwice("The hospital patient ID is ",
                 failReport.patientReporterData().getPatientId(),
                 " and the pathology tissue ID is: ",
-                failReport.patientReporterData().getPathologyId());
+                failReport.patientReporterData().getPathologyNumber());
 
     }
 
     @NotNull
     private Paragraph reportIsForPathologySampleID() {
-        return createContentParagraph("The pathology tissue ID is: ", failReport.patientReporterData().getPathologyId());
+        return createContentParagraph("The pathology tissue ID is: ", failReport.patientReporterData().getPathologyNumber());
     }
 
     @NotNull

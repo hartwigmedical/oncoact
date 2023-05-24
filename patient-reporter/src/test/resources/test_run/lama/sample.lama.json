@@ -24,7 +24,7 @@
   "tumorIsolationBarcode": "string",
   "tumorArrivalDate": "2023-04-17",
   "tumorSamplingDate": "2023-04-17",
-  "pathologyId": "string",
+  "pathologyNumber": "string",
   "primaryTumorType": {
     "_id": "string",
     "location": "string",
@@ -36,10 +36,10 @@
   },
   "biopsySite": {
     "_id": "string",
-    "biopsyLocation": "string",
-    "biopsyLocationPalgaCode": "string",
-    "biopsySubLocation": "string",
-    "biopsySubLocationPalgaCode": "string",
+    "location": "string",
+    "locationPalgaCode": "string",
+    "subLocation": "string",
+    "subLocationPalgaCode": "string",
     "lateralisation": "LEFT",
     "isPrimaryTumor": true
   },

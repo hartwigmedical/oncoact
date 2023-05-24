@@ -127,7 +127,7 @@
             <dependency>
                 <groupId>com.hartwig.lama.client</groupId>
                 <artifactId>client</artifactId>
-                <version>local-SNAPSHOT</version>
+                <version>${lama-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hartwig</groupId>

@@ -52,8 +52,8 @@ public final class SidePanel {
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", "hospital ID"));
 
-        if (patientReporterData.getPathologyId() != null && !patientReporterData.getPathologyId().equals(Strings.EMPTY)) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyId()));
+        if (patientReporterData.getPathologyNumber() != null && !patientReporterData.getPathologyNumber().equals(Strings.EMPTY)) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyNumber()));
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));

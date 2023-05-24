@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Sets;
+import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
@@ -90,8 +91,12 @@ public class SummaryChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(Strings.EMPTY,
-                Strings.EMPTY, contentWidth()));
+        TumorType tumorType = patientReport.patientReporterData().getPrimaryTumorType();
+        String location = tumorType != null && tumorType.getLocation() != null ? tumorType.getLocation() : Strings.EMPTY;
+        String type = tumorType != null && tumorType.getType()  != null ? tumorType.getType() : Strings.EMPTY;
+
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(location,
+                type, contentWidth()));
         reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(ReportResources.subTextStyle()));
 

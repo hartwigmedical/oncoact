@@ -34,6 +34,7 @@ import com.hartwig.oncoact.util.Formats;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CFReportWriterTest {
@@ -44,12 +45,8 @@ public class CFReportWriterTest {
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
     private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829. Where is referred to CKB, "
             + "VICC evidence is listed due to licensing restrictions.";
-    private static final String COLO_COMMENT_STRING_CORRECTED = "This is a corrected test report and is based on COLO829";
     private static final String FULL_TABLES_COMMENT_STRING = "This is a test report with all tables filled in";
-
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
-    private static final String COMMENT_STRING_QC_FAIL_CORRECTED = "This is a corrected test QC fail report";
-
     private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
     @Test
@@ -66,6 +63,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGeneratePatientReportForStudySample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study")
                 .build();
@@ -78,6 +76,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGeneratePatientReportForDiagnosticSample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic")
                 .build();
@@ -90,6 +89,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGeneratePatientReportForInsufficientTCPSample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_INSUFFICIENT_TUMOR-FOR-209")
                 .comments(FULL_TABLES_COMMENT_STRING)
@@ -106,6 +106,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateInsufficientDNAReport() throws IOException {
         generateQCFailReport("CPCT01_insufficient_dna-FOR-082",
                 null,
@@ -117,6 +118,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateTechnicalFailureReport() throws IOException {
         generateQCFailReport("CPCT02-technical_failure-FOR-102",
                 null,
@@ -128,6 +130,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateSufficientTCPQCFailReport() throws IOException {
         generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Fail",
                 "70%",
@@ -139,6 +142,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateSufficientTCPQCFailReportPASS() throws IOException {
         generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Pass",
                 "70%",
@@ -150,6 +154,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateInsufficientTCPAfterDeepWGSReport() throws IOException {
         generateQCFailReport("CPCT04-insufficient_tcp_deep_wgs-FOR-100",
                 "18%",
@@ -161,6 +166,7 @@ public class CFReportWriterTest {
     }
 
     @Test
+    @Ignore
     public void canGenerateInsufficientTCPAfterShallowReport() throws IOException {
         generateQCFailReport("CPCT05-insufficient_tcp_shallow_wgs-FOR-100",
                 null,

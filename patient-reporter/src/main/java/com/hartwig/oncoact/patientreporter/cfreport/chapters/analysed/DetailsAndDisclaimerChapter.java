@@ -162,7 +162,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
-        String pathologyId = patientReport.patientReporterData().getPathologyId();
+        String pathologyId = patientReport.patientReporterData().getPathologyNumber();
         String patientId = patientReport.patientReporterData().getPatientId();
         if (pathologyId != null && !pathologyId.equals(Strings.EMPTY)) {
             return createContentParagraphTwice("The patient ID is: ",
