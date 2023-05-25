@@ -38,7 +38,7 @@ public class ReportingDbTest {
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/string_string_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_dna_analysis_report_api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
@@ -53,9 +53,9 @@ public class ReportingDbTest {
         assertEquals(output.get("has_reliable_quality"), true);
         assertEquals(output.get("has_reliable_purity"), true);
         assertEquals(output.get("purity"), 1.0);
-        assertEquals(output.get("cohort"), "string");
+        assertEquals(output.get("cohort"), "cohort");
         assertEquals(output.get("report_type"), "dna_analysis_report");
-        assertEquals(output.get("barcode"), "string");
+        assertEquals(output.get("barcode"), "tumorIsolationBarcode");
         assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
     }
 }

@@ -69,7 +69,8 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.patientReporterData().getReferenceArrivalDate(), patientReport.patientReporterData().getTumorArrivalDate());
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.patientReporterData().getReferenceArrivalDate(),
+                patientReport.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
@@ -94,16 +95,16 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                         patientReport.patientReporterData().getHospitalPostalCode(), patientReport.patientReporterData().getHospitalCity(),
                         patientReport.patientReporterData().getHospitalAddress())));
 
-        if (!patientReport.patientReporterData().getPatientId().equals(Strings.EMPTY)) {
+        if (patientReport.patientReporterData().getPatientId() != null) {
             div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getPatientId()));
         }
 
-        if (!patientReport.patientReporterData().getSubmissionNr().isEmpty() && !patientReport.patientReporterData().getSubmissionNr().isEmpty()) {
-            div.add(createContentParagraphTwice("The project name of sample is: ",
-                    patientReport.patientReporterData().getSubmissionNr(),
-                    " and the submission ID is ",
-                    patientReport.patientReporterData().getSubmissionNr()));
-        }
+
+        div.add(createContentParagraphTwice("The project name of sample is: ",
+                patientReport.patientReporterData().getContractCode(),
+                " and the submission ID is ",
+                Formats.formatNullableString(patientReport.patientReporterData().getSubmissionNr())));
+
 
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
@@ -164,7 +165,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
         String pathologyId = patientReport.patientReporterData().getPathologyNumber();
         String patientId = patientReport.patientReporterData().getPatientId();
-        if (pathologyId != null && !pathologyId.equals(Strings.EMPTY)) {
+        if (pathologyId != null && patientId != null) {
             return createContentParagraphTwice("The patient ID is: ",
                     patientId,
                     " and the pathology tissue ID is: ",

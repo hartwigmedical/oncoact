@@ -114,7 +114,7 @@ public class AnalysedPatientReporter {
                         ? null
                         : molecularTissueOriginReporting)
                 .molecularTissueOriginPlotPath(config.cuppaPlot())
-                .circosPlotPath(orange.plots().purpleFinalCircosPlot())
+                .circosPlotPath(config.purpleCircosPlot())
                 .comments(Optional.ofNullable(config.comments()))
                 .isCorrectedReport(config.isCorrectedReport())
                 .isCorrectedReportExtern(config.isCorrectedReportExtern())

@@ -42,6 +42,7 @@ public interface PatientReporterConfig {
     String ORANGE_JSON = "orange_json";
     String LAMA_JSON = "lama_json";
     String CUPPA_PLOT = "cuppa_plot";
+    String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
     String ADD_ROSE = "add_rose";
     String ROSE_TSV = "rose_tsv";
@@ -82,6 +83,7 @@ public interface PatientReporterConfig {
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
+        options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
         options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
@@ -138,6 +140,9 @@ public interface PatientReporterConfig {
     String cuppaPlot();
 
     @NotNull
+    String purpleCircosPlot();
+
+    @NotNull
     String protectEvidenceTsv();
 
     boolean addRose();
@@ -191,6 +196,7 @@ public interface PatientReporterConfig {
         String pipelineVersion = null;
         String orangeJson = Strings.EMPTY;
         String cuppaPlot = Strings.EMPTY;
+        String purpleCircosPlot = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
         boolean addRose = false;
         String roseTsv = null;
@@ -210,6 +216,7 @@ public interface PatientReporterConfig {
 
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
+            purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
             addRose = cmd.hasOption(ADD_ROSE);
             if (addRose) {
@@ -232,6 +239,7 @@ public interface PatientReporterConfig {
                 .orangeJson(orangeJson)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .cuppaPlot(cuppaPlot)
+                .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .addRose(addRose)
                 .roseTsv(roseTsv)
