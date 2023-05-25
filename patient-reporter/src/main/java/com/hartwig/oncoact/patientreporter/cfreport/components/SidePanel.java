@@ -1,9 +1,11 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
+import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -50,7 +52,7 @@ public final class SidePanel {
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
 
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", "hospital ID"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", patientReporterData.getPatientId()));
 
         if (patientReporterData.getPathologyNumber() != null && !patientReporterData.getPathologyNumber().equals(Strings.EMPTY)) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyNumber()));
@@ -70,8 +72,11 @@ public final class SidePanel {
 
         }
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", "hospitalName"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", "biopsy"));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", patientReporterData.getHospitalName()));
+        BiopsySite biopsySite = patientReporterData.getBiopsySite();
+        String biopsyLocation = biopsySite != null && biopsySite.getLocation() != null ? biopsySite.getLocation() : Strings.EMPTY;
+
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
 
 
         canvas.release();

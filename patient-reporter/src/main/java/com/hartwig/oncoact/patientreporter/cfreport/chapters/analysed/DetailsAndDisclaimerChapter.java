@@ -100,10 +100,8 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         }
 
 
-        div.add(createContentParagraphTwice("The project name of sample is: ",
-                patientReport.patientReporterData().getContractCode(),
-                " and the submission ID is ",
-                Formats.formatNullableString(patientReport.patientReporterData().getSubmissionNr())));
+        div.add(createContentParagraph("The project name of sample is: ",
+                patientReport.patientReporterData().getContractCode()));
 
 
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
