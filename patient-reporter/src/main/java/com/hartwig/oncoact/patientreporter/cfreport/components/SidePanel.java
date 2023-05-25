@@ -80,8 +80,16 @@ public final class SidePanel {
         cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", patientReporterData.getHospitalName()));
         BiopsySite biopsySite = patientReporterData.getBiopsySite();
         String biopsyLocation = biopsySite != null && biopsySite.getLocation() != null ? biopsySite.getLocation() : Strings.EMPTY;
+        String biopsySubLocation= biopsySite != null && biopsySite.getSubLocation() != null ? biopsySite.getSubLocation() : Strings.EMPTY;
+        BiopsySite.LateralisationEnum biopsyLateralisation = biopsySite != null && biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
+
+        if (biopsySite != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(biopsySite.getIsPrimaryTumor() )));
+        }
 
 
         canvas.release();
