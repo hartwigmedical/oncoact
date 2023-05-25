@@ -20,10 +20,10 @@ public final class OutputFileUtil {
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
 
-        String hospitalNameAbbreviation = "hospital";
+        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
         String reportId = report.patientReporterData().getReportingId();
 
-        String filePrefix = date + "_" + hospitalNameAbbreviation + "_" + reportId;
+        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId;
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
 
@@ -38,10 +38,10 @@ public final class OutputFileUtil {
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
 
-        String hospitalNameAbbreviation = "hospital";
+        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
         String reportId = report.patientReporterData().getReportingId();
 
-        String filePrefix = date + "_" + hospitalNameAbbreviation + "_" + reportId;
+        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId;
 
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
 
@@ -56,10 +56,10 @@ public final class OutputFileUtil {
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
 
-        String hospitalNameAbbreviation = "hospital";
+        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
         String reportId = report.patientReporterData().getReportingId();
 
-        String filePrefix = date + "_" + hospitalNameAbbreviation + "_" + reportId + "_oncoact";
+        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncoact";
 
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
@@ -81,10 +81,10 @@ public final class OutputFileUtil {
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
 
-        String hospitalNameAbbreviation = "hospital";
+        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
         String reportId = report.patientReporterData().getReportingId();
 
-        String filePrefix = date + "_" + hospitalNameAbbreviation + "_" + reportId + "_oncoact";
+        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncoact";
 
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
@@ -106,10 +106,10 @@ public final class OutputFileUtil {
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
 
-        String hospitalNameAbbreviation = "hospital";
         String reportId = report.patientReporterData().getReportingId();
+        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
 
-        String filePrefix = date + "_" + hospitalNameAbbreviation + "_" + reportId + "_oncopanel";
+        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncopanel";
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
         if (report.isCorrectedReport()) {
