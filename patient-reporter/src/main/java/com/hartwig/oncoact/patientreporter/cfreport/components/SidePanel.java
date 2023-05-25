@@ -53,7 +53,7 @@ public final class SidePanel {
 
 
         if (patientReporterData.getReportingId().substring(0, 4).matches("[a-zA-Z]+")) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Studyid", patientReporterData.getReportingId()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Study id", patientReporterData.getReportingId()));
         } else {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", patientReporterData.getReportingId()));
 
