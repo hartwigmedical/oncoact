@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
+import com.hartwig.lama.client.model.TumorType;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
@@ -9,6 +10,11 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.Assert.assertEquals;
 
 public class LamaInterpretationTest {
+
+    @Test
+    public void canInterpretTumorType() {
+        //TODO
+    }
 
     @Test
     public void referenceIsEarliestDate() {
@@ -28,7 +34,6 @@ public class LamaInterpretationTest {
 
     @Test
     public void extractHospitalDataStudy(){
-
         String studyPI = "studyPI";
         String requester = null;
         String hospital = "test center";
@@ -75,5 +80,4 @@ public class LamaInterpretationTest {
         String result = requester + ", " + ",  ";
         assertEquals(result, LamaInterpretation.hospitalContactReport(studyPI, requester, hospital, postalCode, city, address));
     }
-
 }

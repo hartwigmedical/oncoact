@@ -5,6 +5,8 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
+import com.hartwig.oncoact.patientreporter.lama.InterpretTumorType;
+import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
@@ -50,12 +52,11 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        TumorType tumorType = failReport.patientReporterData().getPrimaryTumorType();
-        String location = tumorType != null && tumorType.getLocation() != null ? tumorType.getLocation() : Strings.EMPTY;
-        String type = tumorType != null && tumorType.getType()  != null ? tumorType.getType() : Strings.EMPTY;
+        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(failReport.patientReporterData().getPrimaryTumorType());
 
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(location,
-                type, contentWidth()));
+
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(),
+                interpretTumorType.type(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));

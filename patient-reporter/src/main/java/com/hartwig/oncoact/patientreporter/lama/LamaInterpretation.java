@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
+import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.patientreporter.PanelReporterApplication;
 import com.hartwig.oncoact.util.Formats;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,23 @@ public class LamaInterpretation {
     private static final Logger LOGGER = LogManager.getLogger(LamaInterpretation.class);
 
     private LamaInterpretation(){
+    }
+
+    public static InterpretTumorType interpretTumorType(@Nullable TumorType tumorType) {
+        String location;
+        String type;
+
+        if (tumorType != null) {
+            location = tumorType.getLocation();
+            type = tumorType.getType();
+
+            assert location != null;
+            assert type != null;
+        } else {
+            location = Strings.EMPTY;
+            type = Strings.EMPTY;
+        }
+        return ImmutableInterpretTumorType.builder().location(location).type(type).build();
     }
 
     public static String extractEarliestArrivalDate(@Nullable LocalDate refDate, @Nullable LocalDate sampleDate){
