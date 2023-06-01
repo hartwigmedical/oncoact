@@ -79,19 +79,27 @@ public final class SidePanel {
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", patientReporterData.getHospitalName()));
         BiopsySite biopsySite = patientReporterData.getBiopsySite();
-        String biopsyLocation = biopsySite != null && biopsySite.getLocation() != null ? biopsySite.getLocation() : Strings.EMPTY;
-        String biopsySubLocation= biopsySite != null && biopsySite.getSubLocation() != null ? biopsySite.getSubLocation() : Strings.EMPTY;
-        BiopsySite.LateralisationEnum biopsyLateralisation = biopsySite != null && biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
+        String biopsyLocation = Strings.EMPTY;
+        String biopsySubLocation = Strings.EMPTY;
+        BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
+        Boolean isPrimaryTumor = null;
+        if (biopsySite != null) {
+            biopsyLocation = biopsySite.getLocation();
+            biopsySubLocation = biopsySite.getSubLocation();
+            biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
+            isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
+        }
+
+        assert biopsyLocation != null;
+        assert biopsySubLocation != null;
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
 
-        if (biopsySite != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(biopsySite.getIsPrimaryTumor() )));
+        if (isPrimaryTumor != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
         }
-
-
         canvas.release();
     }
 
