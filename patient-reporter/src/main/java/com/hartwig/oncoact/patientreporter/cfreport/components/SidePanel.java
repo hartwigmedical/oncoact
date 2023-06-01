@@ -59,7 +59,7 @@ public final class SidePanel {
 
         }
 
-        if (patientReporterData.getPathologyNumber() != null && !patientReporterData.getPathologyNumber().equals(Strings.EMPTY)) {
+        if (patientReporterData.getPathologyNumber() != null) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", patientReporterData.getPathologyNumber()));
         }
 
@@ -68,11 +68,11 @@ public final class SidePanel {
         cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", "Birth date"));
 
 
-        if (patientReporterData.getRequesterName() != null && !patientReporterData.getRequesterName().equals(Strings.EMPTY)) {
+        if (patientReporterData.getRequesterName() != null) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", patientReporterData.getRequesterName()));
 
         }
-        if (patientReporterData.getRequesterEmail() != null && !patientReporterData.getRequesterEmail().equals(Strings.EMPTY)) {
+        if (patientReporterData.getRequesterEmail() != null) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Email", patientReporterData.getRequesterEmail()));
 
         }
