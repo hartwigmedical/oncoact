@@ -49,17 +49,11 @@ public class XMLFactory {
         xml.add(ImmutableKeyXML.builder().keyPath("VrbProcedure").valuePath(Map.of("value", "wgs")).build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("RefNummerWgs")
-                .valuePath(Map.of("value",
-                        !report.patientReporterData().getPatientId().isEmpty()
-                                ? report.patientReporterData().getPatientId()
-                                : report.patientReporterData().getReportingId()))
+                .valuePath(Map.of("value", report.patientReporterData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgs_reference_number")
-                .valuePath(Map.of("value",
-                        !report.patientReporterData().getPatientId().isEmpty()
-                                ? report.patientReporterData().getPatientId()
-                                : report.patientReporterData().getReportingId()))
+                .valuePath(Map.of("value", report.patientReporterData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTher").valuePath(Map.of("value", Strings.EMPTY)).build());
