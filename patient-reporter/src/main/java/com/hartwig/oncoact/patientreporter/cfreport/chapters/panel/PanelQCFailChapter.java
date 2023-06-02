@@ -58,7 +58,6 @@ public class PanelQCFailChapter implements ReportChapter {
     public void render(@NotNull Document reportDocument) {
         InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(report.patientReporterData().getPrimaryTumorType());
 
-
         reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(), interpretTumorType.type(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));

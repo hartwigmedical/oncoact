@@ -65,7 +65,8 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         div.add(createContentParagraph("The sample(s) have been analyzed by Next Generation Sequencing using targeted enrichment."));
         div.add(generateHMFSampleIDParagraph(report.patientReporterData().getReportingId()));
 
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.patientReporterData().getReferenceArrivalDate(), report.patientReporterData().getTumorArrivalDate());
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.patientReporterData().getReferenceArrivalDate(),
+                report.patientReporterData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
@@ -80,7 +81,10 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", Strings.EMPTY));//report.patientReporterData().getHospitalAddress()
+        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.patientReporterData().getStudyPI(),
+                report.patientReporterData().getRequesterName(), report.patientReporterData().getHospitalName(),
+                report.patientReporterData().getHospitalPostalCode(), report.patientReporterData().getHospitalCity(),
+                report.patientReporterData().getHospitalAddress())));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;
@@ -93,7 +97,11 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
     @NotNull
     private static Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId) {
-        return createContentParagraph("The HMF sample ID is: ", reportingId);
+        if (reportingId.substring(0, 4).matches("[a-zA-Z]+")) {
+            return createContentParagraph("Study id: ", reportingId);
+        } else {
+            return createContentParagraph("Hospital patient id: ", reportingId);
+        }
     }
 
     @NotNull
@@ -146,4 +154,3 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 }
-
