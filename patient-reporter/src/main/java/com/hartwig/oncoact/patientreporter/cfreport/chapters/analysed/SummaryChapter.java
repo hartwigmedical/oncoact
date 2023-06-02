@@ -141,7 +141,7 @@ public class SummaryChapter implements ReportChapter {
         String text = patientReport.clinicalSummary();
         String clinicalConclusion = Strings.EMPTY;
         if (text == null) {
-            String sentence = "An overview of all detected oncogenic DNA aberrations can be found in the report";
+            String sentence = "An overview of all detected cancer associated DNA aberrations can be found in the report";
 
             if (!analysis().hasReliablePurity()) {
                 clinicalConclusion = "Of note, WGS analysis indicated a very low abundance of genomic aberrations, which can be caused "

@@ -95,10 +95,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                         patientReport.patientReporterData().getHospitalPostalCode(), patientReport.patientReporterData().getHospitalCity(),
                         patientReport.patientReporterData().getHospitalAddress())));
 
-        if (patientReport.patientReporterData().getPatientId() != null) {
-            div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getPatientId()));
-        }
-
+        div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getReportingId()));
 
         div.add(createContentParagraph("The project name of sample is: ",
                 patientReport.patientReporterData().getContractCode()));
@@ -171,7 +168,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
             interpretId = "The patient ID is: ";
         }
 
-        if (pathologyId != null ) {
+        if (pathologyId != null) {
             return createContentParagraphTwice(interpretId,
                     reportingId,
                     " and the pathology tissue ID is: ",
