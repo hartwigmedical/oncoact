@@ -202,7 +202,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createContentCell(SomaticVariants.geneDisplayString(variant,
                     notifyGermlineStatusPerVariant.get(variant))));
             contentTable.addCell(TableUtil.createContentCell(variant.gDNA()));
-            contentTable.addCell(TableUtil.createContentCell(variant.canonicalHgvsCodingImpact()));
+            contentTable.addCell(TableUtil.createContentCell(SomaticVariants.variantDisplayString(variant.localPhaseSet(), variant.canonicalHgvsCodingImpact())));
             contentTable.addCell(TableUtil.createContentCell(SomaticVariants.proteinAnnotationDisplayString(variant.canonicalHgvsProteinImpact(),
                     variant.canonicalEffect())));
             contentTable.addCell(TableUtil.createContentCell(new Paragraph(
@@ -236,6 +236,12 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                     .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(ReportResources.subTextStyle())));
         }
+
+        if (SomaticVariants.hasVariantsInCis(reportableVariants)) {
+            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                    .add(new Paragraph("\n= Marked variants are present in cis").addStyle(ReportResources.subTextStyle())));
+        }
+
 
         return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
     }

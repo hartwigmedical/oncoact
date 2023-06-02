@@ -77,6 +77,25 @@ public final class SomaticVariants {
         return false;
     }
 
+    public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {
+        for (ReportableVariant reportableVariant : reportableVariants) {
+            if (reportableVariant.localPhaseSet() != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @NotNull
+    public static String variantDisplayString(@Nullable Integer localPhaseSet, @NotNull String canonicalHgvsCodingImpact) {
+        if (localPhaseSet != null) {
+            return canonicalHgvsCodingImpact + " =";
+        } else {
+            return canonicalHgvsCodingImpact;
+        }
+    }
+
     @NotNull
     public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline) {
         if (notifyGermline) {
