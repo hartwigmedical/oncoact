@@ -11,6 +11,7 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
@@ -20,6 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public final class GeneFusions {
 
     private GeneFusions() {
+    }
+
+    @NotNull
+    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     @NotNull

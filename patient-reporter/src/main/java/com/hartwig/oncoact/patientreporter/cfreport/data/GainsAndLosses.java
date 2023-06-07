@@ -82,6 +82,11 @@ public final class GainsAndLosses {
     }
 
     @NotNull
+    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+    }
+
+    @NotNull
     public static String interpretation(@NotNull PurpleGainLoss gainLoss) {
         return gainLoss.interpretation().toString().toLowerCase().replaceAll("_", " ");
     }
