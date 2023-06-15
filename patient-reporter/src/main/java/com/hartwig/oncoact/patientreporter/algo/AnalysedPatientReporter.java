@@ -196,7 +196,6 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 
-        LOGGER.info("Display tag name of this sample is: {}", lamaPatientData.getCohort());
         LOGGER.info(" Germline reporting level: {}", lamaPatientData.getReportSettings().getFlagGermlineOnReport());
 
         GenomicAnalysis analysis = report.genomicAnalysis();

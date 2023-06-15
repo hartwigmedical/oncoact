@@ -51,12 +51,7 @@ public final class OutputFileUtil {
     public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
         String filePrefix = getFilePrefix(report) + "_oncopanel";
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
-        String fileSuffix;
-        if (report.isCorrectedReport()) {
-            fileSuffix = report.isCorrectedReportExtern() ? "_corrected_external.json" : "_corrected_internal.json";
-        } else {
-            fileSuffix = ".json";
-        }
+        String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
         return filePrefix + failPrefix + fileSuffix;
     }
 
