@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 
@@ -16,111 +17,65 @@ public final class OutputFileUtil {
 
     @NotNull
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
-        LocalDateTime dateTime = LocalDateTime.now();
-        String date = dtf.format(dateTime);
-
-        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
-        String reportId = report.patientReporterData().getReportingId();
-
-        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId;
-
-        String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-
+        String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
-
+        String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
         return filePrefix + failPrefix + "_dna_analysis_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
-        LocalDateTime dateTime = LocalDateTime.now();
-        String date = dtf.format(dateTime);
-
-        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
-        String reportId = report.patientReporterData().getReportingId();
-
-        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId;
-
-        String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-
+        String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
-
+        String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
         return filePrefix + failPrefix + "_oncopanel_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJson(@NotNull PatientReport report) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
-        LocalDateTime dateTime = LocalDateTime.now();
-        String date = dtf.format(dateTime);
-
-        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
-        String reportId = report.patientReporterData().getReportingId();
-
-        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncoact";
-
+        String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
-        String fileSuffix;
-        if (report.isCorrectedReport()) {
-            if (report.isCorrectedReportExtern()) {
-                fileSuffix = "_corrected.json";
-            } else {
-                fileSuffix = "_corrected.json";
-            }
-        } else {
-            fileSuffix = ".json";
-        }
+        String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
         return filePrefix + failPrefix + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForXML(@NotNull PatientReport report) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
-        LocalDateTime dateTime = LocalDateTime.now();
-        String date = dtf.format(dateTime);
-
-        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
-        String reportId = report.patientReporterData().getReportingId();
-
-        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncoact";
-
+        String filePrefix = getFilePrefix(report) + "_oncoact";
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
+        String fileSuffix = report.isCorrectedReport() ? "_corrected.xml" : ".xml";
+        return filePrefix + failPrefix + fileSuffix;
+    }
+
+    @NotNull
+    public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
+        String filePrefix = getFilePrefix(report) + "_oncopanel";
+        String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix;
         if (report.isCorrectedReport()) {
-            if (report.isCorrectedReportExtern()) {
-                fileSuffix = "_corrected.xml";
-            } else {
-                fileSuffix = "_corrected.xml";
-            }
+            fileSuffix = report.isCorrectedReportExtern() ? "_corrected_external.json" : "_corrected_internal.json";
         } else {
-            fileSuffix = ".xml";
+            fileSuffix = ".json";
         }
         return filePrefix + failPrefix + fileSuffix;
     }
 
     @NotNull
-    public static String generateOutputFileNameForJsonPanel(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report) {
+    private static String getFilePrefix(final @NotNull PatientReport report) {
+        PatientReporterData patientReporterData = report.patientReporterData();
+        return getFilePrefix(patientReporterData.getTumorSampleBarcode(), patientReporterData.getReportingId());
+    }
+
+    @NotNull
+    private static String getFilePrefix(final @NotNull PanelReport report) {
+        PatientReporterData patientReporterData = report.patientReporterData();
+        return getFilePrefix(patientReporterData.getTumorSampleBarcode(), patientReporterData.getReportingId());
+    }
+
+    private static String getFilePrefix(String tumorSampleBarcode, String reportId) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
-
-        String reportId = report.patientReporterData().getReportingId();
-        String tumorSampleBarcode = report.patientReporterData().getTumorSampleBarcode();
-
-        String filePrefix = date + "_" + tumorSampleBarcode + "_" + reportId + "_oncopanel";
-        String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
-        String fileSuffix;
-        if (report.isCorrectedReport()) {
-            if (report.isCorrectedReportExtern()) {
-                fileSuffix = "_corrected_external.json";
-            } else {
-                fileSuffix = "_corrected_internal.json";
-            }
-        } else {
-            fileSuffix = ".json";
-        }
-        return filePrefix + failPrefix + fileSuffix;
+        return date + "_" + tumorSampleBarcode + "_" + reportId;
     }
 }
