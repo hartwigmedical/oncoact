@@ -78,12 +78,7 @@ public final class GainsAndLosses {
             }
         }
 
-        return copyNumber != null ? String.valueOf(Math.round(Math.max(0, copyNumber))) : Formats.NA_STRING;
-    }
-
-    @NotNull
-    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+        return GeneUtil.roundCopyNumber(copyNumber);
     }
 
     @NotNull

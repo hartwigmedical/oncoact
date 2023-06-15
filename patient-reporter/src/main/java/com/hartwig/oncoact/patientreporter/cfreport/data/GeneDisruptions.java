@@ -5,17 +5,11 @@ import java.util.stream.Collectors;
 
 import com.hartwig.oncoact.disruption.GeneDisruption;
 
-import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 public final class GeneDisruptions {
 
     private GeneDisruptions() {
-    }
-
-    @NotNull
-    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     @NotNull

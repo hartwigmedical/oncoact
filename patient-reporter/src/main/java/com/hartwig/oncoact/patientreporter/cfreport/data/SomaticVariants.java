@@ -158,11 +158,6 @@ public final class SomaticVariants {
     }
 
     @NotNull
-    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
-    }
-
-    @NotNull
     public static String hotspotString(@NotNull Hotspot hotspot) {
         switch (hotspot) {
             case HOTSPOT:
