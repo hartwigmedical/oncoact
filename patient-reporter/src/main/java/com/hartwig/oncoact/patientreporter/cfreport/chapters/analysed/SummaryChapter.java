@@ -59,7 +59,11 @@ public class SummaryChapter implements ReportChapter {
     @Override
     public String pdfTitle() {
         if (patientReport.isCorrectedReport()) {
-            return "DNA Analysis Report (Corrected)";
+            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+                return "DNA Analysis Report - Low Sensitivity (Corrected)";
+            } else {
+                return "DNA Analysis Report (Corrected)";
+            }
         } else {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
                 return "DNA Analysis Report - Low Sensitivity";
