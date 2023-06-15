@@ -12,11 +12,6 @@ import static org.junit.Assert.assertEquals;
 public class LamaInterpretationTest {
 
     @Test
-    public void canInterpretTumorType() {
-        //TODO
-    }
-
-    @Test
     public void referenceIsEarliestDate() {
         LocalDate refDate = LocalDate.of(2023, 4, 6);
         LocalDate tumDate =LocalDate.of(2023, 4, 8);

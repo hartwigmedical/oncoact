@@ -18,23 +18,6 @@ public class LamaInterpretation {
     private LamaInterpretation(){
     }
 
-    public static InterpretTumorType interpretTumorType(@Nullable TumorType tumorType) {
-        String location;
-        String type;
-
-        if (tumorType != null) {
-            location = tumorType.getLocation();
-            type = tumorType.getType();
-
-            assert location != null;
-            assert type != null;
-        } else {
-            location = Strings.EMPTY;
-            type = Strings.EMPTY;
-        }
-        return ImmutableInterpretTumorType.builder().location(location).type(type).build();
-    }
-
     public static String extractEarliestArrivalDate(@Nullable LocalDate refDate, @Nullable LocalDate sampleDate){
             if (sampleDate == null) {
             return null;

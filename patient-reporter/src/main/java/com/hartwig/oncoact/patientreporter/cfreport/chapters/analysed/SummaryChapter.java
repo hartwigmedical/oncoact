@@ -28,8 +28,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
-import com.hartwig.oncoact.patientreporter.lama.InterpretTumorType;
-import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
@@ -93,10 +91,8 @@ public class SummaryChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(patientReport.lamaPatientData().getPrimaryTumorType());
 
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(),
-                interpretTumorType.type(), contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),  contentWidth()));
         reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(ReportResources.subTextStyle()));
 

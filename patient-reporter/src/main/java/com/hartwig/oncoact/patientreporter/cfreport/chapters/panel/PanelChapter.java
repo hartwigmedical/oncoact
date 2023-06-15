@@ -1,12 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.panel;
 
-import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.lama.InterpretTumorType;
-import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -51,10 +48,8 @@ public class PanelChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(report.lamaPatientData().getPrimaryTumorType());
 
-
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(), interpretTumorType.type(), contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
