@@ -464,11 +464,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     new Cell[] { TableUtil.createHeaderCell("Virus"),
                             TableUtil.createHeaderCell("Number of detected integration sites").setTextAlignment(TextAlignment.CENTER),
                             TableUtil.createHeaderCell("Viral coverage").setTextAlignment(TextAlignment.CENTER),
-                            TableUtil.createHeaderCell("Risk").setTextAlignment(TextAlignment.CENTER) },
+                            TableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             for (AnnotatedVirus virus : viruses) {
-                contentTable.addCell(TableUtil.createContentCell(virus.name()));
+                contentTable.addCell(TableUtil.createContentCell(ViralPresence.interpretVirusName(virus.name(), virus.interpretation(), virus.virusDriverLikelihoodType())));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.integrations(virus)).setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.percentageCovered(virus))
                         .setTextAlignment(TextAlignment.CENTER));

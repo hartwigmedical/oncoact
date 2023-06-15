@@ -8,6 +8,7 @@ import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class ViralPresence {
 
@@ -34,6 +35,19 @@ public final class ViralPresence {
         }
 
         return virusInterpretationSummary;
+    }
+
+    @NotNull
+    public static String interpretVirusName(@NotNull String virusName, @Nullable VirusInterpretation interpretation, @NotNull VirusLikelihoodType likelihoodType) {
+        if (interpretation == VirusInterpretation.HPV) {
+            if (likelihoodType == VirusLikelihoodType.HIGH) {
+                return virusName + " (high risk)";
+            } else {
+                return virusName + " (low risk)";
+            }
+        } else {
+            return virusName;
+        }
     }
 
     @NotNull
