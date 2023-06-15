@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public interface PatientReport {
 
     @NotNull
-    PatientReporterData patientReporterData();
+    PatientReporterData lamaPatientData();
 
     @NotNull
     default String user() {

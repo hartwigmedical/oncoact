@@ -20,7 +20,7 @@ public abstract class AnalysedPatientReport implements PatientReport {
 
     @Override
     @NotNull
-    public abstract PatientReporterData patientReporterData();
+    public abstract PatientReporterData lamaPatientData();
 
     @NotNull
     @Override

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PanelReport {
 
     @NotNull
-    PatientReporterData patientReporterData();
+    PatientReporterData lamaPatientData();
 
     @NotNull
     default String user() {

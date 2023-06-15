@@ -62,14 +62,14 @@ public final class OutputFileUtil {
 
     @NotNull
     private static String getFilePrefix(final @NotNull PatientReport report) {
-        PatientReporterData patientReporterData = report.patientReporterData();
-        return getFilePrefix(patientReporterData.getTumorSampleBarcode(), patientReporterData.getReportingId());
+        PatientReporterData lamaPatientData = report.lamaPatientData();
+        return getFilePrefix(lamaPatientData.getTumorSampleBarcode(), lamaPatientData.getReportingId());
     }
 
     @NotNull
     private static String getFilePrefix(final @NotNull PanelReport report) {
-        PatientReporterData patientReporterData = report.patientReporterData();
-        return getFilePrefix(patientReporterData.getTumorSampleBarcode(), patientReporterData.getReportingId());
+        PatientReporterData lamaPatientData = report.lamaPatientData();
+        return getFilePrefix(lamaPatientData.getTumorSampleBarcode(), lamaPatientData.getReportingId());
     }
 
     private static String getFilePrefix(String tumorSampleBarcode, String reportId) {

@@ -99,7 +99,7 @@ public class PatientReporterApplication {
     private void generateQCFail() throws IOException {
         QCFailReporter reporter = new QCFailReporter(buildBaseReportData(config), reportDate);
         QCFailReport report = reporter.run(config);
-        LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
+        LOGGER.info("Display tag name of this sample is: {}", report.lamaPatientData().getCohort());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
@@ -123,10 +123,10 @@ public class PatientReporterApplication {
     @NotNull
     private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
 
-        PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
+        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
 
         return ImmutableQCFailReportData.builder()
-                .patientReporterData(patientReporterData)
+                .lamaPatientData(lamaPatientData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())
                 .logoCompanyPath(config.companyLogo())

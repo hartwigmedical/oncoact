@@ -52,7 +52,7 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(failReport.patientReporterData().getPrimaryTumorType());
+        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(failReport.lamaPatientData().getPrimaryTumorType());
 
         reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(),
                 interpretTumorType.type(), contentWidth()));

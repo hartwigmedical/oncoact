@@ -63,28 +63,28 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         Div div = createSampleDetailsDiv();
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The sample(s) have been analyzed by Next Generation Sequencing using targeted enrichment."));
-        div.add(generateHMFSampleIDParagraph(report.patientReporterData().getReportingId()));
+        div.add(generateHMFSampleIDParagraph(report.lamaPatientData().getReportingId()));
 
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.patientReporterData().getReferenceArrivalDate(),
-                report.patientReporterData().getTumorArrivalDate());
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.lamaPatientData().getReferenceArrivalDate(),
+                report.lamaPatientData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
                 report.reportDate()));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                Formats.formatDate(report.patientReporterData().getTumorArrivalDate()),
+                Formats.formatDate(report.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
-                report.patientReporterData().getTumorSampleBarcode()));
+                report.lamaPatientData().getTumorSampleBarcode()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.patientReporterData().getSopString()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.lamaPatientData().getSopString()));
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.patientReporterData().getStudyPI(),
-                report.patientReporterData().getRequesterName(), report.patientReporterData().getHospitalName(),
-                report.patientReporterData().getHospitalPostalCode(), report.patientReporterData().getHospitalCity(),
-                report.patientReporterData().getHospitalAddress())));
+        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.lamaPatientData().getStudyPI(),
+                report.lamaPatientData().getRequesterName(), report.lamaPatientData().getHospitalName(),
+                report.lamaPatientData().getHospitalPostalCode(), report.lamaPatientData().getHospitalCity(),
+                report.lamaPatientData().getHospitalAddress())));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;

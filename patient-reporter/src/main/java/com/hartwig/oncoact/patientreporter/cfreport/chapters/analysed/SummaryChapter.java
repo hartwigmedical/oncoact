@@ -93,7 +93,7 @@ public class SummaryChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(patientReport.patientReporterData().getPrimaryTumorType());
+        InterpretTumorType interpretTumorType = LamaInterpretation.interpretTumorType(patientReport.lamaPatientData().getPrimaryTumorType());
 
         reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(interpretTumorType.location(),
                 interpretTumorType.type(), contentWidth()));

@@ -69,36 +69,36 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.patientReporterData().getReferenceArrivalDate(),
-                patientReport.patientReporterData().getTumorArrivalDate());
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.lamaPatientData().getReferenceArrivalDate(),
+                patientReport.lamaPatientData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
                 patientReport.reportDate()));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                Formats.formatDate(patientReport.patientReporterData().getTumorArrivalDate()),
+                Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
-                patientReport.patientReporterData().getTumorSampleBarcode()));
+                patientReport.lamaPatientData().getTumorSampleBarcode()));
         div.add(createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
-                Formats.formatDate(patientReport.patientReporterData().getReferenceArrivalDate()),
+                Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(patientReport.patientReporterData().getReferenceSampleBarcode())));
+                Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode())));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", patientReport.patientReporterData().getSopString()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", patientReport.lamaPatientData().getSopString()));
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
         div.add(createContentParagraph("This report is addressed to: ",
-                LamaInterpretation.hospitalContactReport(patientReport.patientReporterData().getStudyPI(),
-                        patientReport.patientReporterData().getRequesterName(), patientReport.patientReporterData().getHospitalName(),
-                        patientReport.patientReporterData().getHospitalPostalCode(), patientReport.patientReporterData().getHospitalCity(),
-                        patientReport.patientReporterData().getHospitalAddress())));
+                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData().getStudyPI(),
+                        patientReport.lamaPatientData().getRequesterName(), patientReport.lamaPatientData().getHospitalName(),
+                        patientReport.lamaPatientData().getHospitalPostalCode(), patientReport.lamaPatientData().getHospitalCity(),
+                        patientReport.lamaPatientData().getHospitalAddress())));
 
-        div.add(createContentParagraph("The hospital patient ID is: ", patientReport.patientReporterData().getReportingId()));
+        div.add(createContentParagraph("The hospital patient ID is: ", patientReport.lamaPatientData().getReportingId()));
 
         div.add(createContentParagraph("The project name of sample is: ",
-                patientReport.patientReporterData().getContractCode()));
+                patientReport.lamaPatientData().getContractCode()));
 
 
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
@@ -158,8 +158,8 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
-        String pathologyId = patientReport.patientReporterData().getPathologyNumber();
-        String reportingId = patientReport.patientReporterData().getReportingId();
+        String pathologyId = patientReport.lamaPatientData().getPathologyNumber();
+        String reportingId = patientReport.lamaPatientData().getReportingId();
 
         String interpretId;
         if (reportingId.substring(0, 4).matches("[a-zA-Z]+")) {

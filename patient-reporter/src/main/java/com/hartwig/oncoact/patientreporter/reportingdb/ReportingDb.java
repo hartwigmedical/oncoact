@@ -33,9 +33,9 @@ public class ReportingDb {
     }
 
     public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.patientReporterData().getReportingId();
-        String displayName = report.patientReporterData().getCohort();
-        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
+        String sampleName = report.lamaPatientData().getReportingId();
+        String displayName = report.lamaPatientData().getCohort();
+        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
         String reportType = "oncopanel_result_report";
 
@@ -51,9 +51,9 @@ public class ReportingDb {
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.patientReporterData().getReportingId();
-        String cohort = report.patientReporterData().getCohort();
-        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
+        String sampleName = report.lamaPatientData().getReportingId();
+        String cohort = report.lamaPatientData().getCohort();
+        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
         String reportType = report.panelFailReason().identifier();
 
@@ -69,9 +69,9 @@ public class ReportingDb {
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
-        String cohort = report.patientReporterData().getCohort();
+        String cohort = report.lamaPatientData().getCohort();
 
-        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
+        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
@@ -81,7 +81,7 @@ public class ReportingDb {
 
         String reportType;
         if (report.clinicalSummary().isEmpty()) {
-            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.patientReporterData().getReportingId());
+            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.lamaPatientData().getReportingId());
             reportType = "report_without_conclusion";
         } else {
             if (hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF) {
@@ -100,7 +100,7 @@ public class ReportingDb {
         }
         writeApiUpdateJson(outputDirectory,
                 tumorBarcode,
-                report.patientReporterData().getReportingId(),
+                report.lamaPatientData().getReportingId(),
                 cohort,
                 reportType,
                 report.reportDate(),
@@ -133,9 +133,9 @@ public class ReportingDb {
     }
 
     public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.patientReporterData().getReportingId();
-        String displayName = report.patientReporterData().getCohort();
-        String tumorBarcode = report.patientReporterData().getTumorIsolationBarcode();
+        String sampleName = report.lamaPatientData().getReportingId();
+        String displayName = report.lamaPatientData().getCohort();
+        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
         String reportType = report.reason().identifier();
 

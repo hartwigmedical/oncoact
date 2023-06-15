@@ -67,7 +67,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
-        if (failReport.patientReporterData().getPathologyNumber() != null) {
+        if (failReport.lamaPatientData().getPathologyNumber() != null) {
             div.add(reportIsForPathologySampleID());
         }
         div.add(reportHospitalPatientID());
@@ -105,13 +105,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportHospitalPatientID() {
         return createContentParagraph("The hospital patient ID is ",
-                failReport.patientReporterData().getPatientId());
+                failReport.lamaPatientData().getPatientId());
 
     }
 
     @NotNull
     private Paragraph reportIsForPathologySampleID() {
-        String pathologyId = failReport.patientReporterData().getPathologyNumber();
+        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
         assert pathologyId != null;
         return createContentParagraph("The pathology tissue ID is: ", pathologyId);
     }
@@ -119,13 +119,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportCohortCode() {
         return createContentParagraph("The contract code is  ",
-                failReport.patientReporterData().getContractCode());
+                failReport.lamaPatientData().getContractCode());
     }
 
     @NotNull
     private Paragraph resultsAreObtainedBetweenDates() {
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(failReport.patientReporterData().getReferenceArrivalDate(),
-                failReport.patientReporterData().getTumorArrivalDate());
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(failReport.lamaPatientData().getReferenceArrivalDate(),
+                failReport.lamaPatientData().getTumorArrivalDate());
         return createContentParagraphTwice("The results in this report have been obtained between ",
                 earliestArrivalDate != null ? earliestArrivalDate : Formats.NA_STRING,
                 " and ",
@@ -135,17 +135,17 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
-                Formats.formatDate(failReport.patientReporterData().getTumorArrivalDate()),
+                Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
-                failReport.patientReporterData().getTumorSampleBarcode());
+                failReport.lamaPatientData().getTumorSampleBarcode());
     }
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
         return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
-                Formats.formatDate(failReport.patientReporterData().getReferenceArrivalDate()),
+                Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(failReport.patientReporterData().getReferenceSampleBarcode()));
+                Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
     }
 
     @NotNull
@@ -170,8 +170,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph sampleHasMolecularTumorPercentage() {
         String shallowPurity = "N/A";
-        if (failReport.patientReporterData().getShallowPurity() != null) {
-            Integer purity = failReport.patientReporterData().getShallowPurity();
+        if (failReport.lamaPatientData().getShallowPurity() != null) {
+            Integer purity = failReport.lamaPatientData().getShallowPurity();
             assert purity != null;
             shallowPurity = Integer.toString(purity);
         }
@@ -191,13 +191,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraphTwice("The biomaterials are evaluated at ",
                 ReportResources.HARTWIG_ADDRESS,
                 " and are known as hospital ID  ",
-                failReport.patientReporterData().getReportingId());
+                failReport.lamaPatientData().getReportingId());
     }
 
     @NotNull
     private Paragraph reportIsVerifiedByAndAddressedTo() {
         return createContentParagraph("This report was generated " + failReport.user() + " and is addressed to ",
-                failReport.patientReporterData().getHospitalAddress() + ".");
+                failReport.lamaPatientData().getHospitalAddress() + ".");
     }
 
     @NotNull

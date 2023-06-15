@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PanelData {
 
     @NotNull
-    PatientReporterData patientReporterData();
+    PatientReporterData lamaPatientData();
 
     @NotNull
     String signaturePath();

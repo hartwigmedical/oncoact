@@ -123,10 +123,10 @@ public class PanelReporterApplication {
     @NotNull
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
-        PatientReporterData patientReporterData = LamaJson.read(config.lamaJson());
+        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
 
         return ImmutableQCFailPanelReportData.builder()
-                .patientReporterData(patientReporterData)
+                .lamaPatientData(lamaPatientData)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
                 .build();

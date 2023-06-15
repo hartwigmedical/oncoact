@@ -54,7 +54,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
         boolean requireOnLabel = true;
-        boolean flagGermline = report.patientReporterData().getReportSettings().getFlagGermlineOnReport() != null ? report.patientReporterData().getReportSettings().getFlagGermlineOnReport() : false;
+        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() != null ? report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() : false;
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
@@ -63,7 +63,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
     private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
         boolean requireOnLabel = true;
-        boolean flagGermline = report.patientReporterData().getReportSettings().getFlagGermlineOnReport() != null ? report.patientReporterData().getReportSettings().getFlagGermlineOnReport() : false;
+        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() != null ? report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() : false;
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);

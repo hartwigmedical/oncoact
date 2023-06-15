@@ -183,7 +183,7 @@ public class CFReportWriterTest {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
         PanelReport patientReport = ImmutablePanelReport.builder()
-                .patientReporterData(testReportData.patientReporterData())
+                .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber("form")
                 .VCFFilename("test.vcf")
                 .isCorrectedReport(false)
@@ -206,7 +206,7 @@ public class CFReportWriterTest {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
-                .patientReporterData(testReportData.patientReporterData())
+                .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
                 .isCorrectedReport(false)
@@ -230,7 +230,7 @@ public class CFReportWriterTest {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         QCFailReport patientReport = ImmutableQCFailReport.builder()
-                .patientReporterData(testReportData.patientReporterData())
+                .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
                 .wgsPurityString(wgsPurityString)

@@ -62,7 +62,7 @@ public class AnalysedPatientReporter {
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(reportData.patientReporterData().getTumorSampleId());
+        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(reportData.lamaPatientData().getTumorSampleId());
 
         String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {
@@ -104,7 +104,7 @@ public class AnalysedPatientReporter {
         HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.purpleQCStatus());
 
         AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
-                .patientReporterData(reportData.patientReporterData())
+                .lamaPatientData(reportData.lamaPatientData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
@@ -178,28 +178,30 @@ public class AnalysedPatientReporter {
     }
 
     private static void printReportState(@NotNull AnalysedPatientReport report) {
-        LocalDate tumorArrivalDate = report.patientReporterData().getTumorArrivalDate();
+        LocalDate tumorArrivalDate = report.lamaPatientData().getTumorArrivalDate();
         String formattedTumorArrivalDate = tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
 
-        LOGGER.info("Printing clinical and laboratory data for {}", report.patientReporterData().getReportingId());
+        LOGGER.info("Printing clinical and laboratory data for {}", report.lamaPatientData().getReportingId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
-        LOGGER.info(" Primary tumor details: {}{}", report.patientReporterData().getPrimaryTumorType().getLocation(), !report.patientReporterData().getPrimaryTumorType().getLocation().isEmpty() ? " (" + report.patientReporterData().getPrimaryTumorType().getType() + ")" : Strings.EMPTY);
-        LOGGER.info(" Shallow seq purity: {}", report.patientReporterData().getShallowPurity());
-        LOGGER.info(" Lab SOPs used: {}", report.patientReporterData().getSopString());
+        LOGGER.info(" Primary tumor details: {}{}", report.lamaPatientData().getPrimaryTumorType().getLocation(),
+                !report.lamaPatientData().getPrimaryTumorType().getLocation().isEmpty() ?
+                        " (" + report.lamaPatientData().getPrimaryTumorType().getType() + ")" : Strings.EMPTY);
+        LOGGER.info(" Shallow seq purity: {}", report.lamaPatientData().getShallowPurity());
+        LOGGER.info(" Lab SOPs used: {}", report.lamaPatientData().getSopString());
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 
-        LOGGER.info("Display tag name of this sample is: {}", report.patientReporterData().getCohort());
-        LOGGER.info(" Germline reporting level: {}", report.patientReporterData().getReportSettings().getFlagGermlineOnReport());
+        LOGGER.info("Display tag name of this sample is: {}", report.lamaPatientData().getCohort());
+        LOGGER.info(" Germline reporting level: {}", report.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
-        LOGGER.info("Printing genomic analysis results for {}:", report.patientReporterData().getReportingId());
+        LOGGER.info("Printing genomic analysis results for {}:", report.lamaPatientData().getReportingId());
         if (report.molecularTissueOriginReporting() != null) {
             LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
         }
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
-        if (report.patientReporterData().getReportSettings().getFlagGermlineOnReport()) {
+        if (report.lamaPatientData().getReportSettings().getFlagGermlineOnReport()) {
             LOGGER.info("  Number of variants known to exist in germline: {}", germlineOnly(analysis.reportableVariants()).size());
         } else {
             LOGGER.info("  Germline variants and evidence have been removed since no consent has been given");
@@ -216,7 +218,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Tumor mutational load: {} ({})", analysis.tumorMutationalLoad(), analysis.tumorMutationalLoadStatus());
         LOGGER.info(" Tumor mutational burden: {}", analysis.tumorMutationalBurden());
 
-        LOGGER.info("Printing actionability results for {}", report.patientReporterData().getReportingId());
+        LOGGER.info("Printing actionability results for {}", report.lamaPatientData().getReportingId());
         LOGGER.info(" Tumor-specific evidence items found: {}", analysis.tumorSpecificEvidence().size());
         LOGGER.info(" Clinical trials matched to molecular profile: {}", analysis.clinicalTrials().size());
         LOGGER.info(" Off-label evidence items found: {}", analysis.offLabelEvidence().size());

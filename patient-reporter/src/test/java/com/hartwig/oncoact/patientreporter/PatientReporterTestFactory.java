@@ -71,7 +71,7 @@ public final class PatientReporterTestFactory {
     public static ReportData loadTestReportData() {
         try {
             return ImmutableQCFailReportData.builder()
-                    .patientReporterData(LamaJson.read(LAMA_JSON))
+                    .lamaPatientData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
@@ -87,7 +87,7 @@ public final class PatientReporterTestFactory {
 
         try {
             return ImmutableQCFailReportData.builder()
-                    .patientReporterData(LamaJson.read(LAMA_JSON))
+                    .lamaPatientData(LamaJson.read(LAMA_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)
