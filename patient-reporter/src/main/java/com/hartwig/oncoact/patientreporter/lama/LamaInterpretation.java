@@ -1,12 +1,10 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
-import com.hartwig.lama.client.model.TumorType;
-import com.hartwig.oncoact.patientreporter.PanelReporterApplication;
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.util.Formats;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -28,8 +26,14 @@ public class LamaInterpretation {
         }
     }
 
-    public static String hospitalContactReport(@Nullable String studyPI, @Nullable String requester, @Nullable String hospital,
-                                               @Nullable String postalCode, @Nullable String city, @Nullable String address) {
+    public static String hospitalContactReport(@Nullable PatientReporterData lamaPatientData) {
+        String studyPI = lamaPatientData.getStudyPI();
+        String requester = lamaPatientData.getRequesterName();
+        String hospital = lamaPatientData.getHospitalName();
+        String postalCode = lamaPatientData.getHospitalPostalCode();
+        String city = lamaPatientData.getHospitalCity();
+        String address = lamaPatientData.getHospitalAddress();
+
         String requesterNameReport = Strings.EMPTY;
         if (studyPI!= null) {
             requesterNameReport = studyPI;

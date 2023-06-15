@@ -90,10 +90,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(createContentParagraph(whoVerified));
         div.add(createContentParagraph("This report is addressed to: ",
-                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData().getStudyPI(),
-                        patientReport.lamaPatientData().getRequesterName(), patientReport.lamaPatientData().getHospitalName(),
-                        patientReport.lamaPatientData().getHospitalPostalCode(), patientReport.lamaPatientData().getHospitalCity(),
-                        patientReport.lamaPatientData().getHospitalAddress())));
+                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData())));
 
         div.add(createContentParagraph("The hospital patient ID is: ", patientReport.lamaPatientData().getReportingId()));
 

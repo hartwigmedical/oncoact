@@ -188,15 +188,8 @@ public class AnalysedPatientReporter {
         LOGGER.info("Printing clinical and laboratory data for {}", lamaPatientData.getReportingId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
         TumorType primaryTumorType = lamaPatientData.getPrimaryTumorType();
-        if (primaryTumorType == null) {
-            LOGGER.info(" Primary tumor details: not known");
-        } else if (!primaryTumorType.getLocation().isEmpty()) {
-            if (!primaryTumorType.getType().isEmpty()) {
-                LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
-            } else {
-                LOGGER.info(" Primary tumor details: {}", primaryTumorType.getLocation());
-
-            }
+        if (primaryTumorType != null) {
+            LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
         }
         LOGGER.info(" Shallow seq purity: {}", lamaPatientData.getShallowPurity());
         LOGGER.info(" Lab SOPs used: {}", lamaPatientData.getSopString());

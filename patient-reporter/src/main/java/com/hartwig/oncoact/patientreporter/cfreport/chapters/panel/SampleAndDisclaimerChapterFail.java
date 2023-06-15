@@ -81,10 +81,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.lamaPatientData().getStudyPI(),
-                report.lamaPatientData().getRequesterName(), report.lamaPatientData().getHospitalName(),
-                report.lamaPatientData().getHospitalPostalCode(), report.lamaPatientData().getHospitalCity(),
-                report.lamaPatientData().getHospitalAddress())));
+        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.lamaPatientData())));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;
