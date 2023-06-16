@@ -189,7 +189,11 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
         TumorType primaryTumorType = lamaPatientData.getPrimaryTumorType();
         if (primaryTumorType != null) {
-            LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
+            if (primaryTumorType.getType().equals(Strings.EMPTY)) {
+                LOGGER.info(" Primary tumor details: {}", primaryTumorType.getLocation());
+            } else {
+                LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
+            }
         }
         LOGGER.info(" Shallow seq purity: {}", lamaPatientData.getShallowPurity());
         LOGGER.info(" Lab SOPs used: {}", lamaPatientData.getSopString());
