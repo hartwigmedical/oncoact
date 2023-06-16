@@ -45,7 +45,7 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
         boolean requireOnLabel = false;
-        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() != null ? report.lamaPatientData().getReportSettings().getFlagGermlineOnReport() : false;
+        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         Map<String, List<ProtectEvidence>> offLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
         document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth()));

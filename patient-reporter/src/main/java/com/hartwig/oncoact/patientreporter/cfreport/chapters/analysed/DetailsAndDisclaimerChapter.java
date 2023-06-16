@@ -159,7 +159,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         String reportingId = patientReport.lamaPatientData().getReportingId();
 
         String interpretId;
-        if (reportingId.substring(0, 4).matches("[a-zA-Z]+")) {
+        if (patientReport.lamaPatientData().getIsStudy()) {
             interpretId = "The study ID is: ";
         } else {
             interpretId = "The patient ID is: ";

@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -68,7 +69,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
         if (failReport.lamaPatientData().getPathologyNumber() != null) {
-            div.add(reportIsForPathologySampleID());
+            String pathologyId = failReport.lamaPatientData().getPathologyNumber();
+            assert pathologyId != null;
+            div.add(createContentParagraph("The pathology tissue ID is: ", pathologyId));
         }
         div.add(reportHospitalPatientID());
 
@@ -107,13 +110,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         return createContentParagraph("The hospital patient ID is ",
                 failReport.lamaPatientData().getPatientId());
 
-    }
-
-    @NotNull
-    private Paragraph reportIsForPathologySampleID() {
-        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
-        assert pathologyId != null;
-        return createContentParagraph("The pathology tissue ID is: ", pathologyId);
     }
 
     @NotNull
@@ -172,13 +168,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         String shallowPurity = "N/A";
         if (failReport.lamaPatientData().getShallowPurity() != null) {
             Integer purity = failReport.lamaPatientData().getShallowPurity();
-            assert purity != null;
             shallowPurity = Integer.toString(purity);
         }
 
         String effectivePurity =
                 failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity;
-        assert effectivePurity != null;
         if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {

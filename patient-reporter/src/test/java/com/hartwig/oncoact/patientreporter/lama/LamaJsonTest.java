@@ -64,5 +64,6 @@ public class LamaJsonTest {
         assertTrue(lamaPatientData.getBiopsySite().getIsPrimaryTumor());
         assertEquals(lamaPatientData.getSopString(), "sopString");
         assertEquals(lamaPatientData.getShallowPurity(), 0, EPSILON);
+        assertEquals(lamaPatientData.getIsStudy(), true);
     }
 }

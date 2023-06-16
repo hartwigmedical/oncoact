@@ -63,7 +63,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
         Div div = createSampleDetailsDiv();
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The sample(s) have been analyzed by Next Generation Sequencing using targeted enrichment."));
-        div.add(generateHMFSampleIDParagraph(report.lamaPatientData().getReportingId()));
+        div.add(generateHMFSampleIDParagraph(report.lamaPatientData().getReportingId(), report.lamaPatientData().getIsStudy()));
 
         String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(report.lamaPatientData().getReferenceArrivalDate(),
                 report.lamaPatientData().getTumorArrivalDate());
@@ -93,8 +93,8 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId) {
-        if (reportingId.substring(0, 4).matches("[a-zA-Z]+")) {
+    private static Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId, boolean isStudy) {
+        if (isStudy) {
             return createContentParagraph("Study id: ", reportingId);
         } else {
             return createContentParagraph("Hospital patient id: ", reportingId);

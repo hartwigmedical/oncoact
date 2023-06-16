@@ -44,5 +44,6 @@
     "isPrimaryTumor": true
   },
   "sopString": "sopString",
-  "shallowPurity": 0
+  "shallowPurity": 0,
+  "isStudy": true
 }

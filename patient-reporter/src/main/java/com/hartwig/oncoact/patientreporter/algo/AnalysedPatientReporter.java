@@ -78,9 +78,9 @@ public class AnalysedPatientReporter {
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
-        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, true);
+        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
 
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, true);
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
