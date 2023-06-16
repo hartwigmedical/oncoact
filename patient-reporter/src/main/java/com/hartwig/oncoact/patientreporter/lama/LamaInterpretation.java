@@ -13,11 +13,11 @@ public class LamaInterpretation {
 
     private static final Logger LOGGER = LogManager.getLogger(LamaInterpretation.class);
 
-    private LamaInterpretation(){
+    private LamaInterpretation() {
     }
 
-    public static String extractEarliestArrivalDate(@Nullable LocalDate refDate, @Nullable LocalDate sampleDate){
-            if (sampleDate == null) {
+    public static String extractEarliestArrivalDate(@Nullable LocalDate refDate, @Nullable LocalDate sampleDate) {
+        if (sampleDate == null) {
             return null;
         } else if (refDate == null || sampleDate.isBefore(refDate)) {
             return Formats.formatDate(sampleDate);
@@ -35,7 +35,7 @@ public class LamaInterpretation {
         String address = lamaPatientData.getHospitalAddress();
 
         String requesterNameReport = Strings.EMPTY;
-        if (studyPI!= null) {
+        if (studyPI != null) {
             requesterNameReport = studyPI;
         } else if (requester != null) {
             requesterNameReport = requester;
@@ -43,31 +43,21 @@ public class LamaInterpretation {
             LOGGER.warn("None requester name of report is known. Solve before reporting!");
         }
 
-        String hospitalString= Strings.EMPTY;
-        String postalCodeString= Strings.EMPTY;
-        String cityString= Strings.EMPTY;
-
-        if (hospital != null) {
-            hospitalString = hospital;
-        } else {
+        if (hospital.equals(Strings.EMPTY)) {
             LOGGER.warn("Unknown hospital name is known");
         }
 
-        if (postalCode != null) {
-            postalCodeString = postalCode;
-        } else {
+        if (postalCode.equals(Strings.EMPTY)) {
             LOGGER.warn("Unknown postal code of hospital known");
         }
 
-        if (city != null) {
-            cityString = city;
-        } else {
+        if (city.equals(Strings.EMPTY)) {
             LOGGER.warn("Unknown city of hospital known");
         }
 
-        String hospitalAddress = hospitalString + ", " + postalCodeString + " " + cityString;
+        String hospitalAddress = hospital + ", " + postalCode + " " + city;
         if (address != null) {
-            hospitalAddress = hospitalString + ", " + address + ", " + postalCodeString +" " + cityString;
+            hospitalAddress = hospital + ", " + address + ", " + postalCode + " " + city;
         }
 
         return requesterNameReport + ", " + hospitalAddress;
