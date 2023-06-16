@@ -78,9 +78,10 @@ public class AnalysedPatientReporter {
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
-        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
 
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
+        boolean flagGermlineOnReport = reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
+        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, flagGermlineOnReport);
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, flagGermlineOnReport);
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
@@ -189,11 +190,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
         TumorType primaryTumorType = lamaPatientData.getPrimaryTumorType();
         if (primaryTumorType != null) {
-            if (primaryTumorType.getType().equals(Strings.EMPTY)) {
-                LOGGER.info(" Primary tumor details: {}", primaryTumorType.getLocation());
-            } else {
-                LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
-            }
+            LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
         }
         LOGGER.info(" Shallow seq purity: {}", lamaPatientData.getShallowPurity());
         LOGGER.info(" Lab SOPs used: {}", lamaPatientData.getSopString());

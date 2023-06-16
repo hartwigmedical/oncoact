@@ -68,9 +68,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(reportIsBasedOnBloodSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
-        if (failReport.lamaPatientData().getPathologyNumber() != null) {
-            String pathologyId = failReport.lamaPatientData().getPathologyNumber();
-            assert pathologyId != null;
+
+        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
+        if (pathologyId != null) {
             div.add(createContentParagraph("The pathology tissue ID is: ", pathologyId));
         }
         div.add(reportHospitalPatientID());
@@ -166,8 +166,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph sampleHasMolecularTumorPercentage() {
         String shallowPurity = "N/A";
-        if (failReport.lamaPatientData().getShallowPurity() != null) {
-            Integer purity = failReport.lamaPatientData().getShallowPurity();
+        Integer purity = failReport.lamaPatientData().getShallowPurity();
+        if (purity != null) {
             shallowPurity = Integer.toString(purity);
         }
 

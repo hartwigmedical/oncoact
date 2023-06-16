@@ -51,7 +51,7 @@ public final class SidePanel {
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
 
 
-        if (lamaPatientData.getReportingId().substring(0, 4).matches("[a-zA-Z]+")) {
+        if (lamaPatientData.getIsStudy()) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
         } else {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
