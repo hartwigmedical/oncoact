@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class QCFailChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "Failed DNA Analysis Report";
+    private static final String TITLE_REPORT = "OncoAct tumor WGS report - Failed";
 
     @NotNull
     private final QCFailReport failReport;
