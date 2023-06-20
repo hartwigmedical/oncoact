@@ -252,7 +252,7 @@ public class SummaryChapter implements ReportChapter {
         }
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
-                .add(new Paragraph("HR Status").addStyle(ReportResources.bodyTextStyle())));
+                .add(new Paragraph("Homologous recombination").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
