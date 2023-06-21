@@ -65,6 +65,12 @@ public class GenomicAnalyzer {
         List<PurpleGainLoss> germlineLosses = orange.purple().reportableSomaticGainsLosses();
         List<PurpleGainLoss> reportableGainsLosses = ReportableCNVFactory.mergeCNVLists(somaticGainsLosses, germlineLosses);
 
+        // Determine chromosome copy number arm
+        RefGenomeCoordinates refGenomeCoordinates =
+                orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
+        List<CnPerChromosomeArmData> copyNumberPerChromosome =
+                CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
+
         // fusions
         List<LinxFusion> geneFusions = orange.linx().reportableSomaticFusions();
 
@@ -97,10 +103,6 @@ public class GenomicAnalyzer {
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
 
-        RefGenomeCoordinates refGenomeCoordinates =
-                orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
-        List<CnPerChromosomeArmData> copyNumberPerChromosome =
-                CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
 
         return ImmutableGenomicAnalysis.builder()
                 .purpleQCStatus(orange.purple().fit().qc().status())
