@@ -76,7 +76,7 @@ public final class SidePanel {
 
         }
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getHospitalName()));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
         BiopsySite biopsySite = lamaPatientData.getBiopsySite();
         String biopsyLocation = Strings.EMPTY;
         String biopsySubLocation = Strings.EMPTY;

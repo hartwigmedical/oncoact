@@ -58,19 +58,19 @@ public final class OutputFileUtil {
     @NotNull
     private static String getFilePrefix(final @NotNull PatientReport report) {
         PatientReporterData lamaPatientData = report.lamaPatientData();
-        return getFilePrefix(lamaPatientData.getTumorSampleBarcode(), lamaPatientData.getReportingId());
+        return getFilePrefix(lamaPatientData.getHospitalName(), lamaPatientData.getReportingId());
     }
 
     @NotNull
     private static String getFilePrefix(final @NotNull PanelReport report) {
         PatientReporterData lamaPatientData = report.lamaPatientData();
-        return getFilePrefix(lamaPatientData.getTumorSampleBarcode(), lamaPatientData.getReportingId());
+        return getFilePrefix(lamaPatientData.getHospitalName(), lamaPatientData.getReportingId());
     }
 
-    private static String getFilePrefix(String tumorSampleBarcode, String reportId) {
+    private static String getFilePrefix(String hospitalName, String reportId) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd");
         LocalDateTime dateTime = LocalDateTime.now();
         String date = dtf.format(dateTime);
-        return date + "_" + tumorSampleBarcode + "_" + reportId;
+        return date + "_" + hospitalName + "_" + reportId;
     }
 }

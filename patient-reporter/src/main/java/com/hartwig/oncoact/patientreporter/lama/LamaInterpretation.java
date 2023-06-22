@@ -29,7 +29,7 @@ public class LamaInterpretation {
     public static String hospitalContactReport(@Nullable PatientReporterData lamaPatientData) {
         String studyPI = lamaPatientData.getStudyPI();
         String requester = lamaPatientData.getRequesterName();
-        String hospital = lamaPatientData.getHospitalName();
+        String hospital = lamaPatientData.getOfficialHospitalName();
         String postalCode = lamaPatientData.getHospitalPostalCode();
         String city = lamaPatientData.getHospitalCity();
         String address = lamaPatientData.getHospitalAddress();
