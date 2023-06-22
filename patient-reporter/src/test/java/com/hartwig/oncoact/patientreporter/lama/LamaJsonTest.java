@@ -27,6 +27,7 @@ public class LamaJsonTest {
     public void canReadLamaJson() throws IOException {
         PatientReporterData lamaPatientData = canReadLamaJsonEmpty();
         assertEquals(lamaPatientData.getHospitalName(), "hospitalName");
+        assertEquals(lamaPatientData.getOfficialHospitalName(), "officialHospitalName");
         assertEquals(lamaPatientData.getHospitalPostalCode(), "hospitalPostalCode");
         assertEquals(lamaPatientData.getStudyPI(), "studyPI");
         assertEquals(lamaPatientData.getHospitalAddress(), "hospitalAddress");
