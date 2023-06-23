@@ -32,6 +32,7 @@ public class LamaInterpretationTest {
         patientReporterData.setStudyPI("studyPI");
         patientReporterData.setRequesterName(null);
         patientReporterData.setHospitalName("test center");
+        patientReporterData.setOfficialHospitalName("test center");
         patientReporterData.setHospitalPostalCode("123");
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress("test 1");
@@ -48,6 +49,7 @@ public class LamaInterpretationTest {
         patientReporterData.setStudyPI(null);
         patientReporterData.setRequesterName("requester");
         patientReporterData.setHospitalName("test center");
+        patientReporterData.setOfficialHospitalName("test center");
         patientReporterData.setHospitalPostalCode("123");
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress(null);
@@ -63,6 +65,7 @@ public class LamaInterpretationTest {
         patientReporterData.setStudyPI(null);
         patientReporterData.setRequesterName(null);
         patientReporterData.setHospitalName("test center");
+        patientReporterData.setOfficialHospitalName("test center");
         patientReporterData.setHospitalPostalCode("123");
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress(null);
