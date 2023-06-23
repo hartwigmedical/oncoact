@@ -43,7 +43,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               @NotNull Boolean germlineReportingLevel) {
+                               boolean germlineReportingLevel) {
         List<GeneDisruption> additionalSuspectBreakends =
                 GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
 
@@ -118,7 +118,8 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel, @NotNull Boolean germlineReportingLevel) {
+                                                                   @NotNull GermlineReportingModel germlineReportingModel,
+                                                                   boolean germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();

@@ -23,7 +23,7 @@ public final class ConsentFilterFunctions {
 
     @NotNull
     public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis,
-            @NotNull Boolean germlineReportingLevel) {
+                                         boolean germlineReportingLevel) {
         List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(genomicAnalysis.reportableVariants(),
                 genomicAnalysis.notifyGermlineStatusPerVariant(),
                 germlineReportingLevel);
@@ -57,8 +57,8 @@ public final class ConsentFilterFunctions {
     @NotNull
     @$VisibleForTesting
     static List<ReportableVariantWithNotify> filterVariants(@NotNull List<ReportableVariant> variants,
-            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
-            @NotNull Boolean germlineReportingLevel) {
+                                                            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
+                                                            boolean germlineReportingLevel) {
         List<ReportableVariantWithNotify> filteredVariants = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
             if (!(variant.source() == ReportableVariantSource.GERMLINE
@@ -82,7 +82,7 @@ public final class ConsentFilterFunctions {
     @NotNull
     @VisibleForTesting
     static List<ProtectEvidence> filterEvidenceForGermlineConsent(@NotNull List<ProtectEvidence> evidences,
-            @NotNull Boolean germlineReportingLevel) {
+                                                                  boolean germlineReportingLevel) {
         List<ProtectEvidence> filtered = Lists.newArrayList();
         for (ProtectEvidence evidence : evidences) {
             if (evidence.germline() && !germlineReportingLevel) {
