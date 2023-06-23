@@ -1,0 +1,10 @@
+{
+  "hospitalName": "hospitalName",
+  "reportingId": "reportingId",
+  "initials": "initials",
+  "gender": "gender",
+  "surname": "surname",
+  "birthdate": "birthdate",
+  "birthSurname": "birthSurname",
+  "postalCode": "postalCode"
+}
