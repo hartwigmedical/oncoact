@@ -20,7 +20,7 @@ public class PanelQCFailChapter implements ReportChapter {
 
     private static final Logger LOGGER = LogManager.getLogger(PanelQCFailChapter.class);
 
-    private static final String TITLE_REPORT = "Oncopanel Result Report Failed";
+    private static final String TITLE_REPORT = "OncoAct tumor NGS report - Result Report Failed";
 
     @NotNull
     private final PanelFailReport report;
@@ -75,7 +75,8 @@ public class PanelQCFailChapter implements ReportChapter {
                 explanationDetail =
                         "Sequencing could not be performed due to insufficient DNA.";
                 break;
-            } default: {
+            }
+            default: {
                 LOGGER.warn("Unexpected fail reason: {}", failReason);
             }
         }

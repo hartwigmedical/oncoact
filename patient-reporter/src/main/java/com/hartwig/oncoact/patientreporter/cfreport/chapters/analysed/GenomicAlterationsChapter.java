@@ -194,16 +194,15 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         for (ReportableVariant variant : SomaticVariants.sort(reportableVariants)) {
             contentTable.addCell(TableUtil.createContentCell(SomaticVariants.geneDisplayString(variant,
-                    notifyGermlineStatusPerVariant.get(variant))));
+                    notifyGermlineStatusPerVariant.get(variant), variant.localPhaseSet(), variant.canonicalEffect())));
             contentTable.addCell(TableUtil.createContentCell(variant.gDNA()));
             contentTable.addCell(TableUtil.createContentCell(variant.canonicalHgvsCodingImpact()));
-            contentTable.addCell(TableUtil.createContentCell(SomaticVariants.proteinAnnotationDisplayString(variant.canonicalHgvsProteinImpact(),
-                    variant.canonicalEffect())));
+            contentTable.addCell(TableUtil.createContentCell(variant.canonicalHgvsProteinImpact()));
             contentTable.addCell(TableUtil.createContentCell(new Paragraph(
                     variant.alleleReadCount() + " / ").setFont(ReportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(ReportResources.fontRegular()))
                     .setTextAlignment(TextAlignment.CENTER)));
-            contentTable.addCell(TableUtil.createContentCell(SomaticVariants.copyNumberString(variant.totalCopyNumber(), hasReliablePurity))
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(SomaticVariants.tVAFString(variant.tVAF(),
                     hasReliablePurity,
@@ -231,6 +230,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(ReportResources.subTextStyle())));
         }
 
+        if (SomaticVariants.hasVariantsInCis(reportableVariants)) {
+            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                    .add(new Paragraph("\n= Marked variants are present in cis").addStyle(ReportResources.subTextStyle())));
+        }
+
         return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
@@ -255,9 +259,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createContentCell(gainLoss.chromosomeBand()));
             contentTable.addCell(TableUtil.createContentCell(gainLoss.gene()));
             contentTable.addCell(TableUtil.createContentCell(GainsAndLosses.interpretation(gainLoss)));
-            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.minCopies()) : Formats.NA_STRING)
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(gainLoss.minCopies(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(hasReliablePurity ? String.valueOf(gainLoss.maxCopies()) : Formats.NA_STRING)
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(gainLoss.maxCopies(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(GainsAndLosses.chromosomeArmCopyNumber(cnPerChromosome, gainLoss))
                     .setTextAlignment(TextAlignment.CENTER));
@@ -310,8 +314,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
         for (InterpretPurpleGeneCopyNumbers LOHgenes : LohGenes.sort(suspectGeneCopyNumbersWithLOH)) {
             table.addCell(TableUtil.createContentCell(LOHgenes.chromosome() + LOHgenes.chromosomeBand()));
             table.addCell(TableUtil.createContentCell(LOHgenes.geneName()));
-            table.addCell(TableUtil.createContentCell(LohGenes.round(LOHgenes.minMinorAlleleCopyNumber())).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(TableUtil.createContentCell(LohGenes.round(LOHgenes.minCopyNumber())).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minMinorAlleleCopyNumber())).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minCopyNumber())).setTextAlignment(TextAlignment.CENTER));
         }
 
         return TableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
@@ -341,7 +345,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(GeneFusions.fusionContentType(fusion.reportedType(), fusion.geneEnd(), fusion.geneTranscriptEnd()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextStart()));
             contentTable.addCell(TableUtil.createContentCell(fusion.geneContextEnd()));
-            contentTable.addCell(TableUtil.createContentCell(GeneUtil.copyNumberToString(fusion.junctionCopyNumber(), hasReliablePurity))
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(fusion.junctionCopyNumber(), hasReliablePurity))
                     .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.phased(fusion)).setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(TableUtil.createContentCell(GeneFusions.likelihood(fusion)).setTextAlignment(TextAlignment.CENTER));
@@ -373,9 +377,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createContentCell(disruption.type())).setTextAlignment(TextAlignment.CENTER);
             contentTable.addCell(TableUtil.createContentCell(String.valueOf(disruption.clusterId()))
                     .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(GeneUtil.copyNumberToString(disruption.junctionCopyNumber(),
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(disruption.junctionCopyNumber(),
                     hasReliablePurity)).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(TableUtil.createContentCell(GeneUtil.copyNumberToString(disruption.undisruptedCopyNumber(),
+            contentTable.addCell(TableUtil.createContentCell(GeneUtil.roundCopyNumber(disruption.undisruptedCopyNumber(),
                     hasReliablePurity)).setTextAlignment(TextAlignment.CENTER));
         }
         return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
@@ -412,9 +416,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
                 for (HlaReporting hlaAlleleReporting : HLAAllele.sort(allele)) {
                     tableGermlineAllele.addCell(TableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
-                    tableGermlineCopies.addCell(TableUtil.createTransparentCell(HLAAllele.copyNumberStringGermline(hlaAlleleReporting.germlineCopies(),
+                    tableGermlineCopies.addCell(TableUtil.createTransparentCell(GeneUtil.roundCopyNumber(hlaAlleleReporting.germlineCopies(),
                             hasReliablePurity)));
-                    tableTumorCopies.addCell(TableUtil.createTransparentCell(HLAAllele.copyNumberStringTumor(hlaAlleleReporting.tumorCopies(),
+                    tableTumorCopies.addCell(TableUtil.createTransparentCell(GeneUtil.roundCopyNumber(hlaAlleleReporting.tumorCopies(),
                             hasReliablePurity)));
                     tableSomaticMutations.addCell(TableUtil.createTransparentCell(hlaAlleleReporting.somaticMutations()));
                     tablePresenceInTumor.addCell(TableUtil.createTransparentCell(hlaAlleleReporting.interpretation()));
@@ -450,7 +454,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             for (AnnotatedVirus virus : viruses) {
-                contentTable.addCell(TableUtil.createContentCell(virus.name()));
+                contentTable.addCell(TableUtil.createContentCell(ViralPresence.interpretVirusName(virus.name(), virus.interpretation(), virus.virusDriverLikelihoodType())));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.integrations(virus)).setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(TableUtil.createContentCell(ViralPresence.percentageCovered(virus))
                         .setTextAlignment(TextAlignment.CENTER));

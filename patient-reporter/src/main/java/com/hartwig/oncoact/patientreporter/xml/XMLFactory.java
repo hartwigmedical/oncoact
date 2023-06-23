@@ -230,7 +230,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]copie")
-                    .valuePath(Map.of("value", SomaticVariants.copyNumberString(reportableVariant.totalCopyNumber(), hasReliablePurity)))
+                    .valuePath(Map.of("value", GeneUtil.roundCopyNumber(reportableVariant.totalCopyNumber(), hasReliablePurity)))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]tvaf")

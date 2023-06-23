@@ -59,12 +59,16 @@ public class SummaryChapter implements ReportChapter {
     @Override
     public String pdfTitle() {
         if (patientReport.isCorrectedReport()) {
-            return "DNA Analysis Report (Corrected)";
+            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+                return "OncoAct tumor WGS report - Low Sensitivity (Corrected)";
+            } else {
+                return "OncoAct tumor WGS report (Corrected)";
+            }
         } else {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "DNA Analysis Report - Low Sensitivity";
+                return "OncoAct tumor WGS report - Low Sensitivity";
             } else {
-                return "DNA Analysis Report";
+                return "OncoAct tumor WGS report";
             }
         }
     }
@@ -92,7 +96,7 @@ public class SummaryChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) {
 
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),  contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(ReportResources.subTextStyle()));
 
@@ -248,7 +252,7 @@ public class SummaryChapter implements ReportChapter {
         }
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
-                .add(new Paragraph("HR Status").addStyle(ReportResources.bodyTextStyle())));
+                .add(new Paragraph("Homologous recombination").addStyle(ReportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
