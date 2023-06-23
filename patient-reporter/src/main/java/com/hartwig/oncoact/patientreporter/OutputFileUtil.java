@@ -20,15 +20,15 @@ public final class OutputFileUtil {
         String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + failPrefix + "_oncopanel_result_report" + fileSuffix;
+        return filePrefix + failPrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
-        String filePrefix = getFilePrefix(report) + "_oncopanel";
+        String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + failPrefix + "_oncopanel_result_report" + fileSuffix;
+        return filePrefix + failPrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
     }
 
     @NotNull
@@ -36,7 +36,7 @@ public final class OutputFileUtil {
         String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + failPrefix + "_dna_analysis_report" + fileSuffix;
+        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
@@ -44,15 +44,15 @@ public final class OutputFileUtil {
         String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + failPrefix + "_dna_analysis_report" + fileSuffix;
+        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForXML(@NotNull PatientReport report) {
-        String filePrefix = getFilePrefix(report) + "_oncoact";
+        String filePrefix = getFilePrefix(report);
         String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.xml" : ".xml";
-        return filePrefix + failPrefix + "_dna_analysis_report" + fileSuffix;
+        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
