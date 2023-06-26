@@ -184,6 +184,7 @@ public class CFReportWriterTest {
 
         PanelReport patientReport = ImmutablePanelReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
+                .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
                 .VCFFilename("test.vcf")
                 .isCorrectedReport(false)
@@ -207,6 +208,7 @@ public class CFReportWriterTest {
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
+                .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
                 .isCorrectedReport(false)

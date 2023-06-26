@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedReportData;
@@ -75,6 +76,7 @@ public final class PatientReporterTestFactory {
         try {
             return ImmutableQCFailReportData.builder()
                     .lamaPatientData(LamaJson.read(LAMA_JSON))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
@@ -91,6 +93,7 @@ public final class PatientReporterTestFactory {
         try {
             return ImmutableQCFailReportData.builder()
                     .lamaPatientData(LamaJson.read(LAMA_JSON))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)
