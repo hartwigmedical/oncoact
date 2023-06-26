@@ -17,7 +17,7 @@ public interface PatientReport {
     @NotNull
     PatientReporterData lamaPatientData();
 
-    @NotNull
+    @Nullable
     PatientInformationResponse diagnosticSiloPatientData();
 
     @NotNull

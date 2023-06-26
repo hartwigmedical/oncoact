@@ -37,6 +37,7 @@ public interface PanelReporterConfig {
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
     String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
+    String IS_DIAGNOSTIC = "is_diagnostic";
 
     // Some additional optional params and flags
     String COMMENTS = "comments";
@@ -67,7 +68,9 @@ public interface PanelReporterConfig {
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
-        options.addOption(DIAGNOSTIC_SILO_JSON, true, "The path towards the diagnostic silo json of the patient information");
+
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
+        options.addOption(DIAGNOSTIC_SILO_JSON, false, "If provided, the path towards the diagnostic silo json of the patient information");
 
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
@@ -104,7 +107,7 @@ public interface PanelReporterConfig {
     @NotNull
     String lamaJson();
 
-    @NotNull
+    @Nullable
     String diagnosticSiloJson();
 
     @Nullable
