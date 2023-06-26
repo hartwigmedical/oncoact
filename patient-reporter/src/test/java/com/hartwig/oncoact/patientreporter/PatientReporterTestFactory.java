@@ -22,7 +22,7 @@ public final class PatientReporterTestFactory {
     private static final String RUN_DIRECTORY = Resources.getResource("test_run").getPath();
     private static final String PIPELINE_VERSION_FILE = RUN_DIRECTORY + "/pipeline.version";
     private static final String ORANGE_JSON = RUN_DIRECTORY + "/orange/sample.orange.json";
-    private static final String LAMA_JSON = RUN_DIRECTORY + "/lama/sample.lama.json";
+    private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();
     private static final String DIAGNOSTIC_SILO_JSON = Resources.getResource("silo/sample.silo.json").getPath();
 
     private static final String CUPPA_PLOT = RUN_DIRECTORY + "/cuppa/sample.cuppa.chart.png";

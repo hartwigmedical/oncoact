@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LamaJsonTest {
-    private static final String RUN_DIRECTORY = Resources.getResource("test_run").getPath();
-    private static final String LAMA_JSON = RUN_DIRECTORY + "/lama/sample.lama.json";
+    private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();
+
     private static final double EPSILON = 1.0E-2;
 
     @NotNull
