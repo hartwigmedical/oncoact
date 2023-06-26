@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class QCFailReport implements PatientReport {
 
     @Override
@@ -29,6 +29,9 @@ public abstract class QCFailReport implements PatientReport {
 
     @NotNull
     public abstract QCFailReason reason();
+
+    @NotNull
+    public abstract String failExplanation();
 
     @Nullable
     public abstract String wgsPurityString();

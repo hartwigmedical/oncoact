@@ -41,6 +41,10 @@ public class QCFailReporter {
     @NotNull
     public QCFailReport run(@NotNull PatientReporterConfig config) throws IOException {
         QCFailReason reason = config.qcFailReason();
+
+        String failDb = config.failDb();
+        assert failDb != null;
+        List<FailedDatabase> failedDatabase = FailedDBFile.buildFromTsv(failDb);
         assert reason != null;
 
         if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
@@ -89,6 +93,7 @@ public class QCFailReporter {
         return ImmutableQCFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
+                .failExplanation("failExplanation")
                 .wgsPurityString(wgsPurityString)
                 .comments(Optional.ofNullable(config.comments()))
                 .isCorrectedReport(config.isCorrectedReport())
