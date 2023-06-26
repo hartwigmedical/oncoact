@@ -16,7 +16,7 @@ public class DiagnosticSiloJsonTest {
 
     @NotNull
     public static PatientInformationResponse canReadDiagnosticSiloJsonEmpty() throws IOException {
-        return DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON, false);
+        return DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON);
     }
 
     @Test

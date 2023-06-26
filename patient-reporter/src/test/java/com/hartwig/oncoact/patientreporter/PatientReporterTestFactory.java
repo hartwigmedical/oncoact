@@ -75,10 +75,9 @@ public final class PatientReporterTestFactory {
     @NotNull
     public static ReportData loadTestReportData() {
         try {
-            PatientReporterData lamaPatientData = LamaJson.read(LAMA_JSON);
             return ImmutableQCFailReportData.builder()
-                    .lamaPatientData(lamaPatientData)
-                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON, lamaPatientData.getIsStudy()))
+                    .lamaPatientData(LamaJson.read(LAMA_JSON))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
@@ -93,10 +92,9 @@ public final class PatientReporterTestFactory {
     public static ReportData loadTestReportDataPanel() {
 
         try {
-            PatientReporterData lamaPatientData = LamaJson.read(LAMA_JSON);
             return ImmutableQCFailReportData.builder()
                     .lamaPatientData(LamaJson.read(LAMA_JSON))
-                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON, lamaPatientData.getIsStudy()))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)

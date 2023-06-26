@@ -126,7 +126,7 @@ public class PanelReporterApplication {
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
-        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.lamaJson(), lamaPatientData.getIsStudy());
+        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
 
         return ImmutableQCFailPanelReportData.builder()
                 .lamaPatientData(lamaPatientData)

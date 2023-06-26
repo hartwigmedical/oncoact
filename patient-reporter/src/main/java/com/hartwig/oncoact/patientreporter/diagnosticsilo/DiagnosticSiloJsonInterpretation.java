@@ -5,6 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class DiagnosticSiloJsonInterpretation {
     private static final Logger LOGGER = LogManager.getLogger(DiagnosticSiloJsonInterpretation.class);
@@ -15,26 +18,31 @@ public class DiagnosticSiloJsonInterpretation {
 
     @NotNull
     public static String determineName(@NotNull PatientInformationResponse patientInformationData) {
-        String gender = patientInformationData.getGender() != null ? patientInformationData.getGender() : Strings.EMPTY;
-        String initials = patientInformationData.getInitials() != null ? patientInformationData.getInitials() + " " : Strings.EMPTY;
-        if (initials.equals(Strings.EMPTY)) {
-            LOGGER.warn("None initials of the patient is known");
+        String initials = nullToEmpty(patientInformationData.getInitials());
+        if (initials.isEmpty()) {
+            LOGGER.warn("Initials of the patient are unknown");
         }
 
-        String surname = patientInformationData.getSurname() != null ? patientInformationData.getSurname() + " " : Strings.EMPTY;
-        String birthSurname = patientInformationData.getBirthSurname() != null ? patientInformationData.getBirthSurname() + " " : Strings.EMPTY;
-
-        String interpretSurname = !birthSurname.equals(Strings.EMPTY) ? birthSurname : surname;
-        if (interpretSurname.equals(Strings.EMPTY)) {
-            LOGGER.warn("None surname of the patient is known");
+        String surname = determineSurname(
+                nullToEmpty(patientInformationData.getBirthSurname()), nullToEmpty(patientInformationData.getSurname()));
+        if (surname.isEmpty()) {
+            LOGGER.warn("Surname of the patient is unknown");
         }
 
-        String name;
-        if (!gender.isEmpty()) {
-            name = initials + interpretSurname + "(" + gender + ")";
+        if (patientInformationData.getGender() != null) {
+            return String.format("%s%s(%s)", initials, surname, patientInformationData.getGender());
         } else {
-            name = initials + interpretSurname;
+            return String.format("%s%s", initials, surname);
         }
-        return name;
+    }
+
+    @NotNull
+    private static String nullToEmpty(@Nullable String str) {
+        return str != null ? str + " " : Strings.EMPTY;
+    }
+
+    @NotNull
+    private static String determineSurname(@NotNull String birthSurname, @NotNull String surname) {
+        return !birthSurname.equals(Strings.EMPTY) ? birthSurname : surname;
     }
 }

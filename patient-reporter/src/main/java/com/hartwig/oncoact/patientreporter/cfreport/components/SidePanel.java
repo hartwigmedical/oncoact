@@ -16,6 +16,7 @@ import com.itextpdf.layout.element.Paragraph;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class SidePanel {
 
@@ -44,7 +45,7 @@ public final class SidePanel {
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @NotNull PatientInformationResponse patientInformationData, @NotNull String reportDate,
+    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
                                        boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
@@ -67,7 +68,7 @@ public final class SidePanel {
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
 
-        if (!lamaPatientData.getIsStudy()) {
+        if (patientInformationData != null) {
             String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
             if (!name.equals(Strings.EMPTY)) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));

@@ -8,17 +8,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class DiagnosticSiloJson {
+public final class DiagnosticSiloJson {
 
     private DiagnosticSiloJson() {
     }
 
     @Nullable
-    public static PatientInformationResponse read(@Nullable String diagnosticJsonPathName, boolean isStudy) throws IOException {
-        if (isStudy) {
+    public static PatientInformationResponse read(@Nullable String diagnosticJsonPathName) throws IOException {
+        if (diagnosticJsonPathName == null) {
             return null;
         } else {
-            assert diagnosticJsonPathName != null;
             BufferedReader diagnosticFileReader = new BufferedReader(new FileReader(diagnosticJsonPathName));
             return SiloClient.getJsonMapper().readValue(diagnosticFileReader, PatientInformationResponse.class);
         }
