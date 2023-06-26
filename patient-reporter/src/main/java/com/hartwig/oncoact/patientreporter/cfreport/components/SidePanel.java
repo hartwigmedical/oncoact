@@ -5,6 +5,7 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
@@ -65,12 +66,16 @@ public final class SidePanel {
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        String surname = patientInformationData.getSurname() != null ? patientInformationData.getSurname() : patientInformationData.getBirthSurname();
-        String name = patientInformationData.getInitials() + surname + " (" + patientInformationData.getGender() + ")";
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
 
-        if (patientInformationData.getBirthdate() != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+        if (!lamaPatientData.getIsStudy()) {
+            String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
+            if (!name.equals(Strings.EMPTY)) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
+            }
+
+            if (patientInformationData.getBirthdate() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+            }
         }
 
         if (lamaPatientData.getRequesterName() != null) {
