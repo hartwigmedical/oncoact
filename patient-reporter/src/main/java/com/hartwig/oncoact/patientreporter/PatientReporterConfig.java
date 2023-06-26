@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface PatientReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PatientReporterConfig.class);
@@ -41,6 +41,7 @@ public interface PatientReporterConfig {
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
     String LAMA_JSON = "lama_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
     String CUPPA_PLOT = "cuppa_plot";
     String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
@@ -82,6 +83,7 @@ public interface PatientReporterConfig {
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "The path towards the diagnostic silo json of the patient information");
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
         options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
@@ -135,6 +137,9 @@ public interface PatientReporterConfig {
 
     @NotNull
     String lamaJson();
+
+    @NotNull
+    String diagnosticSiloJson();
 
     @NotNull
     String cuppaPlot();
@@ -238,6 +243,7 @@ public interface PatientReporterConfig {
                 .qcFailReason(qcFailReason)
                 .orangeJson(orangeJson)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
+                .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
                 .cuppaPlot(cuppaPlot)
                 .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
