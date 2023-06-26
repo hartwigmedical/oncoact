@@ -5,6 +5,7 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -28,6 +29,7 @@ public final class SidePanel {
     public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
                 fullHeight);
     }
@@ -35,12 +37,13 @@ public final class SidePanel {
     public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
                 fullHeight);
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @NotNull String reportDate,
+    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @NotNull PatientInformationResponse patientInformationData, @NotNull String reportDate,
                                        boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
@@ -55,7 +58,6 @@ public final class SidePanel {
             cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
         } else {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
-
         }
 
         if (lamaPatientData.getPathologyNumber() != null) {
@@ -63,9 +65,13 @@ public final class SidePanel {
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name", "Name"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", "Birth date"));
+        String surname = patientInformationData.getSurname() != null ? patientInformationData.getSurname() : patientInformationData.getBirthSurname();
+        String name = patientInformationData.getInitials() + surname + " (" + patientInformationData.getGender() + ")";
+        cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
 
+        if (patientInformationData.getBirthdate() != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+        }
 
         if (lamaPatientData.getRequesterName() != null) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
@@ -88,9 +94,6 @@ public final class SidePanel {
             biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
             isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
         }
-
-        assert biopsyLocation != null;
-        assert biopsySubLocation != null;
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
