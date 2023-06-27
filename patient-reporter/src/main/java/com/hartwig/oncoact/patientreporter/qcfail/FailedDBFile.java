@@ -28,12 +28,12 @@ public class FailedDBFile {
         for (String line : failedDbLines.subList(1, failedDbLines.size())) {
             String[] values = line.split(SEPARATOR);
 
-            String reasonKey = values[fields.get("reason_key")];
+            String reasonKey = values[fields.get("key")];
             failedDatabases.put(reasonKey, ImmutableFailedDatabase.builder()
                     .reasonKey(reasonKey)
-                    .reportReason(values[fields.get("report_explanation")])
-                    .reportExplanation(values[fields.get("report_explanation")])
-                    .reportExplanationDetail(values[fields.get("report_explanation")])
+                    .reportReason(values[fields.get("reason")])
+                    .reportExplanation(values[fields.get("explanation")])
+                    .reportExplanationDetail(values[fields.get("explanationDetail")])
                     .build());
         }
         return failedDatabases;

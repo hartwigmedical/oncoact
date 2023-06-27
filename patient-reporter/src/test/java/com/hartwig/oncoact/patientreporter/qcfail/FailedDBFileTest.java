@@ -16,5 +16,10 @@ public class FailedDBFileTest {
     public void canReadFailedDatabaseTsv() throws IOException {
         Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(FAIL_DATABASE_TSV);
         assertEquals(1, failedDatabaseMap.size());
+
+        FailedDatabase failedDatabase = failedDatabaseMap.get("insufficient_dna");
+        assertEquals("Insufficient quality of received biomaterial(s)", failedDatabase.reportReason());
+        assertEquals("The received biomaterial(s) did not meet the requirements that are needed for high quality Whole Genome Sequencing.", failedDatabase.reportExplanation());
+        assertEquals("Sequencing could not be performed due to insufficient DNA.", failedDatabase.reportExplanationDetail());
     }
 }
