@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
 
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
@@ -11,10 +12,7 @@ import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportDataLoader;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
-import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReportData;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
+import com.hartwig.oncoact.patientreporter.qcfail.*;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
@@ -123,8 +121,10 @@ public class PatientReporterApplication {
     private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
+        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(config.failDb());
 
         return ImmutableQCFailReportData.builder()
+                .failedDatabaseMap(failedDatabaseMap)
                 .lamaPatientData(lamaPatientData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())

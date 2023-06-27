@@ -31,7 +31,13 @@ public abstract class QCFailReport implements PatientReport {
     public abstract QCFailReason reason();
 
     @NotNull
-    public abstract String failExplanation();
+    public abstract String reportReason();
+
+    @NotNull
+    public abstract String reportExplanation();
+
+    @NotNull
+    public abstract String reportExplanationDetail();
 
     @Nullable
     public abstract String wgsPurityString();

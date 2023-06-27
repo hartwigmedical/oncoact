@@ -12,6 +12,12 @@ public abstract class FailedDatabase {
     public abstract String reasonKey();
 
     @NotNull
-    public abstract String explanation();
+    public abstract String reportReason();
+
+    @NotNull
+    public abstract String reportExplanation();
+
+    @NotNull
+    public abstract String reportExplanationDetail();
 
 }
