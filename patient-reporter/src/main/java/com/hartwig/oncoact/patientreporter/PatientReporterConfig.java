@@ -98,7 +98,7 @@ public interface PatientReporterConfig {
         options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
 
         options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
-        options.addOption(DIAGNOSTIC_SILO_JSON, false, "If provided, the path towards the diagnostic silo json of the patient information");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
