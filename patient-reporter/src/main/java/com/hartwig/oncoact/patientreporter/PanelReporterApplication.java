@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Map;
 
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
@@ -12,6 +13,8 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
+import com.hartwig.oncoact.patientreporter.qcfail.FailedDBFile;
+import com.hartwig.oncoact.patientreporter.qcfail.FailedDatabase;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
@@ -116,7 +119,7 @@ public class PanelReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-            @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
+                                                                     @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(panelReport);
     }
 
@@ -124,9 +127,11 @@ public class PanelReporterApplication {
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
+        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(config.failDb());
 
         return ImmutableQCFailPanelReportData.builder()
                 .lamaPatientData(lamaPatientData)
+                .failedDatabaseMap(failedDatabaseMap)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
                 .build();

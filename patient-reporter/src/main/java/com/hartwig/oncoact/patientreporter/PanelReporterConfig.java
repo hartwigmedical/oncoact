@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface PanelReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PanelReporterConfig.class);
@@ -34,6 +34,7 @@ public interface PanelReporterConfig {
     // Params specific for Panel reports
     String PANEL_QC_FAIL = "panel_qc_fail";
     String PANEL_QC_FAIL_REASON = "panel_qc_fail_reason";
+    String FAIL_DB = "fail_db";
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
 
@@ -64,6 +65,8 @@ public interface PanelReporterConfig {
         options.addOption(PANEL_QC_FAIL_REASON,
                 true,
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
+        options.addOption(FAIL_DB, true, "Path towards the reasons of the failures.");
+
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
 
@@ -95,6 +98,9 @@ public interface PanelReporterConfig {
     String signature();
 
     boolean panelQcFail();
+
+    @Nullable
+    String failDb();
 
     @NotNull
     String panelVCFname();
@@ -138,9 +144,11 @@ public interface PanelReporterConfig {
 
         boolean isPanelQCFail = cmd.hasOption(PANEL_QC_FAIL);
         PanelFailReason panelQcFailReason = null;
+        String failDb = null;
 
         if (isPanelQCFail) {
             String qcFailReasonString = nonOptionalValue(cmd, PANEL_QC_FAIL_REASON);
+            failDb = nonOptionalFile(cmd, FAIL_DB);
             panelQcFailReason = PanelFailReason.fromIdentifier(qcFailReasonString);
             if (panelQcFailReason == null) {
                 throw new ParseException("Did not recognize QC Fail reason: " + qcFailReasonString);
@@ -160,6 +168,7 @@ public interface PanelReporterConfig {
                 .signature(nonOptionalFile(cmd, SIGNATURE))
                 .panelQcFail(isPanelQCFail)
                 .panelQcFailReason(panelQcFailReason)
+                .failDb(failDb)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .comments(cmd.getOptionValue(COMMENTS))
