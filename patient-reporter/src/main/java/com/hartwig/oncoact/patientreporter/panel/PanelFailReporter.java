@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
-import com.hartwig.oncoact.patientreporter.qcfail.FailedDBFile;
-import com.hartwig.oncoact.patientreporter.qcfail.FailedDatabase;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDatabase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,6 +1,8 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
 import com.google.common.io.Resources;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDatabase;
 import org.junit.Test;
 
 import java.io.IOException;

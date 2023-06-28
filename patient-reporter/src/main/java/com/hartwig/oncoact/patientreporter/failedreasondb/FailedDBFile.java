@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.qcfail;
+package com.hartwig.oncoact.patientreporter.failedreasondb;
 
 import com.google.common.collect.Maps;
 import com.hartwig.serve.datamodel.serialization.util.SerializationUtil;

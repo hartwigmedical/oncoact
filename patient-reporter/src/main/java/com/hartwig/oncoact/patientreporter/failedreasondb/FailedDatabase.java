@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.qcfail;
+package com.hartwig.oncoact.patientreporter.failedreasondb;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
