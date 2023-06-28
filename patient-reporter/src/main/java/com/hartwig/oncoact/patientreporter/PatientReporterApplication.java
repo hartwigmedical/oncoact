@@ -121,10 +121,8 @@ public class PatientReporterApplication {
     private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(config.failDb());
 
         return ImmutableQCFailReportData.builder()
-                .failedDatabaseMap(failedDatabaseMap)
                 .lamaPatientData(lamaPatientData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())

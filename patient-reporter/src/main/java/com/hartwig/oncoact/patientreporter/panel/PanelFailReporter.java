@@ -1,7 +1,10 @@
 package com.hartwig.oncoact.patientreporter.panel;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
+import com.hartwig.oncoact.patientreporter.qcfail.FailedDBFile;
 import com.hartwig.oncoact.patientreporter.qcfail.FailedDatabase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +23,11 @@ public class PanelFailReporter {
 
     @NotNull
     public PanelFailReport run(@Nullable String comments, boolean correctedReport,
-                               boolean correctedReportExtern, @Nullable PanelFailReason reason) {
+                               boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String failDbTsv) throws IOException {
 
-        FailedDatabase failedDatabase = reportData.failedDatabaseMap().get(reason.identifier());
+        assert failDbTsv != null;
+        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failDbTsv);
+        FailedDatabase failedDatabase = failedDatabaseMap.get(reason.identifier());
 
         String reportReason = failedDatabase.reportReason();
         String reportExplanation = failedDatabase.reportExplanation();

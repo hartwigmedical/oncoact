@@ -11,7 +11,4 @@ import java.util.Map;
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class QCFailReportData implements ReportData {
-
-    @NotNull
-    public abstract Map<String, FailedDatabase> failedDatabaseMap();
 }

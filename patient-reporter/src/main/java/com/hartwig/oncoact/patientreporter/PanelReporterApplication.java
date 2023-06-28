@@ -103,7 +103,7 @@ public class PanelReporterApplication {
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
-                config.panelQcFailReason());
+                config.panelQcFailReason(), config.failDb());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
@@ -127,11 +127,9 @@ public class PanelReporterApplication {
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(config.failDb());
 
         return ImmutableQCFailPanelReportData.builder()
                 .lamaPatientData(lamaPatientData)
-                .failedDatabaseMap(failedDatabaseMap)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
                 .build();

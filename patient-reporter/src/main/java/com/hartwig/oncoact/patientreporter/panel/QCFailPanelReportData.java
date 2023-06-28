@@ -13,7 +13,4 @@ import java.util.Map;
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class QCFailPanelReportData implements PanelData {
 
-    @NotNull
-    public abstract Map<String, FailedDatabase> failedDatabaseMap();
-
 }
