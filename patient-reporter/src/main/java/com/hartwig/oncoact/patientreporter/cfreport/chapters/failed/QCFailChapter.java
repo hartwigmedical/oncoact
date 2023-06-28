@@ -55,7 +55,8 @@ public class QCFailChapter implements ReportChapter {
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
-        reportDocument.add(createFailReasonDiv(failReport.reportReason(), failReport.reportExplanation(), failReport.reportExplanationDetail()));
+        reportDocument.add(createFailReasonDiv(failReport.failExplanationReporting().reportReason(),
+                failReport.failExplanationReporting().reportExplanation(), failReport.failExplanationReporting().reportExplanationDetail()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 

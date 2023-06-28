@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDatabase;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailExplanationReporting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,9 +31,11 @@ public class PanelFailReporter {
         Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
         FailedDatabase failedDatabase = failedDatabaseMap.get(reason.identifier());
 
-        String reportReason = failedDatabase.reportReason();
-        String reportExplanation = failedDatabase.reportExplanation();
-        String reportExplanationDetail = failedDatabase.reportExplanationDetail();
+        FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
+                .reportReason(failedDatabase.reportReason())
+                .reportExplanation(failedDatabase.reportExplanation())
+                .reportExplanationDetail(failedDatabase.reportExplanationDetail())
+                .build();
 
         return ImmutablePanelFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
@@ -43,9 +47,7 @@ public class PanelFailReporter {
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .panelFailReason(reason)
-                .reportReason(reportReason)
-                .reportExplanation(reportExplanation)
-                .reportExplanationDetail(reportExplanationDetail)
+                .failExplanationReporting(failExplanationReporting)
                 .build();
     }
 }

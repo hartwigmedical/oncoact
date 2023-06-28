@@ -11,6 +11,7 @@ import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,13 +32,7 @@ public abstract class QCFailReport implements PatientReport {
     public abstract QCFailReason reason();
 
     @NotNull
-    public abstract String reportReason();
-
-    @NotNull
-    public abstract String reportExplanation();
-
-    @NotNull
-    public abstract String reportExplanationDetail();
+    public abstract FailExplanationReporting failExplanationReporting();
 
     @Nullable
     public abstract String wgsPurityString();
