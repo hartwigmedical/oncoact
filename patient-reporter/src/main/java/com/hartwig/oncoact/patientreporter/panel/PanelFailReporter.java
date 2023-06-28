@@ -23,10 +23,10 @@ public class PanelFailReporter {
 
     @NotNull
     public PanelFailReport run(@Nullable String comments, boolean correctedReport,
-                               boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String failDbTsv) throws IOException {
+                               boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String failReasonsDatabaseTsv) throws IOException {
 
-        assert failDbTsv != null;
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failDbTsv);
+        assert failReasonsDatabaseTsv != null;
+        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
         FailedDatabase failedDatabase = failedDatabaseMap.get(reason.identifier());
 
         String reportReason = failedDatabase.reportReason();

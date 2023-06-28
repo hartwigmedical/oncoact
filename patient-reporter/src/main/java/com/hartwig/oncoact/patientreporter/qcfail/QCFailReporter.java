@@ -45,9 +45,9 @@ public class QCFailReporter {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 
-        String failDbTsv = config.failDb();
-        assert failDbTsv != null;
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failDbTsv);
+        String failReasonsDatabaseTsv = config.failReasonsDatabaseTsv();
+        assert failReasonsDatabaseTsv != null;
+        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
         FailedDatabase failedDatabase = failedDatabaseMap.get(config.qcFailReason().identifier());
 
         String reportReason = failedDatabase.reportReason();

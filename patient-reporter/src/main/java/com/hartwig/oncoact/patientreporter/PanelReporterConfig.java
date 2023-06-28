@@ -34,7 +34,7 @@ public interface PanelReporterConfig {
     // Params specific for Panel reports
     String PANEL_QC_FAIL = "panel_qc_fail";
     String PANEL_QC_FAIL_REASON = "panel_qc_fail_reason";
-    String FAIL_DB = "fail_db";
+    String FAIL_DB_TSV = "fail_db_tsv";
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
 
@@ -65,7 +65,7 @@ public interface PanelReporterConfig {
         options.addOption(PANEL_QC_FAIL_REASON,
                 true,
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
-        options.addOption(FAIL_DB, true, "Path towards the reasons of the failures.");
+        options.addOption(FAIL_DB_TSV, true, "Path towards the reasons of the failures TSV file.");
 
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
@@ -100,7 +100,7 @@ public interface PanelReporterConfig {
     boolean panelQcFail();
 
     @Nullable
-    String failDb();
+    String failReasonsDatabaseTsv();
 
     @NotNull
     String panelVCFname();
@@ -144,11 +144,11 @@ public interface PanelReporterConfig {
 
         boolean isPanelQCFail = cmd.hasOption(PANEL_QC_FAIL);
         PanelFailReason panelQcFailReason = null;
-        String failDb = null;
+        String failReasonsDatabaseTsv = null;
 
         if (isPanelQCFail) {
             String qcFailReasonString = nonOptionalValue(cmd, PANEL_QC_FAIL_REASON);
-            failDb = nonOptionalFile(cmd, FAIL_DB);
+            failReasonsDatabaseTsv = nonOptionalFile(cmd, FAIL_DB_TSV);
             panelQcFailReason = PanelFailReason.fromIdentifier(qcFailReasonString);
             if (panelQcFailReason == null) {
                 throw new ParseException("Did not recognize QC Fail reason: " + qcFailReasonString);
@@ -168,7 +168,7 @@ public interface PanelReporterConfig {
                 .signature(nonOptionalFile(cmd, SIGNATURE))
                 .panelQcFail(isPanelQCFail)
                 .panelQcFailReason(panelQcFailReason)
-                .failDb(failDb)
+                .failReasonsDatabaseTsv(failReasonsDatabaseTsv)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .comments(cmd.getOptionValue(COMMENTS))
