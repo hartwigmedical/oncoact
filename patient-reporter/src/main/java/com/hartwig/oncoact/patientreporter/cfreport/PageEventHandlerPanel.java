@@ -19,24 +19,21 @@ class PageEventHandlerPanel implements IEventHandler {
     @NotNull
     private final PanelReport patientReport;
 
-    @NotNull
     private final Footer footer;
-    @NotNull
     private final Header header;
-
+    private final SidePanel sidePanel;
     private boolean fullSidebar;
-
     private String chapterTitle = "Undefined";
     private String pdfTitle = "Undefined";
     private boolean firstPageOfChapter = true;
 
     private PdfOutline outline = null;
 
-    PageEventHandlerPanel(@NotNull final PanelReport patientReport) {
+    PageEventHandlerPanel(@NotNull final PanelReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
-
-        this.header = new Header(patientReport.logoCompanyPath());
-        this.footer = new Footer();
+        this.header = new Header(patientReport.logoCompanyPath(), reportResources);
+        this.footer = new Footer(reportResources);
+        this.sidePanel = new SidePanel(reportResources);
     }
 
     @Override
@@ -51,8 +48,7 @@ class PageEventHandlerPanel implements IEventHandler {
 
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
-
-            SidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar);
+            sidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar);
             footer.renderFooter(page, patientReport.qsFormNumber(), !fullSidebar);
         }
     }

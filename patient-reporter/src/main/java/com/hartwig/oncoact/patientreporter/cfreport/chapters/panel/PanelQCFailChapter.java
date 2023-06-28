@@ -24,9 +24,14 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @NotNull
     private final PanelFailReport report;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public PanelQCFailChapter(@NotNull PanelFailReport report) {
+    public PanelQCFailChapter(@NotNull PanelFailReport report, @NotNull ReportResources reportResources) {
         this.report = report;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -53,16 +58,16 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
         reportDocument.add(createFailReasonDiv(report.panelFailReason()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull PanelFailReason failReason) {
+    private Div createFailReasonDiv(@NotNull PanelFailReason failReason) {
         String reason = Formats.NA_STRING;
         String explanation = Formats.NA_STRING;
         String explanationDetail = Formats.NA_STRING;
@@ -84,9 +89,9 @@ public class PanelQCFailChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(reason).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(explanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(explanationDetail).addStyle(ReportResources.subTextStyle())
+        div.add(new Paragraph(reason).addStyle(reportResources.dataHighlightStyle()));
+        div.add(new Paragraph(explanation).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(explanationDetail).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         return div;
     }

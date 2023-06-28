@@ -19,14 +19,15 @@ import org.jetbrains.annotations.NotNull;
 public final class EvidenceItems {
 
     private static final String NONE = "None";
+    private final ReportResources reportResources;
 
-    private EvidenceItems() {
+    public EvidenceItems(@NotNull ReportResources reportResources) {
+        this.reportResources = reportResources;
     }
 
 
-
     @NotNull
-    public static Paragraph createLinksPublications(@NotNull Set<String> evidenceUrls) {
+    public Paragraph createLinksPublications(@NotNull Set<String> evidenceUrls) {
         Paragraph paragraphPublications = new Paragraph();
         int number = 0;
         for (String url : evidenceUrls) {
@@ -37,7 +38,7 @@ public final class EvidenceItems {
                     paragraphPublications.add(new Text(", "));
                 }
 
-                paragraphPublications.add(new Text(Integer.toString(number)).addStyle(ReportResources.urlStyle())
+                paragraphPublications.add(new Text(Integer.toString(number)).addStyle(reportResources.urlStyle())
                         .setAction(PdfAction.createURI(url))).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
             }
         }
@@ -46,7 +47,7 @@ public final class EvidenceItems {
     }
 
     @NotNull
-    public static Paragraph createLinksSource(@NotNull Map<String, String> sourceUrls) {
+    public Paragraph createLinksSource(@NotNull Map<String, String> sourceUrls) {
         Paragraph paragraphSources = new Paragraph();
 
         for (Map.Entry<String, String> entry : sourceUrls.entrySet()) {
@@ -55,9 +56,9 @@ public final class EvidenceItems {
             }
 
             if (entry.getValue().isEmpty()) {
-                paragraphSources.add(new Text(entry.getKey()).addStyle(ReportResources.subTextStyle()));
+                paragraphSources.add(new Text(entry.getKey()).addStyle(reportResources.subTextStyle()));
             } else {
-                paragraphSources.add(new Text(entry.getKey()).addStyle(ReportResources.urlStyle())
+                paragraphSources.add(new Text(entry.getKey()).addStyle(reportResources.urlStyle())
                         .setAction(PdfAction.createURI(entry.getValue()))).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
             }
         }

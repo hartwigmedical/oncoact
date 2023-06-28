@@ -20,9 +20,14 @@ public class QCFailChapter implements ReportChapter {
 
     @NotNull
     private final QCFailReport failReport;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public QCFailChapter(@NotNull QCFailReport failReport) {
+    public QCFailChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
         this.failReport = failReport;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -49,10 +54,10 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createFailReasonDiv(failReport.reason()));
@@ -61,7 +66,7 @@ public class QCFailChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull QCFailReason failReason) {
+    private Div createFailReasonDiv(@NotNull QCFailReason failReason) {
         String reason = Formats.NA_STRING;
         String explanation = Formats.NA_STRING;
         String explanationDetail = Formats.NA_STRING;
@@ -106,9 +111,9 @@ public class QCFailChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(reason).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(explanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(explanationDetail).addStyle(ReportResources.subTextStyle())
+        div.add(new Paragraph(reason).addStyle(reportResources.dataHighlightStyle()));
+        div.add(new Paragraph(explanation).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(explanationDetail).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         return div;
     }

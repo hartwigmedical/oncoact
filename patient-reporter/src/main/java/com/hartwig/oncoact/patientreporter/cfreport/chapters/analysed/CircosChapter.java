@@ -24,9 +24,13 @@ public class CircosChapter implements ReportChapter {
 
     @NotNull
     private final AnalysedPatientReport patientReport;
+    @NotNull
+    private final ReportResources reportResources;
 
-    public CircosChapter(@NotNull final AnalysedPatientReport patientReport) {
+    public CircosChapter(@NotNull final AnalysedPatientReport patientReport,
+                         @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
+        this.reportResources = reportResources;
     }
 
     @NotNull
@@ -98,10 +102,10 @@ public class CircosChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String boldPart, @NotNull String regularPart) {
-        return new Paragraph(boldPart).addStyle(ReportResources.subTextBoldStyle())
+    private Paragraph createContentParagraph(@NotNull String boldPart, @NotNull String regularPart) {
+        return new Paragraph(boldPart).addStyle(reportResources.subTextBoldStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(regularPart).addStyle(ReportResources.subTextStyle()))
+                .add(new Text(regularPart).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 }
