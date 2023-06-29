@@ -186,6 +186,7 @@ public final class ExampleAnalysisTestFactory {
 
         return ImmutableAnalysedPatientReport.builder()
                 .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(config.qcForNumber().display())
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)

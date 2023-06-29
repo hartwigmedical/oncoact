@@ -26,6 +26,10 @@
             <groupId>com.hartwig.lama.client</groupId>
             <artifactId>client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hartwig.silo.client</groupId>
+            <artifactId>java-client</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.intellij</groupId>

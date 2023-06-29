@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
@@ -15,6 +16,7 @@ import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -124,9 +126,11 @@ public class PanelReporterApplication {
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
+        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
 
         return ImmutableQCFailPanelReportData.builder()
                 .lamaPatientData(lamaPatientData)
+                .diagnosticSiloPatientData(diagnosticPatientData)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
                 .build();

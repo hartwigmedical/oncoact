@@ -37,6 +37,8 @@ public interface PanelReporterConfig {
     String FAIL_DB_TSV = "fail_db_tsv";
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
+    String IS_DIAGNOSTIC = "is_diagnostic";
 
     // Some additional optional params and flags
     String COMMENTS = "comments";
@@ -69,6 +71,9 @@ public interface PanelReporterConfig {
 
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
+
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
 
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
@@ -107,6 +112,9 @@ public interface PanelReporterConfig {
 
     @NotNull
     String lamaJson();
+
+    @Nullable
+    String diagnosticSiloJson();
 
     @Nullable
     PanelFailReason panelQcFailReason();
@@ -171,6 +179,7 @@ public interface PanelReporterConfig {
                 .failReasonsDatabaseTsv(failReasonsDatabaseTsv)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
+                .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
                 .comments(cmd.getOptionValue(COMMENTS))
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))

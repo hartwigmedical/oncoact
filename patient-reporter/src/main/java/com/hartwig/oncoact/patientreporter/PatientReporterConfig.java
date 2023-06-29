@@ -42,6 +42,7 @@ public interface PatientReporterConfig {
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
     String LAMA_JSON = "lama_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
     String CUPPA_PLOT = "cuppa_plot";
     String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
@@ -58,6 +59,7 @@ public interface PatientReporterConfig {
     String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
+    String IS_DIAGNOSTIC = "is_diagnostic";
 
     // parameters for pipeline version
     String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
@@ -96,6 +98,9 @@ public interface PatientReporterConfig {
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
         options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
+
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
@@ -140,6 +145,9 @@ public interface PatientReporterConfig {
 
     @NotNull
     String lamaJson();
+
+    @Nullable
+    String diagnosticSiloJson();
 
     @NotNull
     String cuppaPlot();
@@ -246,6 +254,7 @@ public interface PatientReporterConfig {
                 .failReasonsDatabaseTsv(failReasonsDatabaseTsv)
                 .orangeJson(orangeJson)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
+                .diagnosticSiloJson(cmd.hasOption(IS_DIAGNOSTIC) ? nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON) : null)
                 .cuppaPlot(cuppaPlot)
                 .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)

@@ -3,6 +3,8 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
+import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedReportData;
@@ -20,12 +22,13 @@ public final class PatientReporterTestFactory {
     private static final String RUN_DIRECTORY = Resources.getResource("test_run").getPath();
     private static final String PIPELINE_VERSION_FILE = RUN_DIRECTORY + "/pipeline.version";
     private static final String ORANGE_JSON = RUN_DIRECTORY + "/orange/sample.orange.json";
+    private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();
+    private static final String DIAGNOSTIC_SILO_JSON = Resources.getResource("silo/sample.silo.json").getPath();
+
     private static final String CUPPA_PLOT = RUN_DIRECTORY + "/cuppa/sample.cuppa.chart.png";
     private static final String CIRCOS_PLOT = RUN_DIRECTORY + "/cuppa/sample.cuppa.chart.png"; //TODO; Add cirocos plot as test png
     private static final String PROTECT_EVIDENCE_TSV = RUN_DIRECTORY + "/protect/sample.protect.tsv";
     private static final String ROSE_TSV = RUN_DIRECTORY + "/rose/sample.rose.tsv";
-    private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();
-
     private static final String SIGNATURE_PATH = Resources.getResource("signature/signature_test.png").getPath();
     private static final String RVA_LOGO_PATH = Resources.getResource("rva_logo/rva_logo_test.jpg").getPath();
     private static final String COMPANY_LOGO_ONCOACT_PATH = Resources.getResource("company_logo/hartwig_logo_oncoact_test.jpg").getPath();
@@ -51,6 +54,7 @@ public final class PatientReporterTestFactory {
                 .qcFail(false)
                 .orangeJson(ORANGE_JSON)
                 .lamaJson(LAMA_JSON)
+                .diagnosticSiloJson(DIAGNOSTIC_SILO_JSON)
                 .cuppaPlot(CUPPA_PLOT)
                 .purpleCircosPlot(CIRCOS_PLOT)
                 .protectEvidenceTsv(PROTECT_EVIDENCE_TSV)
@@ -73,6 +77,7 @@ public final class PatientReporterTestFactory {
         try {
             return ImmutableQCFailReportData.builder()
                     .lamaPatientData(LamaJson.read(LAMA_JSON))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_ONCOACT_PATH)
@@ -89,6 +94,7 @@ public final class PatientReporterTestFactory {
         try {
             return ImmutableQCFailReportData.builder()
                     .lamaPatientData(LamaJson.read(LAMA_JSON))
+                    .diagnosticSiloPatientData(DiagnosticSiloJson.read(DIAGNOSTIC_SILO_JSON))
                     .signaturePath(SIGNATURE_PATH)
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)

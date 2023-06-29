@@ -108,6 +108,7 @@ public class AnalysedPatientReporter {
 
         AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
                 .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
