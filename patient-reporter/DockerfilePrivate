@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11
+FROM eclipse-temurin:11-jre
 RUN mkdir /opt/app
 RUN mkdir /out
 RUN mkdir /in

@@ -1,9 +1,9 @@
-FROM eclipse-temurin:11
+FROM eclipse-temurin:11-jre
 RUN mkdir /opt/app
 RUN mkdir /out
 RUN mkdir /in
 COPY ./target/rose-jar-with-dependencies.jar /opt/app/rose.jar
 COPY run-docker.properties /opt/app/rose.properties
 COPY --from=eu.gcr.io/hmf-build/common-resources-public:0.1 /data/resources/public/gene_panel /data/resources/gene_panel
-COPY --from=eu.gcr.io/hmf-pipeline-prod-e45b00f2/ops-resources-private:0.1 /ops/resources/private/rose /data/resources/rose
+COPY --from=eu.gcr.io/hmf-pipeline-prod-e45b00f2/ops-resources-private:0.2 /ops/resources/private/rose /data/resources/rose
 ENTRYPOINT ["java", "-jar", "/opt/app/rose.jar", "-properties_file", "/opt/app/rose.properties"]
