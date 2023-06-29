@@ -32,6 +32,7 @@ public class RoseApplication {
             System.exit(1);
         }
 
+        LOGGER.info("Rose config is: {}", config);
         new RoseApplication(config).run();
 
         LOGGER.info("Complete");

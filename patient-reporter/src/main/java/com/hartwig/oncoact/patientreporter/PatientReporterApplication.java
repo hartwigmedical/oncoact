@@ -51,6 +51,7 @@ public class PatientReporterApplication {
             System.exit(1);
         }
 
+        LOGGER.info("Patient reporter config is: {}", config);
         new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 

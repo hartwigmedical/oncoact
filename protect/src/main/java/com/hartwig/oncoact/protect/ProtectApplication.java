@@ -43,6 +43,7 @@ public class ProtectApplication {
             System.exit(1);
         }
 
+        LOGGER.info("Protect config is: {}", config);
         new ProtectApplication(config).run();
 
         LOGGER.info("Complete");

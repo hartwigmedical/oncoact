@@ -48,6 +48,7 @@ public class PanelReporterApplication {
             throw new IllegalArgumentException("Unexpected error, check inputs");
         }
 
+        LOGGER.info("Panel reporter config is: {}", config);
         new PanelReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 
