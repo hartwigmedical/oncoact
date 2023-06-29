@@ -21,14 +21,6 @@ steps:
     env:
       - MAVEN_OPTS=-Dmaven.repo.local=/cache/.m2
 
-  - id: 'Build image with public resources'
-    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.4'
-    args: [ 'eu.gcr.io/hmf-build/oncoact', '$TAG_NAME', 'DockerfilePublic']
-
-  - id: 'Build image with private resources'
-    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.4'
-    args: [ 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/oncoact', '$TAG_NAME', 'DockerfilePrivate' ]
-
   - id: 'Refresh bucket from local Maven cache after build'
     name: 'gcr.io/cloud-builders/gsutil'
     args:
@@ -40,6 +32,14 @@ steps:
     volumes:
       - path: '/cache/.m2'
         name: 'm2_cache'
+
+  - id: 'Build image with public resources'
+    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.5'
+    args: [ 'eu.gcr.io/hmf-build/oncoact', '$TAG_NAME', 'DockerfilePublic']
+
+  - id: 'Build image with private resources'
+    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.5'
+    args: [ 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/oncoact', '$TAG_NAME', 'DockerfilePrivate' ]
 
 logsBucket: 'gs://hmf-build-logs'
 timeout: 4800s
