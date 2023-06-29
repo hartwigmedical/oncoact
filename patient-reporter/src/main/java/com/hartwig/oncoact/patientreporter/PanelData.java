@@ -1,19 +1,18 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.util.List;
+import com.hartwig.lama.client.model.PatientReporterData;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.lims.Lims;
-
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface PanelData {
 
     @NotNull
-    List<PatientPrimaryTumor> patientPrimaryTumors();
+    PatientReporterData lamaPatientData();
 
-    @NotNull
-    Lims limsModel();
+    @Nullable
+    PatientInformationResponse diagnosticSiloPatientData();
 
     @NotNull
     String signaturePath();

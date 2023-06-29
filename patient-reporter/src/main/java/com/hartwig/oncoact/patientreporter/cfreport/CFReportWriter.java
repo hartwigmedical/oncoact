@@ -70,7 +70,7 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportChapter[] chapters = new ReportChapter[] { new SummaryChapter(report), new ClinicalEvidenceOnLabelChapter(report),
-                new ClinicalEvidenceOffLabelChapter(report), new GenomicAlterationsChapter(report, report.sampleReport()),
+                new ClinicalEvidenceOffLabelChapter(report), new GenomicAlterationsChapter(report),
                 new TumorCharacteristicsChapter(report), new CircosChapter(report), new ExplanationChapter(),
                 new DetailsAndDisclaimerChapter(report) };
 
@@ -174,7 +174,7 @@ public class CFReportWriter implements ReportWriter {
             pageEventHandler.pdfTitle(chapter.pdfTitle());
             pageEventHandler.chapterTitle(chapter.name());
             pageEventHandler.resetChapterPageCounter();
-            pageEventHandler.sidebarType(!chapter.isFullWidth(), chapter.hasCompleteSidebar());
+            pageEventHandler.sidebarType(!chapter.isFullWidth());
 
             if (i > 0) {
                 doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));

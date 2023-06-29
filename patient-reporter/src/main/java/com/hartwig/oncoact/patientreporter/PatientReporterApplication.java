@@ -3,12 +3,10 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsFactory;
+import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
+import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
@@ -22,6 +20,7 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -66,22 +65,21 @@ public class PatientReporterApplication {
     }
 
     public void run() throws IOException {
-        SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.qcFail()) {
             LOGGER.info("Generating qc-fail report");
-            generateQCFail(sampleMetadata);
+            generateQCFail();
         } else {
             LOGGER.info("Generating patient report");
-            generateAnalysedReport(sampleMetadata);
+            generateAnalysedReport();
         }
     }
 
-    private void generateAnalysedReport(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generateAnalysedReport() throws IOException {
         AnalysedReportData reportData = buildAnalysedReportData(config);
         AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData, reportDate);
 
-        AnalysedPatientReport report = reporter.run(sampleMetadata, config);
+        AnalysedPatientReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
@@ -100,10 +98,9 @@ public class PatientReporterApplication {
         }
     }
 
-    private void generateQCFail(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generateQCFail() throws IOException {
         QCFailReporter reporter = new QCFailReporter(buildBaseReportData(config), reportDate);
-        QCFailReport report = reporter.run(sampleMetadata, config);
-        LOGGER.info("Cohort of this sample is: {}", report.sampleReport().cohort().cohortId());
+        QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
@@ -125,39 +122,14 @@ public class PatientReporterApplication {
     }
 
     @NotNull
-    private static SampleMetadata buildSampleMetadata(@NotNull PatientReporterConfig config) {
-        String sampleNameForReport = config.sampleNameForReport();
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(config.refSampleId())
-                .refSampleBarcode(config.refSampleBarcode())
-                .tumorSampleId(config.tumorSampleId())
-                .tumorSampleBarcode(config.tumorSampleBarcode())
-                .sampleNameForReport(sampleNameForReport != null ? sampleNameForReport : config.tumorSampleId())
-                .build();
-
-        LOGGER.info("Printing sample meta data for {}", sampleMetadata.tumorSampleId());
-        LOGGER.info(" Tumor sample barcode: {}", sampleMetadata.tumorSampleBarcode());
-        LOGGER.info(" Ref sample: {}", sampleMetadata.refSampleId());
-        LOGGER.info(" Ref sample barcode: {}", sampleMetadata.refSampleBarcode());
-        LOGGER.info(" Sample name for report: {}", sampleMetadata.sampleNameForReport());
-
-        return sampleMetadata;
-    }
-
-    @NotNull
     private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
-        String primaryTumorTsv = config.primaryTumorTsv();
 
-        List<PatientPrimaryTumor> patientPrimaryTumors = PatientPrimaryTumorFile.read(primaryTumorTsv);
-        LOGGER.info("Loaded primary tumors for {} patients from {}", patientPrimaryTumors.size(), primaryTumorTsv);
-
-        String limsDirectory = config.limsDir();
-        Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
-        LOGGER.info("Loaded LIMS data for {} samples from {}", lims.sampleBarcodeCount(), limsDirectory);
+        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
+        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
 
         return ImmutableQCFailReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
-                .limsModel(lims)
+                .diagnosticSiloPatientData(diagnosticPatientData)
+                .lamaPatientData(lamaPatientData)
                 .signaturePath(config.signature())
                 .logoRVAPath(config.rvaLogo())
                 .logoCompanyPath(config.companyLogo())

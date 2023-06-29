@@ -1,0 +1,50 @@
+{
+  "hospitalName": "hospitalName",
+  "officialHospitalName": "officialHospitalName",
+  "hospitalPostalCode": "hospitalPostalCode",
+  "studyPI": "studyPI",
+  "hospitalAddress": "hospitalAddress",
+  "hospitalCity": "hospitalCity",
+  "requesterName": "requesterName",
+  "requesterEmail": "requesterEmail",
+  "reportingId": "reportingId",
+  "reportSettings": {
+    "reportGermline": true,
+    "flagGermlineOnReport": false
+  },
+  "contractCode": "contractCode",
+  "cohort": "cohort",
+  "submissionNr": "submissionNr",
+  "patientId": "patientId",
+  "referenceSampleBarcode": "referenceSampleBarcode",
+  "referenceIsolationBarcode": "referenceIsolationBarcode",
+  "referenceArrivalDate": "2023-04-17",
+  "referenceSamplingDate": "2023-04-17",
+  "tumorSampleId": "tumorSampleId",
+  "tumorSampleBarcode": "tumorSampleBarcode",
+  "tumorIsolationBarcode": "tumorIsolationBarcode",
+  "tumorArrivalDate": "2023-04-17",
+  "tumorSamplingDate": "2023-04-17",
+  "pathologyNumber": "pathologyNumber",
+  "primaryTumorType": {
+    "_id": "_id",
+    "location": "location",
+    "type": "type",
+    "extra": "extra",
+    "doids": [
+      "162"
+    ]
+  },
+  "biopsySite": {
+    "_id": "_id",
+    "location": "location",
+    "locationPalgaCode": "locationPalgaCode",
+    "subLocation": "subLocation",
+    "subLocationPalgaCode": "subLocationPalgaCode",
+    "lateralisation": "LEFT",
+    "isPrimaryTumor": true
+  },
+  "sopString": "sopString",
+  "shallowPurity": 0,
+  "isStudy": true
+}

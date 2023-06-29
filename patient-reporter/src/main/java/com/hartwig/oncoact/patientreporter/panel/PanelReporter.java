@@ -3,13 +3,7 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 import java.util.Optional;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -29,16 +23,9 @@ public class PanelReporter {
     }
 
     @NotNull
-    public PanelReport run(@NotNull SampleMetadata sampleMetadata, @Nullable String comments, boolean correctedReport,
+    public PanelReport run(@Nullable String comments, boolean correctedReport,
             boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
-            @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname,
-            boolean allowDefaultCohortConfig) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
-
-        PatientPrimaryTumor patientPrimaryTumor =
-                PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
-        SampleReport sampleReport =
-                SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, allowDefaultCohortConfig);
+            @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname) throws IOException {
 
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {
@@ -47,14 +34,7 @@ public class PanelReporter {
             PipelineVersion.checkPipelineVersion(pipelineVersion, expectedPipelineVersion, overridePipelineVersion);
         }
 
-        LimsCohortConfig cohort = sampleReport.cohort();
-
-        if (cohort.cohortId().isEmpty()) {
-            throw new IllegalStateException("QC fail report not supported for non-cancer study samples: " + sampleMetadata.tumorSampleId());
-        }
-
         return ImmutablePanelReport.builder()
-                .sampleReport(sampleReport)
                 .qsFormNumber(QsFormNumber.FOR_344.display())
                 .pipelineVersion(pipelineVersion)
                 .VCFFilename(panelVCFname)

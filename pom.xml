@@ -39,6 +39,8 @@
 
         <serve.version>2.0.1</serve.version>
         <orange-datamodel.version>1.0.1</orange-datamodel.version>
+        <lama-client.version>2.0.0-alpha.66</lama-client.version>
+        <silo-client.version>2.3.0</silo-client.version>
 
         <commons.cli.version>1.5.0</commons.cli.version>
         <immutables.version>2.5.5</immutables.version>
@@ -56,7 +58,6 @@
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <orange-datamodel.version>1.0.1-beta.3</orange-datamodel.version>
     </properties>
 
     <repositories>
@@ -143,7 +144,16 @@
                 <artifactId>common</artifactId>
                 <version>${common.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.hartwig.lama.client</groupId>
+                <artifactId>client</artifactId>
+                <version>${lama-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hartwig.silo.client</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${silo-client.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.hartwig</groupId>
                 <artifactId>orange-datamodel</artifactId>

@@ -41,7 +41,7 @@ public class Header {
     }
 
     public void renderHeader(@NotNull String chapterTitle, @NotNull String pdfTitle, boolean firstPageOfChapter, @NotNull PdfPage page,
-            boolean isWgsReport) {
+                             boolean isWgsReport) {
         PdfCanvas pdfCanvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Canvas cv = new Canvas(pdfCanvas, page.getDocument(), page.getPageSize());
 
@@ -53,7 +53,7 @@ public class Header {
                         .setFontSize(11)
                         .setFontColor(ReportResources.PALETTE_BLUE))
                 .add(new Text(" Onco").setFont(ReportResources.fontRegular()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE))
-                .add(new Text(isWgsReport ? "Act" : "Panel").setFont(ReportResources.fontRegular())
+                .add(new Text("Act").setFont(ReportResources.fontRegular())
                         .setFontSize(11)
                         .setFontColor(ReportResources.PALETTE_RED))
                 .setFixedPosition(230, 791, 300));

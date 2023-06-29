@@ -12,7 +12,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.clinical.ImmutablePatientPrimaryTumor;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -26,11 +25,6 @@ import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.hospital.HospitalContactData;
-import com.hartwig.oncoact.lims.hospital.ImmutableHospitalContactData;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
@@ -83,7 +77,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                              @NotNull PurpleQCStatus purpleQCStatus) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
@@ -111,8 +105,6 @@ public final class ExampleAnalysisTestFactory {
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
-
-        SampleReport sampleReport = createSkinMelanomaSampleReport(config.sampleId(), config.reportGermline(), config.limsCohortConfig());
 
         String summaryWithoutGermline = "Melanoma sample showing:\n"
                 + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
@@ -193,7 +185,8 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return ImmutableAnalysedPatientReport.builder()
-                .sampleReport(sampleReport)
+                .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(config.qcForNumber().display())
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
@@ -223,7 +216,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -251,7 +244,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-            @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -309,64 +302,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static HospitalContactData createTestHospitalContactData() {
-        return ImmutableHospitalContactData.builder()
-                .hospitalPI("PI")
-                .requesterName("Paul")
-                .requesterEmail("paul@hartwig.com")
-                .hospitalName("HMF Testing Center")
-                .hospitalAddress("1000 AB AMSTERDAM")
-                .build();
-    }
-
-    @NotNull
-    private static SampleReport createSkinMelanomaSampleReport(@NotNull String sample, boolean reportGermline,
-            @NotNull LimsCohortConfig cohort) {
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(Strings.EMPTY)
-                .refSampleBarcode("FR12123488")
-                .tumorSampleId(sample)
-                .tumorSampleBarcode("FR12345678")
-                .sampleNameForReport(sample)
-                .build();
-
-        return ImmutableSampleReport.builder()
-                .sampleMetadata(sampleMetadata)
-                .tumorReceivedSampleId("FB123")
-                .referenceReceivedSampleId("FB123")
-                .patientPrimaryTumor(ImmutablePatientPrimaryTumor.builder()
-                        .patientIdentifier(sample)
-                        .location("Skin")
-                        .subLocation(Strings.EMPTY)
-                        .type("Melanoma")
-                        .subType(Strings.EMPTY)
-                        .extraDetails(Strings.EMPTY)
-                        .doids(Lists.newArrayList("8923"))
-                        .snomedConceptIds(Lists.newArrayList("93655004"))
-                        .isOverridden(false)
-                        .build())
-                .biopsyLocation("Skin")
-                .germlineReportingLevel(reportGermline
-                        ? LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION
-                        : LimsGermlineReportingLevel.NO_REPORTING)
-                .reportViralPresence(cohort.reportViral())
-                .reportPharmogenetics(cohort.reportPeach())
-                .refArrivalDate(LocalDate.parse("01-Oct-2020", DATE_FORMATTER))
-                .tumorArrivalDate(LocalDate.parse("05-Oct-2020", DATE_FORMATTER))
-                .shallowSeqPurityString(Lims.NOT_PERFORMED_STRING)
-                .labProcedures("PREP013V23-QC037V20-SEQ008V25")
-                .cohort(cohort)
-                .projectName("TEST-001-002")
-                .submissionId("SUBM")
-                .hospitalContactData(createTestHospitalContactData())
-                .hospitalPatientId("HOSP1")
-                .hospitalPathologySampleId("PA1")
-                .build();
-    }
-
-    @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)

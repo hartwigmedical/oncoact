@@ -77,24 +77,35 @@ public final class SomaticVariants {
         return false;
     }
 
-    @NotNull
-    public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline) {
-        if (notifyGermline) {
-            return variant.gene() + " #";
-        } else {
-            return variant.gene();
+    public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {
+        for (ReportableVariant reportableVariant : reportableVariants) {
+            if (reportableVariant.localPhaseSet() != null) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     @NotNull
-    public static String proteinAnnotationDisplayString(@NotNull String canonicalHgvsProteinImpact, @NotNull String canonicalEffect) {
+    public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @Nullable Integer localPhaseSet,
+                                           @NotNull String canonicalEffect) {
+        String footer = Strings.EMPTY;
+        if (notifyGermline) {
+            footer = footer + "#";
+        }
+
+        if (localPhaseSet != null) {
+            footer = footer + "=";
+        }
+
         // TODO Check whether evaluation still works
         if (canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
                 || canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString())) {
-            return canonicalHgvsProteinImpact + " +";
-        } else {
-            return canonicalHgvsProteinImpact;
+            footer = footer + "+";
         }
+
+        return variant.gene() + footer;
     }
 
     @VisibleForTesting
@@ -136,11 +147,6 @@ public final class SomaticVariants {
             long roundedCopyNumber = Math.round(flooredCopyNumber);
             return hasReliablePurity && roundedCopyNumber >= 1 ? tVAF : Formats.NA_STRING;
         }
-    }
-
-    @NotNull
-    public static String copyNumberString(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     @NotNull
@@ -206,7 +212,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+                                                @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -232,7 +238,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+                                                @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {

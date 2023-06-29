@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class QCFailChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "Failed DNA Analysis Report";
+    private static final String TITLE_REPORT = "OncoAct tumor WGS report - Failed";
 
     @NotNull
     private final QCFailReport failReport;
@@ -49,8 +49,7 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.sampleReport()
-                .primaryTumorLocationString(), failReport.sampleReport().primaryTumorTypeString(), contentWidth()));
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));

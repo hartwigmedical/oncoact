@@ -1,11 +1,12 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
+import com.hartwig.lama.client.model.BiopsySite;
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -13,7 +14,9 @@ import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class SidePanel {
 
@@ -25,29 +28,25 @@ public final class SidePanel {
     private SidePanel() {
     }
 
-    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight,
-            boolean fullContent) {
+    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
-                patientReport.sampleReport(),
+                patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                patientReport.qsFormNumber(),
-                fullHeight,
-                fullContent);
+                fullHeight);
     }
 
-    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight,
-            boolean fullContent) {
+    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
-                patientReport.sampleReport(),
+                patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                patientReport.qsFormNumber(),
-                fullHeight,
-                fullContent);
+                fullHeight);
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull SampleReport sampleReport, @NotNull String reportDate,
-            @NotNull String qsFormNumber, boolean fullHeight, boolean fullContent) {
+    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
+                                       boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
@@ -55,44 +54,69 @@ public final class SidePanel {
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
-        LimsCohortConfig cohort = sampleReport.cohort();
 
-        if (fullHeight && fullContent) {
-            if (cohort.requireHospitalId() && !sampleReport.hospitalPatientId().isEmpty()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", sampleReport.hospitalPatientId()));
-            }
 
-            if (cohort.requireHospitalPAId() && sampleReport.hospitalPathologySampleId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", sampleReport.hospitalPathologySampleId()));
-            }
+        if (lamaPatientData.getIsStudy()) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
+        } else {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
+        }
+
+        if (lamaPatientData.getPathologyNumber() != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", lamaPatientData.getPathologyNumber()));
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name" , "Name"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date" , "Birth date"));
 
-
-        if (fullHeight && fullContent) {
-
-            if (cohort.requireAdditionalInformationForSidePanel()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", sampleReport.hospitalContactData().requesterName()));
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", sampleReport.hospitalContactData().requesterEmail()));
+        if (patientInformationData != null) {
+            String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
+            if (!name.equals(Strings.EMPTY)) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
             }
 
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", sampleReport.hospitalContactData().hospitalName()));
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location" , sampleReport.biopsyLocationString()));
+            if (patientInformationData.getBirthdate() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+            }
+        }
+
+        if (lamaPatientData.getRequesterName() != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+
+        }
+        if (lamaPatientData.getRequesterEmail() != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Email", lamaPatientData.getRequesterEmail()));
 
         }
 
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
+        BiopsySite biopsySite = lamaPatientData.getBiopsySite();
+        String biopsyLocation = Strings.EMPTY;
+        String biopsySubLocation = Strings.EMPTY;
+        BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
+        Boolean isPrimaryTumor = null;
+        if (biopsySite != null) {
+            biopsyLocation = biopsySite.getLocation();
+            biopsySubLocation = biopsySite.getSubLocation();
+            biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
+            isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
+        }
+
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
+
+        if (isPrimaryTumor != null) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
+        }
         canvas.release();
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
-        float size = -pageSize.getHeight()/4;
+        float size = -pageSize.getHeight() / 4;
         canvas.rectangle(pageSize.getWidth(),
                 pageSize.getHeight(),
                 -RECTANGLE_WIDTH,
-                fullHeight ? (size *2) + -(RECTANGLE_HEIGHT_SHORT/2): -RECTANGLE_HEIGHT_SHORT);
+                fullHeight ? (size * 2) + -(RECTANGLE_HEIGHT_SHORT / 2) : -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }

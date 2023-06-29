@@ -36,5 +36,3 @@ public final class GermlineReportingFile {
         return new GermlineReportingModel(germlineReportingEntries);
     }
 }
-
-

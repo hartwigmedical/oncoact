@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.patientreporter;
 
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,13 +17,10 @@ public class ExampleAnalysisConfig {
     private final double impliedTumorPurity;
     private final boolean includeSummary;
     private final boolean reportGermline;
-    @NotNull
-    private final LimsCohortConfig limsCohortConfig;
 
     private ExampleAnalysisConfig(@NotNull final String sampleId, final boolean isCorrectionReport, final boolean isCorrectionReportExtern,
             @Nullable final String comments, @NotNull final QsFormNumber qcForNumber, final boolean hasReliablePurity,
-            final double impliedTumorPurity, final boolean includeSummary, final boolean reportGermline,
-            @NotNull final LimsCohortConfig limsCohortConfig) {
+            final double impliedTumorPurity, final boolean includeSummary, final boolean reportGermline) {
         this.sampleId = sampleId;
         this.isCorrectionReport = isCorrectionReport;
         this.isCorrectionReportExtern = isCorrectionReportExtern;
@@ -36,7 +30,6 @@ public class ExampleAnalysisConfig {
         this.impliedTumorPurity = impliedTumorPurity;
         this.includeSummary = includeSummary;
         this.reportGermline = reportGermline;
-        this.limsCohortConfig = limsCohortConfig;
     }
 
     @NotNull
@@ -76,11 +69,6 @@ public class ExampleAnalysisConfig {
         return reportGermline;
     }
 
-    @NotNull
-    public LimsCohortConfig limsCohortConfig() {
-        return limsCohortConfig;
-    }
-
     public static class Builder {
         @NotNull
         private String sampleId = "COLO829T";
@@ -93,8 +81,6 @@ public class ExampleAnalysisConfig {
         private double impliedTumorPurity = 1D;
         private boolean includeSummary = true;
         private boolean reportGermline = false;
-        @NotNull
-        private LimsCohortConfig limsCohortConfig = TestLimsCohortConfigFactory.createCOLOCohortConfig();
 
         public Builder() {
         }
@@ -148,12 +134,6 @@ public class ExampleAnalysisConfig {
         }
 
         @NotNull
-        public Builder limsCohortConfig(@NotNull final LimsCohortConfig limsCohortConfig) {
-            this.limsCohortConfig = limsCohortConfig;
-            return this;
-        }
-
-        @NotNull
         public ExampleAnalysisConfig build() {
             return new ExampleAnalysisConfig(sampleId,
                     isCorrectionReport,
@@ -163,8 +143,7 @@ public class ExampleAnalysisConfig {
                     hasReliablePurity,
                     impliedTumorPurity,
                     includeSummary,
-                    reportGermline,
-                    limsCohortConfig);
+                    reportGermline);
         }
     }
 }

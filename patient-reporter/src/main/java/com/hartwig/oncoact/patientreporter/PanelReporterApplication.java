@@ -3,12 +3,10 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFile;
-import com.hartwig.oncoact.lims.Lims;
-import com.hartwig.oncoact.lims.LimsFactory;
+import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
+import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
@@ -19,6 +17,7 @@ import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -63,20 +62,19 @@ public class PanelReporterApplication {
     }
 
     public void run() throws IOException {
-        SampleMetadata sampleMetadata = buildSampleMetadata(config);
 
         if (config.panelQcFail()) {
             LOGGER.info("Generating qc-fail panel report");
-            generatePanelQCFail(sampleMetadata);
+            generatePanelQCFail();
         } else {
             LOGGER.info("Generating panel report");
-            generatePanelAnalysedReport(sampleMetadata);
+            generatePanelAnalysedReport();
         }
     }
 
-    private void generatePanelAnalysedReport(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generatePanelAnalysedReport() throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(sampleMetadata,
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
@@ -84,8 +82,7 @@ public class PanelReporterApplication {
                 config.overridePipelineVersion(),
                 config.pipelineVersionFile(),
                 config.requirePipelineVersionFile(),
-                config.panelVCFname(),
-                config.allowDefaultCohortConfig());
+                config.panelVCFname());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
@@ -99,14 +96,13 @@ public class PanelReporterApplication {
         }
     }
 
-    private void generatePanelQCFail(@NotNull SampleMetadata sampleMetadata) throws IOException {
+    private void generatePanelQCFail() throws IOException {
         PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config), reportDate);
-        PanelFailReport report = reporter.run(sampleMetadata,
+        PanelFailReport report = reporter.run(
                 config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
-                config.panelQcFailReason(),
-                config.allowDefaultCohortConfig());
+                config.panelQcFailReason());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
@@ -122,44 +118,19 @@ public class PanelReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-            @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
+                                                                     @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(panelReport);
     }
 
     @NotNull
-    private static SampleMetadata buildSampleMetadata(@NotNull PanelReporterConfig config) {
-        String sampleNameForReport = config.sampleNameForReport();
-        SampleMetadata sampleMetadata = ImmutableSampleMetadata.builder()
-                .refSampleId(null)
-                .refSampleBarcode(null)
-                .tumorSampleId(config.tumorSampleId())
-                .tumorSampleBarcode(config.tumorSampleBarcode())
-                .sampleNameForReport(sampleNameForReport != null ? sampleNameForReport : config.tumorSampleId())
-                .build();
-
-        LOGGER.info("Printing sample meta data for {}", sampleMetadata.tumorSampleId());
-        LOGGER.info(" Tumor sample barcode: {}", sampleMetadata.tumorSampleBarcode());
-        LOGGER.info(" Ref sample: {}", sampleMetadata.refSampleId());
-        LOGGER.info(" Ref sample barcode: {}", sampleMetadata.refSampleBarcode());
-        LOGGER.info(" Sample name for report: {}", sampleMetadata.sampleNameForReport());
-
-        return sampleMetadata;
-    }
-
-    @NotNull
     private static QCFailPanelReportData buildBasePanelReportData(@NotNull PanelReporterConfig config) throws IOException {
-        String primaryTumorTsv = config.primaryTumorTsv();
 
-        List<PatientPrimaryTumor> patientPrimaryTumors = PatientPrimaryTumorFile.read(primaryTumorTsv);
-        LOGGER.info("Loaded primary tumors for {} patients from {}", patientPrimaryTumors.size(), primaryTumorTsv);
-
-        String limsDirectory = config.limsDir();
-        Lims lims = LimsFactory.fromLimsDirectory(limsDirectory);
-        LOGGER.info("Loaded LIMS data for {} samples from {}", lims.sampleBarcodeCount(), limsDirectory);
+        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
+        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
 
         return ImmutableQCFailPanelReportData.builder()
-                .patientPrimaryTumors(patientPrimaryTumors)
-                .limsModel(lims)
+                .lamaPatientData(lamaPatientData)
+                .diagnosticSiloPatientData(diagnosticPatientData)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
                 .build();

@@ -17,8 +17,6 @@ import java.util.Map;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.hartwig.oncoact.lims.cohort.LimsCohortConfig;
-import com.hartwig.oncoact.lims.cohort.TestLimsCohortConfigFactory;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
@@ -34,14 +32,13 @@ public class ReportingDbTest {
         BufferedWriter writer = new BufferedWriter(new FileWriter(reportingDbTsv, true));
         writer.write("tumorBarcode\tsampleId\tcohort\treportDate\treportType\tpurity\thasReliableQuality\thasReliablePurity\n");
         writer.close();
-        LimsCohortConfig cohortConfig = TestLimsCohortConfigFactory.createCPCTCohortConfig();
 
         ExampleAnalysisConfig config =
-                new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").limsCohortConfig(cohortConfig).build();
+                new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/CPCT01_SUCCESS_FR12345678_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_dna_analysis_report_api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
@@ -56,9 +53,9 @@ public class ReportingDbTest {
         assertEquals(output.get("has_reliable_quality"), true);
         assertEquals(output.get("has_reliable_purity"), true);
         assertEquals(output.get("purity"), 1.0);
-        assertEquals(output.get("cohort"), "CPCT");
+        assertEquals(output.get("cohort"), "cohort");
         assertEquals(output.get("report_type"), "dna_analysis_report");
-        assertEquals(output.get("barcode"), "FR12345678");
+        assertEquals(output.get("barcode"), "tumorIsolationBarcode");
         assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
     }
 }

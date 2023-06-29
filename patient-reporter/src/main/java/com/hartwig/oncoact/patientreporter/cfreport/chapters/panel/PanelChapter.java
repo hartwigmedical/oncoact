@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PanelChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "Oncopanel Result Report";
+    private static final String TITLE_REPORT = "OncoAct tumor NGS report - Result Report";
 
     @NotNull
     private final PanelReport report;
@@ -48,8 +48,8 @@ public class PanelChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.sampleReport()
-                .primaryTumorLocationString(), report.sampleReport().primaryTumorTypeString(), contentWidth()));
+
+        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));

@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.SampleReport;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +21,7 @@ public abstract class QCFailReport implements PatientReport {
 
     @Override
     @NotNull
-    public abstract SampleReport sampleReport();
+    public abstract PatientReporterData lamaPatientData();
 
     @Override
     @NotNull

@@ -49,17 +49,11 @@ public class XMLFactory {
         xml.add(ImmutableKeyXML.builder().keyPath("VrbProcedure").valuePath(Map.of("value", "wgs")).build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("RefNummerWgs")
-                .valuePath(Map.of("value",
-                        !report.sampleReport().hospitalPatientId().isEmpty()
-                                ? report.sampleReport().hospitalPatientId()
-                                : report.sampleReport().tumorSampleId()))
+                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgs_reference_number")
-                .valuePath(Map.of("value",
-                        !report.sampleReport().hospitalPatientId().isEmpty()
-                                ? report.sampleReport().hospitalPatientId()
-                                : report.sampleReport().tumorSampleId()))
+                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
                 .build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());
         xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTher").valuePath(Map.of("value", Strings.EMPTY)).build());
@@ -236,7 +230,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]copie")
-                    .valuePath(Map.of("value", SomaticVariants.copyNumberString(reportableVariant.totalCopyNumber(), hasReliablePurity)))
+                    .valuePath(Map.of("value", GeneUtil.roundCopyNumber(reportableVariant.totalCopyNumber(), hasReliablePurity)))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]tvaf")

@@ -19,19 +19,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface PatientReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PatientReporterConfig.class);
 
     // General params needed for every report
-    String TUMOR_SAMPLE_ID = "tumor_sample_id";
-    String TUMOR_SAMPLE_BARCODE = "tumor_sample_barcode";
     String OUTPUT_DIRECTORY_REPORT = "output_dir_report";
     String OUTPUT_DIRECTORY_DATA = "output_dir_data";
-
-    String PRIMARY_TUMOR_TSV = "primary_tumor_tsv";
-    String LIMS_DIRECTORY = "lims_dir";
 
     String RVA_LOGO = "rva_logo";
     String COMPANY_LOGO = "company_logo";
@@ -39,17 +34,16 @@ public interface PatientReporterConfig {
 
     String UDI_DI = "udi_di";
 
-    // General params needed for every report but for QC fail it can be optional in some cases
-    String REF_SAMPLE_ID = "ref_sample_id";
-    String REF_SAMPLE_BARCODE = "ref_sample_barcode";
-
     // Params specific for QC Fail reports
     String QC_FAIL = "qc_fail";
     String QC_FAIL_REASON = "qc_fail_reason";
 
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
+    String LAMA_JSON = "lama_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
     String CUPPA_PLOT = "cuppa_plot";
+    String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
     String ADD_ROSE = "add_rose";
     String ROSE_TSV = "rose_tsv";
@@ -64,8 +58,7 @@ public interface PatientReporterConfig {
     String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
-    String SAMPLE_NAME_FOR_REPORT = "sample_name_for_report";
-    String ALLOW_DEFAULT_COHORT_CONFIG = "allow_default_cohort_config";
+    String IS_DIAGNOSTIC = "is_diagnostic";
 
     // parameters for pipeline version
     String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
@@ -77,13 +70,8 @@ public interface PatientReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(TUMOR_SAMPLE_ID, true, "The tumor sample ID for which a report is generated.");
-        options.addOption(TUMOR_SAMPLE_BARCODE, true, "The sample barcode for which a patient report will be generated.");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
-
-        options.addOption(PRIMARY_TUMOR_TSV, true, "Path towards the (curated) primary tumor TSV.");
-        options.addOption(LIMS_DIRECTORY, true, "Path towards the directory holding the LIMS data");
 
         options.addOption(RVA_LOGO, true, "Path towards an image file containing the RVA logo.");
         options.addOption(COMPANY_LOGO, true, "Path towards an image file containing the company logo.");
@@ -91,14 +79,13 @@ public interface PatientReporterConfig {
 
         options.addOption(UDI_DI, true, "Code of the UDI DI code");
 
-        options.addOption(REF_SAMPLE_ID, true, "The reference sample ID for the tumor sample for which a report is generated.");
-        options.addOption(REF_SAMPLE_BARCODE, true, "The reference sample barcode for the tumor sample for which a report is generated.");
-
         options.addOption(QC_FAIL, false, "If set, generates a qc-fail report.");
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
+        options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
+        options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
         options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
@@ -110,10 +97,11 @@ public interface PatientReporterConfig {
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
         options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
 
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
+
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
-        options.addOption(SAMPLE_NAME_FOR_REPORT, true, "Sample name used for printing on the report and for report file name.");
-        options.addOption(ALLOW_DEFAULT_COHORT_CONFIG, false, "If provided, use a default cohort config if for this sample no cohort is configured in LIMS.");
 
         options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
         options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
@@ -123,29 +111,12 @@ public interface PatientReporterConfig {
         return options;
     }
 
-    @Nullable
-    String refSampleId();
-
-    @Nullable
-    String refSampleBarcode();
-
-    @NotNull
-    String tumorSampleId();
-
-    @NotNull
-    String tumorSampleBarcode();
 
     @NotNull
     String outputDirReport();
 
     @NotNull
     String outputDirData();
-
-    @NotNull
-    String primaryTumorTsv();
-
-    @NotNull
-    String limsDir();
 
     @NotNull
     String rvaLogo();
@@ -168,7 +139,16 @@ public interface PatientReporterConfig {
     String orangeJson();
 
     @NotNull
+    String lamaJson();
+
+    @Nullable
+    String diagnosticSiloJson();
+
+    @NotNull
     String cuppaPlot();
+
+    @NotNull
+    String purpleCircosPlot();
 
     @NotNull
     String protectEvidenceTsv();
@@ -192,11 +172,6 @@ public interface PatientReporterConfig {
     boolean isCorrectedReportExtern();
 
     boolean onlyCreatePDF();
-
-    @Nullable
-    String sampleNameForReport();
-
-    boolean allowDefaultCohortConfig();
 
     boolean requirePipelineVersionFile();
 
@@ -229,6 +204,7 @@ public interface PatientReporterConfig {
         String pipelineVersion = null;
         String orangeJson = Strings.EMPTY;
         String cuppaPlot = Strings.EMPTY;
+        String purpleCircosPlot = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
         boolean addRose = false;
         String roseTsv = null;
@@ -248,6 +224,7 @@ public interface PatientReporterConfig {
 
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
+            purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
             addRose = cmd.hasOption(ADD_ROSE);
             if (addRose) {
@@ -259,14 +236,8 @@ public interface PatientReporterConfig {
         }
 
         return ImmutablePatientReporterConfig.builder()
-                .refSampleId(cmd.hasOption(REF_SAMPLE_ID) ? nonOptionalValue(cmd, REF_SAMPLE_ID) : null)
-                .refSampleBarcode(cmd.hasOption(REF_SAMPLE_BARCODE) ? nonOptionalValue(cmd, REF_SAMPLE_BARCODE) : null)
-                .tumorSampleId(nonOptionalValue(cmd, TUMOR_SAMPLE_ID))
-                .tumorSampleBarcode(nonOptionalValue(cmd, TUMOR_SAMPLE_BARCODE))
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
-                .primaryTumorTsv(nonOptionalFile(cmd, PRIMARY_TUMOR_TSV))
-                .limsDir(nonOptionalDir(cmd, LIMS_DIRECTORY))
                 .rvaLogo(nonOptionalFile(cmd, RVA_LOGO))
                 .companyLogo(nonOptionalFile(cmd, COMPANY_LOGO))
                 .signature(nonOptionalFile(cmd, SIGNATURE))
@@ -274,7 +245,10 @@ public interface PatientReporterConfig {
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
                 .orangeJson(orangeJson)
+                .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
+                .diagnosticSiloJson(cmd.hasOption(IS_DIAGNOSTIC) ? nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON) : null)
                 .cuppaPlot(cuppaPlot)
+                .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .addRose(addRose)
                 .roseTsv(roseTsv)
@@ -284,8 +258,6 @@ public interface PatientReporterConfig {
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
-                .sampleNameForReport(cmd.getOptionValue(SAMPLE_NAME_FOR_REPORT))
-                .allowDefaultCohortConfig(cmd.hasOption(ALLOW_DEFAULT_COHORT_CONFIG))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)
                 .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))

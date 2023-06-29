@@ -14,13 +14,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumor;
-import com.hartwig.oncoact.clinical.PatientPrimaryTumorFunctions;
+import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
@@ -29,9 +28,6 @@ import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.SampleMetadata;
-import com.hartwig.oncoact.patientreporter.SampleReport;
-import com.hartwig.oncoact.patientreporter.SampleReportFactory;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
@@ -63,16 +59,12 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    public AnalysedPatientReport run(@NotNull SampleMetadata sampleMetadata, @NotNull PatientReporterConfig config) throws IOException {
-        String patientId = reportData.limsModel().patientId(sampleMetadata.tumorSampleBarcode());
-        PatientPrimaryTumor patientPrimaryTumor = PatientPrimaryTumorFunctions.findPrimaryTumorForPatient(reportData.patientPrimaryTumors(), patientId);
-
-        SampleReport sampleReport = SampleReportFactory.fromLimsModel(sampleMetadata, reportData.limsModel(), patientPrimaryTumor, config.allowDefaultCohortConfig());
+    public AnalysedPatientReport run(@NotNull PatientReporterConfig config) throws IOException {
 
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(sampleMetadata.tumorSampleId());
+        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(reportData.lamaPatientData().getTumorSampleId());
 
         String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {
@@ -86,9 +78,10 @@ public class AnalysedPatientReporter {
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
-        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, sampleReport.germlineReportingLevel());
 
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, sampleReport.germlineReportingLevel(), sampleReport.reportViralPresence());
+        boolean flagGermlineOnReport = reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
+        GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, flagGermlineOnReport);
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, flagGermlineOnReport);
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
@@ -100,10 +93,8 @@ public class AnalysedPatientReporter {
 
         Set<PeachGenotype> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach();
 
-        Set<PeachGenotype> pharmacogeneticsGenotypesOverrule = sampleReport.reportPharmogenetics() ? pharmacogeneticsGenotypes : Sets.newHashSet();
-
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
-        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypesOverrule) {
+        for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypes) {
             if (pharmacogeneticsGenotypesMap.containsKey(pharmacogeneticsGenotype.gene())) {
                 List<PeachGenotype> current = pharmacogeneticsGenotypesMap.get(pharmacogeneticsGenotype.gene());
                 current.add(pharmacogeneticsGenotype);
@@ -116,7 +107,8 @@ public class AnalysedPatientReporter {
         HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.purpleQCStatus());
 
         AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
-                .sampleReport(sampleReport)
+                .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
                 .specialRemark(specialRemark)
@@ -126,7 +118,7 @@ public class AnalysedPatientReporter {
                         ? null
                         : molecularTissueOriginReporting)
                 .molecularTissueOriginPlotPath(config.cuppaPlot())
-                .circosPlotPath(orange.plots().purpleFinalCircosPlot())
+                .circosPlotPath(config.purpleCircosPlot())
                 .comments(Optional.ofNullable(config.comments()))
                 .isCorrectedReport(config.isCorrectedReport())
                 .isCorrectedReportExtern(config.isCorrectedReportExtern())
@@ -190,28 +182,32 @@ public class AnalysedPatientReporter {
     }
 
     private static void printReportState(@NotNull AnalysedPatientReport report) {
-        LocalDate tumorArrivalDate = report.sampleReport().tumorArrivalDate();
+        PatientReporterData lamaPatientData = report.lamaPatientData();
+
+        LocalDate tumorArrivalDate = lamaPatientData.getTumorArrivalDate();
         String formattedTumorArrivalDate = tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
 
-        LOGGER.info("Printing clinical and laboratory data for {}", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing clinical and laboratory data for {}", lamaPatientData.getReportingId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
-        LOGGER.info(" Primary tumor details: {}{}", report.sampleReport().primaryTumorLocationString(), !report.sampleReport().primaryTumorTypeString().isEmpty() ? " (" + report.sampleReport().primaryTumorTypeString() + ")" : Strings.EMPTY);
-        LOGGER.info(" Shallow seq purity: {}", report.sampleReport().shallowSeqPurityString());
-        LOGGER.info(" Lab SOPs used: {}", report.sampleReport().labProcedures());
+        TumorType primaryTumorType = lamaPatientData.getPrimaryTumorType();
+        if (primaryTumorType != null) {
+            LOGGER.info(" Primary tumor details: {} ({})", primaryTumorType.getLocation(), primaryTumorType.getType());
+        }
+        LOGGER.info(" Shallow seq purity: {}", lamaPatientData.getShallowPurity());
+        LOGGER.info(" Lab SOPs used: {}", lamaPatientData.getSopString());
         LOGGER.info(" Clinical summary present: {}", (report.clinicalSummary() != null ? "yes" : "no"));
         LOGGER.info(" Special remark present: {}", (!report.specialRemark().isEmpty() ? "yes" : "no"));
 
-        LOGGER.info(" Cohort: {}", report.sampleReport().cohort().cohortId());
-        LOGGER.info(" Germline reporting level: {}", report.sampleReport().germlineReportingLevel());
+        LOGGER.info(" Germline reporting level: {}", lamaPatientData.getReportSettings().getFlagGermlineOnReport());
 
         GenomicAnalysis analysis = report.genomicAnalysis();
 
-        LOGGER.info("Printing genomic analysis results for {}:", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing genomic analysis results for {}:", lamaPatientData.getReportingId());
         if (report.molecularTissueOriginReporting() != null) {
             LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
         }
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
-        if (report.sampleReport().germlineReportingLevel() != LimsGermlineReportingLevel.NO_REPORTING) {
+        if (lamaPatientData.getReportSettings().getFlagGermlineOnReport()) {
             LOGGER.info("  Number of variants known to exist in germline: {}", germlineOnly(analysis.reportableVariants()).size());
         } else {
             LOGGER.info("  Germline variants and evidence have been removed since no consent has been given");
@@ -228,7 +224,7 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Tumor mutational load: {} ({})", analysis.tumorMutationalLoad(), analysis.tumorMutationalLoadStatus());
         LOGGER.info(" Tumor mutational burden: {}", analysis.tumorMutationalBurden());
 
-        LOGGER.info("Printing actionability results for {}", report.sampleReport().tumorSampleId());
+        LOGGER.info("Printing actionability results for {}", lamaPatientData.getReportingId());
         LOGGER.info(" Tumor-specific evidence items found: {}", analysis.tumorSpecificEvidence().size());
         LOGGER.info(" Clinical trials matched to molecular profile: {}", analysis.clinicalTrials().size());
         LOGGER.info(" Off-label evidence items found: {}", analysis.offLabelEvidence().size());

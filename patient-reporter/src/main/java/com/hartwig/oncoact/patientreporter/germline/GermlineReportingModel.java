@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.hartwig.oncoact.lims.LimsGermlineReportingLevel;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -26,10 +25,10 @@ public class GermlineReportingModel {
     }
 
     public boolean notifyGermlineVariant(@NotNull ReportableVariant germlineVariant,
-            @NotNull LimsGermlineReportingLevel germlineReportingLevel, @NotNull Set<String> germlineGenesWithIndependentHits) {
+                                         boolean germlineReportingLevel, @NotNull Set<String> germlineGenesWithIndependentHits) {
         assert germlineVariant.source() == ReportableVariantSource.GERMLINE;
 
-        if (germlineReportingLevel != LimsGermlineReportingLevel.REPORT_WITH_NOTIFICATION) {
+        if (!germlineReportingLevel) {
             return false;
         }
 
