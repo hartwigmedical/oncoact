@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.failedreasondb;
 
 import com.google.common.collect.Maps;
 import com.hartwig.serve.datamodel.serialization.util.SerializationUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class FailedDBFile {
                     .reasonKey(reasonKey)
                     .reportReason(values[fields.get("reason")])
                     .reportExplanation(values[fields.get("explanation")])
-                    .reportExplanationDetail(values[fields.get("explanationDetail")])
+                    .reportExplanationDetail(values.length == 4 ? values[fields.get("explanationDetail")] : Strings.EMPTY)
                     .build());
         }
         return failedDatabases;
