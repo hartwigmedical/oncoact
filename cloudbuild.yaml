@@ -1,6 +1,6 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gsutil'
-    id: 'Populating Maven cache from bucket'
+  - id: 'Populate Maven cache from bucket'
+    name: 'gcr.io/cloud-builders/gsutil'
     args:
       - '-m'
       - 'rsync'
@@ -11,18 +11,26 @@ steps:
       - path: '/cache/.m2'
         name: 'm2_cache'
 
-  - name: 'maven:3-jdk-11'
-    id: 'Building the jars'
+  - id: 'Build the jars'
+    name: 'maven:3-jdk-11'
     entrypoint: mvn
-    args: [ 'install' ]
+    args: [ 'package', '--batch-mode' ]
     volumes:
       - path: '/cache/.m2'
         name: 'm2_cache'
     env:
       - MAVEN_OPTS=-Dmaven.repo.local=/cache/.m2
 
-  - name: 'gcr.io/cloud-builders/gsutil'
-    id: 'Refreshing bucket from local Maven cache after build'
+  - id: 'Build image with public resources'
+    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.2'
+    args: [ 'eu.gcr.io/hmf-build/oncoact', '$TAG_NAME', 'DockerfilePublic']
+
+  - id: 'Build image with private resources'
+    name: 'eu.gcr.io/hmf-build/docker-tag:1.1.0-beta.2'
+    args: [ 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/oncoact', '$TAG_NAME', 'DockerfilePrivate' ]
+
+  - id: 'Refresh bucket from local Maven cache after build'
+    name: 'gcr.io/cloud-builders/gsutil'
     args:
       - '-m'
       - 'rsync'
@@ -32,26 +40,6 @@ steps:
     volumes:
       - path: '/cache/.m2'
         name: 'm2_cache'
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Building image with public resources'
-    dir: '${_CHILD_PROJECT}'
-    entrypoint: 'bash'
-    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-build/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePublic', '${_CHILD_PROJECT}-' ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Pushing public image'
-    args: [ 'push', 'eu.gcr.io/hmf-build/${_CHILD_PROJECT}', '--all-tags' ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Building image with private resources'
-    dir: '${_CHILD_PROJECT}'
-    entrypoint: 'bash'
-    args: [ '../docker-tag.sh', 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/${_CHILD_PROJECT}', '$TAG_NAME', 'DockerfilePrivate', '${_CHILD_PROJECT}-' ]
-
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Pushing private image'
-    args: [ 'push', 'eu.gcr.io/hmf-pipeline-prod-e45b00f2/${_CHILD_PROJECT}', '--all-tags' ]
 
 logsBucket: 'gs://hmf-build-logs'
 timeout: 4800s
