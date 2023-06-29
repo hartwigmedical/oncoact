@@ -60,7 +60,6 @@ public class RoseAlgo {
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
         return ImmutableRoseData.builder()
-                .patientId(config.patientId())
                 .orange(orange)
                 .actionabilityEntries(actionabilityEntries)
                 .driverGenes(driverGenes)

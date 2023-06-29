@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public interface RoseConfig {
 
-    String PATIENT_ID = "patient_id";
     String ORANGE_JSON = "orange_json";
     String OUTPUT_DIRECTORY = "output_dir";
 
@@ -31,7 +30,6 @@ public interface RoseConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(PATIENT_ID, true, "The patient ID of the sample ID.");
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the data of the report will be written to.");
 
@@ -42,9 +40,6 @@ public interface RoseConfig {
 
         return options;
     }
-
-    @NotNull
-    String patientId();
 
     @NotNull
     String orangeJson();
@@ -65,7 +60,6 @@ public interface RoseConfig {
         }
 
         return ImmutableRoseConfig.builder()
-                .patientId(nonOptionalValue(cmd, PATIENT_ID))
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
                 .actionabilityDatabaseTsv(nonOptionalFile(cmd, ACTIONABILITY_DATABASE_TSV))
