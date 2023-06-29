@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.panel;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
@@ -29,7 +30,7 @@ public class PanelFailReporter {
 
         assert failReasonsDatabaseTsv != null;
         Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedDatabase failedDatabase = failedDatabaseMap.get(reason.identifier());
+        FailedDatabase failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(reason).identifier());
 
         FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
                 .reportReason(failedDatabase.reportReason())

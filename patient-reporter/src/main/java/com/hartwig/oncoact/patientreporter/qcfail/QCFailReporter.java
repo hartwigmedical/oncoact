@@ -2,10 +2,7 @@ package com.hartwig.oncoact.patientreporter.qcfail;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -50,7 +47,7 @@ public class QCFailReporter {
         String failReasonsDatabaseTsv = config.failReasonsDatabaseTsv();
         assert failReasonsDatabaseTsv != null;
         Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedDatabase failedDatabase = failedDatabaseMap.get(config.qcFailReason().identifier());
+        FailedDatabase failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(config.qcFailReason()).identifier());
 
         FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
                 .reportReason(failedDatabase.reportReason())
