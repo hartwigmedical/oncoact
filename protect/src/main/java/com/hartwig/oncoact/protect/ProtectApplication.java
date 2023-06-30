@@ -75,7 +75,7 @@ public class ProtectApplication {
         ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel);
         List<ProtectEvidence> evidences = algo.run(orange);
 
-        String filename = config.outputDir() + File.separator + ".protect.tsv";
+        String filename = config.outputDir() + File.separator + "protect.tsv";
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);
         ProtectEvidenceFile.write(filename, evidences);
     }

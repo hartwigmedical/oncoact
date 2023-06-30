@@ -51,7 +51,7 @@ public class RoseApplication {
 
         ActionabilityConclusion actionabilityConclusion = ConclusionAlgo.generateConclusion(rose);
 
-        String filename = config.outputDir() + File.separator + ".rose.tsv";
+        String filename = config.outputDir() + File.separator + "rose.tsv";
         LOGGER.info("Writing actionability conclusion to file: {}", filename);
         RoseConclusionFile.write(filename, actionabilityConclusion);
     }
