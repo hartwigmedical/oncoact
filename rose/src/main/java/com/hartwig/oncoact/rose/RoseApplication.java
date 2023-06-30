@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.rose;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.rose.conclusion.ConclusionAlgo;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -51,7 +51,7 @@ public class RoseApplication {
 
         ActionabilityConclusion actionabilityConclusion = ConclusionAlgo.generateConclusion(rose);
 
-        String filename = RoseConclusionFile.generateFilename(config.outputDir(), rose.orange().sampleId());
+        String filename = config.outputDir() + File.separator + ".rose.tsv";
         LOGGER.info("Writing actionability conclusion to file: {}", filename);
         RoseConclusionFile.write(filename, actionabilityConclusion);
     }

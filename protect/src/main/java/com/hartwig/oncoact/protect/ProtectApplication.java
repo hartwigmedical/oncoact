@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.protect;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +75,7 @@ public class ProtectApplication {
         ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel);
         List<ProtectEvidence> evidences = algo.run(orange);
 
-        String filename = ProtectEvidenceFile.generateFilename(config.outputDir(), orange.sampleId());
+        String filename = config.outputDir() + File.separator + ".protect.tsv";
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);
         ProtectEvidenceFile.write(filename, evidences);
     }

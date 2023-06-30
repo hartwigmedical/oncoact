@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ProtectEvidenceFile {
 
-    private static final String EXTENSION = ".protect.tsv";
     private static final String TREATMENT_APPROACH_DELIMITER = ",";
 
     private static final String FIELD_DELIMITER = "\t";
@@ -32,11 +31,6 @@ public final class ProtectEvidenceFile {
     private static final String SOURCES_ITEM_URL_DELIMITER = ",";
 
     private ProtectEvidenceFile() {
-    }
-
-    @NotNull
-    public static String generateFilename(@NotNull String basePath, @NotNull String sample) {
-        return basePath + File.separator + sample + EXTENSION;
     }
 
     public static void write(@NotNull String file, @NotNull List<ProtectEvidence> evidences) throws IOException {
