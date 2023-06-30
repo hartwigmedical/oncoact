@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
-public class FailedDBFile {
+public final class FailedDBFile {
 
 
     private static final String SEPARATOR = "\t";
@@ -21,22 +21,22 @@ public class FailedDBFile {
     }
 
     @NotNull
-    public static Map<String, FailedDatabase> buildFromTsv(@NotNull String failedDbTsv) throws IOException {
+    public static Map<String, FailedReason> buildFromTsv(@NotNull String failedDbTsv) throws IOException {
         List<String> failedDbLines = Files.readAllLines(new File(failedDbTsv).toPath());
         Map<String, Integer> fields = SerializationUtil.createFields(failedDbLines.get(0), SEPARATOR);
 
-        Map<String, FailedDatabase> failedDatabases = Maps.newHashMap();
+        Map<String, FailedReason> failedDatabase = Maps.newHashMap();
         for (String line : failedDbLines.subList(1, failedDbLines.size())) {
             String[] values = line.split(SEPARATOR);
 
             String reasonKey = values[fields.get("key")];
-            failedDatabases.put(reasonKey, ImmutableFailedDatabase.builder()
+            failedDatabase.put(reasonKey, ImmutableFailedReason.builder()
                     .reasonKey(reasonKey)
                     .reportReason(values[fields.get("reason")])
                     .reportExplanation(values[fields.get("explanation")])
                     .reportExplanationDetail(values.length == 4 ? values[fields.get("explanationDetail")] : Strings.EMPTY)
                     .build());
         }
-        return failedDatabases;
+        return failedDatabase;
     }
 }

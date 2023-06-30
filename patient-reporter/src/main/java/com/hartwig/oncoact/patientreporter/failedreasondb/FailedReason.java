@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class FailedDatabase {
+public abstract class FailedReason {
 
     @NotNull
     public abstract String reasonKey();

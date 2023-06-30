@@ -5,10 +5,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDatabase;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailExplanationReporting;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,14 +27,8 @@ public class PanelFailReporter {
                                boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String failReasonsDatabaseTsv) throws IOException {
 
         assert failReasonsDatabaseTsv != null;
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedDatabase failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(reason).identifier());
-
-        FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
-                .reportReason(failedDatabase.reportReason())
-                .reportExplanation(failedDatabase.reportExplanation())
-                .reportExplanationDetail(failedDatabase.reportExplanationDetail())
-                .build();
+        Map<String, FailedReason> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
+        FailedReason failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(reason).identifier());
 
         return ImmutablePanelFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
@@ -48,7 +40,7 @@ public class PanelFailReporter {
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .panelFailReason(reason)
-                .failExplanationReporting(failExplanationReporting)
+                .failExplanation(failedDatabase)
                 .build();
     }
 }

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.PanelReport;
 
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public abstract class PanelFailReport implements PanelReport {
     public abstract PanelFailReason panelFailReason();
 
     @NotNull
-    public abstract FailExplanationReporting failExplanationReporting();
+    public abstract FailedReason failExplanation();
 
     @Override
     @NotNull

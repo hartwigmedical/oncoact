@@ -61,9 +61,9 @@ public class PanelQCFailChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(report.failExplanationReporting().reportReason()).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(report.failExplanationReporting().reportExplanation()).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(report.failExplanationReporting().reportExplanationDetail()).addStyle(ReportResources.subTextStyle())
+        div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(ReportResources.dataHighlightStyle()));
+        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(report.failExplanation().reportExplanationDetail()).addStyle(ReportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         return div;
     }

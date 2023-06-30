@@ -4,9 +4,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
@@ -55,8 +53,8 @@ public class QCFailChapter implements ReportChapter {
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
-        reportDocument.add(createFailReasonDiv(failReport.failExplanationReporting().reportReason(),
-                failReport.failExplanationReporting().reportExplanation(), failReport.failExplanationReporting().reportExplanationDetail()));
+        reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),
+                failReport.failExplanation().reportExplanation(), failReport.failExplanation().reportExplanationDetail()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 

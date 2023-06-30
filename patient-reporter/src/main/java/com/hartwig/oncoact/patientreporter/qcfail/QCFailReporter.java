@@ -14,10 +14,8 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDatabase;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailExplanationReporting;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -46,14 +44,8 @@ public class QCFailReporter {
 
         String failReasonsDatabaseTsv = config.failReasonsDatabaseTsv();
         assert failReasonsDatabaseTsv != null;
-        Map<String, FailedDatabase> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedDatabase failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(config.qcFailReason()).identifier());
-
-        FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
-                .reportReason(failedDatabase.reportReason())
-                .reportExplanation(failedDatabase.reportExplanation())
-                .reportExplanationDetail(failedDatabase.reportExplanationDetail())
-                .build();
+        Map<String, FailedReason> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
+        FailedReason failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(config.qcFailReason()).identifier());
 
         if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
             if (config.requirePipelineVersionFile()) {
@@ -101,7 +93,7 @@ public class QCFailReporter {
         return ImmutableQCFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
-                .failExplanationReporting(failExplanationReporting)
+                .failExplanation(failedDatabase)
                 .wgsPurityString(wgsPurityString)
                 .comments(Optional.ofNullable(config.comments()))
                 .isCorrectedReport(config.isCorrectedReport())

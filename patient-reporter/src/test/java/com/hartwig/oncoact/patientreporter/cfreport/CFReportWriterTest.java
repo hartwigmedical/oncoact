@@ -21,8 +21,8 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailExplanationReporting;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailExplanationReporting;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
@@ -208,7 +208,8 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
-        FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
                 .reportExplanationDetail("reportExplanationDetail")
@@ -219,7 +220,7 @@ public class CFReportWriterTest {
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
-                .failExplanationReporting(failExplanationReporting)
+                .failExplanation(failExplanation)
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
@@ -240,7 +241,8 @@ public class CFReportWriterTest {
                                              @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
-        FailExplanationReporting failExplanationReporting = ImmutableFailExplanationReporting.builder()
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
                 .reportExplanationDetail("reportExplanationDetail")
@@ -250,7 +252,7 @@ public class CFReportWriterTest {
                 .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
-                .failExplanationReporting(failExplanationReporting)
+                .failExplanation(failExplanation)
                 .wgsPurityString(wgsPurityString)
                 .comments(comments)
                 .isCorrectedReport(correctedReport)
