@@ -200,7 +200,7 @@ Run rose with the expected arguments.
 docker run --rm \
 --name rose \
 --mount source=rose-output,target=/out \
---mount source=rose-input,target=/in \
+--mount source=rose-input,target=/in/orange \
 eu.gcr.io/hmf-build/oncoact/rose:2.0.0-beta.4
 ```
 

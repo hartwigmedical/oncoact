@@ -153,8 +153,8 @@ Run protect with the expected arguments.
 docker run --rm \
 --name protect \
 --mount source=protect-output,target=/out \
---mount source=protect-input,target=/in \
-protect:latest \
+--mount source=protect-input,target=/in/orange \
+eu.gcr.io/hmf-build/oncoact/protect:3.0.0-beta.1 \
 -primary_tumor_doids 162
 ```
 
