@@ -19,7 +19,6 @@ import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.CircosChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOffLabelChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOnLabelChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.DetailsAndDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ExplanationChapter;
@@ -70,7 +69,7 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportChapter[] chapters = new ReportChapter[] { new SummaryChapter(report), new ClinicalEvidenceOnLabelChapter(report),
-                new ClinicalEvidenceOffLabelChapter(report), new GenomicAlterationsChapter(report),
+                new GenomicAlterationsChapter(report),
                 new TumorCharacteristicsChapter(report), new CircosChapter(report), new ExplanationChapter(),
                 new DetailsAndDisclaimerChapter(report) };
 
