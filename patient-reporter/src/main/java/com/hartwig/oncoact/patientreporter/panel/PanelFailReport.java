@@ -4,12 +4,13 @@ import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.PanelReport;
 
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class PanelFailReport implements PanelReport {
 
     @Override
@@ -18,6 +19,9 @@ public abstract class PanelFailReport implements PanelReport {
 
     @NotNull
     public abstract PanelFailReason panelFailReason();
+
+    @NotNull
+    public abstract FailedReason failExplanation();
 
     @Override
     @NotNull

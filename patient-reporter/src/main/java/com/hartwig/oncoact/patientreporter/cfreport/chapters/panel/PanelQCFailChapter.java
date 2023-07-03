@@ -4,21 +4,15 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class PanelQCFailChapter implements ReportChapter {
-
-    private static final Logger LOGGER = LogManager.getLogger(PanelQCFailChapter.class);
 
     private static final String TITLE_REPORT = "OncoAct tumor NGS report - Result Report Failed";
 
@@ -57,36 +51,19 @@ public class PanelQCFailChapter implements ReportChapter {
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
-        reportDocument.add(createFailReasonDiv(report.panelFailReason()));
+        reportDocument.add(createFailReasonDiv());
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull PanelFailReason failReason) {
-        String reason = Formats.NA_STRING;
-        String explanation = Formats.NA_STRING;
-        String explanationDetail = Formats.NA_STRING;
-
-        switch (failReason) {
-            case PANEL_FAILURE: {
-                reason = "Insufficient quality of received biomaterial(s)";
-                explanation = "The received biomaterial(s) did not meet the requirements that are needed for \n"
-                        + "high quality Next Generation Sequencing.";
-                explanationDetail =
-                        "Sequencing could not be performed due to insufficient DNA.";
-                break;
-            }
-            default: {
-                LOGGER.warn("Unexpected fail reason: {}", failReason);
-            }
-        }
+    private Div createFailReasonDiv() {
 
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(reason).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(explanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(explanationDetail).addStyle(ReportResources.subTextStyle())
+        div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(ReportResources.dataHighlightStyle()));
+        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(report.failExplanation().reportExplanationDetail()).addStyle(ReportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         return div;
     }
