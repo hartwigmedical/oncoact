@@ -64,8 +64,6 @@ public class AnalysedPatientReporter {
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String specialRemark = reportData.specialRemarkModel().findSpecialRemarkForSample(reportData.lamaPatientData().getTumorSampleId());
-
         String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {
             String pipelineVersionFile = config.pipelineVersionFile();
@@ -111,7 +109,7 @@ public class AnalysedPatientReporter {
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
-                .specialRemark(specialRemark)
+                .specialRemark(reportData.specialRemark())
                 .pipelineVersion(pipelineVersion)
                 .genomicAnalysis(curatedAnalysis)
                 .molecularTissueOriginReporting(curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()

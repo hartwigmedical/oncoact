@@ -2,8 +2,10 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Optional;
 
 import com.google.common.collect.Lists;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 
 import org.apache.commons.cli.CommandLine;
@@ -50,12 +52,10 @@ public interface PatientReporterConfig {
 
     // Resources used for generating an analysed patient report
     String GERMLINE_REPORTING_TSV = "germline_reporting_tsv";
-    String SAMPLE_SPECIAL_REMARK_TSV = "sample_special_remark_tsv";
+    String HAS_CORRECTIONS = "has_corrections";
+    String CORRECTION_JSON = "correction_json";
 
     // Some additional optional params and flags
-    String COMMENTS = "comments";
-    String CORRECTED_REPORT = "corrected_report";
-    String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
     String IS_DIAGNOSTIC = "is_diagnostic";
@@ -92,11 +92,8 @@ public interface PatientReporterConfig {
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
 
-        options.addOption(SAMPLE_SPECIAL_REMARK_TSV, true, "Path towards a TSV containing the special remarks of the samples.");
-
-        options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
-        options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
-        options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
+        options.addOption(HAS_CORRECTIONS, false, "If provided, expect a correction json.");
+        options.addOption(CORRECTION_JSON, true, "If provided, the path towards a correction json.");
 
         options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
         options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
@@ -162,15 +159,8 @@ public interface PatientReporterConfig {
     @NotNull
     String germlineReportingTsv();
 
-    @NotNull
-    String sampleSpecialRemarkTsv();
-
     @Nullable
-    String comments();
-
-    boolean isCorrectedReport();
-
-    boolean isCorrectedReportExtern();
+    String correctionJson();
 
     boolean onlyCreatePDF();
 
@@ -211,7 +201,6 @@ public interface PatientReporterConfig {
         String roseTsv = null;
 
         String germlineReportingTsv = Strings.EMPTY;
-        String sampleSpecialRemarkTsv = Strings.EMPTY;
 
         if (isQCFail && qcFailReason.isDeepWGSDataAvailable()) {
             if (requirePipelineVersion) {
@@ -233,7 +222,11 @@ public interface PatientReporterConfig {
             }
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
-            sampleSpecialRemarkTsv = nonOptionalFile(cmd, SAMPLE_SPECIAL_REMARK_TSV);
+        }
+
+        String correctionJson = null;
+        if (cmd.hasOption(HAS_CORRECTIONS)) {
+            correctionJson = nonOptionalFile(cmd, CORRECTION_JSON);
         }
 
         return ImmutablePatientReporterConfig.builder()
@@ -254,10 +247,7 @@ public interface PatientReporterConfig {
                 .addRose(addRose)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
-                .sampleSpecialRemarkTsv(sampleSpecialRemarkTsv)
-                .comments(cmd.getOptionValue(COMMENTS))
-                .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
-                .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
+                .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)

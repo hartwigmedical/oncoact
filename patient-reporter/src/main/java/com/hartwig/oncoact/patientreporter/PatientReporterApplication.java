@@ -11,7 +11,6 @@ import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedReportDataLoader;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReportData;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
@@ -140,8 +139,8 @@ public class PatientReporterApplication {
 
     @NotNull
     private static AnalysedReportData buildAnalysedReportData(@NotNull PatientReporterConfig config) throws IOException {
-        return AnalysedReportDataLoader.buildFromFiles(buildBaseReportData(config),
+        return AnalysedReportData.buildFromFiles(buildBaseReportData(config),
                 config.germlineReportingTsv(),
-                config.sampleSpecialRemarkTsv());
+                config.correctionJson());
     }
 }
