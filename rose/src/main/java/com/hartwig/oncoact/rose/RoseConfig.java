@@ -3,6 +3,7 @@ package com.hartwig.oncoact.rose;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -88,17 +89,6 @@ public interface RoseConfig {
     }
 
     @NotNull
-    static String nonOptionalDir(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
-        String value = nonOptionalValue(cmd, param);
-
-        if (pathDoesNotExist(value) || !pathIsDirectory(value)) {
-            throw new ParseException("Parameter '" + param + "' must be an existing directory: " + value);
-        }
-
-        return value;
-    }
-
-    @NotNull
     static String nonOptionalFile(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
         String value = nonOptionalValue(cmd, param);
 
@@ -110,10 +100,6 @@ public interface RoseConfig {
     }
 
     static boolean pathDoesNotExist(@NotNull String path) {
-        return !Files.exists(new File(path).toPath());
-    }
-
-    static boolean pathIsDirectory(@NotNull String path) {
-        return Files.isDirectory(new File(path).toPath());
+        return !Files.exists(Paths.get(path));
     }
 }

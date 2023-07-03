@@ -15,7 +15,7 @@ import org.apache.commons.cli.ParseException;
  * Options found in the properties file are treated the same as options provided through the command line.
  * <p>
  * If an option is provided through the command line and is found in the properties file, the command line
- * value takes precedent.
+ * value takes precedence.
  */
 public class CliAndPropertyParser extends DefaultParser {
     private static final String PROPERTIES_FILE = "properties_file";
