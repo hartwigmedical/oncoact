@@ -133,18 +133,16 @@ The list of sources contains the following information per source:
 | evidenceUrls | A list of urls with additional information about the evidence                             | https://pubmed.ncbi.nlm.nih.gov |
 
 ## Building Protect
-Build a docker image for protect:
+Build a docker image for protect in GCP:
 ```shell
-mvn clean install
-docker build . -t protect:latest
-docker tag protect eu.gcr.io/hmf-build/protect:latest
+git tag protect-{{semver-version}}
+git push origin protect-{{semver-version}}
 ```
 
 Copy the orange JSON input to the input volume.
 ```shell
 docker container create --name temp -v protect-input:/input -v serve-db:/serve busybox
 docker cp /path/to/orange.json temp:/input/orange.json
-docker cp /path/to/serve_db/ temp:/serve/
 docker rm temp
 ```
 
@@ -154,8 +152,8 @@ docker run --rm \
 --name protect \
 --mount source=protect-output,target=/out \
 --mount source=protect-input,target=/in/orange \
-eu.gcr.io/hmf-build/oncoact/protect:3.0.0-beta.1 \
--primary_tumor_doids 162
+eu.gcr.io/hmf-build/oncoact/protect:{{semver-version}} \
+-primary_tumor_doids {{tumor-doids}}
 ```
 
 ## Version History and Download Links

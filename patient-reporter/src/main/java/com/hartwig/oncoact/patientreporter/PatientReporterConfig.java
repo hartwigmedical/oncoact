@@ -91,8 +91,9 @@ public interface PatientReporterConfig {
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
-        // TODO: Get rid of the next 4 properties
+
         options.addOption(SAMPLE_SPECIAL_REMARK_TSV, true, "Path towards a TSV containing the special remarks of the samples.");
+
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
         options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");

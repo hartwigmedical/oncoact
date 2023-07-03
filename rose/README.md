@@ -184,8 +184,8 @@ The following field type alteration didn't interpret currently but present in th
 ## Building Rose
 Build a docker image for rose:
 ```shell
-mvn clean install
-docker build . -t rose:latest
+git tag rose-{{semver-version}}
+git push origin rose-{{semver-version}}
 ```
 
 Copy the orange JSON input to the input volume.
@@ -201,7 +201,7 @@ docker run --rm \
 --name rose \
 --mount source=rose-output,target=/out \
 --mount source=rose-input,target=/in/orange \
-eu.gcr.io/hmf-build/oncoact/rose:2.0.0-beta.4
+eu.gcr.io/hmf-build/oncoact/rose:{{semver-version}}
 ```
 
 ## Version History and Download Links
