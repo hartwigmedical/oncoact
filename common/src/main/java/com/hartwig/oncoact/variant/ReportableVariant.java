@@ -19,38 +19,15 @@ public abstract class ReportableVariant implements Variant {
     public abstract ReportableVariantSource source();
 
     @NotNull
-    @Override
-    public abstract PurpleVariantType type();
-
-    @NotNull
-    @Override
-    public abstract String gene();
-
-    @NotNull
     public abstract String transcript();
 
     public abstract boolean isCanonical();
-
-    @NotNull
-    @Override
-    public abstract String chromosome();
-
-    @Override
-    public abstract int position();
 
     @NotNull
     @Value.Derived
     public String gDNA() {
         return chromosome() + ":" + position();
     }
-
-    @NotNull
-    @Override
-    public abstract String ref();
-
-    @NotNull
-    @Override
-    public abstract String alt();
 
     @NotNull
     public abstract String canonicalTranscript();

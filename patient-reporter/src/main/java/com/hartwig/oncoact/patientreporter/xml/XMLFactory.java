@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.xml;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.ctc.wstx.util.DataUtil;
 import com.google.common.collect.Lists;
@@ -238,7 +239,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]biallc")
-                    .valuePath(Map.of("value", Boolean.toString(reportableVariant.biallelic())))
+                    .valuePath(Map.of("value", Optional.ofNullable(reportableVariant.biallelic()).map(b -> Boolean.toString(b)).orElse("")))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]hotsp")
