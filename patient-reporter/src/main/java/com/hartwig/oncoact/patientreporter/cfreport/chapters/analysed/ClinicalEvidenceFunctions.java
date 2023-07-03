@@ -82,7 +82,7 @@ public class ClinicalEvidenceFunctions {
     public static Table createTreatmentApproachTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
                                                      float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[]{25, 120, 365},
-                new Cell[]{TableUtil.createHeaderCell("Treatment", 2),
+                new Cell[]{TableUtil.createHeaderCell("Treatment approach", 2),
                         TableUtil.createHeaderCell("Match", 8)},
                 contentWidth);
 
