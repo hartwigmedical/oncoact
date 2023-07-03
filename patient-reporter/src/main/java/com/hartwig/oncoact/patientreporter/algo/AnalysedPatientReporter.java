@@ -13,7 +13,12 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
@@ -21,14 +26,10 @@ import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
-import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
-import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
-import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
-import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
@@ -37,8 +38,8 @@ import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
-
 import com.hartwig.serve.datamodel.ImmutableTreatment;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -62,7 +63,7 @@ public class AnalysedPatientReporter {
     public AnalysedPatientReport run(@NotNull PatientReporterConfig config) throws IOException {
 
         String roseTsvFile = config.roseTsv();
-        String clinicalSummary = config.addRose() && roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
+        String clinicalSummary = roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
         String pipelineVersion = Strings.EMPTY;
         if (config.requirePipelineVersionFile()) {
@@ -89,7 +90,8 @@ public class AnalysedPatientReporter {
         MolecularTissueOriginReporting molecularTissueOriginReporting = MolecularTissueOriginReportingFactory.create(best);
         LOGGER.info(" Predicted cancer type '{}' with likelihood {}", best.cancerType(), best.likelihood());
 
-        Set<PeachGenotype> pharmacogeneticsGenotypes = curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach();
+        Set<PeachGenotype> pharmacogeneticsGenotypes =
+                curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach();
 
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap = Maps.newHashMap();
         for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypes) {
@@ -102,24 +104,29 @@ public class AnalysedPatientReporter {
             }
         }
 
-        HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.purpleQCStatus());
+        HlaAllelesReportingData hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(),
+                curatedAnalysis.hasReliablePurity(),
+                curatedAnalysis.purpleQCStatus());
 
-        AnalysedPatientReport report = ImmutableAnalysedPatientReport.builder()
+        AnalysedPatientReport report = AnalysedPatientReport.builder()
                 .lamaPatientData(reportData.lamaPatientData())
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(qcForm)
                 .clinicalSummary(clinicalSummary)
-                .specialRemark(reportData.specialRemark())
                 .pipelineVersion(pipelineVersion)
                 .genomicAnalysis(curatedAnalysis)
-                .molecularTissueOriginReporting(curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
-                        ? null
-                        : molecularTissueOriginReporting)
+                .molecularTissueOriginReporting(
+                        curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
+                                ? null
+                                : molecularTissueOriginReporting)
                 .molecularTissueOriginPlotPath(config.cuppaPlot())
                 .circosPlotPath(config.purpleCircosPlot())
-                .comments(Optional.ofNullable(config.comments()))
-                .isCorrectedReport(config.isCorrectedReport())
-                .isCorrectedReportExtern(config.isCorrectedReportExtern())
+                .specialRemark(Optional.ofNullable(reportData.correction()).map(Correction::specialRemark).orElse(""))
+                .comments(Optional.ofNullable(reportData.correction()).map(Correction::specialRemark))
+                .isCorrectedReport(Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false))
+                .isCorrectedReportExtern(Optional.ofNullable(reportData.correction())
+                        .map(Correction::isCorrectedReportExtern)
+                        .orElse(false))
                 .signaturePath(reportData.signaturePath())
                 .logoRVAPath(reportData.logoRVAPath())
                 .logoCompanyPath(reportData.logoCompanyPath())
@@ -138,7 +145,9 @@ public class AnalysedPatientReporter {
     @NotNull
     @VisibleForTesting
     static String determineForNumber(boolean hasReliablePurity, double purity) {
-        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF ? QsFormNumber.FOR_080.display() : QsFormNumber.FOR_209.display();
+        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
+                ? QsFormNumber.FOR_080.display()
+                : QsFormNumber.FOR_209.display();
     }
 
     @NotNull
@@ -150,10 +159,13 @@ public class AnalysedPatientReporter {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.reported()) {
                 //TODO; switch to reportableEvidenceItems.add(evidence) when ready to use for reporting
-                reportableEvidenceItems.add(ImmutableProtectEvidence.builder().from(evidence).
-                        treatment(ImmutableTreatment.builder().from(evidence.treatment())
+                reportableEvidenceItems.add(ImmutableProtectEvidence.builder()
+                        .from(evidence)
+                        .treatment(ImmutableTreatment.builder()
+                                .from(evidence.treatment())
                                 .relevantTreatmentApproaches(Sets.newHashSet())
-                                .sourceRelevantTreatmentApproaches(Sets.newHashSet()).build())
+                                .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                                .build())
                         .build());
             }
         }
@@ -183,7 +195,7 @@ public class AnalysedPatientReporter {
         PatientReporterData lamaPatientData = report.lamaPatientData();
 
         LocalDate tumorArrivalDate = lamaPatientData.getTumorArrivalDate();
-        String formattedTumorArrivalDate = tumorArrivalDate != null ? DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate) : "N/A";
+        String formattedTumorArrivalDate = DateTimeFormatter.ofPattern("dd-MMM-yyyy").format(tumorArrivalDate);
 
         LOGGER.info("Printing clinical and laboratory data for {}", lamaPatientData.getReportingId());
         LOGGER.info(" Tumor sample arrived at HMF on {}", formattedTumorArrivalDate);
@@ -201,8 +213,9 @@ public class AnalysedPatientReporter {
         GenomicAnalysis analysis = report.genomicAnalysis();
 
         LOGGER.info("Printing genomic analysis results for {}:", lamaPatientData.getReportingId());
-        if (report.molecularTissueOriginReporting() != null) {
-            LOGGER.info(" Molecular tissue origin conclusion: {}", report.molecularTissueOriginReporting().interpretCancerType());
+        var molecularTissueOriginReporting = report.molecularTissueOriginReporting();
+        if (molecularTissueOriginReporting != null) {
+            LOGGER.info(" Molecular tissue origin conclusion: {}", molecularTissueOriginReporting.interpretCancerType());
         }
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
         if (lamaPatientData.getReportSettings().getFlagGermlineOnReport()) {

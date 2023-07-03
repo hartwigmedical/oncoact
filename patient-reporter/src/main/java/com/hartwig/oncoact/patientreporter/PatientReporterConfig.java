@@ -151,8 +151,6 @@ public interface PatientReporterConfig {
     @NotNull
     String protectEvidenceTsv();
 
-    boolean addRose();
-
     @Nullable
     String roseTsv();
 
@@ -244,7 +242,6 @@ public interface PatientReporterConfig {
                 .cuppaPlot(cuppaPlot)
                 .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
-                .addRose(addRose)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
                 .correctionJson(correctionJson)

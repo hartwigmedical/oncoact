@@ -2,11 +2,11 @@ package com.hartwig.oncoact.patientreporter.algo;
 
 import java.io.IOException;
 
+import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.ReportData;
-import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
-import com.hartwig.oncoact.patientreporter.remarks.SpecialRemarkModel;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -14,28 +14,18 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
-public abstract class AnalysedReportData implements ReportData {
-
-    @NotNull
-    public static AnalysedReportData buildFromFiles(@NotNull ReportData reportData, @NotNull String germlineReportingTsv,
-             @Nullable String correctionJson) throws IOException {
-        GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(germlineReportingTsv);
-        Correction correction = null;
-        if (correctionJson != null) {
-            correction = Correction.read(correctionJson);
-        }
-
-        return ImmutableAnalysedReportData.builder()
-                .from(reportData)
-                .germlineReportingModel(germlineReportingModel)
-                .specialRemark(correction != null ? correction.specialRemark() : "")
-
-                .build();
+public interface AnalysedReportData extends ReportData {
+    static ImmutableAnalysedReportData.Builder builder() {
+        return ImmutableAnalysedReportData.builder();
     }
 
     @NotNull
-    public abstract GermlineReportingModel germlineReportingModel();
+    static AnalysedReportData buildFromConfig(@NotNull PatientReporterConfig config) throws IOException {
+        GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(config.germlineReportingTsv());
+
+        return builder().from(QCFailReportData.buildFromConfig(config)).germlineReportingModel(germlineReportingModel).build();
+    }
 
     @NotNull
-    public abstract String specialRemark();
+    GermlineReportingModel germlineReportingModel();
 }
