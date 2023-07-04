@@ -79,8 +79,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         String hrDeficiencyLabel =
                 hasReliablePurity ? chordStatusString(hrdStatus) + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
 
-        String hrdUnreliableFootnote = "* Homologous recombination deficiency score can not be determined reliably when a tumor is microsatellite unstable "
-                + " or has insufficient number of mutations and is therefore not reported for this sample.";
+        String hrdUnreliableFootnote = "* HRD score can not be determined reliably when a tumor is microsatellite unstable "
+                + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
         boolean displayFootNote = false;
         boolean isHrdReliable =
                 genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
@@ -94,11 +94,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
-        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "Homologous recombination deficiency status (" + DOUBLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
+        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
-        reportDocument.add(createCharacteristicDiv("Homologous recombination score",
+        reportDocument.add(createCharacteristicDiv("HR-Deficiency score",
                 hrDeficiencyLabel,
-                "The Homologous recombination deficiency score is determined by CHORD, a WGS signature-based classifier comparing "
+                "The HR-deficiency score is determined by CHORD, a WGS signature-based classifier comparing "
                         + "the signature of this sample with signatures found across samples with known BRCA1/BRCA2 inactivation. \n"
                         + "Tumors with a score greater or equal than 0.5 are considered HR deficient by complete BRCA inactivation.",
                 hrChart,
@@ -118,7 +118,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
-        satelliteChart.setTickMarks(new double[]{MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX},
+        satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
                 DOUBLE_DECIMAL_FORMAT);
         satelliteChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         satelliteChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(satelliteChart.max()));
@@ -129,7 +129,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 "The microsatellite stability score represents the number of somatic inserts and deletes in "
                         + "(short) repeat sections across the whole genome of the tumor per Mb. This metric can be "
                         + "considered as a good marker for instability in microsatellite repeat regions. Tumors with a "
-                        + "score greater than 4.0 are considered microsatellite unstable.",
+                        + "score greater than 4.0 are considered microsatellite unstable (MSI).",
                 satelliteChart,
                 Strings.EMPTY,
                 false));
@@ -147,7 +147,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false);
         mutationalLoadChart.enabled(hasReliablePurity);
         mutationalLoadChart.scale(InlineBarChart.LOG10_SCALE);
-        mutationalLoadChart.setTickMarks(new double[]{MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX}, NO_DECIMAL_FORMAT);
+        mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
         mutationalLoadChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalLoadChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(mutationalLoadChart.max()));
         mutationalLoadChart.setIndicator(MutationalLoad.THRESHOLD, "High (" + NO_DECIMAL_FORMAT.format(MutationalLoad.THRESHOLD) + ")");
@@ -173,7 +173,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, "Low", "High", false);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
-        mutationalBurdenChart.setTickMarks(new double[]{MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX},
+        mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
                 DOUBLE_DECIMAL_FORMAT);
         mutationalBurdenChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalBurdenChart.enableOvershoot(">" + SINGLE_DECIMAL_FORMAT.format(mutationalBurdenChart.max()));
@@ -200,7 +200,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv(""));
 
         reportDocument.add(createCharacteristicDiv("Molecular tissue of origin prediction"));
-        Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 10, 1, 10}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
         table.setWidth(contentWidth());
         if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
 
@@ -306,7 +306,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         div.add(new Paragraph(title).addStyle(ReportResources.sectionTitleStyle()));
 
-        Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 19}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 19 }));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(highlight)));
 
