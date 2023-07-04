@@ -16,14 +16,7 @@ public final class RoseConclusionFile {
 
     private static final Logger LOGGER = LogManager.getLogger(RoseConclusionFile.class);
 
-    private static final String EXTENSION = ".rose.tsv";
-
     private RoseConclusionFile() {
-    }
-
-    @NotNull
-    public static String generateFilename(@NotNull String basePath, @NotNull String sample) {
-        return basePath + File.separator + sample + EXTENSION;
     }
 
     @NotNull

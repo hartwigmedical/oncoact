@@ -8,6 +8,7 @@ import java.util.Map;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -18,7 +19,6 @@ import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
 import com.hartwig.silo.client.model.PatientInformationResponse;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -42,13 +42,14 @@ public class PatientReporterApplication {
 
         PatientReporterConfig config = null;
         try {
-            config = PatientReporterConfig.createConfig(new DefaultParser().parse(options, args));
+            config = PatientReporterConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PatientReporter", options);
             System.exit(1);
         }
 
+        LOGGER.info("Patient reporter config is: {}", config);
         new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 

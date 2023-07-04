@@ -6,13 +6,13 @@ import com.google.common.collect.Maps;
 
 import org.jetbrains.annotations.NotNull;
 
-public final class FileReader {
+public final class CsvFileReader {
 
-    private FileReader() {
+    private CsvFileReader() {
     }
 
     @NotNull
-    public static Map<String, Integer> createFields(@NotNull String fieldsHeader, @NotNull String delimiter) {
+    public static Map<String, Integer> getHeadersToDelimiter(@NotNull String fieldsHeader, @NotNull String delimiter) {
         String[] items = fieldsHeader.split(delimiter, -1);
         Map<String, Integer> fieldsIndexMap = Maps.newLinkedHashMap();
 

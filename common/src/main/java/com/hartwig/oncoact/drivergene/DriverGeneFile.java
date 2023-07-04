@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.util.FileReader;
+import com.hartwig.oncoact.util.CsvFileReader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public final class DriverGeneFile {
     private static List<DriverGene> fromLines(@NotNull List<String> lines) {
         List<DriverGene> driverGenes = Lists.newArrayList();
 
-        Map<String, Integer> fields = FileReader.createFields(lines.get(0), DELIMITER);
+        Map<String, Integer> fields = CsvFileReader.getHeadersToDelimiter(lines.get(0), DELIMITER);
 
         int geneIndex = fields.get("gene");
         int missenseIndex = fields.get("reportMissense");

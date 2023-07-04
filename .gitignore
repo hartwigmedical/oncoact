@@ -5,4 +5,5 @@
 # Ignore target directies
 target
 
-
+# Ignore private run directories
+run-local.properties
