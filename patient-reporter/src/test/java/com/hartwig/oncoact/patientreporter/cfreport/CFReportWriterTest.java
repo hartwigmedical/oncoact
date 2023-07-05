@@ -21,6 +21,8 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
@@ -206,11 +208,19 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
+                .reportReason("reportReason")
+                .reportExplanation("reportExplanation")
+                .reportExplanationDetail("reportExplanationDetail")
+                .build();
+
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
+                .failExplanation(failExplanation)
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
@@ -231,10 +241,18 @@ public class CFReportWriterTest {
                                              @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
+                .reportReason("reportReason")
+                .reportExplanation("reportExplanation")
+                .reportExplanationDetail("reportExplanationDetail")
+                .build();
+
         QCFailReport patientReport = ImmutableQCFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
+                .failExplanation(failExplanation)
                 .wgsPurityString(wgsPurityString)
                 .comments(comments)
                 .isCorrectedReport(correctedReport)

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface QCFailReportData extends ReportData {
     static ImmutableQCFailReportData.Builder builder() {
         return ImmutableQCFailReportData.builder();
