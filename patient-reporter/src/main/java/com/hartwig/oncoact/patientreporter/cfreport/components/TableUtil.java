@@ -39,6 +39,14 @@ public final class TableUtil {
     }
 
     @NotNull
+    public static Table createReportContentTable(@NotNull float[] columnPercentageWidths, float contentWidth) {
+        Table table = new Table(UnitValue.createPercentArray(columnPercentageWidths)).setWidth(contentWidth);
+        table.setFixedLayout();
+
+        return table;
+    }
+
+    @NotNull
     public static Table createReportContentTable(@NotNull float[] columnPercentageWidths, @NotNull Cell[] headerCells, float contentWidth) {
         Table table = new Table(UnitValue.createPercentArray(columnPercentageWidths)).setWidth(contentWidth);
         table.setFixedLayout();
@@ -120,6 +128,21 @@ public final class TableUtil {
     @NotNull
     public static Cell createHeaderCell(@NotNull String text) {
         return createHeaderCell(text, 1);
+    }
+
+    @NotNull
+    public static Cell createHeaderCellEmpty(@NotNull String text, int colSpan) {
+        return createHeaderCellEmpty(colSpan).add(new Paragraph(text.toUpperCase()));
+    }
+
+    @NotNull
+    private static Cell createHeaderCellEmpty(int colSpan) {
+        Cell c = new Cell(1, colSpan);
+        c.setHeight(0); // Set fixed height to create consistent spacing between table title and header
+        c.setBorder(Border.NO_BORDER);
+        c.setVerticalAlignment(VerticalAlignment.BOTTOM);
+        c.addStyle(ReportResources.tableHeaderStyle());
+        return c;
     }
 
     @NotNull

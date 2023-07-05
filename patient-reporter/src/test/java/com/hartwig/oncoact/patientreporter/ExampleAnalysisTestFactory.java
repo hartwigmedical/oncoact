@@ -455,7 +455,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
                         "BRAF V600",
-                        Sets.newHashSet(),
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"),
                         EvidenceType.CODON_MUTATION,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"))))
                 .build());
