@@ -93,6 +93,7 @@ public interface PatientReporterConfig {
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
+
         options.addOption(SAMPLE_SPECIAL_REMARK_TSV, true, "Path towards a TSV containing the special remarks of the samples.");
 
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");

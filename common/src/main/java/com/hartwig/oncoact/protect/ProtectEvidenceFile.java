@@ -11,7 +11,7 @@ import java.util.StringJoiner;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.util.FileReader;
+import com.hartwig.oncoact.util.CsvFileReader;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ProtectEvidenceFile {
 
-    private static final String EXTENSION = ".protect.tsv";
     private static final String TREATMENT_APPROACH_DELIMITER = ",";
 
     private static final String FIELD_DELIMITER = "\t";
@@ -32,11 +31,6 @@ public final class ProtectEvidenceFile {
     private static final String SOURCES_ITEM_URL_DELIMITER = ",";
 
     private ProtectEvidenceFile() {
-    }
-
-    @NotNull
-    public static String generateFilename(@NotNull String basePath, @NotNull String sample) {
-        return basePath + File.separator + sample + EXTENSION;
     }
 
     public static void write(@NotNull String file, @NotNull List<ProtectEvidence> evidences) throws IOException {
@@ -53,7 +47,7 @@ public final class ProtectEvidenceFile {
         List<ProtectEvidence> evidence = Lists.newArrayList();
         List<String> lines = Files.readAllLines(new File(file).toPath());
 
-        Map<String, Integer> fields = FileReader.createFields(lines.get(0), FIELD_DELIMITER);
+        Map<String, Integer> fields = CsvFileReader.getHeadersToDelimiter(lines.get(0), FIELD_DELIMITER);
         for (String line : lines.subList(1, lines.size())) {
             evidence.add(fromLine(fields, line));
         }

@@ -6,6 +6,7 @@ import java.util.List;
 import com.hartwig.oncoact.doid.DiseaseOntology;
 import com.hartwig.oncoact.doid.DoidEntry;
 import com.hartwig.oncoact.doid.DoidNode;
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -25,7 +26,7 @@ public class DoidTermResolverApp {
 
     public static void main(String[] args) throws ParseException, IOException {
         Options options = createOptions();
-        CommandLine cmd = new DefaultParser().parse(options, args);
+        CommandLine cmd = new CliAndPropertyParser().parse(options, args);
 
         run(cmd.getOptionValue(DOID_JSON), cmd.getOptionValue(DOID_TO_RESOLVE));
     }

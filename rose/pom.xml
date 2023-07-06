@@ -38,6 +38,7 @@
     </dependencies>
 
     <build>
+        <finalName>rose</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -54,15 +55,14 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.hartwig.oncoact.rose.RoseApplication
-                            </mainClass>
+                            <mainClass>com.hartwig.oncoact.rose.RoseApplication</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
 
                     <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                        <descriptorRef>jar-with-dependencies-svc-fix</descriptorRef>
                     </descriptorRefs>
                 </configuration>
             </plugin>

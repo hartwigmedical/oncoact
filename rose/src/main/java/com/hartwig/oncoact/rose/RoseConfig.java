@@ -1,7 +1,9 @@
 package com.hartwig.oncoact.rose;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public interface RoseConfig {
 
-    String PATIENT_ID = "patient_id";
     String ORANGE_JSON = "orange_json";
     String OUTPUT_DIRECTORY = "output_dir";
 
@@ -30,20 +31,16 @@ public interface RoseConfig {
     static Options createOptions() {
         Options options = new Options();
 
-        options.addOption(PATIENT_ID, true, "The patient ID of the sample ID.");
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the data of the report will be written to.");
 
-        options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data oof the actionability database can be found.");
+        options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data of the actionability database can be found.");
         options.addOption(DRIVER_GENE_TSV, true, "Path to driver gene TSV");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
 
         return options;
     }
-
-    @NotNull
-    String patientId();
 
     @NotNull
     String orangeJson();
@@ -58,15 +55,14 @@ public interface RoseConfig {
     String driverGeneTsv();
 
     @NotNull
-    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
+    static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
         }
 
         return ImmutableRoseConfig.builder()
-                .patientId(nonOptionalValue(cmd, PATIENT_ID))
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
-                .outputDir(nonOptionalDir(cmd, OUTPUT_DIRECTORY))
+                .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
                 .actionabilityDatabaseTsv(nonOptionalFile(cmd, ACTIONABILITY_DATABASE_TSV))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
                 .build();
@@ -83,13 +79,12 @@ public interface RoseConfig {
     }
 
     @NotNull
-    static String nonOptionalDir(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
+    static String outputDir(@NotNull CommandLine cmd, @NotNull String param) throws ParseException, IOException {
         String value = nonOptionalValue(cmd, param);
-
-        if (!pathExists(value) || !pathIsDirectory(value)) {
-            throw new ParseException("Parameter '" + param + "' must be an existing directory: " + value);
+        File outputDir = new File(value);
+        if (!outputDir.exists() && !outputDir.mkdirs()) {
+            throw new IOException("Unable to write to directory " + value);
         }
-
         return value;
     }
 
@@ -97,18 +92,14 @@ public interface RoseConfig {
     static String nonOptionalFile(@NotNull CommandLine cmd, @NotNull String param) throws ParseException {
         String value = nonOptionalValue(cmd, param);
 
-        if (!pathExists(value)) {
+        if (pathDoesNotExist(value)) {
             throw new ParseException("Parameter '" + param + "' must be an existing file: " + value);
         }
 
         return value;
     }
 
-    static boolean pathExists(@NotNull String path) {
-        return Files.exists(new File(path).toPath());
-    }
-
-    static boolean pathIsDirectory(@NotNull String path) {
-        return Files.isDirectory(new File(path).toPath());
+    static boolean pathDoesNotExist(@NotNull String path) {
+        return !Files.exists(Paths.get(path));
     }
 }

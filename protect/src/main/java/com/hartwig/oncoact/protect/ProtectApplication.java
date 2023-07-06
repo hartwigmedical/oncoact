@@ -1,22 +1,23 @@
 package com.hartwig.oncoact.protect;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.doid.DiseaseOntology;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.DriverGeneFile;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.protect.algo.ProtectAlgo;
 import com.hartwig.oncoact.protect.serve.ServeRefGenome;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ActionableEventsLoader;
 
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -36,13 +37,14 @@ public class ProtectApplication {
 
         ProtectConfig config = null;
         try {
-            config = ProtectConfig.createConfig(new DefaultParser().parse(options, args));
+            config = ProtectConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PROTECT", options);
             System.exit(1);
         }
 
+        LOGGER.info("Protect config is: {}", config);
         new ProtectApplication(config).run();
 
         LOGGER.info("Complete");
@@ -73,7 +75,7 @@ public class ProtectApplication {
         ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel);
         List<ProtectEvidence> evidences = algo.run(orange);
 
-        String filename = ProtectEvidenceFile.generateFilename(config.outputDir(), orange.sampleId());
+        String filename = config.outputDir() + File.separator + "protect.tsv";
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);
         ProtectEvidenceFile.write(filename, evidences);
     }
