@@ -11,6 +11,7 @@ import com.itextpdf.layout.element.Paragraph;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QCFailChapter implements ReportChapter {
 
@@ -59,14 +60,16 @@ public class QCFailChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation, @NotNull String reportExplanationDetail) {
+    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation, @Nullable String reportExplanationDetail) {
         Div div = new Div();
         div.setKeepTogether(true);
 
         div.add(new Paragraph(reportReason).addStyle(ReportResources.dataHighlightStyle()));
         div.add(new Paragraph(reportExplanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(reportExplanationDetail).addStyle(ReportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        if (reportExplanationDetail != null) {
+            div.add(new Paragraph(reportExplanationDetail).addStyle(ReportResources.subTextStyle())
+                    .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        }
         return div;
     }
 }

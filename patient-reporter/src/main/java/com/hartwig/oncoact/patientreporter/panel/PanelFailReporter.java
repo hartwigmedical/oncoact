@@ -1,12 +1,10 @@
 package com.hartwig.oncoact.patientreporter.panel;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,11 +22,15 @@ public class PanelFailReporter {
 
     @NotNull
     public PanelFailReport run(@Nullable String comments, boolean correctedReport,
-                               boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String failReasonsDatabaseTsv) throws IOException {
+                               boolean correctedReportExtern, @Nullable PanelFailReason reason) throws IOException {
+        assert reason != null;
 
-        assert failReasonsDatabaseTsv != null;
-        Map<String, FailedReason> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedReason failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(reason).identifier());
+        FailedReason failedDatabase = ImmutableFailedReason.builder()
+                .reportReason(reason.reportReason())
+                .reportExplanation(reason.reportExplanation())
+                .reportExplanationDetail(reason.reportExplanationDetail())
+                .build();
+
 
         return ImmutablePanelFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())

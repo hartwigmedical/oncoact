@@ -209,7 +209,6 @@ public class CFReportWriterTest {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
         FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reasonKey("key")
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
                 .reportExplanationDetail("reportExplanationDetail")
@@ -242,7 +241,6 @@ public class CFReportWriterTest {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reasonKey("key")
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
                 .reportExplanationDetail("reportExplanationDetail")
