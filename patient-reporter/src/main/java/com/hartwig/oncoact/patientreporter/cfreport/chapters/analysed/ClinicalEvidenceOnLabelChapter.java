@@ -62,16 +62,20 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null);
-        document.add(ClinicalEvidenceFunctions.createTreatmentApproachTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline);
+        boolean addHeader = true;
+
+        document.add(ClinicalEvidenceFunctions.createTreatmentApproachTable(header, onLabelTreatments, contentWidth(), addHeader));
     }
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null);
-        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline);
+        boolean addHeader = true;
+
+        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth(), addHeader));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
@@ -79,7 +83,9 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(ClinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMapTrial(evidences, flagGermline, requireOnLabel);
+        boolean addHeader = true;
+
+        document.add(ClinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth(), addHeader));
     }
 }

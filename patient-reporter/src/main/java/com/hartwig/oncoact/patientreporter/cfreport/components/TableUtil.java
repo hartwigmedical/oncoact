@@ -92,6 +92,7 @@ public final class TableUtil {
         return table;
     }
 
+
     @NotNull
     public static Table createWrappingReportTable(@NotNull String tableTitle, @Nullable String subtitle, @NotNull Table contentTable,
             float tableBottomMargin) {
