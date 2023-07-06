@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = false;
+    private static final boolean WRITE_TO_PDF = true;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -244,6 +244,7 @@ public class CFReportWriterTest {
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
                 .reportExplanationDetail("reportExplanationDetail")
+                .sampleFailReasonComment("sampleFailReasonComment")
                 .build();
 
         QCFailReport patientReport = ImmutableQCFailReport.builder()

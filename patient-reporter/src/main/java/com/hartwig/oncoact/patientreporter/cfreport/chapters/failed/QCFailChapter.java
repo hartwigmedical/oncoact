@@ -55,12 +55,14 @@ public class QCFailChapter implements ReportChapter {
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),
-                failReport.failExplanation().reportExplanation(), failReport.failExplanation().reportExplanationDetail()));
+                failReport.failExplanation().reportExplanation(), failReport.failExplanation().reportExplanationDetail(),
+                failReport.failExplanation().sampleFailReasonComment()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation, @Nullable String reportExplanationDetail) {
+    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation, @Nullable String reportExplanationDetail,
+                                           @Nullable String sampleFailReasonComment) {
         Div div = new Div();
         div.setKeepTogether(true);
 
@@ -68,6 +70,10 @@ public class QCFailChapter implements ReportChapter {
         div.add(new Paragraph(reportExplanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         if (reportExplanationDetail != null) {
             div.add(new Paragraph(reportExplanationDetail).addStyle(ReportResources.subTextStyle())
+                    .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        }
+        if (sampleFailReasonComment != null) {
+            div.add(new Paragraph(sampleFailReasonComment).addStyle(ReportResources.subTextBoldStyle())
                     .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
         return div;

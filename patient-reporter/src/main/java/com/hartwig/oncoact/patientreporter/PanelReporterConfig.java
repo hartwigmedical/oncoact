@@ -34,6 +34,7 @@ public interface PanelReporterConfig {
     // Params specific for Panel reports
     String PANEL_QC_FAIL = "panel_qc_fail";
     String PANEL_QC_FAIL_REASON = "panel_qc_fail_reason";
+    String SAMPLE_FAIL_REASON_COMMENT = "sample_fail_reason_comment";
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
     String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
@@ -63,6 +64,7 @@ public interface PanelReporterConfig {
         options.addOption(SIGNATURE, true, "Path towards an image file containing the signature to be appended at the end of the report.");
 
         options.addOption(PANEL_QC_FAIL, false, "If set, generates a qc-fail report.");
+        options.addOption(SAMPLE_FAIL_REASON_COMMENT, true, "If set, add an extra comment of the failure of the sample.");
         options.addOption(PANEL_QC_FAIL_REASON,
                 true,
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
@@ -101,6 +103,9 @@ public interface PanelReporterConfig {
     String signature();
 
     boolean panelQcFail();
+
+    @Nullable
+    String sampleFailReasonComment();
 
     @NotNull
     String panelVCFname();
@@ -168,6 +173,7 @@ public interface PanelReporterConfig {
                 .companyLogo(nonOptionalFile(cmd, COMPANY_LOGO))
                 .signature(nonOptionalFile(cmd, SIGNATURE))
                 .panelQcFail(isPanelQCFail)
+                .sampleFailReasonComment(cmd.getOptionValue(SAMPLE_FAIL_REASON_COMMENT))
                 .panelQcFailReason(panelQcFailReason)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))

@@ -46,6 +46,7 @@ public class QCFailReporter {
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
                 .reportExplanationDetail(reason.reportExplanationDetail())
+                .sampleFailReasonComment(config.sampleFailReasonComment())
                 .build();
 
         if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {

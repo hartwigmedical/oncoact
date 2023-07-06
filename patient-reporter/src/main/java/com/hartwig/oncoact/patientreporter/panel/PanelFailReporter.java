@@ -22,13 +22,14 @@ public class PanelFailReporter {
 
     @NotNull
     public PanelFailReport run(@Nullable String comments, boolean correctedReport,
-                               boolean correctedReportExtern, @Nullable PanelFailReason reason) throws IOException {
+                               boolean correctedReportExtern, @Nullable PanelFailReason reason, @Nullable String sampleFailReasonComment) throws IOException {
         assert reason != null;
 
         FailedReason failedDatabase = ImmutableFailedReason.builder()
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
                 .reportExplanationDetail(reason.reportExplanationDetail())
+                .sampleFailReasonComment(sampleFailReasonComment)
                 .build();
 
 
