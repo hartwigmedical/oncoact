@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import java.util.List;
 import java.util.Map;
 
+import com.google.api.client.util.Lists;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -35,19 +36,27 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull final Document document) {
+
         GenomicAnalysis analysis = report.genomicAnalysis();
+        List<ProtectEvidence> reportedOnLabel = analysis.tumorSpecificEvidence();
         List<ProtectEvidence> reportedOffLabel = analysis.offLabelEvidence();
-        addTreatmentSection(document, "Evidence on other tumor types", reportedOffLabel);
+
+        List<ProtectEvidence> allEvidences = Lists.newArrayList();
+        allEvidences.addAll(reportedOnLabel);
+        allEvidences.addAll(reportedOffLabel);
+
+        addTreatmentSection(document, "Tumor type specific evidence based on treatment", allEvidences, "Treatment");
+
         document.add(ClinicalEvidenceFunctions.noteEvidence());
         document.add(ClinicalEvidenceFunctions.noteGlossaryTerms());
         document.add(ClinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
-    private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean requireOnLabel = false;
+    private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences,
+                                     @NotNull String columnName) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         Map<String, List<ProtectEvidence>> offLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null);
+        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth(), columnName));
     }
 }

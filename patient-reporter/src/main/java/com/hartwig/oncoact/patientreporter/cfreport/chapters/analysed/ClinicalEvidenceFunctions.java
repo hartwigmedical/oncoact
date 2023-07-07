@@ -51,11 +51,11 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-            boolean requireOnLabel) {
+            Boolean requireOnLabel) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
-            if ((reportGermline || !evidence.germline()) && evidence.onLabel() == requireOnLabel) {
+            if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
                 List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment().name());
                 if (treatmentEvidences == null) {
                     treatmentEvidences = Lists.newArrayList();
@@ -84,9 +84,9 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public static Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
+            float contentWidth, @NotNull String columnName) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 40, 15, 100, 60 },
-                new Cell[] { TableUtil.createHeaderCell("Treatment", 2), TableUtil.createHeaderCell("OnLabel", 1),
+                new Cell[] { TableUtil.createHeaderCell(columnName, 2), TableUtil.createHeaderCell("OnLabel", 1),
                         TableUtil.createHeaderCell("Match", 1),
                         TableUtil.createHeaderCell("Level", 1), TableUtil.createHeaderCell("Response", 2),
                         TableUtil.createHeaderCell("Genomic event", 1), TableUtil.createHeaderCell("Evidence links", 1) },
