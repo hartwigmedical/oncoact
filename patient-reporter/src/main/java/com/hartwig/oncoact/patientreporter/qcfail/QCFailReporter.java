@@ -2,18 +2,23 @@ package com.hartwig.oncoact.patientreporter.qcfail;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
+import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
@@ -90,14 +95,16 @@ public class QCFailReporter {
 
         LOGGER.info("  QC status: {}", purpleQc.toString());
 
-        return ImmutableQCFailReport.builder()
+        return QCFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
                 .failExplanation(failedDatabase)
                 .wgsPurityString(wgsPurityString)
-                .comments(Optional.ofNullable(config.comments()))
-                .isCorrectedReport(config.isCorrectedReport())
-                .isCorrectedReportExtern(config.isCorrectedReportExtern())
+                .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
+                .isCorrectedReport(Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false))
+                .isCorrectedReportExtern(Optional.ofNullable(reportData.correction())
+                        .map(Correction::isCorrectedReportExtern)
+                        .orElse(false))
                 .signaturePath(reportData.signaturePath())
                 .logoRVAPath(reportData.logoRVAPath())
                 .logoCompanyPath(reportData.logoCompanyPath())
