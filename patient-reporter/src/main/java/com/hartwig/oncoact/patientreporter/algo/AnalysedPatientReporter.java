@@ -122,7 +122,7 @@ public class AnalysedPatientReporter {
                 .molecularTissueOriginPlotPath(config.cuppaPlot())
                 .circosPlotPath(config.purpleCircosPlot())
                 .specialRemark(Optional.ofNullable(reportData.correction()).map(Correction::specialRemark).orElse(""))
-                .comments(Optional.ofNullable(reportData.correction()).map(Correction::specialRemark))
+                .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
                 .isCorrectedReport(Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false))
                 .isCorrectedReportExtern(Optional.ofNullable(reportData.correction())
                         .map(Correction::isCorrectedReportExtern)
