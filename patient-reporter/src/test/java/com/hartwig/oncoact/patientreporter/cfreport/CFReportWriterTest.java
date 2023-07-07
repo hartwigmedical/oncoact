@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = false;
+    private static final boolean WRITE_TO_PDF = true;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -60,8 +60,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
+//        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+//        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
     @Test

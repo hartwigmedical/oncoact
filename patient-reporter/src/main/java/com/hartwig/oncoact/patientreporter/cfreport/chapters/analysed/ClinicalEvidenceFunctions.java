@@ -29,6 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.text.TabExpander;
+
 public class ClinicalEvidenceFunctions {
 
     private ClinicalEvidenceFunctions() {
@@ -83,9 +85,10 @@ public class ClinicalEvidenceFunctions {
     @NotNull
     public static Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
             float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 120, 80, 25, 40, 120, 60 },
-                new Cell[] { TableUtil.createHeaderCell("Treatment", 2), TableUtil.createHeaderCell("Match", 1),
-                        TableUtil.createHeaderCell("Level", 1), TableUtil.createHeaderCell("Response", 1),
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 40, 15, 100, 60 },
+                new Cell[] { TableUtil.createHeaderCell("Treatment", 2), TableUtil.createHeaderCell("OnLabel", 1),
+                        TableUtil.createHeaderCell("Match", 1),
+                        TableUtil.createHeaderCell("Level", 1), TableUtil.createHeaderCell("Response", 2),
                         TableUtil.createHeaderCell("Genomic event", 1), TableUtil.createHeaderCell("Evidence links", 1) },
                 contentWidth);
 
@@ -139,18 +142,13 @@ public class ClinicalEvidenceFunctions {
         for (String treatment : sortedTreatments) {
             List<ProtectEvidence> evidences = treatmentMap.get(treatment);
             if (allowedHighestLevel == highestEvidence(treatmentMap.get(treatment))) {
-                table.addCell(TableUtil.createContentCell(createTreatmentIcons(treatment)).setVerticalAlignment(VerticalAlignment.TOP));
-                table.addCell(TableUtil.createContentCell(treatment));
 
-                Table typeTable = new Table(new float[] { 1 });
-                Table levelTable = new Table(new float[] { 1 });
-                Table responseTable = new Table(new float[] { 1, 1 });
-
-                Table responsiveTable = new Table(new float[] { 1 });
-                Table linksTable = new Table(new float[] { 1 });
-
+                boolean addTreatment = true;
                 for (ProtectEvidence responsive : sort(evidences)) {
                     Cell cellGenomic = TableUtil.createTransparentCell(display(responsive));
+
+                    String onLabel = responsive.onLabel() ? "Yes" : "No";
+                    Cell cellOnLabel = TableUtil.createTransparentCell(onLabel);
 
                     Map<String, String> sourceUrls = Maps.newHashMap();
                     Set<String> evidenceUrls = Sets.newHashSet();
@@ -165,11 +163,8 @@ public class ClinicalEvidenceFunctions {
                         }
                     }
 
-                    Cell cellType;
-                    cellType = TableUtil.createTransparentCell(EvidenceItems.createLinksSource(sourceUrls));
-                    typeTable.addCell(cellType);
-
-                    Cell cellLevel;
+                    Cell cellType = TableUtil.createTransparentCell(EvidenceItems.createLinksSource(sourceUrls));
+                    Cell cellLevel = TableUtil.createTransparentCell(Strings.EMPTY);
                     Cell cellPredicted = TableUtil.createTransparentCell(Strings.EMPTY);
                     Cell cellResistant = TableUtil.createTransparentCell(Strings.EMPTY);
                     if (!evidenceType.equals("trial")) {
@@ -186,37 +181,38 @@ public class ClinicalEvidenceFunctions {
                         }
 
                         cellLevel = TableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(responsive.level().name())));
-
-                        levelTable.addCell(cellLevel);
-                        responseTable.addCell(cellResistant);
-                        responseTable.addCell(cellPredicted);
                     }
-                    responsiveTable.addCell(cellGenomic);
 
                     Cell publications = TableUtil.createTransparentCell(Strings.EMPTY);
                     if (evidenceType.equals("evidence")) {
                         publications = TableUtil.createTransparentCell(EvidenceItems.createLinksPublications(evidenceUrls));
-                        linksTable.addCell(publications);
+                    }
+
+                    if (addTreatment) {
+                        table.addCell(TableUtil.createContentCell(createTreatmentIcons(treatment)).setVerticalAlignment(VerticalAlignment.TOP));
+                        table.addCell(TableUtil.createContentCell(treatment));
+                        addTreatment = false;
                     } else {
-                        linksTable.addCell(publications);
+                        table.addCell(TableUtil.createContentCell("").setVerticalAlignment(VerticalAlignment.TOP));
+                        table.addCell(TableUtil.createContentCell(""));
+                    }
+
+                    if (evidenceType.equals("evidence")) {
+                        table.addCell(TableUtil.createContentCell(cellOnLabel));
+                        table.addCell(TableUtil.createContentCell(cellType));
+                        table.addCell(TableUtil.createContentCell(cellLevel));
+                        table.addCell(TableUtil.createContentCell(cellResistant));
+                        table.addCell(TableUtil.createContentCell(cellPredicted));
+                        table.addCell(TableUtil.createContentCell(cellGenomic));
+                        table.addCell(TableUtil.createContentCell(publications));
+                    } else {
+                        table.addCell(TableUtil.createContentCell(cellType));
+                        table.addCell(TableUtil.createContentCell(cellGenomic));
                     }
                 }
-
-                if (evidenceType.equals("evidence")) {
-                    table.addCell(TableUtil.createContentCell(typeTable));
-                    table.addCell(TableUtil.createContentCell(levelTable));
-                    table.addCell(TableUtil.createContentCell(responseTable));
-                    table.addCell(TableUtil.createContentCell(responsiveTable));
-                    table.addCell(TableUtil.createContentCell(linksTable));
-                } else {
-                    table.addCell(TableUtil.createContentCell(typeTable));
-                    table.addCell(TableUtil.createContentCell(responsiveTable));
-                }
-
                 hasEvidence = true;
             }
         }
-
         return hasEvidence;
     }
 

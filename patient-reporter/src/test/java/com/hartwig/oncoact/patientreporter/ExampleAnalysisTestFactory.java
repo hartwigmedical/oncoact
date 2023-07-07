@@ -337,7 +337,11 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511", "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513", "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515", "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517", "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519", "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
