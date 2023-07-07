@@ -23,10 +23,10 @@ public interface QCFailReportData extends ReportData {
 
     @NotNull
     static QCFailReportData buildFromConfig(@NotNull PatientReporterConfig config) throws IOException {
-        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
-        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
-        String correctionJson = config.correctionJson();
-        Correction correction = correctionJson != null ? Correction.read(correctionJson) : null;
+        var lamaPatientData = LamaJson.read(config.lamaJson());
+        var diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
+        var correctionJson = config.correctionJson();
+        var correction = correctionJson != null ? Correction.read(correctionJson) : null;
 
         return builder()
                 .diagnosticSiloPatientData(diagnosticPatientData)

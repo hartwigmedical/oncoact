@@ -2,10 +2,8 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.Optional;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 
 import org.apache.commons.cli.CommandLine;
@@ -21,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public interface PatientReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PatientReporterConfig.class);
@@ -48,7 +46,6 @@ public interface PatientReporterConfig {
     String CUPPA_PLOT = "cuppa_plot";
     String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
-    String ADD_ROSE = "add_rose";
     String ROSE_TSV = "rose_tsv";
 
     // Resources used for generating an analysed patient report
@@ -89,7 +86,6 @@ public interface PatientReporterConfig {
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
         options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
-        options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
@@ -110,7 +106,6 @@ public interface PatientReporterConfig {
 
         return options;
     }
-
 
     @NotNull
     String outputDirReport();
@@ -221,10 +216,7 @@ public interface PatientReporterConfig {
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
             purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
-            addRose = cmd.hasOption(ADD_ROSE);
-            if (addRose) {
-                roseTsv = nonOptionalFile(cmd, ROSE_TSV);
-            }
+            roseTsv = nonOptionalFile(cmd, ROSE_TSV);
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
         }
