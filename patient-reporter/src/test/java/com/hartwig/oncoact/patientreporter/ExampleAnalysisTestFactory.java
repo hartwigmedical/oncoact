@@ -344,6 +344,32 @@ public final class ExampleAnalysisTestFactory {
                                 "http://www.ncbi.nlm.nih.gov/pubmed/253995519", "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Cobimetinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
+                        "PTEN:V600E",
+                        Sets.newHashSet(),
+                        EvidenceType.ACTIVATION,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511", "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513", "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515", "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517", "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519", "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+                .build());
+
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
                 .transcript("ENST00000288602")
                 .isCanonical(true)

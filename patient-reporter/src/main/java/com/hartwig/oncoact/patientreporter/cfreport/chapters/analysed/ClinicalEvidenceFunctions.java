@@ -189,12 +189,9 @@ public class ClinicalEvidenceFunctions {
                     }
 
                     if (addTreatment) {
-                        table.addCell(TableUtil.createContentCell(createTreatmentIcons(treatment)).setVerticalAlignment(VerticalAlignment.TOP));
-                        table.addCell(TableUtil.createContentCell(treatment));
+                        table.addCell(TableUtil.createContentCellRowSpan(createTreatmentIcons(treatment), evidences.size()).setVerticalAlignment(VerticalAlignment.TOP));
+                        table.addCell(TableUtil.createContentCellRowSpan(treatment, evidences.size()));
                         addTreatment = false;
-                    } else {
-                        table.addCell(TableUtil.createContentCell("").setVerticalAlignment(VerticalAlignment.TOP));
-                        table.addCell(TableUtil.createContentCell(""));
                     }
 
                     if (evidenceType.equals("evidence")) {

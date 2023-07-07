@@ -143,6 +143,22 @@ public final class TableUtil {
     }
 
     @NotNull
+    public static Cell createContentCellRowSpan(@NotNull String text, int rowSpan) {
+        return createContentCellRowSpan(new Paragraph(text), rowSpan);
+    }
+
+    @NotNull
+    public static Cell createContentCellRowSpan(@NotNull IBlockElement element, int rowSpan) {
+        Cell c = new Cell(rowSpan, 1);
+        c.setBorder(Border.NO_BORDER);
+        c.setBorderBottom(new SolidBorder(ReportResources.PALETTE_MID_GREY, 0.25f));
+        c.addStyle(ReportResources.tableContentStyle());
+        c.setKeepTogether(true);
+        c.add(element);
+        return c;
+    }
+
+    @NotNull
     public static Cell createContentCell(@NotNull IBlockElement element) {
         Cell c = new Cell();
         c.setBorder(Border.NO_BORDER);
