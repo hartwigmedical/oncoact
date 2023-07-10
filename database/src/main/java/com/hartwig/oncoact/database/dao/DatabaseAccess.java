@@ -18,6 +18,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.conf.MappedSchema;
 import org.jooq.conf.RenderMapping;
+import org.jooq.conf.RenderQuotedNames;
 import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 
@@ -38,7 +39,8 @@ public class DatabaseAccess implements AutoCloseable {
     @NotNull
     private final ProtectDAO protectDAO;
 
-    public DatabaseAccess(@NotNull final String userName, @NotNull final String passwordEnvVariable, @NotNull final String url) throws SQLException {
+    public DatabaseAccess(@NotNull final String userName, @NotNull final String passwordEnvVariable, @NotNull final String url)
+            throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
         var password = System.getenv().get(passwordEnvVariable);
@@ -91,8 +93,9 @@ public class DatabaseAccess implements AutoCloseable {
             return null;
         }
 
-        return new Settings().withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG)
-                .withOutput(catalog)));
+        return new Settings()
+                .withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG).withOutput(catalog)))
+                .withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
     }
 
     public void writeProtectEvidence(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
