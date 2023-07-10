@@ -50,20 +50,44 @@ public class ClinicalEvidenceFunctions {
             Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
 
     @NotNull
-    public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
+    public static Map<String, List<ProtectEvidence>> buildTreatmentAppraochMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
             Boolean requireOnLabel) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
-            if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
-                List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment().name());
-                if (treatmentEvidences == null) {
-                    treatmentEvidences = Lists.newArrayList();
+            if (!evidence.treatment().sourceRelevantTreatmentApproaches().isEmpty()) {
+                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
+                    List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(String.join(",", evidence.treatment().sourceRelevantTreatmentApproaches()));
+                    if (treatmentEvidences == null) {
+                        treatmentEvidences = Lists.newArrayList();
+                    }
+                    if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
+                        treatmentEvidences.add(evidence);
+                    }
+                    evidencePerTreatmentMap.put(String.join(",", evidence.treatment().sourceRelevantTreatmentApproaches()), treatmentEvidences);
                 }
-                if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
-                    treatmentEvidences.add(evidence);
+            }
+        }
+        return evidencePerTreatmentMap;
+    }
+
+    @NotNull
+    public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
+                                                                       Boolean requireOnLabel) {
+        Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
+
+        for (ProtectEvidence evidence : evidences) {
+            if (evidence.treatment().sourceRelevantTreatmentApproaches().isEmpty()) {
+                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
+                    List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment().name());
+                    if (treatmentEvidences == null) {
+                        treatmentEvidences = Lists.newArrayList();
+                    }
+                    if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
+                        treatmentEvidences.add(evidence);
+                    }
+                    evidencePerTreatmentMap.put(evidence.treatment().name(), treatmentEvidences);
                 }
-                evidencePerTreatmentMap.put(evidence.treatment().name(), treatmentEvidences);
             }
         }
         return evidencePerTreatmentMap;

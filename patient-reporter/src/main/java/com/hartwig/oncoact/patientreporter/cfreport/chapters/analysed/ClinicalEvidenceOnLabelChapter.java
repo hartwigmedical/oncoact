@@ -63,7 +63,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null);
+                ClinicalEvidenceFunctions.buildTreatmentAppraochMap(evidences, flagGermline, null);
         document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth(), columnName));
     }
 

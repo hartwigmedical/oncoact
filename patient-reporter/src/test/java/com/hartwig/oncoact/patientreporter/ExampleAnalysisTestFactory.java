@@ -379,7 +379,7 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Immuno", "Target"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
