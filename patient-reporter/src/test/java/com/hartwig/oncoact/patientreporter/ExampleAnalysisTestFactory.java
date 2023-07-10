@@ -356,7 +356,7 @@ public final class ExampleAnalysisTestFactory {
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
-                .onLabel(true)
+                .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
@@ -1039,7 +1039,7 @@ public final class ExampleAnalysisTestFactory {
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
-                .onLabel(false)
+                .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESISTANT)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,

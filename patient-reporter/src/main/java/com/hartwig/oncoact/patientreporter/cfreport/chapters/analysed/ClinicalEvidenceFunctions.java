@@ -254,13 +254,25 @@ public class ClinicalEvidenceFunctions {
         return event;
     }
 
+    public static int compareOnNaturalOrder(boolean x, boolean y) {
+        if (x == y) {
+            return 0;
+        } else {
+            return x ? -1 : 1;
+        }
+    }
+
     @NotNull
     private static List<ProtectEvidence> sort(@NotNull List<ProtectEvidence> evidenceItems) {
         return evidenceItems.stream().sorted((item1, item2) -> {
             if (item1.treatment().equals(item2.treatment())) {
                 if (item1.level().equals(item2.level())) {
                     if (item1.direction().equals(item2.direction())) {
-                        return item1.direction().compareTo(item2.direction());
+                        if (item1.onLabel() == item2.onLabel()) {
+                            return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
+                        } else {
+                            return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
+                        }
                     } else {
                         return item1.direction().compareTo(item2.direction());
                     }
