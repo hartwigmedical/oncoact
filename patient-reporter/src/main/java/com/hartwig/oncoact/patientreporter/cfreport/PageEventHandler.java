@@ -18,20 +18,16 @@ class PageEventHandler implements IEventHandler {
 
     @NotNull
     private final PatientReport patientReport;
-
     @NotNull
     private final Footer footer;
     @NotNull
     private final Header header;
     @NotNull
     private final SidePanel sidePanel;
-
     private boolean fullSidebar;
-
     private String chapterTitle = "Undefined";
     private String pdfTitle = "Undefined";
     private boolean firstPageOfChapter = true;
-
     private PdfOutline outline = null;
 
     PageEventHandler(@NotNull final PatientReport patientReport, @NotNull final ReportResources reportResources) {
