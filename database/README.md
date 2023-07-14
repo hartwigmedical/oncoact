@@ -18,11 +18,11 @@ Query OK, 0 rows affected (0.00 sec)
 ```
 
 ## Create Tables
-If creating a database from scratch, execute the [generate_database.sql](/src/main/resources/generate_database.sql) script from the command with the following. 
+If creating a database from scratch, execute the [database.sql](/src/main/resources/database.sql) script from the command with the following. 
 Note that you will be prompted for a password:
 
 ```
-mysql -u writer -p < generate_database.sql
+mysql -u writer -p < database.sql
 ```
 
 ## Data loaders

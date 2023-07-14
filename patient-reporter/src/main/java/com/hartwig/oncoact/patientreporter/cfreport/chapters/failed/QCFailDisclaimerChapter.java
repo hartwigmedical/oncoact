@@ -6,6 +6,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailType;
 import com.hartwig.oncoact.util.Formats;
@@ -69,7 +70,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(reportIsBasedOnTumorSampleArrivedAt());
-        div.add(reportIsBasedOnBloodSampleArrivedAt());
+        if (!failReport.reason().equals(QCFailReason.INSUFFICIENT_DNA)) {
+            div.add(reportIsBasedOnBloodSampleArrivedAt());
+        }
         div.add(resultsAreObtainedBetweenDates());
 
         String pathologyId = failReport.lamaPatientData().getPathologyNumber();

@@ -46,7 +46,6 @@ import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -54,7 +53,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void runsOnTestData() {
-        ImmutableRoseData.Builder builder = ImmutableRoseData.builder().patientId(Strings.EMPTY);
+        ImmutableRoseData.Builder builder = ImmutableRoseData.builder();
         RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord()).build();
         assertNotNull(ConclusionAlgo.generateConclusion(minimal));
 

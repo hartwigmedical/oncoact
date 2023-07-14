@@ -47,7 +47,9 @@ public final class GeneFusions {
     public static Set<String> uniqueGeneFusions(@NotNull Iterable<LinxFusion> fusions) {
         Set<String> genes = Sets.newTreeSet();
         for (LinxFusion fusion : fusions) {
-            genes.add(name(fusion));
+            if (fusion.likelihood() == FusionLikelihoodType.HIGH) {
+                genes.add(name(fusion));
+            }
         }
         return genes;
     }

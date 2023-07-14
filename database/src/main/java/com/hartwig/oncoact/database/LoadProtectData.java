@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.hartwig.oncoact.database.dao.DatabaseAccess;
+import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -31,7 +31,7 @@ public class LoadProtectData {
 
     public static void main(@NotNull String[] args) throws ParseException, SQLException, IOException {
         Options options = createOptions();
-        CommandLine cmd = new DefaultParser().parse(options, args);
+        CommandLine cmd = new CliAndPropertyParser().parse(options, args);
 
         String evidenceTsv = cmd.getOptionValue(PROTECT_EVIDENCE_TSV);
         String sample = cmd.getOptionValue(SAMPLE);
@@ -42,12 +42,12 @@ public class LoadProtectData {
             System.exit(1);
         }
 
-        DatabaseAccess dbWriter = databaseAccess(cmd);
-
-        LOGGER.info("Reading PROTECT data for {} from {}", sample, evidenceTsv);
-        List<ProtectEvidence> evidences = ProtectEvidenceFile.read(evidenceTsv);
-        dbWriter.writeProtectEvidence(sample, evidences);
-        LOGGER.info("Done writing {} PROTECT evidence items to database for {}", evidences.size(), sample);
+        try (DatabaseAccess dbWriter = databaseAccess(cmd)) {
+            LOGGER.info("Reading PROTECT data for {} from {}", sample, evidenceTsv);
+            List<ProtectEvidence> evidences = ProtectEvidenceFile.read(evidenceTsv);
+            dbWriter.writeProtectEvidence(sample, evidences);
+            LOGGER.info("Done writing {} PROTECT evidence items to database for {}", evidences.size(), sample);
+        }
     }
 
     @NotNull

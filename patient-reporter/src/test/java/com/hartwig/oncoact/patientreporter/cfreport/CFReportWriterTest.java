@@ -21,6 +21,8 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
@@ -54,7 +56,21 @@ public class CFReportWriterTest {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
                 .comments(COLO_COMMENT_STRING)
                 .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
+        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false);
+
+        CFReportWriter writer = testCFReportWriter();
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
+    }
+
+    @Test
+    public void canGeneratePatientReportWithUnreliablePurity() throws IOException {
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
+                .comments(COLO_COMMENT_STRING)
+                .build();
+        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
+
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
@@ -206,11 +222,19 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
+                .reportReason("reportReason")
+                .reportExplanation("reportExplanation")
+                .reportExplanationDetail("reportExplanationDetail")
+                .build();
+
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
                 .panelFailReason(PanelFailReason.PANEL_FAILURE)
+                .failExplanation(failExplanation)
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
@@ -231,10 +255,18 @@ public class CFReportWriterTest {
                                              @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reasonKey("key")
+                .reportReason("reportReason")
+                .reportExplanation("reportExplanation")
+                .reportExplanationDetail("reportExplanationDetail")
+                .build();
+
         QCFailReport patientReport = ImmutableQCFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
+                .failExplanation(failExplanation)
                 .wgsPurityString(wgsPurityString)
                 .comments(comments)
                 .isCorrectedReport(correctedReport)

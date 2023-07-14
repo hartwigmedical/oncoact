@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.util.FileReader;
+import com.hartwig.oncoact.util.CsvFileReader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public final class ActionabilityFileReader {
     private static List<ActionabilityEntry> fromLines(@NotNull List<String> lines) {
         List<ActionabilityEntry> trials = Lists.newArrayList();
 
-        Map<String, Integer> fields = FileReader.createFields(lines.get(0), MAIN_FIELD_DELIMITER);
+        Map<String, Integer> fields = CsvFileReader.getHeadersToDelimiter(lines.get(0), MAIN_FIELD_DELIMITER);
         for (String line : lines.subList(1, lines.size())) {
             trials.add(fromString(fields, line));
         }

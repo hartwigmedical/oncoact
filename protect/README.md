@@ -132,6 +132,30 @@ The list of sources contains the following information per source:
 | rangeRank    | In case of EXON or CODON, the index of the exon or codon on which this evidence was based | 600                             |
 | evidenceUrls | A list of urls with additional information about the evidence                             | https://pubmed.ncbi.nlm.nih.gov |
 
+## Building Protect
+Build a docker image for protect in GCP:
+```shell
+git tag protect-{{semver-version}}
+git push origin protect-{{semver-version}}
+```
+
+Copy the orange JSON input to the input volume.
+```shell
+docker container create --name temp -v protect-input:/input -v serve-db:/serve busybox
+docker cp /path/to/orange.json temp:/input/orange.json
+docker rm temp
+```
+
+Run protect with the expected arguments.
+```shell
+docker run --rm \
+--name protect \
+--mount source=protect-output,target=/out \
+--mount source=protect-input,target=/in/orange \
+eu.gcr.io/hmf-build/oncoact/protect:{{semver-version}} \
+-primary_tumor_doids {{tumor-doids}}
+```
+
 ## Version History and Download Links
 - Upcoming
   - Switch to SERVE 2.0
