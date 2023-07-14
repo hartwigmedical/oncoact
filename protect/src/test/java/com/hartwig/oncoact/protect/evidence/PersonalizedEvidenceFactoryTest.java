@@ -27,7 +27,8 @@ import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
-import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.serve.datamodel.range.ActionableCodon;
+import com.hartwig.serve.datamodel.range.ActionableExon;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -77,8 +78,11 @@ public class PersonalizedEvidenceFactoryTest {
         ActionableHotspot hotspot = TestServeFactory.createTestActionableHotspot();
         assertEquals(EvidenceType.HOTSPOT_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(hotspot));
 
-        ActionableRange range = TestServeFactory.createTestActionableRange();
-        assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(range));
+        ActionableCodon codon = TestServeFactory.createTestActionableCodon();
+        assertEquals(EvidenceType.CODON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(codon));
+
+        ActionableExon exon = TestServeFactory.createTestActionableExon();
+        assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(exon));
 
         ActionableGene gene = TestServeFactory.geneBuilder().event(GeneEvent.INACTIVATION).build();
         assertEquals(EvidenceType.INACTIVATION, PersonalizedEvidenceFactory.determineEvidenceType(gene));

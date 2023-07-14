@@ -2,7 +2,6 @@ package com.hartwig.oncoact.protect.evidence;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -22,7 +21,8 @@ import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
-import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.serve.datamodel.range.ActionableCodon;
+import com.hartwig.serve.datamodel.range.ActionableExon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,16 +37,20 @@ public class VariantEvidence {
     @NotNull
     private final List<ActionableHotspot> hotspots;
     @NotNull
-    private final List<ActionableRange> ranges;
+    private final List<ActionableCodon> codons;
+    @NotNull
+    private final List<ActionableExon> exons;
     @NotNull
     private final List<ActionableGene> genes;
 
     public VariantEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> ranges,
+            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableCodon> codons,
+                           @NotNull final List<ActionableExon> exons,
             @NotNull final List<ActionableGene> genes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.hotspots = hotspots;
-        this.ranges = ranges;
+        this.codons = codons;
+        this.exons = exons;
         this.genes = genes.stream()
                 .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION
                         || x.event() == GeneEvent.ANY_MUTATION)
@@ -91,9 +95,15 @@ public class VariantEvidence {
             }
         }
 
-        for (ActionableRange range : ranges) {
-            if (rangeMatch(variant, range)) {
-                evidences.add(evidence(variant, range, mayReport && driverInterpretation == DriverInterpretation.HIGH));
+        for (ActionableCodon codon : codons) {
+            if (codonMatch(variant, codon)) {
+                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH));
+            }
+        }
+
+        for (ActionableExon exon : exons) {
+            if (exonMatch(variant, exon)) {
+                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH));
             }
         }
 
@@ -144,9 +154,14 @@ public class VariantEvidence {
                 .equals(variant.ref()) && hotspot.alt().equals(variant.alt());
     }
 
-    private static boolean rangeMatch(@NotNull Variant variant, @NotNull ActionableRange range) {
-        return variant.chromosome().equals(range.chromosome()) && variant.gene().equals(range.gene()) && variant.position() >= range.start()
-                && variant.position() <= range.end() && meetsMutationType(variant, range.applicableMutationType());
+    private static boolean codonMatch(@NotNull Variant variant, @NotNull ActionableCodon codon) {
+        return variant.chromosome().equals(codon.chromosome()) && variant.gene().equals(codon.gene()) && variant.position() >= codon.start()
+                && variant.position() <= codon.end() && meetsMutationType(variant, codon.applicableMutationType());
+    }
+
+    private static boolean exonMatch(@NotNull Variant variant, @NotNull ActionableExon exon) {
+        return variant.chromosome().equals(exon.chromosome()) && variant.gene().equals(exon.gene()) && variant.position() >= exon.start()
+                && variant.position() <= exon.end() && meetsMutationType(variant, exon.applicableMutationType());
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {

@@ -60,7 +60,8 @@ public class ProtectAlgo {
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
                 actionableEvents.hotspots(),
-                actionableEvents.ranges(),
+                actionableEvents.codons(),
+                actionableEvents.exons(),
                 actionableEvents.genes());
         CopyNumberEvidence copyNumberEvidenceFactory = new CopyNumberEvidence(personalizedEvidenceFactory, actionableEvents.genes());
         DisruptionEvidence disruptionEvidenceFactory = new DisruptionEvidence(personalizedEvidenceFactory, actionableEvents.genes());

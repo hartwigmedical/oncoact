@@ -17,7 +17,8 @@ import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
-import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.serve.datamodel.range.ActionableCodon;
+import com.hartwig.serve.datamodel.range.ActionableExon;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,8 +117,10 @@ public class PersonalizedEvidenceFactory {
     static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable) {
         if (actionable instanceof ActionableHotspot) {
             return EvidenceType.HOTSPOT_MUTATION;
-        } else if (actionable instanceof ActionableRange) {
-            return fromActionableRange((ActionableRange) actionable);
+        } else if (actionable instanceof ActionableCodon) {
+            return EvidenceType.CODON_MUTATION;
+        }else if (actionable instanceof ActionableExon) {
+            return EvidenceType.EXON_MUTATION;
         } else if (actionable instanceof ActionableGene) {
             return fromActionableGene((ActionableGene) actionable);
         } else if (actionable instanceof ActionableFusion) {
@@ -129,13 +132,6 @@ public class PersonalizedEvidenceFactory {
         } else {
             throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
         }
-    }
-
-    @NotNull
-    private static EvidenceType fromActionableRange(@NotNull ActionableRange range) {
-        // Might be a shaky assumption that exons are never length 3...
-        int length = 1 + range.end() - range.start();
-        return length == 3 ? EvidenceType.CODON_MUTATION : EvidenceType.EXON_MUTATION;
     }
 
     @NotNull

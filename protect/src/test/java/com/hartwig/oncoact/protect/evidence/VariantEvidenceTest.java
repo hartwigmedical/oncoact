@@ -22,7 +22,8 @@ import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
-import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.serve.datamodel.range.ActionableCodon;
+import com.hartwig.serve.datamodel.range.ActionableExon;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class VariantEvidenceTest {
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(hotspot),
+                Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList());
 
@@ -100,8 +102,8 @@ public class VariantEvidenceTest {
         int end = 15;
         MutationType mutationType = MutationType.MISSENSE;
 
-        ActionableRange rangeHigh = TestServeFactory.rangeBuilder()
-                .gene("geneHigh")
+        ActionableCodon codon = TestServeFactory.codonBuilder()
+                .gene("codon")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
@@ -109,8 +111,8 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeMedium = TestServeFactory.rangeBuilder()
-                .gene("geneMedium")
+        ActionableExon exon = TestServeFactory.exonBuilder()
+                .gene("exon")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
@@ -118,22 +120,24 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeLow = TestServeFactory.rangeBuilder()
-                .gene("geneLow")
+        ActionableCodon codon1 = TestServeFactory.codonBuilder()
+                .gene("codon1")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
                 .applicableMutationType(mutationType)
                 .source(Knowledgebase.CKB)
                 .build();
+
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
-                Lists.newArrayList(rangeHigh, rangeMedium, rangeLow),
+                Lists.newArrayList(codon, codon1),
+                Lists.newArrayList(exon),
                 Lists.newArrayList());
 
         ReportableVariant variantMatchHigh = TestReportableVariantFactory.builder()
-                .gene("geneHigh")
+                .gene("exon")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -141,7 +145,7 @@ public class VariantEvidenceTest {
                 .driverLikelihood(0.9)
                 .build();
         ReportableVariant variantMatchMedium = TestReportableVariantFactory.builder()
-                .gene("geneMedium")
+                .gene("codon")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -149,7 +153,7 @@ public class VariantEvidenceTest {
                 .driverLikelihood(0.5)
                 .build();
         ReportableVariant variantMatchLow = TestReportableVariantFactory.builder()
-                .gene("geneLow")
+                .gene("codon1")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -188,23 +192,23 @@ public class VariantEvidenceTest {
 
         assertEquals(3, evidences.size());
 
-        ProtectEvidence evidenceHigh = findByGene(evidences, "geneHigh");
+        ProtectEvidence evidenceHigh = findByGene(evidences, "exon");
         assertTrue(evidenceHigh.reported());
         assertEquals("match", evidenceHigh.event());
         assertEquals(evidenceHigh.sources().size(), 1);
         assertEquals(EvidenceType.EXON_MUTATION, evidenceHigh.sources().iterator().next().evidenceType());
 
-        ProtectEvidence evidenceMedium = findByGene(evidences, "geneMedium");
+        ProtectEvidence evidenceMedium = findByGene(evidences, "codon");
         assertFalse(evidenceMedium.reported());
         assertEquals("match", evidenceMedium.event());
         assertEquals(evidenceMedium.sources().size(), 1);
-        assertEquals(EvidenceType.EXON_MUTATION, evidenceMedium.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.CODON_MUTATION, evidenceMedium.sources().iterator().next().evidenceType());
 
-        ProtectEvidence evidenceLow = findByGene(evidences, "geneLow");
+        ProtectEvidence evidenceLow = findByGene(evidences, "codon1");
         assertFalse(evidenceLow.reported());
         assertEquals("match", evidenceLow.event());
         assertEquals(evidenceLow.sources().size(), 1);
-        assertEquals(EvidenceType.EXON_MUTATION, evidenceLow.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.CODON_MUTATION, evidenceLow.sources().iterator().next().evidenceType());
     }
 
     @Test
@@ -221,6 +225,7 @@ public class VariantEvidenceTest {
                 TestServeFactory.geneBuilder().gene(amplifiedGene).event(GeneEvent.AMPLIFICATION).source(Knowledgebase.CKB).build();
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
+                Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList(actionableGene1, actionableGene2, actionableGene3));

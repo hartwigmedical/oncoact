@@ -25,8 +25,10 @@ import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.immuno.ImmutableActionableHLA;
-import com.hartwig.serve.datamodel.range.ActionableRange;
-import com.hartwig.serve.datamodel.range.ImmutableActionableRange;
+import com.hartwig.serve.datamodel.range.ActionableCodon;
+import com.hartwig.serve.datamodel.range.ActionableExon;
+import com.hartwig.serve.datamodel.range.ImmutableActionableCodon;
+import com.hartwig.serve.datamodel.range.ImmutableActionableExon;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -53,13 +55,29 @@ public final class TestServeFactory {
     }
 
     @NotNull
-    public static ActionableRange createTestActionableRange() {
-        return rangeBuilder().build();
+    public static ActionableCodon createTestActionableCodon() {
+        return codonBuilder().build();
     }
 
     @NotNull
-    public static ImmutableActionableRange.Builder rangeBuilder() {
-        return ImmutableActionableRange.builder()
+    public static ImmutableActionableCodon.Builder codonBuilder() {
+        return ImmutableActionableCodon.builder()
+                .from(createTestBaseEvent())
+                .gene(Strings.EMPTY)
+                .chromosome(Strings.EMPTY)
+                .start(0)
+                .end(0)
+                .applicableMutationType(MutationType.ANY);
+    }
+
+    @NotNull
+    public static ActionableExon createTestActionableExon() {
+        return exonBuilder().build();
+    }
+
+    @NotNull
+    public static ImmutableActionableExon.Builder exonBuilder() {
+        return ImmutableActionableExon.builder()
                 .from(createTestBaseEvent())
                 .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
