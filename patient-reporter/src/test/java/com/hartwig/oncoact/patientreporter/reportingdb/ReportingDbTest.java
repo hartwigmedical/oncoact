@@ -38,7 +38,7 @@ public class ReportingDbTest {
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
