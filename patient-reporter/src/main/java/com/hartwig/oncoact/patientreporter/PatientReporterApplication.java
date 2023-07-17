@@ -3,7 +3,6 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Map;
 
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
@@ -77,7 +76,7 @@ public class PatientReporterApplication {
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
-        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
         reportWriter.writeAnalysedPatientReport(report, outputFilePath);
 
         if (!config.onlyCreatePDF()) {
@@ -96,7 +95,7 @@ public class PatientReporterApplication {
         QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
-        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
 
         reportWriter.writeQCFailReport(report, outputFilePath);
 
@@ -110,7 +109,7 @@ public class PatientReporterApplication {
     }
 
     @NotNull
-    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport, @NotNull PatientReport patientReport) {
-        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
+    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport) {
+        return outputDirReport + File.separator + "report.pdf";
     }
 }

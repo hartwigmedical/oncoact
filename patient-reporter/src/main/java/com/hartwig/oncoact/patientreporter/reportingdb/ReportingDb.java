@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.patientreporter.reportingdb;
 
-import static java.lang.String.format;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -47,7 +45,7 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, report.reportDate(), NA_STRING, null, null);
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
@@ -65,7 +63,7 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, cohort, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, report.reportDate(), NA_STRING, null, null);
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
@@ -100,7 +98,6 @@ public class ReportingDb {
         }
         writeApiUpdateJson(outputDirectory,
                 tumorBarcode,
-                report.lamaPatientData().getReportingId(),
                 cohort,
                 reportType,
                 report.reportDate(),
@@ -109,10 +106,10 @@ public class ReportingDb {
                 hasReliablePurity);
     }
 
-    private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String sampleName,
-            final String displayName, final String reportType, final String reportDate, final String purity,
-            final Boolean hasReliableQuality, final Boolean hasReliablePurity) throws IOException {
-        File outputFile = new File(outputDirectory, format("%s_%s_%s_api-update.json", sampleName, tumorBarcode, reportType));
+    private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String displayName,
+            final String reportType, final String reportDate, final String purity, final Boolean hasReliableQuality,
+            final Boolean hasReliablePurity) throws IOException {
+        File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
         Map<String, Object> payload = new HashMap<>();
         payload.put("barcode", tumorBarcode);
@@ -147,7 +144,7 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, report.reportDate(), NA_STRING, null, null);
     }
 
     private static void appendToFile(@NotNull String reportingDbTsv, @NotNull String stringToAppend) throws IOException {

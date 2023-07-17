@@ -16,7 +16,6 @@ import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
-import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
@@ -59,7 +58,7 @@ public class CFReportWriterTest {
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath());
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -73,7 +72,7 @@ public class CFReportWriterTest {
 
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath());
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -86,7 +85,7 @@ public class CFReportWriterTest {
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+        writer.writeAnalysedPatientReport(patientReport, testReportFilePath());
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -99,7 +98,7 @@ public class CFReportWriterTest {
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+        writer.writeAnalysedPatientReport(patientReport, testReportFilePath());
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -116,7 +115,7 @@ public class CFReportWriterTest {
                 ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.WARN_LOW_PURITY);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+        writer.writeAnalysedPatientReport(patientReport, testReportFilePath());
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -282,7 +281,7 @@ public class CFReportWriterTest {
                 .isWGSReport(true)
                 .build();
 
-        String filename = testReportFilePath(patientReport);
+        String filename = testReportFilePath();
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeQCFailReport(patientReport, filename);
@@ -368,8 +367,8 @@ public class CFReportWriterTest {
     }
 
     @NotNull
-    private static String testReportFilePath(@NotNull PatientReport patientReport) {
-        String fileName = OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
+    private static String testReportFilePath() {
+        String fileName = "report.pdf";
         String newFileName = fileName;
         if (TIMESTAMP_FILES) {
             int extensionStart = fileName.lastIndexOf('.');
