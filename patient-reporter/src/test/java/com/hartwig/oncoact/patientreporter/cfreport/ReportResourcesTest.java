@@ -8,8 +8,9 @@ public class ReportResourcesTest {
 
     @Test
     public void canLoadFonts() {
-        assertNotNull(ReportResources.fontRegular());
-        assertNotNull(ReportResources.fontBold());
-        assertNotNull(ReportResources.iconFont());
+        ReportResources reportResources = ReportResources.create();
+        assertNotNull(reportResources.fontRegular());
+        assertNotNull(reportResources.fontBold());
+        assertNotNull(reportResources.iconFont());
     }
 }
