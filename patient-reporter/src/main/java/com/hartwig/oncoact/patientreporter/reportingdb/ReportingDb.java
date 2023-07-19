@@ -31,7 +31,6 @@ public class ReportingDb {
     }
 
     public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
         String displayName = report.lamaPatientData().getCohort();
         String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
@@ -45,11 +44,10 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null);
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
         String cohort = report.lamaPatientData().getCohort();
         String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
@@ -63,7 +61,7 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, NA_STRING, null, null);
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
@@ -100,21 +98,19 @@ public class ReportingDb {
                 tumorBarcode,
                 cohort,
                 reportType,
-                report.reportDate(),
                 purity,
                 hasReliableQuality,
                 hasReliablePurity);
     }
 
     private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String displayName,
-            final String reportType, final String reportDate, final String purity, final Boolean hasReliableQuality,
+            final String reportType, final String purity, final Boolean hasReliableQuality,
             final Boolean hasReliablePurity) throws IOException {
         File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
         Map<String, Object> payload = new HashMap<>();
         payload.put("barcode", tumorBarcode);
         payload.put("report_type", reportType);
-        payload.put("report_date", reportDate);
         payload.put("purity", purity.equals(NA_STRING) ? purity : Float.parseFloat(purity));
         payload.put("cohort", displayName);
         payload.put("has_reliable_quality", hasReliableQuality != null ? hasReliableQuality : NA_STRING);
@@ -130,7 +126,6 @@ public class ReportingDb {
     }
 
     public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
         String displayName = report.lamaPatientData().getCohort();
         String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
@@ -144,7 +139,7 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null);
     }
 
     private static void appendToFile(@NotNull String reportingDbTsv, @NotNull String stringToAppend) throws IOException {

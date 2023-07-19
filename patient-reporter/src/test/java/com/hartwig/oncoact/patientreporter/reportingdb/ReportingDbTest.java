@@ -4,6 +4,7 @@ import static java.lang.String.join;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
@@ -56,6 +57,6 @@ public class ReportingDbTest {
         assertEquals(output.get("cohort"), "cohort");
         assertEquals(output.get("report_type"), "dna_analysis_report");
         assertEquals(output.get("barcode"), "tumorIsolationBarcode");
-        assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
+        assertNull(output.get("create_time"));
     }
 }
