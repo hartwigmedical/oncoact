@@ -13,21 +13,24 @@ import java.util.Optional;
 
 public final class TumorLocationAndTypeTable {
 
-    private TumorLocationAndTypeTable() {
+    private final ReportResources reportResources;
+
+    public TumorLocationAndTypeTable(ReportResources reportResources) {
+        this.reportResources = reportResources;
     }
 
     @NotNull
-    public static Table createTumorLocation(@Nullable TumorType tumorType, float width) {
+    public Table createTumorLocation(@Nullable TumorType tumorType, float width) {
         Table table = new Table(UnitValue.createPercentArray(new float[] { 2, 2 }));
         table.setWidth(width);
 
-        table.addCell(TableUtil.createLayoutCell().add(new Paragraph("PRIMARY TUMOR LOCATION").addStyle(ReportResources.subTextStyle())));
-        table.addCell(TableUtil.createLayoutCell().add(new Paragraph("PRIMARY TUMOR TYPE").addStyle(ReportResources.subTextStyle())));
+        table.addCell(TableUtil.createLayoutCell().add(new Paragraph("PRIMARY TUMOR LOCATION").addStyle(reportResources.subTextStyle())));
+        table.addCell(TableUtil.createLayoutCell().add(new Paragraph("PRIMARY TUMOR TYPE").addStyle(reportResources.subTextStyle())));
 
         String tumorLocation = Optional.ofNullable(tumorType).map(TumorType::getLocation).orElse("");
-        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(tumorLocation)));
+        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, tumorLocation)));
         String type = Optional.ofNullable(tumorType).map(TumorType::getType).orElse("");
-        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(type)));
+        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, type)));
 
         return table;
     }

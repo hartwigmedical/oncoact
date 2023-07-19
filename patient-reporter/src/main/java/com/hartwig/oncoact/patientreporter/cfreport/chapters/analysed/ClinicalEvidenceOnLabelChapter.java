@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.itextpdf.layout.Document;
@@ -13,6 +14,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
+
+    private final ClinicalEvidenceFunctions clinicalEvidenceFunctions;
 
     @Override
     @NotNull
@@ -29,8 +32,10 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     @NotNull
     private final AnalysedPatientReport report;
 
-    public ClinicalEvidenceOnLabelChapter(@NotNull final AnalysedPatientReport report) {
+    public ClinicalEvidenceOnLabelChapter(@NotNull final AnalysedPatientReport report,
+                                          @NotNull final ReportResources reportResources) {
         this.report = report;
+        clinicalEvidenceFunctions = new ClinicalEvidenceFunctions(reportResources);
     }
 
     @Override
@@ -42,14 +47,15 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         List<ProtectEvidence> reportedStudies = analysis.clinicalTrials();
         addTrialSection(document, "Tumor type specific clinical trials (NL)", reportedStudies);
-        document.add(ClinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore "
+
+        document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore "
                 + "certain tumor types may not be eligible for the DRUP.\n"));
-        document.add(ClinicalEvidenceFunctions.note("The iClusion knowledgebase is used to annotate DNA aberrations for potential "
+        document.add(clinicalEvidenceFunctions.note("The iClusion knowledgebase is used to annotate DNA aberrations for potential "
                 + "clinical study eligibility. Please note clinical study eligibility depends on multiple patient and tumor "
                 + "characteristics of which only the DNA aberrations are considered in this report. \n"));
-        document.add(ClinicalEvidenceFunctions.noteEvidence());
-        document.add(ClinicalEvidenceFunctions.noteGlossaryTerms());
-        document.add(ClinicalEvidenceFunctions.noteEvidenceMatching());
+        document.add(clinicalEvidenceFunctions.noteEvidence());
+        document.add(clinicalEvidenceFunctions.noteGlossaryTerms());
+        document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
@@ -58,7 +64,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth()));
+        document.add(clinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth()));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
@@ -67,6 +73,6 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(ClinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
+        document.add(clinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
     }
 }
