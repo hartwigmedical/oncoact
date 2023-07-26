@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
-import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
@@ -11,8 +11,6 @@ import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedReportData;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReportData;
-import com.hartwig.oncoact.patientreporter.remarks.SpecialRemarkFile;
-import com.hartwig.oncoact.patientreporter.remarks.SpecialRemarkModel;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +33,7 @@ public final class PatientReporterTestFactory {
     private static final String COMPANY_LOGO_PATH = Resources.getResource("company_logo/hartwig_logo_test.jpg").getPath();
 
     private static final String GERMLINE_REPORTING_TSV = Resources.getResource("germline_reporting/germline_reporting.tsv").getPath();
-    private static final String SAMPLE_SPECIAL_REMARK_TSV = Resources.getResource("special_remark/sample_special_remark.tsv").getPath();
+    private static final String CORRECTION_JSON = Resources.getResource("correction/correction.json").getPath();
 
     private static final String UDI_DI = "(01)8720299486027(8012)v5.28";
 
@@ -58,12 +56,9 @@ public final class PatientReporterTestFactory {
                 .cuppaPlot(CUPPA_PLOT)
                 .purpleCircosPlot(CIRCOS_PLOT)
                 .protectEvidenceTsv(PROTECT_EVIDENCE_TSV)
-                .addRose(true)
                 .roseTsv(ROSE_TSV)
                 .germlineReportingTsv(Strings.EMPTY)
-                .sampleSpecialRemarkTsv(SAMPLE_SPECIAL_REMARK_TSV)
-                .isCorrectedReport(false)
-                .isCorrectedReportExtern(false)
+                .correctionJson(CORRECTION_JSON)
                 .onlyCreatePDF(false)
                 .requirePipelineVersionFile(true)
                 .pipelineVersionFile(PIPELINE_VERSION_FILE)
@@ -109,12 +104,12 @@ public final class PatientReporterTestFactory {
     public static AnalysedReportData loadTestAnalysedReportData() {
         try {
             GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(GERMLINE_REPORTING_TSV);
-            SpecialRemarkModel specialRemarkModel = SpecialRemarkFile.buildFromTsv(SAMPLE_SPECIAL_REMARK_TSV);
+            Correction correction = Correction.read(CORRECTION_JSON);
 
             return ImmutableAnalysedReportData.builder()
                     .from(loadTestReportData())
                     .germlineReportingModel(germlineReportingModel)
-                    .specialRemarkModel(specialRemarkModel)
+                    .correction(correction)
                     .build();
         } catch (IOException exception) {
             throw new IllegalStateException("Could not load test analysed report data: " + exception.getMessage());

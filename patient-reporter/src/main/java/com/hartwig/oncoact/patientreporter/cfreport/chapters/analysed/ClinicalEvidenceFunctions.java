@@ -29,11 +29,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.text.TabExpander;
-
 public class ClinicalEvidenceFunctions {
 
-    private ClinicalEvidenceFunctions() {
+    private final ReportResources reportResources;
+    private final TableUtil tableUtil;
+    private final EvidenceItems evidenceItems;
+
+    public ClinicalEvidenceFunctions(ReportResources reportResources) {
+        this.reportResources = reportResources;
+        this.tableUtil = new TableUtil(reportResources);
+        this.evidenceItems = new EvidenceItems(reportResources);
     }
 
     private static final String TREATMENT_DELIMITER = " + ";
@@ -51,7 +56,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTreatmentAppraochMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-            Boolean requireOnLabel) {
+                                                                               Boolean requireOnLabel) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
@@ -107,13 +112,13 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public static Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth, @NotNull String columnName) {
+    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
+                                             float contentWidth, @NotNull String columnName) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 40, 15, 100, 60 },
-                new Cell[] { TableUtil.createHeaderCell(columnName, 2), TableUtil.createHeaderCell("OnLabel", 1),
-                        TableUtil.createHeaderCell("Match", 1),
-                        TableUtil.createHeaderCell("Level", 1), TableUtil.createHeaderCell("Response", 2),
-                        TableUtil.createHeaderCell("Genomic event", 1), TableUtil.createHeaderCell("Evidence links", 1) },
+                new Cell[] { tableUtil.createHeaderCell(columnName, 2), tableUtil.createHeaderCell("OnLabel", 1),
+                        tableUtil.createHeaderCell("Match", 1),
+                        tableUtil.createHeaderCell("Level", 1), tableUtil.createHeaderCell("Response", 2),
+                        tableUtil.createHeaderCell("Genomic event", 1), tableUtil.createHeaderCell("Evidence links", 1) },
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "evidence");
@@ -121,11 +126,11 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public static Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
+    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
             float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 170, 80, 170 },
-                new Cell[] { TableUtil.createHeaderCell("Trial", 2), TableUtil.createHeaderCell("Match", 1),
-                        TableUtil.createHeaderCell("Genomic event", 1) },
+                new Cell[] { tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
+                        tableUtil.createHeaderCell("Genomic event", 1) },
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "trial");
@@ -133,7 +138,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    private static Table addDataIntoTable(@NotNull Table treatmentTable, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
+    private Table addDataIntoTable(@NotNull Table treatmentTable, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
             @NotNull String title, @NotNull String evidenceType) {
         boolean hasEvidence = false;
         for (EvidenceLevel level : EvidenceLevel.values()) {
@@ -143,24 +148,24 @@ public class ClinicalEvidenceFunctions {
         }
 
         if (hasEvidence) {
-            return TableUtil.createWrappingReportTable(title, null, treatmentTable, TableUtil.TABLE_BOTTOM_MARGIN);
+            return tableUtil.createWrappingReportTable(title, null, treatmentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         } else {
-            return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
+            return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
     }
 
     @NotNull
-    private static Paragraph createTreatmentIcons(@NotNull String allDrugs) {
+    private Paragraph createTreatmentIcons(@NotNull String allDrugs) {
         String[] drugs = allDrugs.split(Pattern.quote(TREATMENT_DELIMITER));
         Paragraph p = new Paragraph();
         for (String drug : drugs) {
-            p.add(Icon.createTreatmentIcon(drug.trim()));
+            p.add(Icon.createTreatmentIcon(reportResources, drug.trim()));
         }
         return p;
     }
 
-    private static boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
+    private boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
+                                                   @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
         Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
         boolean hasEvidence = false;
         for (String treatment : sortedTreatments) {
@@ -169,10 +174,10 @@ public class ClinicalEvidenceFunctions {
 
                 boolean addTreatment = true;
                 for (ProtectEvidence responsive : sort(evidences)) {
-                    Cell cellGenomic = TableUtil.createTransparentCell(display(responsive));
+                    Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
 
                     String onLabel = responsive.onLabel() ? "Yes" : "No";
-                    Cell cellOnLabel = TableUtil.createTransparentCell(onLabel);
+                    Cell cellOnLabel = tableUtil.createTransparentCell(onLabel);
 
                     Map<String, String> sourceUrls = Maps.newHashMap();
                     Set<String> evidenceUrls = Sets.newHashSet();
@@ -187,48 +192,48 @@ public class ClinicalEvidenceFunctions {
                         }
                     }
 
-                    Cell cellType = TableUtil.createTransparentCell(EvidenceItems.createLinksSource(sourceUrls));
-                    Cell cellLevel = TableUtil.createTransparentCell(Strings.EMPTY);
-                    Cell cellPredicted = TableUtil.createTransparentCell(Strings.EMPTY);
-                    Cell cellResistant = TableUtil.createTransparentCell(Strings.EMPTY);
+                    Cell cellType = tableUtil.createTransparentCell(evidenceItems.createLinksSource(sourceUrls));
+                    Cell cellLevel = tableUtil.createTransparentCell(Strings.EMPTY);
+                    Cell cellPredicted = tableUtil.createTransparentCell(Strings.EMPTY);
+                    Cell cellResistant = tableUtil.createTransparentCell(Strings.EMPTY);
                     if (!evidenceType.equals("trial")) {
                         if (PREDICTED.contains(responsive.direction())) {
-                            cellPredicted = TableUtil.createTransparentCell(PREDICTED_SYMBOL).addStyle(ReportResources.predictedStyle());
+                            cellPredicted = tableUtil.createTransparentCell(PREDICTED_SYMBOL).addStyle(reportResources.predictedStyle());
                         }
 
                         if (RESISTANT_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistant = TableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(ReportResources.resistantStyle());
+                            cellResistant = tableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(reportResources.resistantStyle());
                         }
 
                         if (RESPONSE_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistant = TableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(ReportResources.responseStyle());
+                            cellResistant = tableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle());
                         }
 
-                        cellLevel = TableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(responsive.level().name())));
+                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources, responsive.level().name())));
                     }
 
-                    Cell publications = TableUtil.createTransparentCell(Strings.EMPTY);
+                    Cell publications = tableUtil.createTransparentCell(Strings.EMPTY);
                     if (evidenceType.equals("evidence")) {
-                        publications = TableUtil.createTransparentCell(EvidenceItems.createLinksPublications(evidenceUrls));
+                        publications = tableUtil.createTransparentCell(evidenceItems.createLinksPublications(evidenceUrls));
                     }
 
                     if (addTreatment) {
-                        table.addCell(TableUtil.createContentCellRowSpan(createTreatmentIcons(treatment), evidences.size()).setVerticalAlignment(VerticalAlignment.TOP));
-                        table.addCell(TableUtil.createContentCellRowSpan(treatment, evidences.size()));
+                        table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(treatment), evidences.size()).setVerticalAlignment(VerticalAlignment.TOP));
+                        table.addCell(tableUtil.createContentCellRowSpan(treatment, evidences.size()));
                         addTreatment = false;
                     }
 
                     if (evidenceType.equals("evidence")) {
-                        table.addCell(TableUtil.createContentCell(cellOnLabel));
-                        table.addCell(TableUtil.createContentCell(cellType));
-                        table.addCell(TableUtil.createContentCell(cellLevel));
-                        table.addCell(TableUtil.createContentCell(cellResistant));
-                        table.addCell(TableUtil.createContentCell(cellPredicted));
-                        table.addCell(TableUtil.createContentCell(cellGenomic));
-                        table.addCell(TableUtil.createContentCell(publications));
+                        table.addCell(tableUtil.createContentCell(cellOnLabel));
+                        table.addCell(tableUtil.createContentCell(cellType));
+                        table.addCell(tableUtil.createContentCell(cellLevel));
+                        table.addCell(tableUtil.createContentCell(cellResistant));
+                        table.addCell(tableUtil.createContentCell(cellPredicted));
+                        table.addCell(tableUtil.createContentCell(cellGenomic));
+                        table.addCell(tableUtil.createContentCell(publications));
                     } else {
-                        table.addCell(TableUtil.createContentCell(cellType));
-                        table.addCell(TableUtil.createContentCell(cellGenomic));
+                        table.addCell(tableUtil.createContentCell(cellType));
+                        table.addCell(tableUtil.createContentCell(cellGenomic));
                     }
                 }
                 hasEvidence = true;
@@ -236,6 +241,7 @@ public class ClinicalEvidenceFunctions {
         }
         return hasEvidence;
     }
+
 
     @NotNull
     private static String determineEvidenceType(@NotNull KnowledgebaseSource source) {
@@ -310,51 +316,51 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public static Paragraph noteGlossaryTerms() {
-        return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(ReportResources.responseStyle()))
+    public Paragraph noteGlossaryTerms() {
+        return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle()))
                 .add(" ) means that the evidence is responsive. The symbol ( ")
-                .add(new Text(RESISTANT_SYMBOL).addStyle(ReportResources.resistantStyle()))
+                .add(new Text(RESISTANT_SYMBOL).addStyle(reportResources.resistantStyle()))
                 .add(" ) means that the evidence is resistant. The abbreviation ( ")
-                .add(new Text(PREDICTED_SYMBOL).addStyle(ReportResources.predictedStyle()))
+                .add(new Text(PREDICTED_SYMBOL).addStyle(reportResources.predictedStyle()))
                 .add(" mentioned after the level of evidence) indicates the evidence is predicted "
                         + "responsive/resistent. More details about CKB can be found in their")
-                .addStyle(ReportResources.subTextStyle())
+                .addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(" Glossary Of Terms").addStyle(ReportResources.urlStyle())
+                .add(new Text(" Glossary Of Terms").addStyle(reportResources.urlStyle())
                         .setAction(PdfAction.createURI("https://ckbhome.jax.org/about/glossaryOfTerms")))
                 .add(".")
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    public static Paragraph noteEvidence() {
+    public Paragraph noteEvidence() {
         return new Paragraph().setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add("The Clinical Knowledgebase (CKB) is used to annotate variants of all types with clinical evidence. "
                         + "Only treatment associated evidence with evidence levels ( \n( ")
-                .add(Icon.createIcon(Icon.IconType.LEVEL_A))
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_A))
                 .add(" FDA approved therapy and/or guidelines; ")
-                .add(Icon.createIcon(Icon.IconType.LEVEL_B))
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_B))
                 .add(" late clinical trials; ")
-                .add(Icon.createIcon(Icon.IconType.LEVEL_C))
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_C))
                 .add(" early clinical trials) can be reported. Potential evidence items with evidence level  \n( ")
-                .add(Icon.createIcon(Icon.IconType.LEVEL_D))
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_D))
                 .add(" case reports and preclinical evidence) are not reported.")
-                .addStyle(ReportResources.subTextStyle());
+                .addStyle(reportResources.subTextStyle());
     }
 
     @NotNull
-    public static Paragraph noteEvidenceMatching() {
+    public Paragraph noteEvidenceMatching() {
         return new Paragraph().setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add("If the evidence matched is based on a mutation, but this is not a hotspot, evidence should be interpreted with "
                         + "extra caution. \n")
-                .addStyle(ReportResources.subTextStyle())
+                .addStyle(reportResources.subTextStyle())
                 .add("If a genomic event that results in an amplification is found, evidence that corresponds with ‘overexpression’"
                         + " of the gene is also matched. The same rule applies for deletions and underexpression.\n")
-                .addStyle(ReportResources.subTextStyle());
+                .addStyle(reportResources.subTextStyle());
     }
 
     @NotNull
-    public static Paragraph note(@NotNull String message) {
-        return new Paragraph(message).addStyle(ReportResources.subTextStyle());
+    public Paragraph note(@NotNull String message) {
+        return new Paragraph(message).addStyle(reportResources.subTextStyle());
     }
 }

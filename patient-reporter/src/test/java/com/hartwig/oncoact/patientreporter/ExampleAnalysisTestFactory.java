@@ -44,6 +44,7 @@ import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
+import com.hartwig.oncoact.patientreporter.algo.QualityOverruleFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.protect.EvidenceType;
@@ -77,7 +78,8 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-                                                              @NotNull PurpleQCStatus purpleQCStatus) {
+                                                              @NotNull PurpleQCStatus purpleQCStatus,
+                                                              boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
@@ -177,6 +179,11 @@ public final class ExampleAnalysisTestFactory {
                 .suspectGeneCopyNumbersWithLOH(LOHGenes)
                 .build();
 
+        if (withUnreliablePurityOverrule) {
+            GenomicAnalysis unreliablePurity = ImmutableGenomicAnalysis.builder().from(analysis).hasReliablePurity(false).build();
+            analysis = QualityOverruleFunctions.overrule(unreliablePurity);
+        }
+
         MolecularTissueOriginReporting molecularTissueOriginReporting = ImmutableMolecularTissueOriginReporting.builder()
                 .bestCancerType("Melanoma")
                 .bestLikelihood(0.996)
@@ -217,7 +224,7 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
                                                                             @NotNull PurpleQCStatus purpleQCStatus) {
-        AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus);
+        AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
         List<AnnotatedVirus> viruses = createTestAnnotatedViruses();

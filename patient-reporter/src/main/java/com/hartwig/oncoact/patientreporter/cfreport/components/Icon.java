@@ -64,7 +64,7 @@ public class Icon {
             { new DeviceRgb(110, 197, 213)};
 
     @NotNull
-    public static Text createLevelIcon(@NotNull String level) {
+    public static Text createLevelIcon(@NotNull ReportResources reportResources, @NotNull String level) {
         IconType iconType;
         switch (level.toUpperCase()) {
             case "A":
@@ -83,28 +83,28 @@ public class Icon {
                 return new Text(Strings.EMPTY);
         }
 
-        return createIcon(iconType);
+        return createIcon(reportResources, iconType);
     }
 
     @NotNull
-    public static Text createTreatmentIcon(@NotNull String treatmentName) {
+    public static Text createTreatmentIcon(@NotNull ReportResources reportResources, @NotNull String treatmentName) {
         int charCode = !treatmentName.isEmpty() ? (int) treatmentName.charAt(0) : 0;
         int colorIndex = charCode % TREATMENT_PALETTE.length;
 
-        return createIcon(IconType.TREATMENT, TREATMENT_PALETTE[colorIndex]);
+        return createIcon(reportResources, IconType.TREATMENT, TREATMENT_PALETTE[colorIndex]);
     }
 
     @NotNull
-    public static Text createIcon(@NotNull IconType iconType) {
-        return createIcon(iconType, iconType.defaultColor());
+    public static Text createIcon(@NotNull ReportResources reportResources, @NotNull IconType iconType) {
+        return createIcon(reportResources, iconType, iconType.defaultColor());
     }
 
     @NotNull
-    private static Text createIcon(@NotNull IconType iconType, @NotNull DeviceRgb color) {
+    private static Text createIcon(@NotNull ReportResources reportResources, @NotNull IconType iconType, @NotNull DeviceRgb color) {
         if (iconType == IconType.INVALID) {
             return new Text("");
         }
 
-        return new Text(iconType.text()).setFont(ReportResources.iconFont()).setFontColor(color);
+        return new Text(iconType.text()).setFont(reportResources.iconFont()).setFontColor(color);
     }
 }

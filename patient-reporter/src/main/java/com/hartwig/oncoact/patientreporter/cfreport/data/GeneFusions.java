@@ -18,8 +18,14 @@ import com.itextpdf.layout.element.Paragraph;
 import org.jetbrains.annotations.NotNull;
 
 public final class GeneFusions {
+    
+    private final TableUtil tableUtil;
+    @NotNull
+    private final ReportResources reportResources;
 
-    private GeneFusions() {
+    public GeneFusions(@NotNull ReportResources reportResources) {
+        this.reportResources = reportResources;
+        this.tableUtil = new TableUtil(reportResources);
     }
 
     @NotNull
@@ -41,24 +47,26 @@ public final class GeneFusions {
     public static Set<String> uniqueGeneFusions(@NotNull Iterable<LinxFusion> fusions) {
         Set<String> genes = Sets.newTreeSet();
         for (LinxFusion fusion : fusions) {
-            genes.add(name(fusion));
+            if (fusion.likelihood() == FusionLikelihoodType.HIGH) {
+                genes.add(name(fusion));
+            }
         }
         return genes;
     }
 
     @NotNull
-    public static Cell fusionContentType(@NotNull LinxFusionType type, @NotNull String geneName, @NotNull String transcript) {
+    public Cell fusionContentType(@NotNull LinxFusionType type, @NotNull String geneName, @NotNull String transcript) {
         if (type.equals(LinxFusionType.IG_PROMISCUOUS) || type.equals(LinxFusionType.IG_KNOWN_PAIR)) {
             if (geneName.startsWith("@IG")) {
-                return TableUtil.createContentCell(new Paragraph(transcript));
+                return tableUtil.createContentCell(new Paragraph(transcript));
             } else {
-                return TableUtil.createContentCell(new Paragraph(transcript))
-                        .addStyle(ReportResources.dataHighlightLinksStyle())
+                return tableUtil.createContentCell(new Paragraph(transcript))
+                        .addStyle(reportResources.dataHighlightLinksStyle())
                         .setAction(PdfAction.createURI(GeneFusions.transcriptUrl(transcript)));
             }
         } else {
-            return TableUtil.createContentCell(new Paragraph(transcript))
-                    .addStyle(ReportResources.dataHighlightLinksStyle())
+            return tableUtil.createContentCell(new Paragraph(transcript))
+                    .addStyle(reportResources.dataHighlightLinksStyle())
                     .setAction(PdfAction.createURI(GeneFusions.transcriptUrl(transcript)));
         }
     }
