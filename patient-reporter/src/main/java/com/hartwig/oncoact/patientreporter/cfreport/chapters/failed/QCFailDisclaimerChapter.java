@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import com.hartwig.lama.client.model.PatientReporterData;
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -19,6 +19,8 @@ import com.itextpdf.layout.property.UnitValue;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
@@ -64,10 +66,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Div createSampleDetailsColumn() {
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_PROCESSING_ISSUE, QCFailReason.TCP_SHALLOW_FAIL, QCFailReason.PREPARATION_FAIL, QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.PIPELINE_FAIL);
+
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(reportIsBasedOnTumorSampleArrivedAt());
-        if (!failReport.reason().equals(QCFailReason.INSUFFICIENT_DNA)) {
+        if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
         div.add(resultsAreObtainedBetweenDates());

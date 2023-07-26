@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = true;
+    private static final boolean WRITE_TO_PDF = false;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -109,10 +109,10 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateInsufficientDNAReport() throws IOException {
-        generateQCFailReport("CPCT01_insufficient_dna-FOR-082",
+    public void canGenerateHartwigProcessingIssueReport() throws IOException {
+        generateQCFailReport("CPCT01_hartwig_processing_issue",
                 null,
-                QCFailReason.INSUFFICIENT_DNA,
+                QCFailReason.HARTWIG_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
@@ -121,10 +121,10 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateTechnicalFailureReport() throws IOException {
-        generateQCFailReport("CPCT02-technical_failure-FOR-102",
+    public void canGenerateIsolationFailReport() throws IOException {
+        generateQCFailReport("CPCT01_isolation_fail",
                 null,
-                QCFailReason.TECHNICAL_FAILURE,
+                QCFailReason.ISOLATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
@@ -133,53 +133,63 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateSufficientTCPQCFailReport() throws IOException {
-        generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Fail",
-                "70%",
-                QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.FAIL_CONTAMINATION);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateSufficientTCPQCFailReportPASS() throws IOException {
-        generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Pass",
-                "70%",
-                QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateInsufficientTCPAfterDeepWGSReport() throws IOException {
-        generateQCFailReport("CPCT04-insufficient_tcp_deep_wgs-FOR-100",
-                "18%",
-                QCFailReason.INSUFFICIENT_TCP_DEEP_WGS,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateInsufficientTCPAfterShallowReport() throws IOException {
-        generateQCFailReport("CPCT05-insufficient_tcp_shallow_wgs-FOR-100",
+    public void canGenerateTcpShallowFailReport() throws IOException {
+        generateQCFailReport("CPCT01_tcp_shallow_fail",
                 null,
-                QCFailReason.INSUFFICIENT_TCP_SHALLOW_WGS,
+                QCFailReason.TCP_SHALLOW_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS);
     }
 
+    @Test
+    @Ignore
+    public void canGeneratePreparationFailReport() throws IOException {
+        generateQCFailReport("CPCT01_preparation_fail",
+                null,
+                QCFailReason.PREPARATION_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
 
+    @Test
+    @Ignore
+    public void canGenerateHartwigTumorProcessingIssueReport() throws IOException {
+        generateQCFailReport("CPCT01_hartwig_tumor_processing_issue",
+                null,
+                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGeneratePipelineFailReport() throws IOException {
+        generateQCFailReport("CPCT01_pipeline_fail",
+                null,
+                QCFailReason.PIPELINE_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGenerateTcpWgsFailReport() throws IOException {
+        generateQCFailReport("CPCT01_tcp_wgs_fail",
+                null,
+                QCFailReason.TCP_WGS_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
     @Test
     public void generatePanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
@@ -211,7 +221,6 @@ public class CFReportWriterTest {
         FailedReason failExplanation = ImmutableFailedReason.builder()
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
-                .reportExplanationDetail("reportExplanationDetail")
                 .build();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
@@ -243,7 +252,6 @@ public class CFReportWriterTest {
         FailedReason failExplanation = ImmutableFailedReason.builder()
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
-                .reportExplanationDetail("reportExplanationDetail")
                 .sampleFailReasonComment("sampleFailReasonComment")
                 .build();
 

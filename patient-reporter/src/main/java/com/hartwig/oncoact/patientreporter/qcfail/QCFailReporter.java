@@ -45,11 +45,12 @@ public class QCFailReporter {
         FailedReason failedDatabase = ImmutableFailedReason.builder()
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
-                .reportExplanationDetail(reason.reportExplanationDetail())
                 .sampleFailReasonComment(config.sampleFailReasonComment())
                 .build();
 
-        if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.PIPELINE_FAIL, QCFailReason.TCP_WGS_FAIL);
+
+        if (qcFailReasons.contains(reason)) {
             if (config.requirePipelineVersionFile()) {
                 String pipelineVersionFile = config.pipelineVersionFile();
                 assert pipelineVersionFile != null;

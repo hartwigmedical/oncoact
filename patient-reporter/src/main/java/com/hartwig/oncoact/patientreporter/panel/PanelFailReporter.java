@@ -28,7 +28,6 @@ public class PanelFailReporter {
         FailedReason failedDatabase = ImmutableFailedReason.builder()
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
-                .reportExplanationDetail(reason.reportExplanationDetail())
                 .sampleFailReasonComment(sampleFailReasonComment)
                 .build();
 

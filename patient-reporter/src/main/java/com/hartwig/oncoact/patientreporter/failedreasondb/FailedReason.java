@@ -15,8 +15,5 @@ public abstract class FailedReason {
     public abstract String reportExplanation();
 
     @Nullable
-    public abstract String reportExplanationDetail();
-
-    @Nullable
     public abstract String sampleFailReasonComment();
 }
