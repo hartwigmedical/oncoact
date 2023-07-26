@@ -21,9 +21,9 @@ import org.jetbrains.annotations.Nullable;
 public final class SidePanel {
 
     private static final float ROW_SPACING = 42;
-    private static final float CONTENT_X_START = 455;
-    private static final float RECTANGLE_WIDTH = 170;
-    private static final float RECTANGLE_HEIGHT_SHORT = 110;
+    private static final float CONTENT_X_START = 420;
+    private static final float RECTANGLE_WIDTH = 200;
+    private static final float RECTANGLE_HEIGHT_SHORT = 120;
 
     @NotNull
     private final ReportResources reportResources;
@@ -54,73 +54,83 @@ public final class SidePanel {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
-        BaseMarker.renderMarkerGrid(4, (fullHeight ? 11 : 2), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        BaseMarker.renderMarkerGrid(5, (fullHeight ? 13:3), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
+        if (!fullHeight) {
+            if (lamaPatientData.getIsStudy()) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
+            } else {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
+            }
 
+            cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
 
-        if (lamaPatientData.getIsStudy()) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
         } else {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
-        }
-
-        if (lamaPatientData.getPathologyNumber() != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", lamaPatientData.getPathologyNumber()));
-        }
-
-        cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-
-        if (patientInformationData != null) {
-            String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
-            if (!name.equals(Strings.EMPTY)) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
+            if (lamaPatientData.getIsStudy()) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
+            } else {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
             }
 
-            if (patientInformationData.getBirthdate() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+            if (lamaPatientData.getPathologyNumber() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", lamaPatientData.getPathologyNumber()));
             }
-        }
 
-        if (lamaPatientData.getRequesterName() != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
 
-        }
-        if (lamaPatientData.getRequesterEmail() != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Email", lamaPatientData.getRequesterEmail()));
+            if (patientInformationData != null) {
+                String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
+                if (!name.equals(Strings.EMPTY)) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
+                }
 
-        }
+                if (patientInformationData.getBirthdate() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+                }
+            }
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
-        BiopsySite biopsySite = lamaPatientData.getBiopsySite();
-        String biopsyLocation = Strings.EMPTY;
-        String biopsySubLocation = Strings.EMPTY;
-        BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
-        Boolean isPrimaryTumor = null;
-        if (biopsySite != null) {
-            biopsyLocation = biopsySite.getLocation();
-            biopsySubLocation = biopsySite.getSubLocation();
-            biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
-            isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
-        }
+            if (lamaPatientData.getRequesterName() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
+            }
+            if (lamaPatientData.getRequesterEmail() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Email", lamaPatientData.getRequesterEmail()));
 
-        if (isPrimaryTumor != null) {
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
+            }
+
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
+            BiopsySite biopsySite = lamaPatientData.getBiopsySite();
+            String biopsyLocation = Strings.EMPTY;
+            String biopsySubLocation = Strings.EMPTY;
+            BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
+            Boolean isPrimaryTumor = null;
+            if (biopsySite != null) {
+                biopsyLocation = biopsySite.getLocation();
+                biopsySubLocation = biopsySite.getSubLocation();
+                biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
+                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
+            }
+
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
+
+            if (isPrimaryTumor != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
+            }
         }
         canvas.release();
+
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
-        float size = -pageSize.getHeight() / 4;
+        float size = -pageSize.getHeight() / 2;
         canvas.rectangle(pageSize.getWidth(),
                 pageSize.getHeight(),
                 -RECTANGLE_WIDTH,
-                fullHeight ? (size * 2) + -(RECTANGLE_HEIGHT_SHORT / 2) : -RECTANGLE_HEIGHT_SHORT);
+                fullHeight ? size - 120: -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
@@ -129,7 +139,7 @@ public final class SidePanel {
     private Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
         float Y_START = 802;
         float VALUE_TEXT_Y_OFFSET = 18;
-        float MAX_WIDTH = 120;
+        float MAX_WIDTH = 170;
 
         Div div = new Div();
         div.setKeepTogether(true);
@@ -144,7 +154,6 @@ public final class SidePanel {
                 .setHeight(15)
                 .setFixedPosition(CONTENT_X_START, yPos, MAX_WIDTH)
                 .setFixedLeading(valueFontSize));
-
         return div;
     }
 }

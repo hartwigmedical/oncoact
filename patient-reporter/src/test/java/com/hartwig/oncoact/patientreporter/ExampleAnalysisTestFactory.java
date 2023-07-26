@@ -1374,7 +1374,16 @@ public final class ExampleAnalysisTestFactory {
                         .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
                         .panelVersion("peach_prod_v1.3")
                         .repoVersion("1.7")
+                        .build(), TestPeachFactory.builder()
+                        .gene("UGT1A1")
+                        .haplotype("*2_HOM")
+                        .function("Reduced Function")
+                        .linkedDrugs("Irinotecan")
+                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                        .panelVersion("peach_prod_v1.3")
+                        .repoVersion("1.7")
                         .build()));
+
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
                         .gene("DPYD")
@@ -1386,7 +1395,29 @@ public final class ExampleAnalysisTestFactory {
                                 + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
                         .panelVersion("peach_prod_v1.3")
                         .repoVersion("1.7")
-                        .build()));
+                        .build(),
+                        TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(), TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Toxicity Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
+
         return pharmacogeneticsMap;
     }
 
