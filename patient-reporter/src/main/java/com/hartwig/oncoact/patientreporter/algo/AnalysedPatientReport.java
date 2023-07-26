@@ -17,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
 @Value.Immutable
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class AnalysedPatientReport implements PatientReport {
+    static ImmutableAnalysedPatientReport.Builder builder() {
+        return ImmutableAnalysedPatientReport.builder();
+    }
 
     @Override
     @NotNull

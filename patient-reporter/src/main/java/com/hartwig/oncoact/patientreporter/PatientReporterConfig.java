@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public interface PatientReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PatientReporterConfig.class);
@@ -46,17 +46,14 @@ public interface PatientReporterConfig {
     String CUPPA_PLOT = "cuppa_plot";
     String PURPLE_CIRCOS_PLOT = "purple_circos_plot";
     String PROTECT_EVIDENCE_TSV = "protect_evidence_tsv";
-    String ADD_ROSE = "add_rose";
     String ROSE_TSV = "rose_tsv";
 
     // Resources used for generating an analysed patient report
     String GERMLINE_REPORTING_TSV = "germline_reporting_tsv";
-    String SAMPLE_SPECIAL_REMARK_TSV = "sample_special_remark_tsv";
+    String HAS_CORRECTIONS = "has_corrections";
+    String CORRECTION_JSON = "correction_json";
 
     // Some additional optional params and flags
-    String COMMENTS = "comments";
-    String CORRECTED_REPORT = "corrected_report";
-    String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
     String IS_DIAGNOSTIC = "is_diagnostic";
@@ -89,16 +86,12 @@ public interface PatientReporterConfig {
         options.addOption(CUPPA_PLOT, true, "Path towards the molecular tissue origin plot.");
         options.addOption(PURPLE_CIRCOS_PLOT, true, "Path towards the purple circos plot.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence TSV.");
-        options.addOption(ADD_ROSE, false, "If set, the ROSE TSV file will be used.");
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
 
-        options.addOption(SAMPLE_SPECIAL_REMARK_TSV, true, "Path towards a TSV containing the special remarks of the samples.");
-
-        options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
-        options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
-        options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
+        options.addOption(HAS_CORRECTIONS, false, "If provided, expect a correction json.");
+        options.addOption(CORRECTION_JSON, true, "If provided, the path towards a correction json.");
 
         options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
         options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
@@ -113,7 +106,6 @@ public interface PatientReporterConfig {
 
         return options;
     }
-
 
     @NotNull
     String outputDirReport();
@@ -159,23 +151,14 @@ public interface PatientReporterConfig {
     @NotNull
     String protectEvidenceTsv();
 
-    boolean addRose();
-
     @Nullable
     String roseTsv();
 
     @NotNull
     String germlineReportingTsv();
 
-    @NotNull
-    String sampleSpecialRemarkTsv();
-
     @Nullable
-    String comments();
-
-    boolean isCorrectedReport();
-
-    boolean isCorrectedReportExtern();
+    String correctionJson();
 
     boolean onlyCreatePDF();
 
@@ -216,7 +199,6 @@ public interface PatientReporterConfig {
         String roseTsv = null;
 
         String germlineReportingTsv = Strings.EMPTY;
-        String sampleSpecialRemarkTsv = Strings.EMPTY;
 
         if (isQCFail && qcFailReason.isDeepWGSDataAvailable()) {
             if (requirePipelineVersion) {
@@ -232,13 +214,14 @@ public interface PatientReporterConfig {
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
             purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
             protectEvidenceTsv = nonOptionalFile(cmd, PROTECT_EVIDENCE_TSV);
-            addRose = cmd.hasOption(ADD_ROSE);
-            if (addRose) {
-                roseTsv = nonOptionalFile(cmd, ROSE_TSV);
-            }
+            roseTsv = nonOptionalFile(cmd, ROSE_TSV);
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
-            sampleSpecialRemarkTsv = nonOptionalFile(cmd, SAMPLE_SPECIAL_REMARK_TSV);
+        }
+
+        String correctionJson = null;
+        if (cmd.hasOption(HAS_CORRECTIONS)) {
+            correctionJson = nonOptionalFile(cmd, CORRECTION_JSON);
         }
 
         return ImmutablePatientReporterConfig.builder()
@@ -257,13 +240,9 @@ public interface PatientReporterConfig {
                 .cuppaPlot(cuppaPlot)
                 .purpleCircosPlot(purpleCircosPlot)
                 .protectEvidenceTsv(protectEvidenceTsv)
-                .addRose(addRose)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
-                .sampleSpecialRemarkTsv(sampleSpecialRemarkTsv)
-                .comments(cmd.getOptionValue(COMMENTS))
-                .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
-                .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
+                .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)

@@ -25,10 +25,14 @@ public final class SidePanel {
     private static final float RECTANGLE_WIDTH = 170;
     private static final float RECTANGLE_HEIGHT_SHORT = 110;
 
-    private SidePanel() {
+    @NotNull
+    private final ReportResources reportResources;
+
+    public SidePanel(@NotNull ReportResources reportResources) {
+        this.reportResources = reportResources;
     }
 
-    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
+    public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
@@ -36,7 +40,7 @@ public final class SidePanel {
                 fullHeight);
     }
 
-    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
+    public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
@@ -45,7 +49,7 @@ public final class SidePanel {
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
+    public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
                                        boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
@@ -122,7 +126,7 @@ public final class SidePanel {
     }
 
     @NotNull
-    private static Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
+    private Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
         float Y_START = 802;
         float VALUE_TEXT_Y_OFFSET = 18;
         float MAX_WIDTH = 120;
@@ -131,12 +135,12 @@ public final class SidePanel {
         div.setKeepTogether(true);
 
         float yPos = Y_START - index * ROW_SPACING;
-        div.add(new Paragraph(label.toUpperCase()).addStyle(ReportResources.sidePanelLabelStyle())
+        div.add(new Paragraph(label.toUpperCase()).addStyle(reportResources.sidePanelLabelStyle())
                 .setFixedPosition(CONTENT_X_START, yPos, MAX_WIDTH));
 
-        float valueFontSize = ReportResources.maxPointSizeForWidth(ReportResources.fontBold(), 11, 6, value, MAX_WIDTH);
+        float valueFontSize = ReportResources.maxPointSizeForWidth(reportResources.fontBold(), 11, 6, value, MAX_WIDTH);
         yPos -= VALUE_TEXT_Y_OFFSET;
-        div.add(new Paragraph(value).addStyle(ReportResources.sidePanelValueStyle().setFontSize(valueFontSize))
+        div.add(new Paragraph(value).addStyle(reportResources.sidePanelValueStyle().setFontSize(valueFontSize))
                 .setHeight(15)
                 .setFixedPosition(CONTENT_X_START, yPos, MAX_WIDTH)
                 .setFixedLeading(valueFontSize));

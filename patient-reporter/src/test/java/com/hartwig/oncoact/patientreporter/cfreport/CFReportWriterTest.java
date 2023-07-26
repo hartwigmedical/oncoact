@@ -56,7 +56,21 @@ public class CFReportWriterTest {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
                 .comments(COLO_COMMENT_STRING)
                 .build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS);
+        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false);
+
+        CFReportWriter writer = testCFReportWriter();
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
+    }
+
+    @Test
+    public void canGeneratePatientReportWithUnreliablePurity() throws IOException {
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
+                .comments(COLO_COMMENT_STRING)
+                .build();
+        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
+
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));

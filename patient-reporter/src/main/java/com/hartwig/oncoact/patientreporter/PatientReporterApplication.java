@@ -5,20 +5,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Map;
 
-import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
-import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedReportDataLoader;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.qcfail.*;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -75,7 +70,7 @@ public class PatientReporterApplication {
     }
 
     private void generateAnalysedReport() throws IOException {
-        AnalysedReportData reportData = buildAnalysedReportData(config);
+        AnalysedReportData reportData = AnalysedReportData.buildFromConfig(config);
         AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData, reportDate);
 
         AnalysedPatientReport report = reporter.run(config);
@@ -90,7 +85,6 @@ public class PatientReporterApplication {
 
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
 
-
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());
 
             new ReportingDb().appendAnalysedReport(report, config.outputDirData());
@@ -98,7 +92,7 @@ public class PatientReporterApplication {
     }
 
     private void generateQCFail() throws IOException {
-        QCFailReporter reporter = new QCFailReporter(buildBaseReportData(config), reportDate);
+        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfig(config), reportDate);
         QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
@@ -118,28 +112,5 @@ public class PatientReporterApplication {
     @NotNull
     private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport, @NotNull PatientReport patientReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
-    }
-
-    @NotNull
-    private static QCFailReportData buildBaseReportData(@NotNull PatientReporterConfig config) throws IOException {
-
-        PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
-        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
-
-        return ImmutableQCFailReportData.builder()
-                .diagnosticSiloPatientData(diagnosticPatientData)
-                .lamaPatientData(lamaPatientData)
-                .signaturePath(config.signature())
-                .logoRVAPath(config.rvaLogo())
-                .logoCompanyPath(config.companyLogo())
-                .udiDi(config.udiDi())
-                .build();
-    }
-
-    @NotNull
-    private static AnalysedReportData buildAnalysedReportData(@NotNull PatientReporterConfig config) throws IOException {
-        return AnalysedReportDataLoader.buildFromFiles(buildBaseReportData(config),
-                config.germlineReportingTsv(),
-                config.sampleSpecialRemarkTsv());
     }
 }

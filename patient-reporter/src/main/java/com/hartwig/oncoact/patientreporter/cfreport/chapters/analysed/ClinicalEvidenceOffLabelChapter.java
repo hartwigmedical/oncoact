@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.itextpdf.layout.Document;
@@ -29,8 +30,12 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
     @NotNull
     private final AnalysedPatientReport report;
 
-    public ClinicalEvidenceOffLabelChapter(@NotNull final AnalysedPatientReport report) {
+    @NotNull
+    private final ClinicalEvidenceFunctions clinicalEvidenceFunctions;
+
+    public ClinicalEvidenceOffLabelChapter(@NotNull final AnalysedPatientReport report, @NotNull final ReportResources reportResources) {
         this.report = report;
+        this.clinicalEvidenceFunctions = new ClinicalEvidenceFunctions(reportResources);
     }
 
     @Override
@@ -38,9 +43,9 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
         GenomicAnalysis analysis = report.genomicAnalysis();
         List<ProtectEvidence> reportedOffLabel = analysis.offLabelEvidence();
         addTreatmentSection(document, "Evidence on other tumor types", reportedOffLabel);
-        document.add(ClinicalEvidenceFunctions.noteEvidence());
-        document.add(ClinicalEvidenceFunctions.noteGlossaryTerms());
-        document.add(ClinicalEvidenceFunctions.noteEvidenceMatching());
+        document.add(clinicalEvidenceFunctions.noteEvidence());
+        document.add(clinicalEvidenceFunctions.noteGlossaryTerms());
+        document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
     private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
@@ -48,6 +53,6 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         Map<String, List<ProtectEvidence>> offLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(ClinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth()));
+        document.add(clinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth()));
     }
 }

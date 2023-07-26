@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
@@ -22,9 +21,14 @@ public class QCFailChapter implements ReportChapter {
 
     @NotNull
     private final QCFailReport failReport;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public QCFailChapter(@NotNull QCFailReport failReport) {
+    public QCFailChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
         this.failReport = failReport;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -65,28 +69,27 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),
-                failReport.failExplanation().reportExplanation(),
-                failReport.failExplanation().sampleFailReasonComment()));
+                failReport.failExplanation().reportExplanation(), failReport.failExplanation().sampleFailReasonComment()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation,
-                                           @Nullable String sampleFailReasonComment) {
+    private Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation,
+                                    @Nullable String sampleFailReasonComment){
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(reportReason).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(reportExplanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(reportReason).addStyle(reportResources.dataHighlightStyle()));
+        div.add(new Paragraph(reportExplanation).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         if (sampleFailReasonComment != null) {
-            div.add(new Paragraph(sampleFailReasonComment).addStyle(ReportResources.subTextBoldStyle())
+            div.add(new Paragraph(sampleFailReasonComment).addStyle(reportResources.subTextBoldStyle())
                     .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
         return div;

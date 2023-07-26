@@ -29,7 +29,7 @@ public class BarChart extends InlineBarChart {
     private final String lowLabel;
     private final String highLabel;
     private final boolean forceMarkerInRoundedRectangle;
-
+    private final ReportResources reportResources;
     private boolean underShootEnabled = false;
     private String undershootLabel = "";
 
@@ -40,12 +40,13 @@ public class BarChart extends InlineBarChart {
     private Indicator threshold = null;
 
     public BarChart(double value, double min, double max, @NotNull String lowLabel, @NotNull String highLabel,
-            boolean forceMarkerInRoundedRectangle) {
+            boolean forceMarkerInRoundedRectangle, @NotNull ReportResources reportResources) {
         super(value, min, max);
         super.setHeight(HEIGHT);
         this.lowLabel = lowLabel;
         this.highLabel = highLabel;
         this.forceMarkerInRoundedRectangle = forceMarkerInRoundedRectangle;
+        this.reportResources = reportResources;
     }
 
     private void setTickMarks(@NotNull Indicator... tickMarks) {
@@ -129,11 +130,11 @@ public class BarChart extends InlineBarChart {
             Color outlineColor = isEnabled() ? ReportResources.PALETTE_MID_BLUE : ReportResources.PALETTE_LIGHT_GREY;
             Color labelColor = isEnabled() ? ReportResources.PALETTE_BLACK : ReportResources.PALETTE_LIGHT_GREY;
 
-            cv.showTextAligned(new Paragraph(lowLabel).addStyle(ReportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
+            cv.showTextAligned(new Paragraph(lowLabel).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
                     boundingBox.getLeft(),
                     boundingBox.getTop() - 25,
                     TextAlignment.LEFT);
-            cv.showTextAligned(new Paragraph(highLabel).addStyle(ReportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
+            cv.showTextAligned(new Paragraph(highLabel).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
                     boundingBox.getRight(),
                     boundingBox.getTop() - 25,
                     TextAlignment.RIGHT);
@@ -151,7 +152,7 @@ public class BarChart extends InlineBarChart {
                 canvas.setFillColor(ReportResources.PALETTE_WHITE);
                 canvas.fill();
 
-                cv.showTextAligned(new Paragraph(undershootLabel).addStyle(ReportResources.subTextStyle()
+                cv.showTextAligned(new Paragraph(undershootLabel).addStyle(reportResources.subTextStyle()
                         .setFontSize(6)
                         .setFontColor(labelColor)), outerBB.getLeft() + OVER_UNDER_SHOOT_LABEL_OFFSET, tickY, TextAlignment.LEFT);
             }
@@ -171,7 +172,7 @@ public class BarChart extends InlineBarChart {
                 canvas.circle(outerBB.getLeft() + outerRadius, outerBB.getY() + outerRadius, outerRadius + OVER_UNDERSHOOT_OVERLAP);
                 canvas.fill();
 
-                cv.showTextAligned(new Paragraph(overshootLabel).addStyle(ReportResources.subTextStyle()
+                cv.showTextAligned(new Paragraph(overshootLabel).addStyle(reportResources.subTextStyle()
                         .setFontSize(6)
                         .setFontColor(labelColor)), outerBB.getRight() - OVER_UNDER_SHOOT_LABEL_OFFSET, tickY, TextAlignment.RIGHT);
             }
@@ -200,7 +201,7 @@ public class BarChart extends InlineBarChart {
 
                 TextAlignment alignment = !tickMark.equals(tickMarks[tickMarks.length - 1]) ? TextAlignment.CENTER : TextAlignment.RIGHT;
 
-                cv.showTextAligned(new Paragraph(tickMark.name).addStyle(ReportResources.subTextStyle()
+                cv.showTextAligned(new Paragraph(tickMark.name).addStyle(reportResources.subTextStyle()
                         .setFontSize(6)
                         .setFontColor(labelColor)), x, tickY, alignment);
             }
@@ -218,13 +219,13 @@ public class BarChart extends InlineBarChart {
                 canvas.setStrokeColor(ReportResources.PALETTE_PINK);
                 canvas.stroke();
 
-                cv.showTextAligned(new Paragraph("\u2192").addStyle(ReportResources.subTextBoldStyle().setFontSize(6))
+                cv.showTextAligned(new Paragraph("\u2192").addStyle(reportResources.subTextBoldStyle().setFontSize(6))
                                 .setFontColor(ReportResources.PALETTE_PINK),
                         x + 4.5f,
                         mainOuterBB.getTop() + 18f,
                         TextAlignment.LEFT,
                         VerticalAlignment.TOP);
-                cv.showTextAligned(new Paragraph(threshold.name.toUpperCase()).addStyle(ReportResources.subTextBoldStyle().setFontSize(6))
+                cv.showTextAligned(new Paragraph(threshold.name.toUpperCase()).addStyle(reportResources.subTextBoldStyle().setFontSize(6))
                                 .setFontColor(ReportResources.PALETTE_PINK),
                         x + 12.5f,
                         mainOuterBB.getTop() + 18f,
