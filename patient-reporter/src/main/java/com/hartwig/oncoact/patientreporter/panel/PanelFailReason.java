@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public enum PanelFailReason {
 
-    PANEL_FAILURE("insufficient_dna_panel", QsFormNumber.FOR_345, "Insufficient quality of received biomaterial(s)", "The received biomaterial(s) did not meet the requirements that are needed for high quality Next Generation Sequencing.", "Sequencing could not be performed due to insufficient DNA.");
+    PANEL_FAILURE("insufficient_dna_panel", QsFormNumber.FOR_345, "Insufficient quality of received biomaterial(s)", "Next Generation Sequencing could not be successfully performed on the received biomaterial(s) because not enough DNA was present after DNA isolation. This is likely due to poor quality of the received biomaterials(s).");
 
     @NotNull
     private final String identifier;
@@ -21,16 +21,13 @@ public enum PanelFailReason {
     private final String reportReason;
     @NotNull
     private final String reportExplanation;
-    @NotNull
-    private final String reportExplanationDetail;
 
     PanelFailReason(@NotNull final String identifier, @NotNull final QsFormNumber qsFormNumber, @NotNull final String reportReason,
-                    @NotNull final String reportExplanation, @NotNull final String reportExplanationDetail) {
+                    @NotNull final String reportExplanation) {
         this.identifier = identifier;
         this.qsFormNumber = qsFormNumber;
         this.reportReason = reportReason;
         this.reportExplanation = reportExplanation;
-        this.reportExplanationDetail = reportExplanationDetail;
     }
 
     @NotNull
@@ -51,11 +48,6 @@ public enum PanelFailReason {
     @NotNull
     public String reportExplanation() {
         return reportExplanation;
-    }
-
-    @NotNull
-    public String reportExplanationDetail() {
-        return reportExplanationDetail;
     }
 
     @Nullable
