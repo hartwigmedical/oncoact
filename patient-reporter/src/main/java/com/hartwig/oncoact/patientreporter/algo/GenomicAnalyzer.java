@@ -20,6 +20,7 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
+import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -37,8 +38,13 @@ public class GenomicAnalyzer {
     @NotNull
     private final GermlineReportingModel germlineReportingModel;
 
-    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel) {
+    @NotNull
+    private final ClinicalTranscriptsModel clinicalTranscriptsModel;
+
+    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel,
+                           @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.germlineReportingModel = germlineReportingModel;
+        this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull

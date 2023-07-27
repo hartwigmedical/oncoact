@@ -3,6 +3,8 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
+import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
@@ -33,6 +35,8 @@ public final class PatientReporterTestFactory {
     private static final String COMPANY_LOGO_PATH = Resources.getResource("company_logo/hartwig_logo_test.jpg").getPath();
 
     private static final String GERMLINE_REPORTING_TSV = Resources.getResource("germline_reporting/germline_reporting.tsv").getPath();
+    private static final String CLINICAL_TRANSCRIPT_TSV = Resources.getResource("clinicaltranscript/clinical_transcipts.tsv").getPath();
+
     private static final String CORRECTION_JSON = Resources.getResource("correction/correction.json").getPath();
 
     private static final String UDI_DI = "(01)8720299486027(8012)v5.28";
@@ -58,6 +62,7 @@ public final class PatientReporterTestFactory {
                 .protectEvidenceTsv(PROTECT_EVIDENCE_TSV)
                 .roseTsv(ROSE_TSV)
                 .germlineReportingTsv(Strings.EMPTY)
+                .clinicalTranscriptsTsv(CLINICAL_TRANSCRIPT_TSV)
                 .correctionJson(CORRECTION_JSON)
                 .onlyCreatePDF(false)
                 .requirePipelineVersionFile(true)
@@ -104,11 +109,13 @@ public final class PatientReporterTestFactory {
     public static AnalysedReportData loadTestAnalysedReportData() {
         try {
             GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(GERMLINE_REPORTING_TSV);
+            ClinicalTranscriptsModel clinicalTranscriptsModel = ClinicalTranscriptFile.buildFromTsv(CLINICAL_TRANSCRIPT_TSV);
             Correction correction = Correction.read(CORRECTION_JSON);
 
             return ImmutableAnalysedReportData.builder()
                     .from(loadTestReportData())
                     .germlineReportingModel(germlineReportingModel)
+                    .clinicalTranscriptsModel(clinicalTranscriptsModel)
                     .correction(correction)
                     .build();
         } catch (IOException exception) {

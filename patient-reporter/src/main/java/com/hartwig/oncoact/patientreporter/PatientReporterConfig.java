@@ -50,6 +50,7 @@ public interface PatientReporterConfig {
 
     // Resources used for generating an analysed patient report
     String GERMLINE_REPORTING_TSV = "germline_reporting_tsv";
+    String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
     String HAS_CORRECTIONS = "has_corrections";
     String CORRECTION_JSON = "correction_json";
 
@@ -89,6 +90,7 @@ public interface PatientReporterConfig {
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
+        options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         options.addOption(HAS_CORRECTIONS, false, "If provided, expect a correction json.");
         options.addOption(CORRECTION_JSON, true, "If provided, the path towards a correction json.");
@@ -157,6 +159,9 @@ public interface PatientReporterConfig {
     @NotNull
     String germlineReportingTsv();
 
+    @NotNull
+    String clinicalTranscriptsTsv();
+
     @Nullable
     String correctionJson();
 
@@ -201,6 +206,7 @@ public interface PatientReporterConfig {
         String roseTsv = null;
 
         String germlineReportingTsv = Strings.EMPTY;
+        String clinicalTranscriptsTsv = Strings.EMPTY;
 
         if (isQCFail && qcFailReason.isDeepWGSDataAvailable()) {
             if (requirePipelineVersion) {
@@ -219,6 +225,7 @@ public interface PatientReporterConfig {
             roseTsv = nonOptionalFile(cmd, ROSE_TSV);
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
+            clinicalTranscriptsTsv = nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV);
         }
 
         String correctionJson = null;
@@ -244,6 +251,7 @@ public interface PatientReporterConfig {
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
+                .clinicalTranscriptsTsv(clinicalTranscriptsTsv)
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .requirePipelineVersionFile(requirePipelineVersion)

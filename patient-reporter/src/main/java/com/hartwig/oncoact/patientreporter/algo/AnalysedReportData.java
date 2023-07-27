@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.ReportData;
+import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
@@ -22,10 +24,17 @@ public interface AnalysedReportData extends ReportData {
     @NotNull
     static AnalysedReportData buildFromConfig(@NotNull PatientReporterConfig config) throws IOException {
         GermlineReportingModel germlineReportingModel = GermlineReportingFile.buildFromTsv(config.germlineReportingTsv());
+        ClinicalTranscriptsModel clinicalTranscriptsModel = ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv());
 
-        return builder().from(QCFailReportData.buildFromConfig(config)).germlineReportingModel(germlineReportingModel).build();
+        return builder().from(QCFailReportData.buildFromConfig(config))
+                .germlineReportingModel(germlineReportingModel)
+                .clinicalTranscriptsModel(clinicalTranscriptsModel)
+                .build();
     }
 
     @NotNull
     GermlineReportingModel germlineReportingModel();
+
+    @NotNull
+    ClinicalTranscriptsModel clinicalTranscriptsModel();
 }
