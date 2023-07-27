@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter.clinicaltransript;
 
 import com.google.common.collect.Maps;
+import com.hartwig.oncoact.util.CsvFileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -28,11 +29,12 @@ public class ClinicalTranscriptFile {
 
         // Skip header
         for (String line : lines.subList(1, lines.size())) {
-            String[] parts = line.split(SEPARATOR);
+            final Map<String,Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
+            final String[] parts = line.split(SEPARATOR, -1);
 
             if (parts.length == 2) {
-                String geneName = parts[0];
-                String clinicalTranscript = parts[1];
+                String geneName = parts[fieldIndexMap.get("Gene")];
+                String clinicalTranscript = parts[fieldIndexMap.get("Transcript")];
                 clinicalTranscriptEntries.put(geneName, clinicalTranscript);
             } else {
                 LOGGER.warn("Suspicious line detected in clinical transcripten tsv: {}", line);
