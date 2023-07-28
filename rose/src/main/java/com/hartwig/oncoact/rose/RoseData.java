@@ -2,6 +2,7 @@ package com.hartwig.oncoact.rose;
 
 import java.util.List;
 
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
@@ -21,4 +22,7 @@ public abstract class RoseData {
 
     @NotNull
     public abstract List<DriverGene> driverGenes();
+
+    @NotNull
+    public abstract ClinicalTranscriptsModel clinicalTranscriptsModel();
 }

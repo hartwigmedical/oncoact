@@ -3,6 +3,8 @@ package com.hartwig.oncoact.rose;
 import java.io.IOException;
 import java.util.List;
 
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.DriverGeneFile;
 import com.hartwig.oncoact.orange.OrangeJson;
@@ -22,18 +24,22 @@ public class RoseAlgo {
     private final List<ActionabilityEntry> actionabilityEntries;
     @NotNull
     private final List<DriverGene> driverGenes;
+    @NotNull
+    private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     @NotNull
-    public static RoseAlgo build(@NotNull String actionabilityDatabaseTsv, @NotNull String driverGeneTsv) throws IOException {
+    public static RoseAlgo build(@NotNull String actionabilityDatabaseTsv, @NotNull String driverGeneTsv, @NotNull String clinicalTranscriptsTsv) throws IOException {
         List<ActionabilityEntry> actionabilityEntry = readActionabilityEntries(actionabilityDatabaseTsv);
         List<DriverGene> driverGenes = readDriverGenesFromFile(driverGeneTsv);
+        ClinicalTranscriptsModel clinicalTranscriptsModel = ClinicalTranscriptFile.buildFromTsv(clinicalTranscriptsTsv);
 
-        return new RoseAlgo(actionabilityEntry, driverGenes);
+        return new RoseAlgo(actionabilityEntry, driverGenes, clinicalTranscriptsModel);
     }
 
-    private RoseAlgo(final @NotNull List<ActionabilityEntry> actionabilityEntries, final @NotNull List<DriverGene> driverGenes) {
+    private RoseAlgo(final @NotNull List<ActionabilityEntry> actionabilityEntries, final @NotNull List<DriverGene> driverGenes, final @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.actionabilityEntries = actionabilityEntries;
         this.driverGenes = driverGenes;
+        this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
@@ -63,6 +69,7 @@ public class RoseAlgo {
                 .orange(orange)
                 .actionabilityEntries(actionabilityEntries)
                 .driverGenes(driverGenes)
+                .clinicalTranscriptsModel(clinicalTranscriptsModel)
                 .build();
     }
 }

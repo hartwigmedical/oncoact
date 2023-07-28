@@ -10,6 +10,8 @@ import com.hartwig.hmftools.datamodel.purple.PurpleDriver;
 import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelFactoryTest;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModelTest;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +43,7 @@ public class ReportableVariantFactoryTest {
                 .driver(PurpleDriverType.MUTATION)
                 .build();
 
-        Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableSomaticVariants(variants, Sets.newHashSet(driverGene1));
+        Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableSomaticVariants(variants, Sets.newHashSet(driverGene1), ClinicalTranscriptModelFactoryTest.createEmpty());
 
         assertEquals(1, reportable.size());
         assertEquals(likelihood, reportable.iterator().next().driverLikelihood(), EPSILON);
@@ -65,7 +67,7 @@ public class ReportableVariantFactoryTest {
                 TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).driver(PurpleDriverType.GERMLINE_DELETION).build();
         Set<PurpleDriver> drivers = Sets.newHashSet(driver1, driver2);
 
-        Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1), drivers);
+        Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1), drivers, ClinicalTranscriptModelFactoryTest.createEmpty());
 
         assertEquals(0.6, reportable.iterator().next().driverLikelihood(), EPSILON);
     }
@@ -89,7 +91,7 @@ public class ReportableVariantFactoryTest {
                 TestPurpleFactory.driverBuilder().gene("gene").transcript("transcript 2").driverLikelihood(0.6).build();
 
         Set<ReportableVariant> reportable =
-                ReportableVariantFactory.toReportableSomaticVariants(Sets.newHashSet(variant), Sets.newHashSet(driverNonCanonical));
+                ReportableVariantFactory.toReportableSomaticVariants(Sets.newHashSet(variant), Sets.newHashSet(driverNonCanonical), ClinicalTranscriptModelFactoryTest.createEmpty());
 
         assertEquals(1, reportable.size());
         assertEquals(0.6, reportable.iterator().next().driverLikelihood(), EPSILON);
@@ -97,7 +99,7 @@ public class ReportableVariantFactoryTest {
         PurpleDriver driverCanonical =
                 TestPurpleFactory.driverBuilder().gene("gene").transcript("transcript 1").driverLikelihood(0.7).build();
         Set<ReportableVariant> reportables = ReportableVariantFactory.toReportableSomaticVariants(Sets.newHashSet(variant),
-                Sets.newHashSet(driverNonCanonical, driverCanonical));
+                Sets.newHashSet(driverNonCanonical, driverCanonical), ClinicalTranscriptModelFactoryTest.createEmpty());
 
         assertEquals(2, reportables.size());
         ReportableVariant reportable1 = findByTranscript(reportables, "transcript 1");

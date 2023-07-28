@@ -1,11 +1,11 @@
-package com.hartwig.oncoact.patientreporter.clinicaltransript;
+package com.hartwig.oncoact.clinicaltransript;
 
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.NotNull;
 
-public class TestClinicalTranscriptModelFactory {
+public class ClinicalTranscriptModelFactoryTest {
 
-    private TestClinicalTranscriptModelFactory() {
+    private ClinicalTranscriptModelFactoryTest() {
     }
 
     @NotNull

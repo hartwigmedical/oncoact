@@ -3,8 +3,9 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.IOException;
 
 import com.google.common.io.Resources;
-import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptFile;
-import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptsModel;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelFactoryTest;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;

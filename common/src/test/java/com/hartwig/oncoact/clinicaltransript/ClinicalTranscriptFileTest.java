@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.clinicaltransript;
+package com.hartwig.oncoact.clinicaltransript;
 
 import com.google.common.io.Resources;
 import org.junit.Test;
@@ -22,4 +22,5 @@ public class ClinicalTranscriptFileTest {
         assertEquals("NM_789", clinicalTranscriptBRCA1);
         assertEquals("NM_123", clinicalTranscriptBRCA2);
     }
+
 }

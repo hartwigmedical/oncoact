@@ -16,6 +16,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -30,28 +31,30 @@ public final class ReportableVariantFactory {
 
     @NotNull
     public static Set<ReportableVariant> toReportableGermlineVariants(@NotNull Collection<PurpleVariant> germlineVariants,
-            @NotNull Collection<PurpleDriver> germlineDrivers) {
+            @NotNull Collection<PurpleDriver> germlineDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> germlineMutationDrivers =
                 germlineDrivers.stream().filter(x -> x.driver() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
-        return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE);
+        return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE, clinicalTranscriptsModel);
     }
 
     @NotNull
     public static Set<ReportableVariant> toReportableSomaticVariants(@NotNull Collection<PurpleVariant> somaticVariants,
-            @NotNull Collection<PurpleDriver> somaticDrivers) {
+            @NotNull Collection<PurpleDriver> somaticDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> somaticMutationDrivers =
                 somaticDrivers.stream().filter(x -> x.driver() == PurpleDriverType.MUTATION).collect(Collectors.toList());
-        return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC);
+        return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC, clinicalTranscriptsModel);
     }
 
     @NotNull
     private static Set<ReportableVariant> toReportableVariants(@NotNull Iterable<PurpleVariant> variants,
-            @NotNull Iterable<PurpleDriver> drivers, @NotNull ReportableVariantSource source) {
+            @NotNull Iterable<PurpleDriver> drivers, @NotNull ReportableVariantSource source, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         Map<DriverKey, PurpleDriver> driverMap = DriverMap.create(drivers);
         Set<ReportableVariant> reportableVariants = Sets.newHashSet();
 
         for (PurpleVariant variant : variants) {
+
             if (variant.reported()) {
+                String clinicalTranscript = clinicalTranscriptsModel.findCanonicalTranscriptForGene(variant.gene());
                 ImmutableReportableVariant.Builder builder = fromVariant(variant, source);
 
                 PurpleDriver canonicalDriver = findCanonicalEntryForVariant(driverMap, variant);

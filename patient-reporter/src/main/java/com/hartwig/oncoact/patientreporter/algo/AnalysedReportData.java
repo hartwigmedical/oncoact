@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.ReportData;
-import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptFile;
-import com.hartwig.oncoact.patientreporter.clinicaltransript.ClinicalTranscriptsModel;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;

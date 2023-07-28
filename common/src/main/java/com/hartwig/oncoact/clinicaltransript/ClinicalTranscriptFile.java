@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.clinicaltransript;
+package com.hartwig.oncoact.clinicaltransript;
 
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.util.CsvFileReader;
