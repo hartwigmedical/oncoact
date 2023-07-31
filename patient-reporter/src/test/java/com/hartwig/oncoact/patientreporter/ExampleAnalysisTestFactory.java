@@ -1104,6 +1104,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
+                .otherImpacts(purpleTranscriptImpact("ENST00000288602", "c.1799T>A", "p.Val600Glu"))
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .chromosome("7")
@@ -1133,6 +1134,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant2 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p16)")
+                .otherImpacts(purpleTranscriptImpact("ENST00000498124", "c.203_204delCG", "p.Ala68fs"))
                 .transcript("ENST00000498124")
                 .isCanonical(true)
                 .chromosome("9")
@@ -1162,6 +1164,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p14ARF)")
+                .otherImpacts(purpleTranscriptImpact("ENST00000579755", "c.246_247delCG", "p.Gly83fs"))
                 .transcript("ENST00000579755")
                 .isCanonical(false)
                 .chromosome("9")
@@ -1191,6 +1194,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TERT")
+                .otherImpacts(purpleTranscriptImpact("ENST00000310581", "c.-125_-124delCCinsTT", Strings.EMPTY))
                 .transcript("ENST00000310581")
                 .isCanonical(true)
                 .chromosome("5")
@@ -1220,6 +1224,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant5 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("SF3B1")
+                .otherImpacts(purpleTranscriptImpact("ENST00000335508", "c.2153C>T", "p.Pro718Leu"))
                 .transcript("ENST00000335508")
                 .isCanonical(true)
                 .chromosome("2")
@@ -1249,6 +1254,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant6 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TP63")
+                .otherImpacts(purpleTranscriptImpact("ENST00000264731", "c.1497G>T", "p.Met499Ile"))
                 .transcript("ENST00000264731")
                 .isCanonical(true)
                 .chromosome("3")
@@ -1276,6 +1282,18 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6);
+    }
+
+    @NotNull
+    private static PurpleTranscriptImpact purpleTranscriptImpact(@NotNull String transcript, @NotNull String hgvsCodingImpact,
+                                                                 @NotNull String hgvsProteinImpact) {
+        return ImmutablePurpleTranscriptImpact.builder()
+                .transcript(transcript)
+                .hgvsCodingImpact(hgvsCodingImpact)
+                .hgvsProteinImpact(hgvsProteinImpact)
+                .spliceRegion(false)
+                .codingEffect(PurpleCodingEffect.UNDEFINED)
+                .build();
     }
 
     @NotNull

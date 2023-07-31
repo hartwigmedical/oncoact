@@ -54,7 +54,13 @@ public final class ReportableVariantFactory {
         for (PurpleVariant variant : variants) {
 
             if (variant.reported()) {
+                PurpleTranscriptImpact purpleTranscriptImpact = null;
                 String clinicalTranscript = clinicalTranscriptsModel.findCanonicalTranscriptForGene(variant.gene());
+                for (PurpleTranscriptImpact otherTranscript: variant.otherImpacts()) {
+                    if (otherTranscript.transcript().equals(clinicalTranscript)) {
+                        purpleTranscriptImpact = otherTranscript;
+                    }
+                }
                 ImmutableReportableVariant.Builder builder = fromVariant(variant, source);
 
                 PurpleDriver canonicalDriver = findCanonicalEntryForVariant(driverMap, variant);
@@ -62,6 +68,7 @@ public final class ReportableVariantFactory {
                     reportableVariants.add(builder.driverLikelihood(canonicalDriver.driverLikelihood())
                             .transcript(canonicalDriver.transcript())
                             .isCanonical(true)
+                            .otherImpacts(purpleTranscriptImpact)
                             .build());
                 }
 
@@ -71,6 +78,7 @@ public final class ReportableVariantFactory {
                     reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
                             .transcript(nonCanonicalDriver.transcript())
                             .isCanonical(false)
+                            .otherImpacts(purpleTranscriptImpact)
                             .canonicalHgvsCodingImpact(firstOtherImpact.hgvsCodingImpact())
                             .canonicalHgvsProteinImpact(firstOtherImpact.hgvsProteinImpact())
                             .build());

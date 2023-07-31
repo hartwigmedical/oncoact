@@ -11,6 +11,7 @@ import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
@@ -73,8 +74,34 @@ public final class SomaticVariants {
                 return true;
             }
         }
-
         return false;
+    }
+
+    @NotNull
+    public static String determineVariantAnnotationCanonical(@NotNull String hgvsCoding, @NotNull String hgvsProtein) {
+        String variant = Strings.EMPTY;
+        if (!hgvsCoding.equals(Strings.EMPTY)) {
+            variant = hgvsCoding;
+            if (!hgvsProtein.equals(Strings.EMPTY)) {
+                variant = hgvsCoding + " (" + hgvsProtein + ")";
+            }
+        } else {
+            if (!hgvsProtein.equals(Strings.EMPTY)) {
+                variant =  hgvsProtein;
+            }
+        }
+        return variant;
+    }
+
+    @NotNull
+    public static String determineVariantAnnotationClinical(@Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+        String variant = Strings.EMPTY;
+        if (purpleTranscriptImpact != null) {
+            String hgvsCoding = purpleTranscriptImpact.hgvsCodingImpact();
+            String hgvsProtein = purpleTranscriptImpact.hgvsProteinImpact();
+            variant = determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein);
+        }
+        return variant;
     }
 
     public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {

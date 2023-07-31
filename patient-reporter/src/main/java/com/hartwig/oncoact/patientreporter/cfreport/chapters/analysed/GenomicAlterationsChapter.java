@@ -170,7 +170,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
         if (DISPLAY_CLONAL_COLUMN) {
             contentTable = TableUtil.createReportContentTable(new float[]{60, 70, 80, 70, 60, 40, 30, 60, 60, 50, 50},
                     new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Variant"), tableUtil.createHeaderCell("Protein"),
+                            tableUtil.createHeaderCell("Canonical Variant"), tableUtil.createHeaderCell("Clinical Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
@@ -182,7 +182,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
         } else {
             contentTable = TableUtil.createReportContentTable(new float[]{60, 70, 80, 70, 60, 40, 30, 60, 60, 50},
                     new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Variant"), tableUtil.createHeaderCell("Protein"),
+                            tableUtil.createHeaderCell("Canonical Variant"), tableUtil.createHeaderCell("Clinical Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
@@ -196,8 +196,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(tableUtil.createContentCell(SomaticVariants.geneDisplayString(variant,
                     notifyGermlineStatusPerVariant.get(variant), variant.localPhaseSet(), variant.canonicalEffect())));
             contentTable.addCell(tableUtil.createContentCell(variant.gDNA()));
-            contentTable.addCell(tableUtil.createContentCell(variant.canonicalHgvsCodingImpact()));
-            contentTable.addCell(tableUtil.createContentCell(variant.canonicalHgvsProteinImpact()));
+            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.determineVariantAnnotationCanonical(variant.canonicalHgvsCodingImpact(), variant.canonicalHgvsProteinImpact())));
+            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.determineVariantAnnotationClinical(variant.otherImpacts())));
             contentTable.addCell(tableUtil.createContentCell(new Paragraph(
                     variant.alleleReadCount() + " / ").setFont(reportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(reportResources.fontRegular()))
