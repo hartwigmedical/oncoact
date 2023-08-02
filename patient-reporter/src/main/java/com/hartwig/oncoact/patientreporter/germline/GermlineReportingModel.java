@@ -25,7 +25,7 @@ public class GermlineReportingModel {
     }
 
     public boolean notifyGermlineVariant(@NotNull ReportableVariant germlineVariant,
-            @NotNull Boolean germlineReportingLevel, @NotNull Set<String> germlineGenesWithIndependentHits) {
+                                         boolean germlineReportingLevel, @NotNull Set<String> germlineGenesWithIndependentHits) {
         assert germlineVariant.source() == ReportableVariantSource.GERMLINE;
 
         if (!germlineReportingLevel) {

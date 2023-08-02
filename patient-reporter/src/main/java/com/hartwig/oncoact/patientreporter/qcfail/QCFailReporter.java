@@ -10,13 +10,16 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
-import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
+import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -43,7 +46,15 @@ public class QCFailReporter {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 
-        if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
+        FailedReason failedDatabase = ImmutableFailedReason.builder()
+                .reportReason(reason.reportReason())
+                .reportExplanation(reason.reportExplanation())
+                .sampleFailReasonComment(config.sampleFailReasonComment())
+                .build();
+
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.PIPELINE_FAIL, QCFailReason.TCP_WGS_FAIL);
+
+        if (qcFailReasons.contains(reason)) {
             if (config.requirePipelineVersionFile()) {
                 String pipelineVersionFile = config.pipelineVersionFile();
                 assert pipelineVersionFile != null;
@@ -86,13 +97,16 @@ public class QCFailReporter {
 
         LOGGER.info("  QC status: {}", purpleQc.toString());
 
-        return ImmutableQCFailReport.builder()
+        return QCFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
+                .failExplanation(failedDatabase)
                 .wgsPurityString(wgsPurityString)
-                .comments(Optional.ofNullable(config.comments()))
-                .isCorrectedReport(config.isCorrectedReport())
-                .isCorrectedReportExtern(config.isCorrectedReportExtern())
+                .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
+                .isCorrectedReport(Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false))
+                .isCorrectedReportExtern(Optional.ofNullable(reportData.correction())
+                        .map(Correction::isCorrectedReportExtern)
+                        .orElse(false))
                 .signaturePath(reportData.signaturePath())
                 .logoRVAPath(reportData.logoRVAPath())
                 .logoCompanyPath(reportData.logoCompanyPath())

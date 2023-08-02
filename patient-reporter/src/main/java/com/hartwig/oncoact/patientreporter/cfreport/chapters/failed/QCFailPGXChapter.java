@@ -31,9 +31,15 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
     private final QCFailReport failReport;
+    @NotNull
+    private final ReportResources reportResources;
+    @NotNull
+    private final TableUtil tableUtil;
 
-    public QCFailPGXChapter(@NotNull QCFailReport failReport) {
+    public QCFailPGXChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
         this.failReport = failReport;
+        this.reportResources = reportResources;
+        this.tableUtil = new TableUtil(reportResources);
     }
 
     @NotNull
@@ -87,59 +93,59 @@ public class QCFailPGXChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Table createHlaTable(@NotNull HlaAllelesReportingData lilac) {
+    private Table createHlaTable(@NotNull HlaAllelesReportingData lilac) {
 
         String title = "HLA Alleles";
         Table table = TableUtil.createReportContentTable(new float[]{10, 10, 10},
-                new Cell[]{TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Germline allele"),
-                        TableUtil.createHeaderCell("Germline copies")},
+                new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
+                        tableUtil.createHeaderCell("Germline copies")},
                 ReportResources.CONTENT_WIDTH_WIDE_SMALL);
         if (!lilac.hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
-            return TableUtil.createNoConsentReportTable(title,
+            return tableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN,
                     ReportResources.CONTENT_WIDTH_WIDE_SMALL);
         } else if (lilac.hlaAllelesReporting().isEmpty()) {
-            return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+            return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE_SMALL);
         } else {
             Set<String> sortedAlleles = Sets.newTreeSet(lilac.hlaAllelesReporting().keySet().stream().collect(Collectors.toSet()));
             for (String sortAllele : sortedAlleles) {
                 List<HlaReporting> allele = lilac.hlaAllelesReporting().get(sortAllele);
-                table.addCell(TableUtil.createContentCell(sortAllele));
+                table.addCell(tableUtil.createContentCell(sortAllele));
 
                 Table tableGermlineAllele = new Table(new float[]{1});
                 Table tableGermlineCopies = new Table(new float[]{1});
 
                 for (HlaReporting hlaAlleleReporting : HLAAllele.sort(allele)) {
-                    tableGermlineAllele.addCell(TableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
-                    tableGermlineCopies.addCell(TableUtil.createTransparentCell(String.valueOf(Math.round(hlaAlleleReporting.germlineCopies()))));
+                    tableGermlineAllele.addCell(tableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
+                    tableGermlineCopies.addCell(tableUtil.createTransparentCell(String.valueOf(Math.round(hlaAlleleReporting.germlineCopies()))));
                 }
 
-                table.addCell(TableUtil.createContentCell(tableGermlineAllele));
-                table.addCell(TableUtil.createContentCell(tableGermlineCopies));
+                table.addCell(tableUtil.createContentCell(tableGermlineAllele));
+                table.addCell(tableUtil.createContentCell(tableGermlineCopies));
             }
         }
-        return TableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
+        return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
     @NotNull
-    private static Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes) {
+    private Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes) {
         String title = "Pharmacogenetics";
 
         if (pharmacogeneticsGenotypes.isEmpty()) {
-            return TableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
+            return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         } else {
             Table contentTable = TableUtil.createReportContentTable(new float[]{60, 60, 60, 100, 60},
-                    new Cell[]{TableUtil.createHeaderCell("Gene"), TableUtil.createHeaderCell("Genotype"),
-                            TableUtil.createHeaderCell("Function"), TableUtil.createHeaderCell("Linked drugs"),
-                            TableUtil.createHeaderCell("Source")},
+                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
+                            tableUtil.createHeaderCell("Function"), tableUtil.createHeaderCell("Linked drugs"),
+                            tableUtil.createHeaderCell("Source")},
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsGenotypes.keySet());
             for (String sortPharmacogenetics : sortedPharmacogenetics) {
                 List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsGenotypes.get(sortPharmacogenetics);
-                contentTable.addCell(TableUtil.createContentCell(sortPharmacogenetics));
+                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics));
 
                 Table tableGenotype = new Table(new float[]{1});
                 Table tableFunction = new Table(new float[]{1});
@@ -147,50 +153,50 @@ public class QCFailPGXChapter implements ReportChapter {
                 Table tableSource = new Table(new float[]{1});
 
                 for (PeachGenotype peachGenotype : pharmacogeneticsGenotypeList) {
-                    tableGenotype.addCell(TableUtil.createTransparentCell(peachGenotype.haplotype()));
-                    tableFunction.addCell(TableUtil.createTransparentCell(peachGenotype.function()));
-                    tableLinkedDrugs.addCell(TableUtil.createTransparentCell(peachGenotype.linkedDrugs()));
-                    tableSource.addCell(TableUtil.createTransparentCell(new Paragraph(Pharmacogenetics.sourceName(peachGenotype.urlPrescriptionInfo())).addStyle(
-                                    ReportResources.dataHighlightLinksStyle()))
+                    tableGenotype.addCell(tableUtil.createTransparentCell(peachGenotype.haplotype()));
+                    tableFunction.addCell(tableUtil.createTransparentCell(peachGenotype.function()));
+                    tableLinkedDrugs.addCell(tableUtil.createTransparentCell(peachGenotype.linkedDrugs()));
+                    tableSource.addCell(tableUtil.createTransparentCell(new Paragraph(Pharmacogenetics.sourceName(peachGenotype.urlPrescriptionInfo())).addStyle(
+                                    reportResources.dataHighlightLinksStyle()))
                             .setAction(PdfAction.createURI(Pharmacogenetics.url(peachGenotype.urlPrescriptionInfo()))));
                 }
 
-                contentTable.addCell(TableUtil.createContentCell(tableGenotype));
-                contentTable.addCell(TableUtil.createContentCell(tableFunction));
-                contentTable.addCell(TableUtil.createContentCell(tableLinkedDrugs));
-                contentTable.addCell(TableUtil.createContentCell(tableSource));
+                contentTable.addCell(tableUtil.createContentCell(tableGenotype));
+                contentTable.addCell(tableUtil.createContentCell(tableFunction));
+                contentTable.addCell(tableUtil.createContentCell(tableLinkedDrugs));
+                contentTable.addCell(tableUtil.createContentCell(tableSource));
             }
-            return TableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
+            return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         }
     }
 
     @NotNull
-    private static Div createContentDiv(@NotNull String[] contentParagraphs) {
+    private Div createContentDiv(@NotNull String[] contentParagraphs) {
         Div div = new Div();
         for (String s : contentParagraphs) {
-            div.add(new Paragraph(s).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+            div.add(new Paragraph(s).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
         return div;
     }
 
     @NotNull
-    private static Paragraph createSectionTitle(@NotNull String sectionTitle) {
-        return new Paragraph(sectionTitle).addStyle(ReportResources.smallBodyHeadingStyle());
+    private Paragraph createSectionTitle(@NotNull String sectionTitle) {
+        return new Paragraph(sectionTitle).addStyle(reportResources.smallBodyHeadingStyle());
     }
 
     @NotNull
-    private static Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
                                                           @NotNull String link) {
-        return new Paragraph(string1).addStyle(ReportResources.subTextStyle())
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(ReportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3).addStyle(ReportResources.subTextStyle()))
+                .add(new Text(string3).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
                                                      @NotNull String link) {
         Div div = new Div();
 

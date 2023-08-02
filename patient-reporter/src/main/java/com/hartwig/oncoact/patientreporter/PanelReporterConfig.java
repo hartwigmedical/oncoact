@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface PanelReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PanelReporterConfig.class);
@@ -34,8 +34,11 @@ public interface PanelReporterConfig {
     // Params specific for Panel reports
     String PANEL_QC_FAIL = "panel_qc_fail";
     String PANEL_QC_FAIL_REASON = "panel_qc_fail_reason";
+    String SAMPLE_FAIL_REASON_COMMENT = "sample_fail_reason_comment";
     String PANEL_VCF_NAME = "panel_vcf_name";
     String LAMA_JSON = "lama_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
+    String IS_DIAGNOSTIC = "is_diagnostic";
 
     // Some additional optional params and flags
     String COMMENTS = "comments";
@@ -61,11 +64,16 @@ public interface PanelReporterConfig {
         options.addOption(SIGNATURE, true, "Path towards an image file containing the signature to be appended at the end of the report.");
 
         options.addOption(PANEL_QC_FAIL, false, "If set, generates a qc-fail report.");
+        options.addOption(SAMPLE_FAIL_REASON_COMMENT, true, "If set, add an extra comment of the failure of the sample.");
         options.addOption(PANEL_QC_FAIL_REASON,
                 true,
                 "One of: " + Strings.join(Lists.newArrayList(PanelFailReason.validIdentifiers()), ','));
+
         options.addOption(PANEL_VCF_NAME, true, "The name of the VCF file of the panel results.");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
+
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
 
         options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
         options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
@@ -96,11 +104,17 @@ public interface PanelReporterConfig {
 
     boolean panelQcFail();
 
+    @Nullable
+    String sampleFailReasonComment();
+
     @NotNull
     String panelVCFname();
 
     @NotNull
     String lamaJson();
+
+    @Nullable
+    String diagnosticSiloJson();
 
     @Nullable
     PanelFailReason panelQcFailReason();
@@ -159,9 +173,11 @@ public interface PanelReporterConfig {
                 .companyLogo(nonOptionalFile(cmd, COMPANY_LOGO))
                 .signature(nonOptionalFile(cmd, SIGNATURE))
                 .panelQcFail(isPanelQCFail)
+                .sampleFailReasonComment(cmd.getOptionValue(SAMPLE_FAIL_REASON_COMMENT))
                 .panelQcFailReason(panelQcFailReason)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
+                .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
                 .comments(cmd.getOptionValue(COMMENTS))
                 .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
                 .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))

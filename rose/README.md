@@ -6,6 +6,7 @@ ROSE makes an actionability summary of the clinical relevant (for the Netherland
 - [How is actionability matched against genomic events and signatures?](#matching-of-actionability-based-on-genomic-events-and-signatures)
 - [What output is produced by ROSE?](#rose-output)
 - [Which known issues are present in ROSE?](#known-issues)
+- [Building ROSE](#building-rose)
 - [Version history and download links](#version-history-and-download-links)
 
 ## Actionability summary
@@ -179,6 +180,29 @@ The following field type alteration didn't interpret currently but present in th
 | PROMOTER_MUTATION                  |
 | GERMLINE                           |
 | VUS_REMARK                         |
+
+## Building Rose
+Build a docker image for rose:
+```shell
+git tag rose-{{semver-version}}
+git push origin rose-{{semver-version}}
+```
+
+Copy the orange JSON input to the input volume.
+```shell
+docker container create --name temp -v rose-input:/data busybox
+docker cp /path/to/orange.json temp:/data/orange.json
+docker rm temp
+```
+
+Run rose with the expected arguments.
+```shell
+docker run --rm \
+--name rose \
+--mount source=rose-output,target=/out \
+--mount source=rose-input,target=/in/orange \
+eu.gcr.io/hmf-build/oncoact/rose:{{semver-version}}
+```
 
 ## Version History and Download Links
 - [1.3](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.3)

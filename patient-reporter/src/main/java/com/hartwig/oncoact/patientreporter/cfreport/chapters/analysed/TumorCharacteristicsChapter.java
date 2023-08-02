@@ -44,9 +44,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
     @NotNull
     private final AnalysedPatientReport patientReport;
+    @NotNull
+    private final ReportResources reportResources;
 
-    public TumorCharacteristicsChapter(@NotNull final AnalysedPatientReport patientReport) {
+    public TumorCharacteristicsChapter(@NotNull final AnalysedPatientReport patientReport,
+                                       @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
+        this.reportResources = reportResources;
     }
 
     @NotNull
@@ -90,7 +94,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         }
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
-        BarChart hrChart = new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, "Low", "High", false);
+        BarChart hrChart = new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, "Low", "High", false, reportResources);
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
@@ -115,7 +119,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                         genomicAnalysis.microsatelliteIndelsPerMb()) : Formats.NA_STRING;
 
         BarChart satelliteChart =
-                new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false);
+                new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false, reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
         satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
@@ -144,7 +148,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
-                new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false);
+                new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false, reportResources);
         mutationalLoadChart.enabled(hasReliablePurity);
         mutationalLoadChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
@@ -170,7 +174,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         String mutationalBurdenString =
                 hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb" : Formats.NA_STRING;
         BarChart mutationalBurdenChart =
-                new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, "Low", "High", false);
+                new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, "Low", "High", false, reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
@@ -266,17 +270,17 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         } else {
             reportDocument.add(new Paragraph(
                     "The molecular tissue of origin prediction is unreliable due to the unreliable tumor purity and "
-                            + "therefore the results are not available.").addStyle(ReportResources.subTextStyle()));
+                            + "therefore the results are not available.").addStyle(reportResources.subTextStyle()));
         }
 
         reportDocument.add(table);
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String boldPart, @NotNull String regularPart) {
-        return new Paragraph(boldPart).addStyle(ReportResources.subTextBoldStyle())
+    private Paragraph createContentParagraph(@NotNull String boldPart, @NotNull String regularPart) {
+        return new Paragraph(boldPart).addStyle(reportResources.subTextBoldStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(regularPart).addStyle(ReportResources.subTextStyle()))
+                .add(new Text(regularPart).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
@@ -284,7 +288,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     private Div createCharacteristicDiv(@NotNull String title) {
         Div div = new Div();
         div.setKeepTogether(true);
-        div.add(new Paragraph(title).addStyle(ReportResources.sectionTitleStyle()));
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
 
         return div;
     }
@@ -294,33 +298,33 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(title).addStyle(ReportResources.smallBodyHeadingDisclaimerStyle()));
+        div.add(new Paragraph(title).addStyle(reportResources.smallBodyHeadingDisclaimerStyle()));
         return div;
     }
 
     @NotNull
     private Div createCharacteristicDiv(@NotNull String title, @NotNull String highlight, @NotNull String description,
-            @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
+                                        @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(title).addStyle(ReportResources.sectionTitleStyle()));
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
 
         Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 19 }));
         table.setWidth(contentWidth());
-        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(highlight)));
+        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, highlight)));
 
         table.addCell(TableUtil.createLayoutCell(2, 1));
 
         table.addCell(TableUtil.createLayoutCell(2, 1).add(chart));
         table.addCell(TableUtil.createLayoutCell()
-                .add(new Paragraph(description).addStyle(ReportResources.bodyTextStyle())
+                .add(new Paragraph(description).addStyle(reportResources.bodyTextStyle())
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING)));
         table.addCell(TableUtil.createLayoutCell(1, 3).setHeight(TABLE_SPACER_HEIGHT));
         div.add(table);
 
         if (displayFootnote) {
-            div.add(new Paragraph(footnote).addStyle(ReportResources.subTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+            div.add(new Paragraph(footnote).addStyle(reportResources.subTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
 
         return div;
@@ -364,6 +368,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
             }
         }
     }
+
     @NotNull
     private static String tumorMutationalStatusString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
         switch (tumorMutationalLoadStatus) {

@@ -14,16 +14,24 @@ import org.jetbrains.annotations.NotNull;
 
 public final class ReportSignature {
 
-    private ReportSignature() {
+    @NotNull
+    private final ReportResources reportResources;
+
+    private ReportSignature(@NotNull ReportResources reportResources) {
+        this.reportResources = reportResources;
+    }
+
+    public static ReportSignature create(@NotNull ReportResources reportResources) {
+        return new ReportSignature(reportResources);
     }
 
     @NotNull
-    public static Paragraph createEndOfReportIndication() {
-        return new Paragraph("— End of report —").setMarginTop(40).addStyle(ReportResources.smallBodyTextStyle());
+    public Paragraph createEndOfReportIndication() {
+        return new Paragraph("— End of report —").setMarginTop(40).addStyle(reportResources.smallBodyTextStyle());
     }
 
     @NotNull
-    public static Div createSignatureDiv(@NotNull String rvaLogoPath, @NotNull String signaturePath) throws IOException {
+    public Div createSignatureDiv(@NotNull String rvaLogoPath, @NotNull String signaturePath) throws IOException {
         Div div = new Div();
         div.setKeepTogether(true);
         div.setMarginTop(40);
@@ -37,10 +45,10 @@ public final class ReportSignature {
         }
 
         Paragraph signatureText =
-                new Paragraph().setFont(ReportResources.fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_BLACK);
+                new Paragraph().setFont(reportResources.fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_BLACK);
 
         signatureText.add(ReportResources.SIGNATURE_NAME + ",\n");
-        signatureText.add(new Text(ReportResources.SIGNATURE_TITLE).setFont(ReportResources.fontRegular()));
+        signatureText.add(new Text(ReportResources.SIGNATURE_TITLE).setFont(reportResources.fontRegular()));
         div.add(signatureText);
 
         try {
@@ -57,16 +65,16 @@ public final class ReportSignature {
     }
 
     @NotNull
-    public static Div createSignatureDivPanel(@NotNull String signaturePath) throws IOException {
+    public Div createSignatureDivPanel(@NotNull String signaturePath) throws IOException {
         Div div = new Div();
         div.setKeepTogether(true);
         div.setMarginTop(40);
 
         Paragraph signatureText =
-                new Paragraph().setFont(ReportResources.fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_BLACK);
+                new Paragraph().setFont(reportResources.fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_BLACK);
 
         signatureText.add(ReportResources.SIGNATURE_NAME + ",\n");
-        signatureText.add(new Text(ReportResources.SIGNATURE_TITLE).setFont(ReportResources.fontRegular()));
+        signatureText.add(new Text(ReportResources.SIGNATURE_TITLE).setFont(reportResources.fontRegular()));
         div.add(signatureText);
 
         try {

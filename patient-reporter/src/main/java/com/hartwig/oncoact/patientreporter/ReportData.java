@@ -1,13 +1,22 @@
 package com.hartwig.oncoact.patientreporter;
 
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
+import com.hartwig.silo.client.model.PatientInformationResponse;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface ReportData {
 
     @NotNull
     PatientReporterData lamaPatientData();
+
+    @Nullable
+    PatientInformationResponse diagnosticSiloPatientData();
+
+    @Nullable
+    Correction correction();
 
     @NotNull
     String signaturePath();

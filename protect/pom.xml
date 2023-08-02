@@ -42,6 +42,7 @@
     </dependencies>
 
     <build>
+        <finalName>protect</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,7 +67,7 @@
                     </archive>
 
                     <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                        <descriptorRef>jar-with-dependencies-svc-fix</descriptorRef>
                     </descriptorRefs>
                 </configuration>
             </plugin>

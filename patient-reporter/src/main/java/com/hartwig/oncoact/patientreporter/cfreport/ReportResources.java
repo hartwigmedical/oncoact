@@ -1,10 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
 import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
@@ -13,8 +8,12 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Style;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public final class ReportResources {
 
@@ -63,8 +62,24 @@ public final class ReportResources {
 
     public static final float BODY_TEXT_LEADING = 10F;
 
+    private final PdfFont fontRegular;
+    private final PdfFont fontBold;
+    private final PdfFont fontIcon;
+
+    private ReportResources(@NotNull PdfFont fontRegular, @NotNull PdfFont fontBold, @NotNull PdfFont fontIcon) {
+        this.fontRegular = fontRegular;
+        this.fontBold = fontBold;
+        this.fontIcon = fontIcon;
+    }
+
+    public static ReportResources create() {
+        return new ReportResources(createFontFromProgram(loadFontProgram(FONT_REGULAR_PATH)),
+                createFontFromProgram(loadFontProgram(FONT_BOLD_PATH)),
+                createFontFromProgram(loadFontProgram(ICON_FONT_PATH)));
+    }
+
     public static float maxPointSizeForWidth(@NotNull PdfFont font, float initialFontSize, float minFontSize, @NotNull String text,
-            float maxWidth) {
+                                             float maxWidth) {
         float fontIncrement = 0.1f;
 
         float fontSize = initialFontSize;
@@ -84,116 +99,117 @@ public final class ReportResources {
     }
 
     @NotNull
-    public static PdfFont fontRegular() {
+    public PdfFont fontRegular() {
         // Cannot be created statically as every PDF needs their own private font objects.
-        return createFontFromProgram(loadFontProgram(FONT_REGULAR_PATH));
+        return fontRegular;
     }
 
     @NotNull
-    public static PdfFont fontBold() {
+    public PdfFont fontBold() {
         // Cannot be created statically as every PDF needs their own private font objects.
-        return createFontFromProgram(loadFontProgram(FONT_BOLD_PATH));
+        return fontBold;
     }
 
     @NotNull
-    public static PdfFont iconFont() {
+    public PdfFont iconFont() {
         // Cannot be created statically as every PDF needs their own private font objects.
-        return createFontFromProgram(loadFontProgram(ICON_FONT_PATH));
+        return fontIcon;
     }
 
-    public static Style responseStyle() {
+
+    public Style responseStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style resistantStyle() {
+    public Style resistantStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_RED);
     }
 
-    public static Style predictedStyle() {
+    public Style predictedStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_VIOLET);
     }
 
-    public static Style chapterTitleStyle() {
+    public Style chapterTitleStyle() {
         return new Style().setFont(fontBold()).setFontSize(16).setFontColor(ReportResources.PALETTE_BLUE).setMarginTop(0);
     }
 
-    public static Style sectionTitleStyle() {
+    public Style sectionTitleStyle() {
         return new Style().setFont(fontBold()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style sectionSubTitleStyle() {
+    public Style sectionSubTitleStyle() {
         return new Style().setFont(fontRegular()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style tableHeaderStyle() {
+    public Style tableHeaderStyle() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_MID_GREY);
     }
 
-    public static Style tableContentStyle() {
+    public Style tableContentStyle() {
         return new Style().setFont(fontRegular()).setFontSize(8).setFontColor(ReportResources.PALETTE_DARK_GREY);
     }
 
-    public static Style bodyTextStyle() {
+    public Style bodyTextStyle() {
         return new Style().setFont(fontRegular()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style smallBodyHeadingStyle() {
+    public Style smallBodyHeadingStyle() {
         return new Style().setFont(fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style smallBodyHeadingDisclaimerStyle() {
+    public Style smallBodyHeadingDisclaimerStyle() {
         return new Style().setFont(fontBold()).setFontSize(10).setFontColor(ReportResources.PALETTE_RED);
     }
 
-    public static Style smallBodyTextStyle() {
+    public Style smallBodyTextStyle() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style smallBodyTextStyleRed() {
+    public Style smallBodyTextStyleRed() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_RED);
     }
 
-    public static Style smallBodyBoldTextStyle() {
+    public Style smallBodyBoldTextStyle() {
         return new Style().setFont(fontBold()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style subTextStyle() {
+    public Style subTextStyle() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style subTextSmallStyle() {
+    public Style subTextSmallStyle() {
         return new Style().setFont(fontRegular()).setFontSize(5).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style subTextBoldStyle() {
+    public Style subTextBoldStyle() {
         return new Style().setFont(fontBold()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLACK);
     }
 
-    public static Style dataHighlightStyle() {
+    public Style dataHighlightStyle() {
         return new Style().setFont(fontBold()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style dataHighlightNaStyle() {
+    public Style dataHighlightNaStyle() {
         return new Style().setFont(fontBold()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style pageNumberStyle() {
+    public Style pageNumberStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style sidePanelLabelStyle() {
+    public Style sidePanelLabelStyle() {
         return new Style().setFont(fontBold()).setFontSize(7).setFontColor(ReportResources.PALETTE_WHITE);
     }
 
-    public static Style sidePanelValueStyle() {
+    public Style sidePanelValueStyle() {
         return new Style().setFont(fontBold()).setFontSize(11).setFontColor(ReportResources.PALETTE_WHITE);
     }
 
-    public static Style dataHighlightLinksStyle() {
+    public Style dataHighlightLinksStyle() {
         return new Style().setFont(fontRegular()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);
     }
 
-    public static Style urlStyle() {
+    public Style urlStyle() {
         return new Style().setFont(fontRegular()).setFontSize(7).setFontColor(ReportResources.PALETTE_BLUE);
     }
 

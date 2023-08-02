@@ -15,13 +15,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class PanelChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "Oncopanel Result Report";
+    private static final String TITLE_REPORT = "OncoAct tumor NGS report - Result Report";
 
     @NotNull
     private final PanelReport report;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public PanelChapter(@NotNull PanelReport report) {
+    public PanelChapter(@NotNull PanelReport report, @NotNull ReportResources reportResources) {
         this.report = report;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -49,9 +54,9 @@ public class PanelChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) {
 
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createResultDiv());
@@ -62,20 +67,20 @@ public class PanelChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph("Data result file information").addStyle(ReportResources.dataHighlightStyle()));
+        div.add(new Paragraph("Data result file information").addStyle(reportResources.dataHighlightStyle()));
         div.add(createContentParagraph("VCF file name: ", report.VCFFilename()));
 
         return div;
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
+    private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String text) {
-        return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraph(@NotNull String text) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 }

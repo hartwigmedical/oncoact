@@ -5,6 +5,8 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
+import com.hartwig.silo.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -14,6 +16,7 @@ import com.itextpdf.layout.element.Paragraph;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class SidePanel {
 
@@ -22,25 +25,31 @@ public final class SidePanel {
     private static final float RECTANGLE_WIDTH = 170;
     private static final float RECTANGLE_HEIGHT_SHORT = 110;
 
-    private SidePanel() {
+    @NotNull
+    private final ReportResources reportResources;
+
+    public SidePanel(@NotNull ReportResources reportResources) {
+        this.reportResources = reportResources;
     }
 
-    public static void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
+    public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
                 fullHeight);
     }
 
-    public static void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
+    public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 patientReport.lamaPatientData(),
+                patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
                 fullHeight);
 
     }
 
-    public static void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @NotNull String reportDate,
+    public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
                                        boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
@@ -55,7 +64,6 @@ public final class SidePanel {
             cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
         } else {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
-
         }
 
         if (lamaPatientData.getPathologyNumber() != null) {
@@ -63,9 +71,17 @@ public final class SidePanel {
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Name", "Name"));
-        cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", "Birth date"));
 
+        if (patientInformationData != null) {
+            String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
+            if (!name.equals(Strings.EMPTY)) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
+            }
+
+            if (patientInformationData.getBirthdate() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+            }
+        }
 
         if (lamaPatientData.getRequesterName() != null) {
             cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
@@ -76,7 +92,7 @@ public final class SidePanel {
 
         }
 
-        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getHospitalName()));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
         BiopsySite biopsySite = lamaPatientData.getBiopsySite();
         String biopsyLocation = Strings.EMPTY;
         String biopsySubLocation = Strings.EMPTY;
@@ -88,9 +104,6 @@ public final class SidePanel {
             biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
             isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
         }
-
-        assert biopsyLocation != null;
-        assert biopsySubLocation != null;
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
         cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
@@ -113,7 +126,7 @@ public final class SidePanel {
     }
 
     @NotNull
-    private static Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
+    private Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
         float Y_START = 802;
         float VALUE_TEXT_Y_OFFSET = 18;
         float MAX_WIDTH = 120;
@@ -122,12 +135,12 @@ public final class SidePanel {
         div.setKeepTogether(true);
 
         float yPos = Y_START - index * ROW_SPACING;
-        div.add(new Paragraph(label.toUpperCase()).addStyle(ReportResources.sidePanelLabelStyle())
+        div.add(new Paragraph(label.toUpperCase()).addStyle(reportResources.sidePanelLabelStyle())
                 .setFixedPosition(CONTENT_X_START, yPos, MAX_WIDTH));
 
-        float valueFontSize = ReportResources.maxPointSizeForWidth(ReportResources.fontBold(), 11, 6, value, MAX_WIDTH);
+        float valueFontSize = ReportResources.maxPointSizeForWidth(reportResources.fontBold(), 11, 6, value, MAX_WIDTH);
         yPos -= VALUE_TEXT_Y_OFFSET;
-        div.add(new Paragraph(value).addStyle(ReportResources.sidePanelValueStyle().setFontSize(valueFontSize))
+        div.add(new Paragraph(value).addStyle(reportResources.sidePanelValueStyle().setFontSize(valueFontSize))
                 .setHeight(15)
                 .setFixedPosition(CONTENT_X_START, yPos, MAX_WIDTH)
                 .setFixedLeading(valueFontSize));

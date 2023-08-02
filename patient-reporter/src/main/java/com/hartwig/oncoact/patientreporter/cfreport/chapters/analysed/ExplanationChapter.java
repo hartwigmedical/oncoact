@@ -16,7 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ExplanationChapter implements ReportChapter {
 
-    public ExplanationChapter() {
+    @NotNull
+    private final ReportResources reportResources;
+
+    public ExplanationChapter(@NotNull final ReportResources reportResources) {
+        this.reportResources = reportResources;
     }
 
     @NotNull
@@ -181,36 +185,36 @@ public class ExplanationChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph createSectionTitle(@NotNull String sectionTitle) {
-        return new Paragraph(sectionTitle).addStyle(ReportResources.smallBodyHeadingStyle());
+    private Paragraph createSectionTitle(@NotNull String sectionTitle) {
+        return new Paragraph(sectionTitle).addStyle(reportResources.smallBodyHeadingStyle());
     }
 
     @NotNull
-    private static Paragraph createParaGraphWithLinkFour(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Paragraph createParaGraphWithLinkFour(@NotNull String string1, @NotNull String string2, @NotNull String string3,
             @NotNull String string4, @NotNull String link1, @NotNull String link2) {
-        return new Paragraph(string1).addStyle(ReportResources.subTextStyle())
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(ReportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3).addStyle(ReportResources.subTextStyle()))
+                .add(new Text(string3).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string4).addStyle(ReportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
+                .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
             @NotNull String link) {
-        return new Paragraph(string1).addStyle(ReportResources.subTextStyle())
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(ReportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3).addStyle(ReportResources.subTextStyle()))
+                .add(new Text(string3).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
             @NotNull String link) {
         Div div = new Div();
 
@@ -219,7 +223,7 @@ public class ExplanationChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createContentDivWithLinkFour(@NotNull String string1, @NotNull String string2, @NotNull String string3,
+    private Div createContentDivWithLinkFour(@NotNull String string1, @NotNull String string2, @NotNull String string3,
             @NotNull String string4, @NotNull String link1, @NotNull String link2) {
         Div div = new Div();
         div.add(createParaGraphWithLinkFour(string1, string2, string3, string4, link1, link2));
@@ -227,10 +231,10 @@ public class ExplanationChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createContentDiv(@NotNull String[] contentParagraphs) {
+    private Div createContentDiv(@NotNull String[] contentParagraphs) {
         Div div = new Div();
         for (String s : contentParagraphs) {
-            div.add(new Paragraph(s).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+            div.add(new Paragraph(s).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
         return div;
     }

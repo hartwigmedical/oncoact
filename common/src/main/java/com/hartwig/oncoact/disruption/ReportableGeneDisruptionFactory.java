@@ -33,4 +33,25 @@ public class ReportableGeneDisruptionFactory {
         }
         return result;
     }
+
+    @NotNull
+    public static List<GeneDisruption> mergeGeneDisruptionsLists(@NotNull List<GeneDisruption> somaticGeneDisruptions,
+                                                                             @Nullable List<GeneDisruption> germlineGeneDisruptions) {
+        List<GeneDisruption> result = Lists.newArrayList();
+
+        for (GeneDisruption somaticGeneDisruption : somaticGeneDisruptions) {
+            result.add(ImmutableGeneDisruption.builder()
+                    .from(somaticGeneDisruption)
+                    .build());
+        }
+
+        if (germlineGeneDisruptions != null) {
+            for (GeneDisruption germlineGeneDisruption : germlineGeneDisruptions) {
+                result.add(ImmutableGeneDisruption.builder()
+                        .from(germlineGeneDisruption)
+                        .build());
+            }
+        }
+        return result;
+    }
 }

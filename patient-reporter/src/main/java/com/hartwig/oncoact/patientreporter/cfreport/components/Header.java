@@ -29,8 +29,10 @@ public class Header {
     @Nullable
     private final PdfImageXObject companyLogoObj;
     private final List<ChapterPageCounter> chapterPageCounters = Lists.newArrayList();
+    @NotNull
+    private final ReportResources reportResources;
 
-    public Header(@NotNull String logoCompanyPath) {
+    public Header(@NotNull String logoCompanyPath, @NotNull ReportResources reportResources) {
         ImageData companyLogoImage = null;
         try {
             companyLogoImage = ImageDataFactory.create(logoCompanyPath);
@@ -38,10 +40,11 @@ public class Header {
             LOGGER.warn("Could not load company logo image from {}", logoCompanyPath);
         }
         companyLogoObj = companyLogoImage != null ? new PdfImageXObject(companyLogoImage) : null;
+        this.reportResources = reportResources;
     }
 
     public void renderHeader(@NotNull String chapterTitle, @NotNull String pdfTitle, boolean firstPageOfChapter, @NotNull PdfPage page,
-            boolean isWgsReport) {
+                             boolean isWgsReport) {
         PdfCanvas pdfCanvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Canvas cv = new Canvas(pdfCanvas, page.getDocument(), page.getPageSize());
 
@@ -49,11 +52,11 @@ public class Header {
             pdfCanvas.addXObject(companyLogoObj, 52, 772, 44, false);
         }
 
-        cv.add(new Paragraph().add(new Text("Hartwig Medical").setFont(ReportResources.fontBold())
+        cv.add(new Paragraph().add(new Text("Hartwig Medical").setFont(reportResources.fontBold())
                         .setFontSize(11)
                         .setFontColor(ReportResources.PALETTE_BLUE))
-                .add(new Text(" Onco").setFont(ReportResources.fontRegular()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE))
-                .add(new Text(isWgsReport ? "Act" : "Panel").setFont(ReportResources.fontRegular())
+                .add(new Text(" Onco").setFont(reportResources.fontRegular()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE))
+                .add(new Text("Act").setFont(reportResources.fontRegular())
                         .setFontSize(11)
                         .setFontColor(ReportResources.PALETTE_RED))
                 .setFixedPosition(230, 791, 300));
@@ -81,7 +84,7 @@ public class Header {
         }
     }
 
-    private static class ChapterPageCounter {
+    private class ChapterPageCounter {
 
         @NotNull
         private final String pdfTitle;
@@ -109,10 +112,10 @@ public class Header {
                 Canvas canvas = new Canvas(tpl, document);
 
                 if (!pdfTitle.isEmpty()) {
-                    canvas.add(new Paragraph(pdfTitle).addStyle(ReportResources.chapterTitleStyle()));
+                    canvas.add(new Paragraph(pdfTitle).addStyle(reportResources.chapterTitleStyle()));
                 }
 
-                canvas.add(new Paragraph(text).addStyle(ReportResources.chapterTitleStyle()));
+                canvas.add(new Paragraph(text).addStyle(reportResources.chapterTitleStyle()));
             }
         }
     }

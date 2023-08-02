@@ -11,13 +11,17 @@ import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class QCFailReport implements PatientReport {
+    static ImmutableQCFailReport.Builder builder() {
+        return ImmutableQCFailReport.builder();
+    }
 
     @Override
     @NotNull
@@ -29,6 +33,9 @@ public abstract class QCFailReport implements PatientReport {
 
     @NotNull
     public abstract QCFailReason reason();
+
+    @NotNull
+    public abstract FailedReason failExplanation();
 
     @Nullable
     public abstract String wgsPurityString();

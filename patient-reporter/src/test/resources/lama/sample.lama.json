@@ -1,5 +1,6 @@
 {
   "hospitalName": "hospitalName",
+  "officialHospitalName": "officialHospitalName",
   "hospitalPostalCode": "hospitalPostalCode",
   "studyPI": "studyPI",
   "hospitalAddress": "hospitalAddress",
@@ -9,7 +10,7 @@
   "reportingId": "reportingId",
   "reportSettings": {
     "reportGermline": true,
-    "flagGermlineOnReport": true
+    "flagGermlineOnReport": false
   },
   "contractCode": "contractCode",
   "cohort": "cohort",

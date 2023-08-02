@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -48,11 +51,11 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               @NotNull Boolean germlineReportingLevel) {
+                               boolean germlineReportingLevel) {
 
         // variants
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
         Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
+        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
@@ -81,18 +84,22 @@ public class GenomicAnalyzer {
                 germlineHomozygousDisruptions);
 
         //disruptions
-        // TODO; implement disruptions based on orange data
-//        orange.linx().reportableSomaticBreakends();
-//        orange.linx().reportableGermlineBreakends();
-//        orange.linx().reportableGermlineDisruptions();
-
-
         List<GeneDisruption> additionalSuspectBreakends =
                 GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
 
-        List<GeneDisruption> reportableGeneDisruptions =
+        List<GeneDisruption> reportableSomaticGeneDisruptions =
                 GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
-        reportableGeneDisruptions.addAll(additionalSuspectBreakends);
+
+        List<GeneDisruption> reportableGermlineGeneDisruptions = Lists.newArrayList();
+        List<LinxBreakend> reportableGermlineBreakends = orange.linx().reportableGermlineBreakends();
+        List<LinxSvAnnotation> allGermlineStructuralVariants = orange.linx().allGermlineStructuralVariants();
+        if (reportableGermlineBreakends != null && allGermlineStructuralVariants != null) {
+            reportableGermlineGeneDisruptions = GeneDisruptionFactory.convert(reportableGermlineBreakends, allGermlineStructuralVariants);
+        }
+
+        List<GeneDisruption> geneDisruptions = ReportableGeneDisruptionFactory.mergeGeneDisruptionsLists(reportableSomaticGeneDisruptions,
+                reportableGermlineGeneDisruptions);
+        geneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
         LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
@@ -102,7 +109,6 @@ public class GenomicAnalyzer {
         List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidences);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
-
 
         return ImmutableGenomicAnalysis.builder()
                 .purpleQCStatus(orange.purple().fit().qc().status())
@@ -125,7 +131,7 @@ public class GenomicAnalyzer {
                 .gainsAndLosses(reportableGainsLosses)
                 .cnPerChromosome(copyNumberPerChromosome)
                 .geneFusions(geneFusions)
-                .geneDisruptions(reportableGeneDisruptions)
+                .geneDisruptions(geneDisruptions)
                 .homozygousDisruptions(homozygousDisruptions)
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .suspectGeneCopyNumbersWithLOH(interpretSuspectGeneCopyNumbersWithLOH)
@@ -149,7 +155,8 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel, @NotNull Boolean germlineReportingLevel) {
+                                                                   @NotNull GermlineReportingModel germlineReportingModel,
+                                                                   boolean germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
