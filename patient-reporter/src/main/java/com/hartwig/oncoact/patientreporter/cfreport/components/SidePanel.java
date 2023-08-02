@@ -50,36 +50,29 @@ public final class SidePanel {
     }
 
     public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
-                                       boolean fullHeight) {
+                                boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
-        BaseMarker.renderMarkerGrid(5, (fullHeight ? 13:3), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        BaseMarker.renderMarkerGrid(5, (fullHeight ? 13 : 3), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
-        if (!fullHeight) {
-            if (lamaPatientData.getIsStudy()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
-            } else {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
-            }
 
-            cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
-
+        if (lamaPatientData.getIsStudy()) {
+            cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
         } else {
-            if (lamaPatientData.getIsStudy()) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Study id", lamaPatientData.getReportingId()));
-            } else {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
-            }
-
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", lamaPatientData.getReportingId()));
+        }
+        if (fullHeight) {
             if (lamaPatientData.getPathologyNumber() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", lamaPatientData.getPathologyNumber()));
             }
+        }
 
-            cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
+        cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
 
+        if (fullHeight) {
             if (patientInformationData != null) {
                 String name = DiagnosticSiloJsonInterpretation.determineName(patientInformationData);
                 if (!name.equals(Strings.EMPTY)) {
@@ -121,6 +114,7 @@ public final class SidePanel {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
             }
         }
+
         canvas.release();
 
     }
@@ -130,7 +124,7 @@ public final class SidePanel {
         canvas.rectangle(pageSize.getWidth(),
                 pageSize.getHeight(),
                 -RECTANGLE_WIDTH,
-                fullHeight ? size - 120: -RECTANGLE_HEIGHT_SHORT);
+                fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
