@@ -7,12 +7,14 @@ import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventGenerator {
@@ -31,7 +33,17 @@ public final class EventGenerator {
 
     @NotNull
     private static String reportableVariantEvent(@NotNull ReportableVariant reportableVariant) {
-        return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+        PurpleTranscriptImpact purpleTranscriptImpact = reportableVariant.otherImpacts();
+        if ( purpleTranscriptImpact!= null) {
+            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(), purpleTranscriptImpact.hgvsCodingImpact(), purpleTranscriptImpact.codingEffect().name(), purpleTranscriptImpact.codingEffect());
+            if (reportableVariant.isCanonical()) {
+                return canonicalVariantEvent(reportableVariant) + " (" + clinical + ")";
+            } else {
+                return nonCanonicalVariantEvent(reportableVariant) + " (" + clinical + ")";
+            }
+        } else {
+            return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+        }
     }
 
     @NotNull
