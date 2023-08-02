@@ -12,7 +12,7 @@ public enum PanelFailReason {
 
     PANEL_FAILURE("insufficient_dna_panel", QsFormNumber.FOR_345, "Insufficient quality of received biomaterial(s)",
             "Next Generation Sequencing could not be successfully performed on the received biomaterial(s) because not enough " +
-                    "DNA was present after DNA isolation. This is likely due to poor quality of the received biomaterials(s).");
+                    "DNA was present after DNA isolation. This is likely due to poor quality of the received biomaterial(s).");
     @NotNull
     private final String identifier;
     @NotNull
