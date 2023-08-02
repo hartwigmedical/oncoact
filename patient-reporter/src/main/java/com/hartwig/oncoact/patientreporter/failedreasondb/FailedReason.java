@@ -9,15 +9,11 @@ import org.jetbrains.annotations.Nullable;
 public abstract class FailedReason {
 
     @NotNull
-    public abstract String reasonKey();
-
-    @NotNull
     public abstract String reportReason();
 
     @NotNull
     public abstract String reportExplanation();
 
-    @NotNull
-    public abstract String reportExplanationDetail();
-
+    @Nullable
+    public abstract String sampleFailReasonComment();
 }
