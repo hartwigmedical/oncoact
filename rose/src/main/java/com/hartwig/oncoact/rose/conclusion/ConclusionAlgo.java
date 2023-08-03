@@ -27,10 +27,11 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.copynumber.ReportableCNVFactory;
+import com.hartwig.oncoact.disruption.ReportableGeneDisruptionFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.EventGenerator;
@@ -81,15 +82,22 @@ public final class ConclusionAlgo {
         Map<String, DriverGene> driverGenesMap = generateDriverGenesMap(rose.driverGenes());
 
         PurpleRecord purple = rose.orange().purple();
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(purple);
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(purple);
+        Set<ReportableVariant> reportableSomaticVariants = ReportableVariantFactory.createReportableSomaticVariants(purple);
+        Set<ReportableVariant> reportableGermlineVariants = ReportableVariantFactory.createReportableGermlineVariants(purple);
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
-        List<PurpleGainLoss> reportableGainLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
+        List<PurpleGainLoss> reportableGainLosses = ReportableCNVFactory.mergeCNVLists(somaticGainsLosses, germlineLosses);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
-        List<HomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+
+        List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+        List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
+        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(somaticHomozygousDisruptions,
+                germlineHomozygousDisruptions);
+
         List<AnnotatedVirus> reportableViruses = Optional.ofNullable(rose.orange().virusInterpreter())
                 .map(VirusInterpreterData::reportableViruses)
                 .orElseGet(List::of);
@@ -147,21 +155,6 @@ public final class ConclusionAlgo {
             driverGeneMap.put(entry.gene(), entry);
         }
         return driverGeneMap;
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     @NotNull

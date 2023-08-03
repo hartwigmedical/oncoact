@@ -14,8 +14,8 @@ public class ReportableGeneDisruptionFactory {
     }
 
     @NotNull
-    public static List<HomozygousDisruption> mergeHomozygousDisruptionsLists(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
-                                                                             @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
+    public static List<HomozygousDisruption> mergeHomozygousDisruptionsLists(@NotNull Iterable<HomozygousDisruption> somaticHomozygousDisruptions,
+                                                                             @Nullable Iterable<HomozygousDisruption> germlineHomozygousDisruptions) {
         List<HomozygousDisruption> result = Lists.newArrayList();
 
         for (HomozygousDisruption somaticHomozygousDisruption : somaticHomozygousDisruptions) {

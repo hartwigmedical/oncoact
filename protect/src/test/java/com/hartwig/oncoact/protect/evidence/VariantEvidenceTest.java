@@ -78,7 +78,7 @@ public class VariantEvidenceTest {
 
         List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
                 Sets.newHashSet(),
-                Sets.newHashSet(unreportedMatch));
+                Sets.newHashSet(unreportedMatch), Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 
@@ -184,7 +184,7 @@ public class VariantEvidenceTest {
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet());
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(3, evidences.size());
 
@@ -239,7 +239,7 @@ public class VariantEvidenceTest {
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().codingEffect(PurpleCodingEffect.NONE).build())
                 .build());
 
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants);
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 

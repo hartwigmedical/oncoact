@@ -28,10 +28,11 @@ public class CopyNumberEvidenceTest {
         String geneDel = "geneDel";
         ActionableGene amp = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.AMPLIFICATION).build();
         ActionableGene inactivation = TestServeFactory.geneBuilder().gene(geneDel).event(GeneEvent.INACTIVATION).build();
+        ActionableGene deletion = TestServeFactory.geneBuilder().gene("PTEN").event(GeneEvent.DELETION).build();
         ActionableGene fusion = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.FUSION).build();
 
         CopyNumberEvidence copyNumberEvidence =
-                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion));
+                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion, deletion));
 
         PurpleGainLoss reportableAmp =
                 TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(CopyNumberInterpretation.FULL_GAIN).build();
@@ -39,22 +40,30 @@ public class CopyNumberEvidenceTest {
                 TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         PurpleGainLoss ampOnOtherGene =
                 TestPurpleFactory.gainLossBuilder().gene("other gene").interpretation(CopyNumberInterpretation.PARTIAL_GAIN).build();
+        PurpleGainLoss reportableGermlineDel =
+                TestPurpleFactory.gainLossBuilder().gene("PTEN").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
 
-        Set<PurpleGainLoss> reportableGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
+        Set<PurpleGainLoss> reportableSomaticGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
+        Set<PurpleGainLoss> reportableGermlineGainLosses = Sets.newHashSet(reportableGermlineDel);
         Set<PurpleGainLoss> unreportedGainLosses = Sets.newHashSet();
-        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableGainLosses, unreportedGainLosses);
+        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses, unreportedGainLosses, reportableGermlineGainLosses, Sets.newHashSet());
 
-        assertEquals(2, evidences.size());
+        assertEquals(3, evidences.size());
 
         ProtectEvidence ampEvidence = find(evidences, geneAmp);
         assertTrue(ampEvidence.reported());
         assertEquals(ampEvidence.sources().size(), 1);
         assertEquals(EvidenceType.AMPLIFICATION, ampEvidence.sources().iterator().next().evidenceType());
 
-        ProtectEvidence delEvidence = find(evidences, geneDel);
+        ProtectEvidence inactEvidence = find(evidences, geneDel);
+        assertTrue(inactEvidence.reported());
+        assertEquals(inactEvidence.sources().size(), 1);
+        assertEquals(EvidenceType.INACTIVATION, inactEvidence.sources().iterator().next().evidenceType());
+
+        ProtectEvidence delEvidence = find(evidences, "PTEN");
         assertTrue(delEvidence.reported());
         assertEquals(delEvidence.sources().size(), 1);
-        assertEquals(EvidenceType.INACTIVATION, delEvidence.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.DELETION, delEvidence.sources().iterator().next().evidenceType());
     }
 
     @NotNull

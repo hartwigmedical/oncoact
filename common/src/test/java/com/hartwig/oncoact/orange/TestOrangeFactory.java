@@ -160,7 +160,7 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static PurpleRecord createTestPurpleRecord() {
-        PurpleVariant variant = TestPurpleFactory.variantBuilder()
+        PurpleVariant somaticVariant = TestPurpleFactory.variantBuilder()
                 .reported(true)
                 .gene("BRAF")
                 .adjustedCopyNumber(6.0)
@@ -180,15 +180,40 @@ public final class TestOrangeFactory {
                         .build())
                 .build();
 
-        PurpleCopyNumber copyNumber =
+        PurpleVariant germlineVariant = TestPurpleFactory.variantBuilder()
+                .reported(true)
+                .gene("KRAS")
+                .adjustedCopyNumber(6.0)
+                .variantCopyNumber(4.1)
+                .hotspot(Hotspot.HOTSPOT)
+                .subclonalLikelihood(0.02)
+                .biallelic(false)
+                .worstCodingEffect(PurpleCodingEffect.SPLICE)
+                .adjustedVAF(0)
+                .repeatCount(0)
+                .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder()
+                        .hgvsCodingImpact("c.something")
+                        .hgvsProteinImpact("p.Val600Glu")
+                        .spliceRegion(false)
+                        .addEffects(PurpleVariantEffect.MISSENSE)
+                        .codingEffect(PurpleCodingEffect.MISSENSE)
+                        .build())
+                .build();
+
+        PurpleCopyNumber somaticCopyNumber =
                 TestPurpleFactory.copyNumberBuilder().chromosome("1").start(10).end(20).averageTumorCopyNumber(2.1).build();
 
-        PurpleGainLoss gain = TestPurpleFactory.gainLossBuilder().gene("MYC").interpretation(CopyNumberInterpretation.FULL_GAIN)
+        PurpleGainLoss somaticGain = TestPurpleFactory.gainLossBuilder().gene("MYC").interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .minCopies(38)
                 .maxCopies(40)
                 .build();
 
-        PurpleGainLoss loss = TestPurpleFactory.gainLossBuilder().gene("PTEN").interpretation(CopyNumberInterpretation.FULL_LOSS)
+        PurpleGainLoss somaticLoss = TestPurpleFactory.gainLossBuilder().gene("PTEN").interpretation(CopyNumberInterpretation.FULL_LOSS)
+                .minCopies(0)
+                .maxCopies(0)
+                .build();
+
+        PurpleGainLoss germlineLoss = TestPurpleFactory.gainLossBuilder().gene("TP53").interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
@@ -198,25 +223,39 @@ public final class TestOrangeFactory {
                 .fit(createTestPurpleFit())
                 .characteristics(createTestPurpleCharacteristics())
                 .addSomaticDrivers(TestPurpleFactory.driverBuilder()
-                        .gene(variant.gene())
+                        .gene(somaticVariant.gene())
                         .driver(PurpleDriverType.MUTATION)
                         .driverLikelihood(1D)
                         .build())
                 .addSomaticDrivers(TestPurpleFactory.driverBuilder()
-                        .gene(gain.gene())
+                        .gene(germlineVariant.gene())
+                        .driver(PurpleDriverType.MUTATION)
+                        .driverLikelihood(1D)
+                        .build())
+                .addSomaticDrivers(TestPurpleFactory.driverBuilder()
+                        .gene(somaticGain.gene())
                         .driver(PurpleDriverType.AMP)
                         .driverLikelihood(1D)
                         .build())
                 .addSomaticDrivers(TestPurpleFactory.driverBuilder()
-                        .gene(loss.gene())
+                        .gene(somaticLoss.gene())
                         .driver(PurpleDriverType.DEL)
                         .driverLikelihood(1D)
                         .build())
-                .addAllSomaticVariants(variant)
-                .addReportableSomaticVariants(variant)
-                .addAllSomaticCopyNumbers(copyNumber)
-                .addAllSomaticGainsLosses(gain, loss)
-                .addReportableSomaticGainsLosses(gain, loss)
+                .addSomaticDrivers(TestPurpleFactory.driverBuilder()
+                        .gene(germlineLoss.gene())
+                        .driver(PurpleDriverType.DEL)
+                        .driverLikelihood(1D)
+                        .build())
+                .addAllSomaticVariants(somaticVariant)
+                .addReportableSomaticVariants(somaticVariant)
+                .addAllGermlineVariants(germlineVariant)
+                .addReportableGermlineVariants(germlineVariant)
+                .addAllSomaticCopyNumbers(somaticCopyNumber)
+                .addAllSomaticGainsLosses(somaticGain, somaticLoss)
+                .addReportableSomaticGainsLosses(somaticGain, somaticLoss)
+                .addAllGermlineFullLosses(somaticGain, somaticLoss)
+                .addReportableGermlineFullLosses(somaticGain, somaticLoss)
                 .build();
     }
 
@@ -275,8 +314,11 @@ public final class TestOrangeFactory {
         return ImmutableLinxRecord.builder()
                 .addAllSomaticStructuralVariants(TestLinxFactory.structuralVariantBuilder().svId(1).clusterId(1).build())
                 .addSomaticHomozygousDisruptions(TestLinxFactory.homozygousDisruptionBuilder().gene("TP53").build())
-                .addAllSomaticBreakends(breakend1, breakend2)
-                .addReportableSomaticBreakends(breakend1, breakend2)
+                .addGermlineHomozygousDisruptions(TestLinxFactory.homozygousDisruptionBuilder().gene("PTEN").build())
+                .addAllSomaticBreakends(breakend1)
+                .addAllGermlineBreakends(breakend2)
+                .addReportableSomaticBreakends(breakend1)
+                .addReportableGermlineBreakends(breakend2)
                 .addAllSomaticFusions(fusion)
                 .addReportableSomaticFusions(fusion)
                 .build();

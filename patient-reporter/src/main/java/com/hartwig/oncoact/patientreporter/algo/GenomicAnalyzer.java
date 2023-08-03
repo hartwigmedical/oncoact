@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,8 +16,6 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
-import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
@@ -54,18 +51,16 @@ public class GenomicAnalyzer {
                                boolean germlineReportingLevel) {
 
         // variants
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
+        Set<ReportableVariant> reportableGermlineVariants = ReportableVariantFactory.createReportableGermlineVariants(orange.purple());
+        Set<ReportableVariant> reportableSomaticVariants = ReportableVariantFactory.createReportableSomaticVariants(orange.purple());
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
-
-        // TODO; Decide if we want this filtering still?
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
                 determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
 
         // gains & losses
         List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
-        List<PurpleGainLoss> germlineLosses = orange.purple().reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = orange.purple().reportableGermlineFullLosses();
         List<PurpleGainLoss> reportableGainsLosses = ReportableCNVFactory.mergeCNVLists(somaticGainsLosses, germlineLosses);
 
         // Determine chromosome copy number arm
@@ -136,21 +131,6 @@ public class GenomicAnalyzer {
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .suspectGeneCopyNumbersWithLOH(interpretSuspectGeneCopyNumbersWithLOH)
                 .build();
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     @NotNull
