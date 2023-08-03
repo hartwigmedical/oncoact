@@ -121,11 +121,11 @@ public class ConclusionAlgoTest {
 
         Set<String> conclusion = Sets.newHashSet();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("CHEK2", TypeAlteration.INACTIVATION, "CHEK2", Condition.ONLY_HIGH, "CHEK2");
+                create("CHEK2", TypeAlteration.INACTIVATION, "CHEK2", Condition.ONLY_HIGH, "CHEK2 inactivation");
         actionabilityMap =
                 append(actionabilityMap, "APC", TypeAlteration.ACTIVATING_MUTATION, "APC", Condition.ALWAYS_NO_ACTIONABLE, "APC");
-        actionabilityMap = append(actionabilityMap, "BRCA2", TypeAlteration.INACTIVATION, "BRCA2", Condition.ONLY_HIGH, "BRCA2");
-        actionabilityMap = append(actionabilityMap, "BRCA1", TypeAlteration.INACTIVATION, "BRCA1", Condition.ONLY_HIGH, "BRCA1");
+        actionabilityMap = append(actionabilityMap, "BRCA2", TypeAlteration.INACTIVATION, "BRCA2", Condition.ONLY_HIGH, "BRCA2 inactivation");
+        actionabilityMap = append(actionabilityMap, "BRCA1", TypeAlteration.INACTIVATION, "BRCA1", Condition.ONLY_HIGH, "BRCA1 inactivation");
         actionabilityMap = append(actionabilityMap, "germline", TypeAlteration.GERMLINE, "germline", Condition.ONLY_HIGH, "germline");
         actionabilityMap =
                 append(actionabilityMap, "NOT_BIALLELIC", TypeAlteration.NOT_BIALLELIC, "NOT_BIALLELIC", Condition.OTHER, "not biallelic");
@@ -143,9 +143,9 @@ public class ConclusionAlgoTest {
 
         assertEquals(4, conclusion.size());
         assertTrue(conclusion.contains("- APC (p.Val600Arg) APC"));
-        assertTrue(conclusion.contains("- CHEK2 (c.123A>C splice) CHEK2 not biallelic"));
-        assertTrue(conclusion.contains("- BRCA1 (c.123A>C, p.Val600Arg, p.Val602Arg) BRCA1"));
-        assertTrue(conclusion.contains("- BRCA2 (c.1235A>C splice) BRCA2"));
+        assertTrue(conclusion.contains("- CHEK2 (c.123A>C splice) CHEK2 inactivating mutation not biallelic"));
+        assertTrue(conclusion.contains("- BRCA1 (c.123A>C, p.Val600Arg, p.Val602Arg) BRCA1 inactivation"));
+        assertTrue(conclusion.contains("- BRCA2 (c.1235A>C splice) BRCA2 inactivation"));
     }
 
     @Test

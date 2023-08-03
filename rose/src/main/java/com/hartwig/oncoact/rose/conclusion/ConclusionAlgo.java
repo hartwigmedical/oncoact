@@ -286,12 +286,12 @@ public final class ConclusionAlgo {
                                     ImmutableActionabilityKey.builder().match("NOT_BIALLELIC").type(TypeAlteration.NOT_BIALLELIC).build();
                             ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
                             if (entryBiallelic.condition() == Condition.OTHER) {
-                                conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion() + " "
+                                String sentence = entry.conclusion();
+                                conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation", "inactivating mutation") + " "
                                         + entryBiallelic.conclusion());
                             }
                         } else {
-                            conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
-                        }
+                            conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());                        }
                     } else {
                         conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
                     }
