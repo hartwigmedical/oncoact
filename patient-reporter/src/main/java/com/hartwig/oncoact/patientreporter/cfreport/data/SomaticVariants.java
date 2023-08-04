@@ -79,18 +79,14 @@ public final class SomaticVariants {
 
     @NotNull
     public static String determineVariantAnnotationCanonical(@NotNull String hgvsCoding, @NotNull String hgvsProtein) {
-        String variant = Strings.EMPTY;
-        if (!hgvsCoding.equals(Strings.EMPTY)) {
-            variant = hgvsCoding;
-            if (!hgvsProtein.equals(Strings.EMPTY)) {
-                variant = hgvsCoding + " (" + hgvsProtein + ")";
-            }
-        } else {
-            if (!hgvsProtein.equals(Strings.EMPTY)) {
-                variant =  hgvsProtein;
-            }
+        if (!hgvsCoding.equals(Strings.EMPTY) && !hgvsProtein.equals(Strings.EMPTY)) {
+            return hgvsCoding + " (" + hgvsProtein + ")";
+        } else if (!hgvsCoding.equals(Strings.EMPTY)) {
+            return hgvsCoding;
+        } else if (!hgvsProtein.equals(Strings.EMPTY)) {
+            return hgvsProtein;
         }
-        return variant;
+        return Strings.EMPTY;
     }
 
     @NotNull

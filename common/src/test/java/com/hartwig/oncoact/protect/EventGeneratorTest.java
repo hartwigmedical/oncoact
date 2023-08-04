@@ -46,56 +46,49 @@ public class EventGeneratorTest {
 
     @NotNull
     private static ReportableVariant generateReportableVariant(@NotNull String transcript, @NotNull String hgvsCodingImpact,
-                                                                 @NotNull String hgvsProteinImpact) {
+                                                                 @NotNull String hgvsProteinImpact, boolean isCanonical) {
         return TestReportableVariantFactory.builder()
-                .isCanonical(true)
+                .isCanonical(isCanonical)
                 .canonicalHgvsCodingImpact("coding")
-                .otherImpacts(purpleTranscriptImpact(transcript, hgvsCodingImpact, hgvsProteinImpact))
+                .otherImpactClinical(purpleTranscriptImpact(transcript, hgvsCodingImpact, hgvsProteinImpact))
+                .otherReportedEffects(createAltTranscriptInfo())
+                .build();
+    }
+
+    @NotNull
+    private static ReportableVariant generateReportableVariant(boolean isCanonical) {
+        return TestReportableVariantFactory.builder()
+                .isCanonical(isCanonical)
+                .canonicalHgvsCodingImpact("coding")
+                .otherImpactClinical(null)
+                .otherReportedEffects(createAltTranscriptInfo())
                 .build();
     }
 
     @Test
     public void canGenerateEventForReportableVariantWithClinicalTranscriptProtein() {
-        ReportableVariant base = generateReportableVariant("transcript", "coding", "protein");
+        ReportableVariant base = generateReportableVariant("transcript", "coding", "protein", false);
         assertEquals("coding (protein)", EventGenerator.variantEvent(base));
-
-        ReportableVariant nonCanonical = TestReportableVariantFactory.builder()
-                .from(base)
-                .isCanonical(false)
-                .otherReportedEffects(createAltTranscriptInfo())
-                .build();
-        assertNotNull(EventGenerator.variantEvent(nonCanonical));
+        assertNotNull(EventGenerator.variantEvent(base));
     }
 
     @Test
     public void canGenerateEventForReportableVariantWithClinicalTranscriptCoding() {
-        ReportableVariant base = generateReportableVariant("transcript", "coding", Strings.EMPTY);
+        ReportableVariant base = generateReportableVariant("transcript", "coding", Strings.EMPTY, false);
         assertEquals("coding (coding)", EventGenerator.variantEvent(base));
-
-        ReportableVariant nonCanonical = TestReportableVariantFactory.builder()
-                .from(base)
-                .isCanonical(false)
-                .otherReportedEffects(createAltTranscriptInfo())
-                .build();
-        assertNotNull(EventGenerator.variantEvent(nonCanonical));
+        assertNotNull(EventGenerator.variantEvent(base));
     }
 
     @Test
     public void canGenerateEventForReportableVariant() {
-        ReportableVariant base = TestReportableVariantFactory.builder().isCanonical(true).canonicalHgvsCodingImpact("coding").build();
+        ReportableVariant base = generateReportableVariant(true);
         assertEquals("coding", EventGenerator.variantEvent(base));
-
-        ReportableVariant nonCanonical = TestReportableVariantFactory.builder()
-                .from(base)
-                .isCanonical(false)
-                .otherReportedEffects(createAltTranscriptInfo())
-                .build();
-        assertNotNull(EventGenerator.variantEvent(nonCanonical));
+        assertNotNull(EventGenerator.variantEvent(base));
     }
 
     @NotNull
     private static String createAltTranscriptInfo() {
-        return "trans|coding|impact|effect|MISSENSE";
+        return "trans|coding||effect|MISSENSE";
     }
 
     @Test

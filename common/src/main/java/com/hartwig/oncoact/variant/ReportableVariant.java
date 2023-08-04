@@ -19,7 +19,7 @@ public abstract class ReportableVariant implements Variant {
     public abstract ReportableVariantSource source();
 
     @Nullable
-    public abstract PurpleTranscriptImpact otherImpacts();
+    public abstract PurpleTranscriptImpact otherImpactClinical();
 
     @NotNull
     public abstract String transcript();

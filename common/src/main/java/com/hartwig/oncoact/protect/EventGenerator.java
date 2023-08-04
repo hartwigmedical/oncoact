@@ -14,15 +14,19 @@ import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventGenerator {
 
     private EventGenerator() {
     }
+    private static final Logger LOGGER = LogManager.getLogger(EventGenerator.class);
 
     @NotNull
     public static String variantEvent(@NotNull Variant variant) {
+        LOGGER.info(variant);
         if (variant instanceof ReportableVariant) {
             return reportableVariantEvent((ReportableVariant) variant);
         } else {
@@ -32,14 +36,12 @@ public final class EventGenerator {
 
     @NotNull
     private static String reportableVariantEvent(@NotNull ReportableVariant reportableVariant) {
-        PurpleTranscriptImpact purpleTranscriptImpact = reportableVariant.otherImpacts();
+        PurpleTranscriptImpact purpleTranscriptImpact = reportableVariant.otherImpactClinical();
         if ( purpleTranscriptImpact!= null) {
-            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(), purpleTranscriptImpact.hgvsCodingImpact(), purpleTranscriptImpact.codingEffect().name(), purpleTranscriptImpact.codingEffect());
-            if (reportableVariant.isCanonical()) {
-                return canonicalVariantEvent(reportableVariant) + " (" + clinical + ")";
-            } else {
-                return nonCanonicalVariantEvent(reportableVariant) + " (" + clinical + ")";
-            }
+            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(), purpleTranscriptImpact.hgvsCodingImpact(),
+                    purpleTranscriptImpact.codingEffect().name(), purpleTranscriptImpact.codingEffect());
+            String variantEvent = reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+            return variantEvent + " (" + clinical + ")";
         } else {
             return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
         }

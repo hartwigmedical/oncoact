@@ -3,9 +3,9 @@ package com.hartwig.oncoact.clinicaltransript;
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.NotNull;
 
-public class ClinicalTranscriptModelFactoryTest {
+public class ClinicalTranscriptModelTestFactory {
 
-    private ClinicalTranscriptModelFactoryTest() {
+    private ClinicalTranscriptModelTestFactory() {
     }
 
     @NotNull

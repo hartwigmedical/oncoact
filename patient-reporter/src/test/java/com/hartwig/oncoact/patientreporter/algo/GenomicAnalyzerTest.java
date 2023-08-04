@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelFactoryTest;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
@@ -27,7 +27,7 @@ public class GenomicAnalyzerTest {
     @Test
     public void canRunOnExampleData() {
         GermlineReportingModel testGermlineReportingModel = TestGermlineReportingModelFactory.createEmpty();
-        ClinicalTranscriptsModel testClinicalTranscriptsModel = ClinicalTranscriptModelFactoryTest.createEmpty();
+        ClinicalTranscriptsModel testClinicalTranscriptsModel = ClinicalTranscriptModelTestFactory.createEmpty();
         GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel, testClinicalTranscriptsModel);
 
         List<ProtectEvidence> noEvidences = Lists.newArrayList();

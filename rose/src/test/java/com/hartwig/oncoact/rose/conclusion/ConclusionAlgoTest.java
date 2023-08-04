@@ -11,7 +11,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelFactoryTest;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
@@ -57,7 +57,7 @@ public class ConclusionAlgoTest {
         ImmutableRoseData.Builder builder = ImmutableRoseData.builder();
         RoseData minimal = builder
                 .orange(TestOrangeFactory.createMinimalTestOrangeRecord())
-                .clinicalTranscriptsModel(ClinicalTranscriptModelFactoryTest.createEmpty())
+                .clinicalTranscriptsModel(ClinicalTranscriptModelTestFactory.createEmpty())
                 .build();
         assertNotNull(ConclusionAlgo.generateConclusion(minimal));
 
