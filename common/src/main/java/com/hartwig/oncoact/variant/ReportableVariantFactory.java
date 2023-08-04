@@ -45,13 +45,10 @@ public final class ReportableVariantFactory {
         for (PurpleVariant variant : variants) {
 
             if (variant.reported()) {
-                PurpleTranscriptImpact purpleTranscriptImpact = null;
+
                 String clinicalTranscript = clinicalTranscriptsModel.findCanonicalTranscriptForGene(variant.gene());
-                for (PurpleTranscriptImpact otherTranscript : variant.otherImpacts()) {
-                    if (otherTranscript.transcript().equals(clinicalTranscript)) {
-                        purpleTranscriptImpact = otherTranscript;
-                    }
-                }
+                PurpleTranscriptImpact purpleTranscriptImpact = variant.otherImpacts().stream()
+                        .filter(x -> x.transcript().equals(clinicalTranscript)).findFirst().orElse(null);
                 ImmutableReportableVariant.Builder builder = fromVariant(variant, source);
 
                 PurpleDriver canonicalDriver = findCanonicalEntryForVariant(driverMap, variant);
