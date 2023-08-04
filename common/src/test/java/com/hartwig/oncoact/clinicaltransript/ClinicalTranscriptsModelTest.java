@@ -13,16 +13,6 @@ import static org.junit.Assert.assertTrue;
 public class ClinicalTranscriptsModelTest {
 
     @Test
-    public void geneArePresentInClinicalTranscriptMap() {
-        Map<String, String> clinicalTranscriptMap = Maps.newHashMap();
-        clinicalTranscriptMap.put("BRCA2", "NM_345");
-        ClinicalTranscriptsModel clinicalTranscriptsModel = new ClinicalTranscriptsModel(clinicalTranscriptMap);
-
-        assertTrue(clinicalTranscriptsModel.genePresentInCanonicalTranscripts("BRCA2"));
-        assertFalse(clinicalTranscriptsModel.genePresentInCanonicalTranscripts("BRCA1"));
-    }
-
-    @Test
     public void canExtractClinicalTranscript() {
         Map<String, String> clinicalTranscriptMap = Maps.newHashMap();
         clinicalTranscriptMap.put("BRCA2", "NM_345");

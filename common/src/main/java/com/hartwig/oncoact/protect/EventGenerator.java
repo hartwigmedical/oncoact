@@ -14,7 +14,6 @@ import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public final class EventGenerator {

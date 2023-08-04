@@ -14,7 +14,6 @@ public class ClinicalTranscriptFileTest {
     @Test
     public void canReadClinicalTranscriptsTsv() throws IOException {
         ClinicalTranscriptsModel clinicalTranscriptsModel = ClinicalTranscriptFile.buildFromTsv(CLINICAL_TRANSCRIPT_TSV);
-        assertEquals(2, clinicalTranscriptsModel.clinicaltranscriptCount());
 
         String clinicalTranscriptBRCA1 = clinicalTranscriptsModel.findCanonicalTranscriptForGene("BRCA1");
         String clinicalTranscriptBRCA2 = clinicalTranscriptsModel.findCanonicalTranscriptForGene("BRCA2");

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,18 +27,22 @@ public class ClinicalTranscriptFile {
         List<String> lines = Files.readAllLines(new File(clinicalTranscriptTsv).toPath());
 
         Map<String, String> clinicalTranscriptEntries = Maps.newHashMap();
+        final Map<String,Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
 
         // Skip header
         for (String line : lines.subList(1, lines.size())) {
-            final Map<String,Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
             final String[] parts = line.split(SEPARATOR, -1);
 
             if (parts.length == 2) {
-                String geneName = parts[fieldIndexMap.get("Gene")];
-                String clinicalTranscript = parts[fieldIndexMap.get("Transcript")];
-                clinicalTranscriptEntries.put(geneName, clinicalTranscript);
+                if (fieldIndexMap.containsKey("Gene") || fieldIndexMap.containsKey("Transcript")) {
+                    String geneName = parts[fieldIndexMap.get("Gene")];
+                    String clinicalTranscript = parts[fieldIndexMap.get("Transcript")];
+                    clinicalTranscriptEntries.put(geneName, clinicalTranscript);
+                } else {
+                    LOGGER.warn("Wrong column names are present in clinical transcripts tsv: {}", line);
+                }
             } else {
-                LOGGER.warn("Suspicious line detected in clinical transcripten tsv: {}", line);
+                LOGGER.warn("Suspicious line detected in clinical transcripts tsv: {}", line);
             }
         }
 
