@@ -1,18 +1,16 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.disruption.ReportableGeneDisruptionFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DisruptionEvidence {
 
@@ -24,7 +22,7 @@ public class DisruptionEvidence {
     private final List<ActionableGene> actionableGenes;
 
     public DisruptionEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-            @NotNull final List<ActionableGene> actionableGenes) {
+                              @NotNull final List<ActionableGene> actionableGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.ANY_MUTATION || x.event() == GeneEvent.INACTIVATION
@@ -33,8 +31,8 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Collection<HomozygousDisruption> somaticHomozygousDisruptions,
-                                          @Nullable Collection<HomozygousDisruption> germlineHomozygousDisruptions) {
+    public List<ProtectEvidence> evidence(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
+                                          @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (HomozygousDisruption homozygousDisruption : ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(somaticHomozygousDisruptions,
                 germlineHomozygousDisruptions)) {

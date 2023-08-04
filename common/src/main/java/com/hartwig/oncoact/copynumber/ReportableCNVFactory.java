@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.copynumber;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,20 +13,15 @@ public final class ReportableCNVFactory {
     }
 
     @NotNull
-    public static List<PurpleGainLoss> mergeCNVLists(@NotNull Iterable<PurpleGainLoss> somaticGainsLosses,
-                                                     @Nullable Iterable<PurpleGainLoss> germlineLosses) {
+    public static List<PurpleGainLoss> mergeCNVLists(@NotNull List<PurpleGainLoss> somaticGainsLosses,
+                                                     @Nullable List<PurpleGainLoss> germlineLosses) {
 
-        List<PurpleGainLoss> result = Lists.newArrayList();
-
-        for (PurpleGainLoss somaticCNV : somaticGainsLosses) {
-            result.add(ImmutablePurpleGainLoss.copyOf(somaticCNV));
-        }
-
+        List<PurpleGainLoss> allGainsLosses = Lists.newArrayList();
+        allGainsLosses.addAll(somaticGainsLosses);
         if (germlineLosses != null) {
-            for (PurpleGainLoss germlineCNV : germlineLosses) {
-                result.add(ImmutablePurpleGainLoss.copyOf(germlineCNV));
-            }
+            allGainsLosses.addAll(germlineLosses);
         }
-        return result;
+
+        return allGainsLosses;
     }
 }

@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.protect.evidence;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
@@ -15,7 +14,6 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -44,10 +42,11 @@ public class CopyNumberEvidenceTest {
         PurpleGainLoss reportableGermlineDel =
                 TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
 
-        Set<PurpleGainLoss> reportableSomaticGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
-        Set<PurpleGainLoss> reportableGermlineGainLosses = Sets.newHashSet(reportableGermlineDel);
-        Set<PurpleGainLoss> unreportedGainLosses = Sets.newHashSet();
-        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses, unreportedGainLosses, reportableGermlineGainLosses, Sets.newHashSet());
+        List<PurpleGainLoss> reportableSomaticGainLosses = Lists.newArrayList(reportableAmp, reportableDel, ampOnOtherGene);
+        List<PurpleGainLoss> reportableGermlineGainLosses = Lists.newArrayList(reportableGermlineDel);
+        List<PurpleGainLoss> unreportedGainLosses = Lists.newArrayList();
+        List<PurpleGainLoss> unreportedGermlineGainLosses = Lists.newArrayList();
+        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses, unreportedGainLosses, reportableGermlineGainLosses, unreportedGermlineGainLosses);
 
         assertEquals(3, evidences.size());
 
