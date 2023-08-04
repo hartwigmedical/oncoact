@@ -1,11 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -24,10 +18,15 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.VerticalAlignment;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ClinicalEvidenceFunctions {
 
@@ -99,7 +98,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
-            @NotNull ProtectEvidence evidenceToCheck) {
+                                                                        @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().equals(evidenceToCheck.treatment()) && StringUtils.equals(evidence.gene(), evidenceToCheck.gene())
                     && evidence.event().equals(evidenceToCheck.event())) {
@@ -113,12 +112,12 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                             float contentWidth, @NotNull String columnName) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 40, 15, 100, 60 },
-                new Cell[] { tableUtil.createHeaderCell(columnName, 2), tableUtil.createHeaderCell("OnLabel", 1),
+                                      float contentWidth, @NotNull String columnName) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[]{25, 100, 40, 80, 25, 40, 15, 100, 60},
+                new Cell[]{tableUtil.createHeaderCell(columnName, 2), tableUtil.createHeaderCell("OnLabel", 1),
                         tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Level", 1), tableUtil.createHeaderCell("Response", 2),
-                        tableUtil.createHeaderCell("Genomic event", 1), tableUtil.createHeaderCell("Evidence links", 1) },
+                        tableUtil.createHeaderCell("Genomic event", 1), tableUtil.createHeaderCell("Evidence links", 1)},
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "evidence");
@@ -127,10 +126,10 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 170, 80, 170 },
-                new Cell[] { tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
-                        tableUtil.createHeaderCell("Genomic event", 1) },
+                                  float contentWidth) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[]{20, 170, 80, 170},
+                new Cell[]{tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
+                        tableUtil.createHeaderCell("Genomic event", 1)},
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "trial");
@@ -139,7 +138,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     private Table addDataIntoTable(@NotNull Table treatmentTable, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            @NotNull String title, @NotNull String evidenceType) {
+                                   @NotNull String title, @NotNull String evidenceType) {
         boolean hasEvidence = false;
         for (EvidenceLevel level : EvidenceLevel.values()) {
             if (addEvidenceWithMaxLevel(treatmentTable, treatmentMap, level, evidenceType)) {
@@ -165,7 +164,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                                   @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
+                                            @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
         Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
         boolean hasEvidence = false;
         for (String treatment : sortedTreatments) {
@@ -298,11 +297,7 @@ public class ClinicalEvidenceFunctions {
             if (item1.treatment().equals(item2.treatment())) {
                 if (item1.level().equals(item2.level())) {
                     if (item1.direction().equals(item2.direction())) {
-                        if (item1.onLabel() == item2.onLabel()) {
-                            return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
-                        } else {
-                            return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
-                        }
+                        return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
                     } else {
                         return item1.direction().compareTo(item2.direction());
                     }

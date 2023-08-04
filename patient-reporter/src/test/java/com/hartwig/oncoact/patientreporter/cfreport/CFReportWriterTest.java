@@ -1,47 +1,37 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.hla.*;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
-import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
-import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
-import com.hartwig.oncoact.patientreporter.OutputFileUtil;
-import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.ReportData;
+import com.hartwig.oncoact.patientreporter.*;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
+import com.hartwig.oncoact.patientreporter.panel.*;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = true;
+    private static final boolean WRITE_TO_PDF = false;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -74,8 +64,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-//        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-//        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
     @Test
