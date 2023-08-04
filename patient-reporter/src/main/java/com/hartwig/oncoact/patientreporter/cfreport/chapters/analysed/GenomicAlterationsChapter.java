@@ -142,7 +142,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     private void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-                                          @NotNull Table table) {
+                                   @NotNull Table table) {
 
         String label = "Tumor purity";
         table.addCell(tableUtil.createContentCell(label));
@@ -160,7 +160,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createTumorVariantsTable(@NotNull List<ReportableVariant> reportableVariants,
-                                                  @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
+                                           @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
         String title = "Tumor specific variants";
         if (reportableVariants.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
@@ -240,7 +240,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
-                                                   @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
+                                            @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
         String title = "Tumor specific gains & losses";
         if (gainsAndLosses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);

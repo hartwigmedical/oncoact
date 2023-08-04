@@ -1,54 +1,42 @@
 package com.hartwig.oncoact.rose.conclusion;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.chord.ChordRecord;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
+import com.hartwig.oncoact.drivergene.DriverCategory;
+import com.hartwig.oncoact.drivergene.DriverGene;
+import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
+import com.hartwig.oncoact.orange.TestOrangeFactory;
+import com.hartwig.oncoact.orange.chord.TestChordFactory;
+import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
+import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
+import com.hartwig.oncoact.rose.ImmutableRoseData;
+import com.hartwig.oncoact.rose.RoseData;
+import com.hartwig.oncoact.rose.actionability.*;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.TestReportableVariantFactory;
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
-import com.hartwig.oncoact.drivergene.DriverCategory;
-import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
-import com.hartwig.hmftools.datamodel.chord.ChordRecord;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
-import com.hartwig.oncoact.orange.TestOrangeFactory;
-import com.hartwig.oncoact.orange.chord.TestChordFactory;
-import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
-import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
-import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.rose.ImmutableRoseData;
-import com.hartwig.oncoact.rose.RoseData;
-import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
-import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
-import com.hartwig.oncoact.rose.actionability.Condition;
-import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityEntry;
-import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
-import com.hartwig.oncoact.rose.actionability.TypeAlteration;
-import com.hartwig.oncoact.variant.ReportableVariant;
-import com.hartwig.oncoact.variant.TestReportableVariantFactory;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ConclusionAlgoTest {
 
@@ -405,15 +393,15 @@ public class ConclusionAlgoTest {
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> create(@NotNull String gene, @NotNull TypeAlteration typeAlteration,
-            @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
+                                                                    @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = Maps.newHashMap();
         return append(actionabilityMap, gene, typeAlteration, match, condition, conclusion);
     }
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> append(@NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-            @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
-            @NotNull String conclusion) {
+                                                                    @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
+                                                                    @NotNull String conclusion) {
         ActionabilityKey key = ImmutableActionabilityKey.builder().match(gene).type(typeAlteration).build();
         ActionabilityEntry entry =
                 ImmutableActionabilityEntry.builder().match(match).type(typeAlteration).condition(condition).conclusion(conclusion).build();

@@ -9,13 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class ClinicalTranscriptFile {
 
-    private ClinicalTranscriptFile(){
+    private ClinicalTranscriptFile() {
     }
 
     private static final Logger LOGGER = LogManager.getLogger(ClinicalTranscriptFile.class);
@@ -27,7 +26,7 @@ public class ClinicalTranscriptFile {
         List<String> lines = Files.readAllLines(new File(clinicalTranscriptTsv).toPath());
 
         Map<String, String> clinicalTranscriptEntries = Maps.newHashMap();
-        final Map<String,Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
+        final Map<String, Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
 
         // Skip header
         for (String line : lines.subList(1, lines.size())) {
