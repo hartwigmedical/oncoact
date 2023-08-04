@@ -1,12 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
@@ -21,9 +14,14 @@ import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class FusionEvidenceTest {
 
@@ -177,15 +175,9 @@ public class FusionEvidenceTest {
 
     @NotNull
     private static ProtectEvidence findByFusion(@NotNull List<ProtectEvidence> evidences, @NotNull LinxFusion fusion,
-            @NotNull String treatment) {
-        String event = EventGenerator.fusionEvent(fusion);
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.event().equals(event) && evidence.treatment().name().equals(treatment)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Cannot find evidence with fusion event: " + event);
+                                                @NotNull String treatment) {
+        return evidences.stream().filter(x -> Objects.equals(x.event(), EventGenerator.fusionEvent(fusion)) && Objects.equals(x.treatment().name(), treatment))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find evidence with fusion event: " + EventGenerator.fusionEvent(fusion)));
     }
 
     @Test
@@ -231,7 +223,7 @@ public class FusionEvidenceTest {
 
     @NotNull
     private static ImmutableLinxFusion.Builder linxFusionBuilder(@NotNull String geneStart, @NotNull String geneEnd, boolean reported,
-            @NotNull LinxFusionType type) {
+                                                                 @NotNull LinxFusionType type) {
         return TestLinxFactory.fusionBuilder().geneStart(geneStart).geneEnd(geneEnd).reported(reported).reportedType(type);
     }
 }

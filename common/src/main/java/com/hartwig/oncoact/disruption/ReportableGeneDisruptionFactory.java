@@ -19,16 +19,12 @@ public class ReportableGeneDisruptionFactory {
         List<HomozygousDisruption> result = Lists.newArrayList();
 
         for (HomozygousDisruption somaticHomozygousDisruption : somaticHomozygousDisruptions) {
-            result.add(ImmutableHomozygousDisruption.builder()
-                    .from(somaticHomozygousDisruption)
-                    .build());
+            result.add(ImmutableHomozygousDisruption.copyOf(somaticHomozygousDisruption));
         }
 
         if (germlineHomozygousDisruptions != null) {
             for (HomozygousDisruption germlineHomozygousDisruption : germlineHomozygousDisruptions) {
-                result.add(ImmutableHomozygousDisruption.builder()
-                        .from(germlineHomozygousDisruption)
-                        .build());
+                result.add(ImmutableHomozygousDisruption.copyOf(germlineHomozygousDisruption));
             }
         }
         return result;
@@ -36,7 +32,7 @@ public class ReportableGeneDisruptionFactory {
 
     @NotNull
     public static List<GeneDisruption> mergeGeneDisruptionsLists(@NotNull List<GeneDisruption> somaticGeneDisruptions,
-                                                                             @Nullable List<GeneDisruption> germlineGeneDisruptions) {
+                                                                 @Nullable List<GeneDisruption> germlineGeneDisruptions) {
         List<GeneDisruption> result = Lists.newArrayList();
 
         for (GeneDisruption somaticGeneDisruption : somaticGeneDisruptions) {

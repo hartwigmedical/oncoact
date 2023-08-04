@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ReportableCNVFactory {
+public final class ReportableCNVFactory {
 
     private ReportableCNVFactory() {
     }
@@ -20,19 +20,14 @@ public class ReportableCNVFactory {
         List<PurpleGainLoss> result = Lists.newArrayList();
 
         for (PurpleGainLoss somaticCNV : somaticGainsLosses) {
-            result.add(ImmutablePurpleGainLoss.builder()
-                    .from(somaticCNV)
-                    .build());
+            result.add(ImmutablePurpleGainLoss.copyOf(somaticCNV));
         }
 
         if (germlineLosses != null) {
             for (PurpleGainLoss germlineCNV : germlineLosses) {
-                result.add(ImmutablePurpleGainLoss.builder()
-                        .from(germlineCNV)
-                        .build());
+                result.add(ImmutablePurpleGainLoss.copyOf(germlineCNV));
             }
         }
-
         return result;
     }
 }

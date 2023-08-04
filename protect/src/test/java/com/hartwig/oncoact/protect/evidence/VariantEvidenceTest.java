@@ -1,12 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
@@ -23,9 +16,14 @@ import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class VariantEvidenceTest {
 
@@ -256,13 +254,8 @@ public class VariantEvidenceTest {
 
     @NotNull
     private static ProtectEvidence findByGene(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.gene().equals(geneToFind)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
+        return evidences.stream().filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 
     @NotNull

@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.orange;
 
-import java.time.LocalDate;
-import java.util.Set;
-
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
@@ -11,42 +8,12 @@ import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaData;
 import com.hartwig.hmftools.datamodel.flagstat.ImmutableFlagstat;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
-import com.hartwig.hmftools.datamodel.linx.ImmutableLinxRecord;
-import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
-import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.LinxRecord;
+import com.hartwig.hmftools.datamodel.linx.*;
 import com.hartwig.hmftools.datamodel.metrics.ImmutableWGSMetrics;
-import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
-import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
-import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeSample;
-import com.hartwig.hmftools.datamodel.orange.OrangePlots;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
-import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
-import com.hartwig.hmftools.datamodel.orange.OrangeSample;
+import com.hartwig.hmftools.datamodel.orange.*;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
-import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleCharacteristics;
-import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
-import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
-import com.hartwig.hmftools.datamodel.purple.PurpleFit;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
-import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterData;
-import com.hartwig.hmftools.datamodel.virus.VirusBreakendQCStatus;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.virus.*;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
 import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
@@ -54,9 +21,11 @@ import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.LocalDate;
+import java.util.Set;
 
 public final class TestOrangeFactory {
 
@@ -168,9 +137,6 @@ public final class TestOrangeFactory {
                 .hotspot(Hotspot.HOTSPOT)
                 .subclonalLikelihood(0.02)
                 .biallelic(false)
-                .worstCodingEffect(PurpleCodingEffect.SPLICE)
-                .adjustedVAF(0)
-                .repeatCount(0)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder()
                         .hgvsCodingImpact("c.something")
                         .hgvsProteinImpact("p.Val600Glu")
@@ -188,9 +154,6 @@ public final class TestOrangeFactory {
                 .hotspot(Hotspot.HOTSPOT)
                 .subclonalLikelihood(0.02)
                 .biallelic(false)
-                .worstCodingEffect(PurpleCodingEffect.SPLICE)
-                .adjustedVAF(0)
-                .repeatCount(0)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder()
                         .hgvsCodingImpact("c.something")
                         .hgvsProteinImpact("p.Val600Glu")

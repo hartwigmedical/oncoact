@@ -1,10 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -14,9 +9,14 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DisruptionEvidenceTest {
 
@@ -61,12 +61,7 @@ public class DisruptionEvidenceTest {
 
     @NotNull
     private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.gene().equals(geneToFind)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
+        return evidences.stream().filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst().orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 }
