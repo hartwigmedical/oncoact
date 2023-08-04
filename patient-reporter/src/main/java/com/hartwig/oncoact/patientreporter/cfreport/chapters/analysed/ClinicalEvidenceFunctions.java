@@ -22,9 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -41,7 +39,6 @@ public class ClinicalEvidenceFunctions {
     }
 
     private static final String TREATMENT_DELIMITER = " + ";
-
     private static final String RESPONSE_SYMBOL = "\u25B2";
     private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
@@ -54,43 +51,31 @@ public class ClinicalEvidenceFunctions {
             Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
 
     @NotNull
-    public static Map<String, List<ProtectEvidence>> buildTreatmentAppraochMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-                                                                               Boolean requireOnLabel) {
+    public static Map<String, List<ProtectEvidence>> buildTreatmenthMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
+                                                                        Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
-            if (!evidence.treatment().sourceRelevantTreatmentApproaches().isEmpty()) {
-                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
-                    List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(String.join(",", evidence.treatment().sourceRelevantTreatmentApproaches()));
-                    if (treatmentEvidences == null) {
-                        treatmentEvidences = Lists.newArrayList();
+            if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
+                String treatment = Strings.EMPTY;
+                List<ProtectEvidence> treatmentEvidences = Lists.newArrayList();
+                if (name.equals("treatmentApproach")) {
+                    if (!evidence.treatment().sourceRelevantTreatmentApproaches().isEmpty()) {
+                        List<String> treatentSort = Lists.newArrayList(evidence.treatment().sourceRelevantTreatmentApproaches());
+                        Collections.sort(treatentSort);
+                        treatment = String.join(",", treatentSort);
+                        treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
                     }
-                    if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
-                        treatmentEvidences.add(evidence);
+                } else {
+                    if (!evidence.treatment().name().equals(Strings.EMPTY)) {
+                        treatment = evidence.treatment().name();
+                        treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
                     }
-                    evidencePerTreatmentMap.put(String.join(",", evidence.treatment().sourceRelevantTreatmentApproaches()), treatmentEvidences);
                 }
-            }
-        }
-        return evidencePerTreatmentMap;
-    }
 
-    @NotNull
-    public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-                                                                       Boolean requireOnLabel) {
-        Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
-
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().sourceRelevantTreatmentApproaches().isEmpty()) {
-                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
-                    List<ProtectEvidence> treatmentEvidences = evidencePerTreatmentMap.get(evidence.treatment().name());
-                    if (treatmentEvidences == null) {
-                        treatmentEvidences = Lists.newArrayList();
-                    }
-                    if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)) {
-                        treatmentEvidences.add(evidence);
-                    }
-                    evidencePerTreatmentMap.put(evidence.treatment().name(), treatmentEvidences);
+                if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence) && !treatment.equals(Strings.EMPTY)) {
+                    treatmentEvidences.add(evidence);
+                    evidencePerTreatmentMap.put(treatment, treatmentEvidences);
                 }
             }
         }

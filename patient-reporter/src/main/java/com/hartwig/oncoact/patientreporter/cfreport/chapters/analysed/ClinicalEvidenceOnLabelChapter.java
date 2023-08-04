@@ -50,8 +50,8 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         allEvidences.addAll(reportedOnLabel);
         allEvidences.addAll(reportedOffLabel);
 
-        addTreatmentSection(document, "Tumor type specific evidence based on treatment approach", allEvidences, "Treatment approach");
-        addTrialSection(document, "Tumor type specific clinical trials (NL)", reportedStudies);
+        addTreatmentSection(document, allEvidences);
+        addTrialSection(document, reportedStudies);
 
         document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore "
                 + "certain tumor types may not be eligible for the DRUP.\n"));
@@ -63,19 +63,20 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
-    private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences, @NotNull String columnName) {
+    private void addTreatmentSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentAppraochMap(evidences, flagGermline, null);
-        document.add(clinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth(), columnName));
+                ClinicalEvidenceFunctions.buildTreatmenthMap(evidences, flagGermline, null, "treatmentApproach");
+        document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment approach",
+                onLabelTreatments, contentWidth(), "Treatment approach"));
     }
 
-    private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
+    private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true);
-        document.add(clinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmenthMap(evidences, flagGermline, true, "study");
+        document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical trials (NL)", onLabelTreatments, contentWidth()));
     }
 }
