@@ -26,10 +26,13 @@ public class ClinicalTranscriptFile {
         List<String> lines = Files.readAllLines(new File(clinicalTranscriptTsv).toPath());
 
         Map<String, String> clinicalTranscriptEntries = Maps.newHashMap();
+        String columnNameGene = "Gene";
+        String columnNameTranscript = "Transcript";
 
         final Map<String, Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
-        if (!fieldIndexMap.containsKey("Gene") || !fieldIndexMap.containsKey("Transcript")) {
-            LOGGER.warn("Wrong column names {} are present in clinical transcripts tsv", fieldIndexMap.keySet());
+        if (!fieldIndexMap.containsKey(columnNameGene) || !fieldIndexMap.containsKey(columnNameTranscript)) {
+            throw new IllegalArgumentException(
+                    "Wrong column names " + fieldIndexMap.keySet() + " are present in clinical transcripts tsv!");
         }
 
         // Skip header
@@ -37,8 +40,8 @@ public class ClinicalTranscriptFile {
             final String[] parts = line.split(SEPARATOR, -1);
 
             if (parts.length == 2) {
-                String geneName = parts[fieldIndexMap.get("Gene")];
-                String clinicalTranscript = parts[fieldIndexMap.get("Transcript")];
+                String geneName = parts[fieldIndexMap.get(columnNameGene)];
+                String clinicalTranscript = parts[fieldIndexMap.get(columnNameTranscript)];
                 clinicalTranscriptEntries.put(geneName, clinicalTranscript);
             } else {
                 LOGGER.warn("Suspicious line detected in clinical transcripts tsv: {}", line);
