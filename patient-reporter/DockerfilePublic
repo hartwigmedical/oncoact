@@ -5,6 +5,7 @@ RUN mkdir /in
 COPY --from=eu.gcr.io/hmf-build/ops-resources-dev:0.6 /ops/resources/dev/patient_report_images /data/resources/patient_report_images
 COPY --from=eu.gcr.io/hmf-build/ops-resources-dev:0.6 /ops/resources/dev/germline_reporting /data/resources/germline_reporting
 COPY --from=eu.gcr.io/hmf-build/ops-resources-dev:0.6 /ops/resources/dev/failed_database /data/resources/failed_database
+COPY --from=eu.gcr.io/hmf-pipeline-prod-e45b00f2/ops-resources-private:0.2 /ops/resources/dev/clinical_transcripts /data/resources/clinical_transcripts
 COPY ./target/patient-reporter-jar-with-dependencies.jar /opt/app/patient-reporter.jar
 COPY ./run-docker.properties /opt/app/patient-reporter.properties
 ENTRYPOINT ["java", "-jar", "/opt/app/patient-reporter.jar", "-properties_file", "/opt/app/patient-reporter.properties"]
