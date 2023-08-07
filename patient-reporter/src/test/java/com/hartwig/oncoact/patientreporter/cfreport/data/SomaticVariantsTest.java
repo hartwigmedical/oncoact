@@ -1,24 +1,19 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.*;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class SomaticVariantsTest {
 
@@ -33,22 +28,22 @@ public class SomaticVariantsTest {
 
     @Test
     public void candDtermineVariantAnnotationCanonical() {
-        assertEquals("c. (p.)", SomaticVariants.determineVariantAnnotationCanonical("c." , "p."));
-        assertEquals("c.", SomaticVariants.determineVariantAnnotationCanonical("c." , Strings.EMPTY));
+        assertEquals("c. (p.)", SomaticVariants.determineVariantAnnotationCanonical("c.", "p."));
+        assertEquals("c.", SomaticVariants.determineVariantAnnotationCanonical("c.", Strings.EMPTY));
     }
 
     @Test
     public void determineVariantAnnotationClinical() {
         assertEquals(Strings.EMPTY, SomaticVariants.determineVariantAnnotationClinical(null));
         assertEquals("c. (p.)", SomaticVariants.determineVariantAnnotationClinical(
-                purpleTranscriptImpactTest("transcript" , "c.", "p.")));
+                purpleTranscriptImpactTest("transcript", "c.", "p.")));
         assertEquals("c.", SomaticVariants.determineVariantAnnotationClinical(
-                purpleTranscriptImpactTest("transcript" , "c.", Strings.EMPTY)));
+                purpleTranscriptImpactTest("transcript", "c.", Strings.EMPTY)));
     }
 
     @NotNull
     private static PurpleTranscriptImpact purpleTranscriptImpactTest(@NotNull String transcript, @NotNull String hgvsCodingImpact,
-                                                                 @NotNull String hgvsProteinImpact) {
+                                                                     @NotNull String hgvsProteinImpact) {
         return ImmutablePurpleTranscriptImpact.builder()
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)
