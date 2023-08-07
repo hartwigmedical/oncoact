@@ -1,29 +1,24 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
-import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.*;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class SomaticVariants {
 
@@ -79,7 +74,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static String determineVariantAnnotationCanonical(@NotNull String hgvsCoding, @NotNull String hgvsProtein) {
-        if (!hgvsCoding.equals(Strings.EMPTY) && !hgvsProtein.equals(Strings.EMPTY)) {
+        if (!hgvsCoding.isEmpty() && !hgvsProtein.isEmpty()) {
             return hgvsCoding + " (" + hgvsProtein + ")";
         } else if (!hgvsCoding.equals(Strings.EMPTY)) {
             return hgvsCoding;
@@ -91,13 +86,12 @@ public final class SomaticVariants {
 
     @NotNull
     public static String determineVariantAnnotationClinical(@Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
-        String variant = Strings.EMPTY;
         if (purpleTranscriptImpact != null) {
             String hgvsCoding = purpleTranscriptImpact.hgvsCodingImpact();
             String hgvsProtein = purpleTranscriptImpact.hgvsProteinImpact();
-            variant = determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein);
+            return determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein);
         }
-        return variant;
+        return Strings.EMPTY;
     }
 
     public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {

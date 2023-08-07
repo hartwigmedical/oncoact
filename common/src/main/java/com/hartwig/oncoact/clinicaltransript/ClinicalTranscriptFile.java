@@ -12,7 +12,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
-public class ClinicalTranscriptFile {
+public final class ClinicalTranscriptFile {
 
     private ClinicalTranscriptFile() {
     }

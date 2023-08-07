@@ -1,7 +1,7 @@
 package com.hartwig.oncoact.clinicaltransript;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -14,10 +14,8 @@ public class ClinicalTranscriptsModel {
         this.clinicalTranscriptMap = clinicalTranscriptmMap;
     }
 
-    @NotNull
+    @Nullable
     public String findCanonicalTranscriptForGene(@NotNull String gene) {
-        boolean geneHasSpecialRemark = clinicalTranscriptMap.containsKey(gene);
-
-        return geneHasSpecialRemark ? clinicalTranscriptMap.get(gene) : Strings.EMPTY;
+        return clinicalTranscriptMap.get(gene);
     }
 }

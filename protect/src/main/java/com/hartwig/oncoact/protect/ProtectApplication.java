@@ -1,14 +1,8 @@
 package com.hartwig.oncoact.protect;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DiseaseOntology;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -19,13 +13,17 @@ import com.hartwig.oncoact.protect.algo.ProtectAlgo;
 import com.hartwig.oncoact.protect.serve.ServeRefGenome;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.serve.datamodel.ActionableEventsLoader;
-
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 public class ProtectApplication {
 
@@ -74,7 +72,8 @@ public class ProtectApplication {
         List<DriverGene> driverGenes = DriverGeneFile.read(config.driverGeneTsv());
         LOGGER.info("  Read {} driver gene entries", driverGenes.size());
 
-        ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel, ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv()));
+        ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel,
+                ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv()));
         List<ProtectEvidence> evidences = algo.run(orange);
 
         String filename = config.outputDir() + File.separator + "protect.tsv";
