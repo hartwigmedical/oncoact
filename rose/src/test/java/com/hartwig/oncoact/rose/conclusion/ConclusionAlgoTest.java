@@ -6,6 +6,9 @@ import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
+import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
+import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
@@ -20,6 +23,7 @@ import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
+import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
@@ -195,17 +199,45 @@ public class ConclusionAlgoTest {
     }
 
     @Test
-    public void canGenerateVirusConclusion() {
+    public void canGenerateVirusOnlyVirusConclusion() {
         Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
+        List<LilacAllele> alleles = Lists.newArrayList();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ONLY_HIGH, "EBV");
         actionabilityMap = append(actionabilityMap, "HPV", TypeAlteration.POSITIVE, "HPV", Condition.ONLY_HIGH, "HPV");
         actionabilityMap = append(actionabilityMap, "MCV", TypeAlteration.POSITIVE, "MCV", Condition.ONLY_HIGH, "MCV");
 
-        ConclusionAlgo.generateVirusConclusion(conclusion, viruses, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
         assertTrue(conclusion.contains("- MCV MCV"));
+    }
+
+    @Test
+    public void canGenerateHLAOnlyConclusion() {
+        Set<AnnotatedVirus> viruses = Sets.newHashSet();
+        List<LilacAllele> alleles = createTestLilacRecord().alleles();
+        List<String> conclusion = Lists.newArrayList();
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HLA-A*02", TypeAlteration.POSITIVE, "HLA-A*02", Condition.ALWAYS, "HLA-A*02");
+
+        ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+
+        assertEquals(1, conclusion.size());
+        assertTrue(conclusion.contains("- A*02:01 HLA-A*02"));
+    }
+
+    @Test
+    public void canGenerateHLAVirusBothConclusion() {
+        Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
+        List<LilacAllele> alleles = createTestLilacRecord().alleles();
+        List<String> conclusion = Lists.newArrayList();
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02",
+                Condition.ALWAYS, "HPV-16 | HLA-A*02");
+
+        ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+
+        assertEquals(1, conclusion.size());
+        assertTrue(conclusion.contains("- A*02:01 HPV HPV-16 | HLA-A*02"));
     }
 
     @Test
@@ -551,6 +583,24 @@ public class ConclusionAlgoTest {
         virusEntries.add(virus2);
         virusEntries.add(virus3);
         return virusEntries;
+    }
+
+    @NotNull
+    public static LilacRecord createTestLilacRecord() {
+        List<LilacAllele> alleles = Lists.newArrayList();
+        alleles.add(TestLilacFactory.builder().allele("A*02:01").somaticMissense(2D).tumorCopyNumber(4.7).build());
+        alleles.add(TestLilacFactory.builder().allele("A*03:01").somaticMissense(0D).tumorCopyNumber(1.5).build());
+        alleles.add(TestLilacFactory.builder()
+                .allele("B*18:02")
+                .somaticSplice(1D)
+                .tumorCopyNumber(1.2)
+                .somaticNonsenseOrFrameshift(1D)
+                .build());
+        alleles.add(TestLilacFactory.builder().allele("B*35:02").tumorCopyNumber(1.1).build());
+        alleles.add(TestLilacFactory.builder().allele("C*10:12").somaticSynonymous(1D).tumorCopyNumber(0).build());
+        alleles.add(TestLilacFactory.builder().allele("C*16:02").tumorCopyNumber(0).somaticMissense(1D).build());
+
+        return ImmutableLilacRecord.builder().qc("PASS").alleles(alleles).build();
     }
 
     @NotNull

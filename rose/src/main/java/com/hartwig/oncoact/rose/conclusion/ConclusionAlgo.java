@@ -9,11 +9,13 @@ import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
+import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.purple.*;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.drivergene.DriverCategory;
@@ -77,6 +79,7 @@ public final class ConclusionAlgo {
         List<AnnotatedVirus> reportableViruses = Optional.ofNullable(rose.orange().virusInterpreter())
                 .map(VirusInterpreterData::reportableViruses)
                 .orElseGet(List::of);
+        List<LilacAllele> lilac = rose.orange().lilac().alleles();
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
@@ -94,7 +97,7 @@ public final class ConclusionAlgo {
         generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable);
         generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
         generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
-        generateVirusConclusion(conclusion, reportableViruses, actionabilityMap, oncogenic, actionable);
+        generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
         generateHrdConclusion(conclusion, rose.orange().chord(), actionabilityMap, oncogenic, actionable, HRD);
         generateMSIConclusion(conclusion,
                 purple.characteristics().microsatelliteStatus(),
@@ -412,21 +415,57 @@ public final class ConclusionAlgo {
     }
 
     @VisibleForTesting
-    static void generateVirusConclusion(@NotNull Collection<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses,
-                                        @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Collection<String> oncogenic,
-                                        @NotNull Collection<String> actionable) {
-        for (AnnotatedVirus virus : reportableViruses) {
-            oncogenic.add("virus");
+    static void generateVirusHLAConclusion(@NotNull Collection<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses, @NotNull Collection<LilacAllele> lilac,
+                                           @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Collection<String> oncogenic,
+                                           @NotNull Collection<String> actionable) {
+        String HlaAllele = null;
+        for (LilacAllele allele : lilac) {
 
-            ActionabilityKey keyVirus = ImmutableActionabilityKey.builder()
-                    .match(virus.interpretation() != null ? virus.interpretation().toString() : Strings.EMPTY)
-                    .type(TypeAlteration.POSITIVE)
-                    .build();
-            ActionabilityEntry entry = actionabilityMap.get(keyVirus);
-            if (entry != null && entry.condition() == Condition.ONLY_HIGH) {
-                if (virus.interpretation() != null && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
-                    conclusion.add("- " + virus.interpretation() + " " + entry.conclusion());
-                    actionable.add("virus");
+            if (allele.allele().equals("A*02:01")) {
+                HlaAllele = allele.allele();
+            }
+        }
+
+        if (reportableViruses.size() >= 1) {
+            for (AnnotatedVirus virus : reportableViruses) {
+                if (virus.interpretation() != null && HlaAllele != null) {
+                    ActionabilityKey key = ImmutableActionabilityKey.builder()
+                            .match("HPV-16 | HLA-A*02")
+                            .type(TypeAlteration.POSITIVE)
+                            .build();
+                    ActionabilityEntry entry = actionabilityMap.get(key);
+
+                    if (entry != null && entry.condition() == Condition.ALWAYS) {
+                        if (virus.interpretation() == VirusInterpretation.HPV) {
+                            oncogenic.add("HLA | virus");
+                            conclusion.add("- " + HlaAllele + " " + virus.interpretation() + " " + entry.conclusion());
+                        }
+                    }
+                } else if (virus.interpretation() != null) {
+                    ActionabilityKey key = ImmutableActionabilityKey.builder()
+                            .match(virus.virusDriverLikelihoodType().equals(VirusLikelihoodType.HIGH) ? virus.interpretation().toString() : Strings.EMPTY)
+                            .type(TypeAlteration.POSITIVE)
+                            .build();
+                    ActionabilityEntry entry = actionabilityMap.get(key);
+                    if (entry != null && entry.condition() == Condition.ONLY_HIGH) {
+                        oncogenic.add("virus");
+                        conclusion.add("- " + virus.interpretation() + " " + entry.conclusion());
+                        if (virus.interpretation() != null && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
+                            actionable.add("virus");
+                        }
+                    }
+                }
+            }
+        } else {
+            if (HlaAllele != null) {
+                ActionabilityKey key = ImmutableActionabilityKey.builder()
+                        .match("HLA-A*02")
+                        .type(TypeAlteration.POSITIVE)
+                        .build();
+                ActionabilityEntry entry = actionabilityMap.get(key);
+                if (entry != null && entry.condition() == Condition.ALWAYS) {
+                    oncogenic.add("hla");
+                    conclusion.add("- " + HlaAllele + " " + entry.conclusion());
                 }
             }
         }
