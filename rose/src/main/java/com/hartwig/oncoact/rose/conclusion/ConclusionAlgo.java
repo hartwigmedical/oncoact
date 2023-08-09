@@ -301,7 +301,6 @@ public final class ConclusionAlgo {
                 }
             }
         }
-        LOGGER.info(conclusion);
     }
 
     @VisibleForTesting
