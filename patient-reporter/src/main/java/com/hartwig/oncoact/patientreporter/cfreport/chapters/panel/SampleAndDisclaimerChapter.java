@@ -14,7 +14,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +48,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -75,7 +74,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
                 " and ",
                 report.reportDate()));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(report.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 report.lamaPatientData().getTumorSampleBarcode()));
@@ -150,7 +149,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                  @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

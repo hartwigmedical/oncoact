@@ -14,7 +14,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +74,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
                 " and ",
                 report.reportDate()));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(report.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 report.lamaPatientData().getTumorSampleBarcode()));
@@ -142,7 +141,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                  @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

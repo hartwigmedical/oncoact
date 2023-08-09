@@ -16,7 +16,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,7 +140,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        return createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 failReport.lamaPatientData().getTumorSampleBarcode());
@@ -149,7 +148,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
+        return createContentParagraphTwice("This experiment is performed on the blood sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
@@ -253,7 +252,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                  @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
@@ -262,7 +261,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwiceWithOneBold(@NotNull String regularPart, @NotNull String boldPart,
-                                                                    @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                             @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

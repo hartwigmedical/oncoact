@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.lama.client.model.Report;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -16,7 +15,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,11 +80,11 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 " and ",
                 patientReport.reportDate()));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 patientReport.lamaPatientData().getTumorSampleBarcode()));
-        div.add(createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the blood sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode())));
@@ -200,7 +198,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
+                                                  @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
