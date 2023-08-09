@@ -220,6 +220,7 @@ public final class ConclusionAlgo {
                     .variantAnnotation(EventGenerator.variantEvent(reportableVariant))
                     .driverInterpretation(reportableVariant.driverLikelihoodInterpretation())
                     .biallelic(reportableVariant.biallelic())
+                    .canonicalEffect(reportableVariant.canonicalEffect())
                     .build();
 
             if (variantKeyList.containsKey(reportableVariant.gene())) {
@@ -248,6 +249,8 @@ public final class ConclusionAlgo {
                 DriverGene driverGene = driverGenesMap.get(key.gene());
                 if (keyMap.getKey().equals("KRAS") && key.variantAnnotation().equals("p.Gly12Cys")) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION_KRAS_G12C;
+                } else if (key.canonicalEffect().equals("upstream_gene_variant")) {
+                    alteration = TypeAlteration.PROMOTER_MUTATION;
                 } else if (driverGene != null && driverGene.likelihoodType() == DriverCategory.ONCO) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION;
                 } else if (driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG) {

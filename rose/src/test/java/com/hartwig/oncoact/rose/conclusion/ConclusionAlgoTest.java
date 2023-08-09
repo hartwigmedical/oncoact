@@ -28,6 +28,7 @@ import com.hartwig.oncoact.rose.RoseData;
 import com.hartwig.oncoact.rose.actionability.*;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -106,6 +107,7 @@ public class ConclusionAlgoTest {
         driverGenesMap.put("APC", createDriverGene("APC", DriverCategory.ONCO));
         driverGenesMap.put("BRCA2", createDriverGene("BRCA2", DriverCategory.TSG));
         driverGenesMap.put("BRCA1", createDriverGene("BRCA1", DriverCategory.TSG));
+        driverGenesMap.put("TERT", createDriverGene("TERT", DriverCategory.ONCO));
 
         Set<String> conclusion = Sets.newHashSet();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -117,6 +119,7 @@ public class ConclusionAlgoTest {
         actionabilityMap = append(actionabilityMap, "germline", TypeAlteration.GERMLINE, "germline", Condition.ONLY_HIGH, "germline");
         actionabilityMap =
                 append(actionabilityMap, "NOT_BIALLELIC", TypeAlteration.NOT_BIALLELIC, "NOT_BIALLELIC", Condition.OTHER, "not biallelic");
+        actionabilityMap = append(actionabilityMap, "TERT", TypeAlteration.PROMOTER_MUTATION, "TERT", Condition.ALWAYS_NO_ACTIONABLE, "TERT promotor mutation");
 
         ChordRecord analysis = TestChordFactory.builder().hrdValue(0.8).hrStatus(ChordStatus.HR_DEFICIENT).build();
 
@@ -129,11 +132,12 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet(),
                 analysis);
 
-        assertEquals(4, conclusion.size());
+        assertEquals(5, conclusion.size());
         assertTrue(conclusion.contains("- APC (p.Val600Arg) APC"));
         assertTrue(conclusion.contains("- CHEK2 (c.123A>C splice) CHEK2 inactivating mutation not biallelic"));
         assertTrue(conclusion.contains("- BRCA1 (c.123A>C, p.Val600Arg, p.Val602Arg) BRCA1 inactivation"));
         assertTrue(conclusion.contains("- BRCA2 (c.1235A>C splice) BRCA2 inactivation"));
+        assertTrue(conclusion.contains("- TERT (c.-124C>T) TERT promotor mutation"));
     }
 
     @Test
@@ -455,7 +459,42 @@ public class ConclusionAlgoTest {
                 .driverLikelihood(0.82)
                 .build();
 
-        return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6);
+        ReportableVariant variant7 = TestReportableVariantFactory.builder()
+                .gene("TERT")
+                .canonicalTranscript("transcript1")
+                .canonicalHgvsProteinImpact(Strings.EMPTY)
+                .canonicalHgvsCodingImpact("c.-124C>T")
+                .canonicalCodingEffect(PurpleCodingEffect.NONE)
+                .canonicalEffect("upstream_gene_variant")
+                .biallelic(true)
+                .driverLikelihood(0.82)
+                .build();
+
+        ReportableVariant variant8 = TestReportableVariantFactory.builder()
+                .gene("CDKN2A")
+                .isCanonical(true)
+                .canonicalTranscript("transcript1")
+                .canonicalHgvsProteinImpact("p.Arg58*")
+                .canonicalHgvsCodingImpact("c.172C>T")
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
+                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
+                .biallelic(true)
+                .driverLikelihood(0.82)
+                .build();
+
+        ReportableVariant variant9 = TestReportableVariantFactory.builder()
+                .gene("CDKN2A")
+                .isCanonical(false)
+                .canonicalTranscript("transcript1")
+                .canonicalHgvsProteinImpact("p.Arg58*")
+                .canonicalHgvsCodingImpact("c.172C>T")
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
+                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
+                .biallelic(true)
+                .driverLikelihood(0.82)
+                .build();
+
+        return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6, variant7, variant8, variant9);
     }
 
     @NotNull
