@@ -112,19 +112,21 @@ public class ConclusionAlgoTest {
         driverGenesMap.put("BRCA2", createDriverGene("BRCA2", DriverCategory.TSG));
         driverGenesMap.put("BRCA1", createDriverGene("BRCA1", DriverCategory.TSG));
         driverGenesMap.put("TERT", createDriverGene("TERT", DriverCategory.ONCO));
+        driverGenesMap.put("KRAS", createDriverGene("KRAS", DriverCategory.ONCO));
 
         Set<String> conclusion = Sets.newHashSet();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("CHEK2", TypeAlteration.INACTIVATION, "CHEK2", Condition.ONLY_HIGH, "CHEK2 inactivation");
         actionabilityMap =
-                append(actionabilityMap, "APC", TypeAlteration.ACTIVATING_MUTATION, "APC", Condition.ALWAYS_NO_ACTIONABLE, "APC");
+                append(actionabilityMap, "APC", TypeAlteration.ACTIVATING_MUTATION, "APC", Condition.HIGH_NO_ACTIONABLE, "APC");
         actionabilityMap = append(actionabilityMap, "BRCA2", TypeAlteration.INACTIVATION, "BRCA2", Condition.ONLY_HIGH, "BRCA2 inactivation");
         actionabilityMap = append(actionabilityMap, "BRCA1", TypeAlteration.INACTIVATION, "BRCA1", Condition.ONLY_HIGH, "BRCA1 inactivation");
         actionabilityMap = append(actionabilityMap, "germline", TypeAlteration.GERMLINE, "germline", Condition.ONLY_HIGH, "germline");
         actionabilityMap =
                 append(actionabilityMap, "NOT_BIALLELIC", TypeAlteration.NOT_BIALLELIC, "NOT_BIALLELIC", Condition.OTHER, "not biallelic");
-        actionabilityMap = append(actionabilityMap, "TERT", TypeAlteration.PROMOTER_MUTATION, "TERT", Condition.ALWAYS_NO_ACTIONABLE, "TERT promotor mutation");
-
+        actionabilityMap = append(actionabilityMap, "TERT", TypeAlteration.PROMOTER_MUTATION, "TERT", Condition.HIGH_NO_ACTIONABLE, "TERT promotor mutation");
+        actionabilityMap =
+                append(actionabilityMap, "KRAS", TypeAlteration.ACTIVATING_MUTATION, "KRAS", Condition.HIGH_NO_ACTIONABLE, "KRAS");
         ChordRecord analysis = TestChordFactory.builder().hrdValue(0.8).hrStatus(ChordStatus.HR_DEFICIENT).build();
 
         ConclusionAlgo.generateVariantConclusion(conclusion,
@@ -136,12 +138,13 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet(),
                 analysis);
 
-        assertEquals(5, conclusion.size());
+        assertEquals(6, conclusion.size());
         assertTrue(conclusion.contains("- APC (p.Val600Arg) APC"));
         assertTrue(conclusion.contains("- CHEK2 (c.123A>C splice) CHEK2 inactivating mutation not biallelic"));
         assertTrue(conclusion.contains("- BRCA1 (c.123A>C, p.Val600Arg, p.Val602Arg) BRCA1 inactivation"));
         assertTrue(conclusion.contains("- BRCA2 (c.1235A>C splice) BRCA2 inactivation"));
         assertTrue(conclusion.contains("- TERT (c.-124C>T) TERT promotor mutation"));
+        assertTrue(conclusion.contains("- KRAS (p.Pro72Leu) KRAS"));
     }
 
     @Test
@@ -437,7 +440,7 @@ public class ConclusionAlgoTest {
                 .canonicalHgvsProteinImpact("p.Val600Arg")
                 .canonicalHgvsCodingImpact("c.123A>C")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
-                .driverLikelihood(0.4)
+                .driverLikelihood(0.9)
                 .biallelic(true)
                 .build();
 
@@ -526,7 +529,19 @@ public class ConclusionAlgoTest {
                 .driverLikelihood(0.82)
                 .build();
 
-        return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6, variant7, variant8, variant9);
+        ReportableVariant variant10 = TestReportableVariantFactory.builder()
+                .gene("KRAS")
+                .isCanonical(false)
+                .canonicalTranscript("transcript1")
+                .canonicalHgvsProteinImpact("p.Arg58*")
+                .canonicalHgvsCodingImpact("c.172C>T")
+                .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
+                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
+                .biallelic(false)
+                .driverLikelihood(0.9)
+                .build();
+
+        return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6, variant7, variant8, variant9, variant10);
     }
 
     @NotNull

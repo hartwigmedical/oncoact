@@ -272,7 +272,7 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(keySomaticVariant);
             if (entry != null) {
                 if ((keyMap.getValue().iterator().next().driverInterpretation() == DriverInterpretation.HIGH
-                        && entry.condition() == Condition.ONLY_HIGH) || entry.condition() == Condition.ALWAYS_NO_ACTIONABLE) {
+                        && (entry.condition() == Condition.ONLY_HIGH || entry.condition() == Condition.HIGH_NO_ACTIONABLE))) {
                     if (entry.condition() == Condition.ONLY_HIGH) {
                         actionable.add("variant");
                     }
@@ -301,6 +301,7 @@ public final class ConclusionAlgo {
                 }
             }
         }
+        LOGGER.info(conclusion);
     }
 
     @VisibleForTesting
@@ -316,7 +317,7 @@ public final class ConclusionAlgo {
                 ActionabilityKey keyLoss = ImmutableActionabilityKey.builder().match(gainLoss.gene()).type(TypeAlteration.LOSS).build();
                 ActionabilityEntry entry = actionabilityMap.get(keyLoss);
 
-                if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.ALWAYS_NO_ACTIONABLE)) {
+                if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
                     String copies = " (copies: " + (int) gainLoss.minCopies() + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
@@ -407,7 +408,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyHomozygousDisruption =
                     ImmutableActionabilityKey.builder().match(homozygousDisruption.gene()).type(TypeAlteration.INACTIVATION).build();
             ActionabilityEntry entry = actionabilityMap.get(keyHomozygousDisruption);
-            if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.ALWAYS_NO_ACTIONABLE)) {
+            if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
                 conclusion.add("- " + homozygousDisruption.gene() + " " + entry.conclusion());
                 actionable.add("homozygousDisruption");
             }
