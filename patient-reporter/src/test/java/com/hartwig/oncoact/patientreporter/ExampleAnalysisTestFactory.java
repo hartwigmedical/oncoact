@@ -1,17 +1,15 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.*;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -20,38 +18,15 @@ import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllele;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
+import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
-import com.hartwig.oncoact.patientreporter.algo.QualityOverruleFunctions;
+import com.hartwig.oncoact.patientreporter.algo.*;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.protect.EvidenceType;
-import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
-import com.hartwig.oncoact.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.TestProtectFactory;
+import com.hartwig.oncoact.protect.*;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -60,9 +35,12 @@ import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -113,8 +91,7 @@ public final class ExampleAnalysisTestFactory {
                 + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
                 + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
                 + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial).\n";
 
         String summaryWithoutGermlineLowPurity = "Melanoma sample showing:\n"
                 + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
@@ -122,7 +99,6 @@ public final class ExampleAnalysisTestFactory {
                 + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
                 + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
                 + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
                 + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
                 + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
 
@@ -131,8 +107,7 @@ public final class ExampleAnalysisTestFactory {
                 + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
                 + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
                 + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n";
 
 
         String clinicalSummary;

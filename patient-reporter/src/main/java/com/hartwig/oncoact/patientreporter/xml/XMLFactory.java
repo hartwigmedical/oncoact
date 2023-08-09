@@ -1,33 +1,27 @@
 package com.hartwig.oncoact.patientreporter.xml;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.ctc.wstx.util.DataUtil;
 import com.google.common.collect.Lists;
-import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
+import com.hartwig.oncoact.patientreporter.cfreport.data.*;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class XMLFactory {
 
@@ -80,7 +74,7 @@ public class XMLFactory {
             cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType();
         } else {
             String cuppaLikelihood = Formats.formatPercentageDigit(report.molecularTissueOriginReporting().interpretLikelihood());
-            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType()  + " " + cuppaLikelihood;
+            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType() + " " + cuppaLikelihood;
         }
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("WgsCupAnalyse")

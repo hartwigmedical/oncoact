@@ -1,16 +1,10 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Set;
-import java.util.StringJoiner;
-
 import com.google.common.collect.Sets;
-import com.hartwig.lama.client.model.TumorType;
-import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -21,13 +15,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
-import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
+import com.hartwig.oncoact.patientreporter.cfreport.data.*;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
@@ -37,10 +25,14 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 public class SummaryChapter implements ReportChapter {
 
@@ -148,9 +140,9 @@ public class SummaryChapter implements ReportChapter {
     private void renderClinicalConclusionText(@NotNull Document reportDocument) {
         String text = patientReport.clinicalSummary();
         String clinicalConclusion = Strings.EMPTY;
-        if (text == null) {
-            String sentence = "An overview of all detected oncogenic DNA aberrations can be found in the report.";
+        String sentence = " An overview of all detected oncogenic DNA aberrations can be found in the report.";
 
+        if (text == null) {
             if (!analysis().hasReliablePurity()) {
                 clinicalConclusion = "Of note, WGS analysis indicated a very low abundance of genomic aberrations, which can be caused "
                         + "by a low tumor percentage in the received tumor material or due to genomic very stable/normal tumor type. "
@@ -164,14 +156,14 @@ public class SummaryChapter implements ReportChapter {
                         + "This result should therefore be considered with caution.\n" + sentence;
             }
         } else {
-            clinicalConclusion = text;
+            clinicalConclusion = text + sentence;
         }
 
         if (!clinicalConclusion.isEmpty()) {
             Div div = createSectionStartDiv(contentWidth());
             div.add(new Paragraph("Summary of most relevant findings").addStyle(reportResources.sectionTitleStyle()));
 
-            div.add(new Paragraph(text).setWidth(contentWidth()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(11));
+            div.add(new Paragraph(clinicalConclusion).setWidth(contentWidth()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(11));
             div.add(new Paragraph("\nFurther interpretation of these results within the patient’s clinical context is required "
                     + "by a clinician with support of a molecular tumor board.").addStyle(reportResources.subTextStyle()));
 
@@ -288,7 +280,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-                                          @NotNull Table table) {
+                                   @NotNull Table table) {
         String label = "Tumor purity";
         table.addCell(createMiddleAlignedCell().add(new Paragraph(label).addStyle(reportResources.bodyTextStyle())));
 
