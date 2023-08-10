@@ -363,7 +363,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.16, true, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- low purity (16%)\n\n");
+        assertEquals(new ArrayList<>(conclusion).get(0), "- low purity (16%)\n");
     }
 
     @Test
@@ -385,7 +385,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.3, false, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- unreliable\n\n");
+        assertEquals(new ArrayList<>(conclusion).get(0), "- unreliable\n");
     }
 
     @Test
@@ -500,7 +500,7 @@ public class ConclusionAlgoTest {
                 .canonicalHgvsProteinImpact(Strings.EMPTY)
                 .canonicalHgvsCodingImpact("c.-124C>T")
                 .canonicalCodingEffect(PurpleCodingEffect.NONE)
-                .canonicalEffect("upstream_gene_variant")
+                .canonicalEffect("upstream_gene")
                 .biallelic(true)
                 .driverLikelihood(0.82)
                 .build();

@@ -252,7 +252,7 @@ public final class ConclusionAlgo {
                 DriverGene driverGene = driverGenesMap.get(key.gene());
                 if (keyMap.getKey().equals("KRAS") && key.variantAnnotation().equals("p.Gly12Cys")) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION_KRAS_G12C;
-                } else if (key.canonicalEffect().equals("upstream_gene_variant")) {
+                } else if (key.canonicalEffect().equals("upstream_gene")) {
                     alteration = TypeAlteration.PROMOTER_MUTATION;
                 } else if (driverGene != null && driverGene.likelihoodType() == DriverCategory.ONCO) {
                     alteration = TypeAlteration.ACTIVATING_MUTATION;
@@ -549,14 +549,14 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entryReliable = actionabilityMap.get(keyReliable);
             if (entryReliable != null && entryReliable.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entryReliable.conclusion() + "\n\n");
+                conclusion.add(conclusion.size(), "- " + entryReliable.conclusion() + "\n");
             }
         } else if (purity < PURITY_CUTOFF) {
             ActionabilityKey keyPurity = ImmutableActionabilityKey.builder().match("PURITY").type(TypeAlteration.PURITY).build();
 
             ActionabilityEntry entry = actionabilityMap.get(keyPurity);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n\n");
+                conclusion.add(conclusion.size(), "- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
             }
         }
     }
