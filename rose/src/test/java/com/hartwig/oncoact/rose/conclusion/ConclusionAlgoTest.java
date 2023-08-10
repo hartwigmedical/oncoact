@@ -57,7 +57,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateCUPPAConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("CUPPA", TypeAlteration.CUPPA, "CUPPA", Condition.OTHER, "Molecular Tissue of Origin classifier: XXXX.");
 
@@ -71,7 +71,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateCUPPAConclusionInconclusive() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("CUPPA_INCONCLUSIVE",
                 TypeAlteration.CUPPA_INCONCLUSIVE,
                 "CUPPA_INCONCLUSIVE",
@@ -88,7 +88,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateCUPPAConclusionInconclusiveWithLocation() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("CUPPA_INCONCLUSIVE",
                 TypeAlteration.CUPPA_INCONCLUSIVE,
                 "CUPPA_INCONCLUSIVE",
@@ -114,7 +114,7 @@ public class ConclusionAlgoTest {
         driverGenesMap.put("TERT", createDriverGene("TERT", DriverCategory.ONCO));
         driverGenesMap.put("KRAS", createDriverGene("KRAS", DriverCategory.ONCO));
 
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("CHEK2", TypeAlteration.INACTIVATION, "CHEK2", Condition.ONLY_HIGH, "CHEK2 inactivation");
         actionabilityMap =
@@ -187,7 +187,7 @@ public class ConclusionAlgoTest {
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
         Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"));
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PTEN", TypeAlteration.INACTIVATION, "PTEN", Condition.ALWAYS, "PTEN");
 
@@ -245,7 +245,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHrdConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HRD", TypeAlteration.POSITIVE, "HRD", Condition.ALWAYS, "HRD");
 
         ChordRecord chord = TestChordFactory.builder().hrdValue(0.8).hrStatus(ChordStatus.HR_DEFICIENT).build();
@@ -259,7 +259,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHrpConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HRD", TypeAlteration.POSITIVE, "HRD", Condition.ALWAYS, "HRD");
 
         ChordRecord chord = TestChordFactory.builder().hrdValue(0.4).hrStatus(ChordStatus.HR_PROFICIENT).build();
@@ -270,7 +270,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateMSIConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("MSI", TypeAlteration.POSITIVE, "MSI", Condition.ALWAYS, "MSI");
 
         ConclusionAlgo.generateMSIConclusion(conclusion,
@@ -286,7 +286,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateMSSConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("MSI", TypeAlteration.POSITIVE, "MSI", Condition.ALWAYS, "MSI");
 
         ConclusionAlgo.generateMSIConclusion(conclusion,
@@ -301,7 +301,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateTMLHighConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
 
@@ -318,7 +318,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateTMLLowConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
 
@@ -334,7 +334,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateTMBHighConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
@@ -346,7 +346,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateTMBLowConclusion() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
@@ -356,19 +356,19 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGeneratePurityConclusionBelow() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PURITY", TypeAlteration.PURITY, "PURITY", Condition.OTHER, "low purity (XX%)");
 
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.16, true, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- low purity (16%)\n");
+        assertEquals(new ArrayList<>(conclusion).get(0), "- low purity (16%)\n\n");
     }
 
     @Test
     public void canGeneratePurityConclusionAbove() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PURITY", TypeAlteration.PURITY, "PURITY", Condition.OTHER, "low purity (XX%)");
 
@@ -378,19 +378,19 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGeneratePurityConclusionReliable() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PURITY_UNRELIABLE", TypeAlteration.PURITY_UNRELIABLE, "PURITY_UNRELIABLE", Condition.OTHER, "unreliable");
 
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.3, false, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- unreliable\n");
+        assertEquals(new ArrayList<>(conclusion).get(0), "- unreliable\n\n");
     }
 
     @Test
     public void canGenerateTotalResultsOncogenic() {
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("NO_ONCOGENIC", TypeAlteration.NO_ONCOGENIC, "NO_ONCOGENIC", Condition.OTHER, "no_oncogenic");
 
@@ -403,7 +403,7 @@ public class ConclusionAlgoTest {
     @Test
     public void canGenerateTotalResultsActionable() {
         Set<String> oncogenic = Sets.newHashSet();
-        Set<String> conclusion = Sets.newHashSet();
+        List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("NO_ACTIONABLE", TypeAlteration.NO_ACTIONABLE, "NO_ACTIONABLE", Condition.OTHER, "no_actionable");
 
