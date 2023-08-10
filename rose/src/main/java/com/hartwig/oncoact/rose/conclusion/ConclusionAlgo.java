@@ -436,7 +436,7 @@ public final class ConclusionAlgo {
                     ActionabilityEntry entry = actionabilityMap.get(key);
 
                     if (entry != null && entry.condition() == Condition.ALWAYS) {
-                        if (virus.interpretation() == VirusInterpretation.HPV) {
+                        if (virus.interpretation() == VirusInterpretation.HPV && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
                             oncogenic.add("HLA | virus");
                             conclusion.add(conclusion.size(), "- " + HlaAllele + " " + virus.interpretation() + " " + entry.conclusion());
                         }
@@ -448,10 +448,10 @@ public final class ConclusionAlgo {
                             .build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
                     if (entry != null && entry.condition() == Condition.ONLY_HIGH) {
-                        oncogenic.add("virus");
-                        conclusion.add(conclusion.size(), "- " + virus.interpretation() + " " + entry.conclusion());
                         if (virus.interpretation() != null && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
                             actionable.add("virus");
+                            oncogenic.add("virus");
+                            conclusion.add(conclusion.size(), "- " + virus.interpretation() + " " + entry.conclusion());
                         }
                     }
                 }

@@ -212,8 +212,9 @@ public class ConclusionAlgoTest {
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
-        assertEquals(1, conclusion.size());
+        assertEquals(2, conclusion.size());
         assertTrue(conclusion.contains("- MCV MCV"));
+        assertTrue(conclusion.contains("- HPV HPV"));
     }
 
     @Test
@@ -588,7 +589,7 @@ public class ConclusionAlgoTest {
     private static Set<AnnotatedVirus> createTestVirusInterpreterEntries() {
         Set<AnnotatedVirus> virusEntries = Sets.newHashSet();
         AnnotatedVirus virus1 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.EBV).virusDriverLikelihoodType(VirusLikelihoodType.LOW).build();
-        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN).build();
+        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).virusDriverLikelihoodType(VirusLikelihoodType.HIGH).build();
         AnnotatedVirus virus3 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.MCV)
                 .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
