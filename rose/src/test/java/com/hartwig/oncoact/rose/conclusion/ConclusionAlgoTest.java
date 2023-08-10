@@ -186,10 +186,13 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"));
+        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"),
+                createHomozygousDisruption("KRAS"));
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PTEN", TypeAlteration.INACTIVATION, "PTEN", Condition.ALWAYS, "PTEN");
+        actionabilityMap =
+                append(actionabilityMap, "KRAS", TypeAlteration.INACTIVATION, "KRAS", Condition.ALWAYS, "KRAS");
 
         ConclusionAlgo.generateHomozygousDisruptionConclusion(conclusion,
                 homozygousDisruptions,
@@ -197,8 +200,10 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet(),
                 Sets.newHashSet());
 
-        assertEquals(1, conclusion.size());
+        assertEquals(2, conclusion.size());
         assertEquals(new ArrayList<>(conclusion).get(0), "- PTEN PTEN");
+        assertEquals(new ArrayList<>(conclusion).get(1), "- KRAS KRAS");
+
     }
 
     @Test
