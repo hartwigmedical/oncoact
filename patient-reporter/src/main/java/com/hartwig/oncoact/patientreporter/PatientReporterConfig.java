@@ -37,7 +37,7 @@ public interface PatientReporterConfig {
     // Params specific for QC Fail reports
     String QC_FAIL = "qc_fail";
     String QC_FAIL_REASON = "qc_fail_reason";
-    String FAIL_DB_TSV = "fail_db_tsv";
+    String SAMPLE_FAIL_REASON_COMMENT = "sample_fail_reason_comment";
 
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
@@ -79,7 +79,7 @@ public interface PatientReporterConfig {
 
         options.addOption(QC_FAIL, false, "If set, generates a qc-fail report.");
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
-        options.addOption(FAIL_DB_TSV, true, "Path towards the reasons of the failures TSV file.");
+        options.addOption(SAMPLE_FAIL_REASON_COMMENT, true, "If set, add an extra comment of the failure of the sample.");
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
@@ -131,7 +131,7 @@ public interface PatientReporterConfig {
     QCFailReason qcFailReason();
 
     @Nullable
-    String failReasonsDatabaseTsv();
+    String sampleFailReasonComment();
 
     @NotNull
     String orangeJson();
@@ -182,10 +182,8 @@ public interface PatientReporterConfig {
         boolean isQCFail = cmd.hasOption(QC_FAIL);
         boolean requirePipelineVersion = cmd.hasOption(REQUIRE_PIPELINE_VERSION_FILE);
         QCFailReason qcFailReason = null;
-        String failReasonsDatabaseTsv = null;
         if (isQCFail) {
             String qcFailReasonString = nonOptionalValue(cmd, QC_FAIL_REASON);
-            failReasonsDatabaseTsv = nonOptionalFile(cmd, FAIL_DB_TSV);
             qcFailReason = QCFailReason.fromIdentifier(qcFailReasonString);
             if (qcFailReason == null) {
                 throw new ParseException("Did not recognize QC Fail reason: " + qcFailReasonString);
@@ -235,7 +233,7 @@ public interface PatientReporterConfig {
                 .udiDi(nonOptionalValue(cmd, UDI_DI))
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
-                .failReasonsDatabaseTsv(failReasonsDatabaseTsv)
+                .sampleFailReasonComment(cmd.getOptionValue(SAMPLE_FAIL_REASON_COMMENT))
                 .orangeJson(orangeJson)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .diagnosticSiloJson(cmd.hasOption(IS_DIAGNOSTIC) ? nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON) : null)

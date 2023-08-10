@@ -68,8 +68,11 @@ public class PanelQCFailChapter implements ReportChapter {
 
         div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(reportResources.dataHighlightStyle()));
         div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(report.failExplanation().reportExplanationDetail()).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        if (report.failExplanation().sampleFailReasonComment() != null) {
+            div.add(new Paragraph(report.failExplanation().sampleFailReasonComment() ).addStyle(reportResources.subTextBoldStyle())
+                    .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        }
+
         return div;
     }
 }
