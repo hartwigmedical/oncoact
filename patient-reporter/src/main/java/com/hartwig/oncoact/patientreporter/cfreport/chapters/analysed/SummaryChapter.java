@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Sets;
-import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
@@ -111,38 +110,10 @@ public class SummaryChapter implements ReportChapter {
         renderClinicalConclusionText(reportDocument);
         renderSpecialRemarkText(reportDocument);
 
-        reportDocument.add(createContentBody());
-    }
+        renderGermline(reportDocument);
 
-    @NotNull
-    private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[]{2, 0.1f, 1}));
-        table.setWidth(ReportResources.CONTENT_WIDTH_WIDE);
-        table.addCell(TableUtil.createLayoutCell().add(createTumorColumn()));
-        table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createGermlineColumn()));
-        return table;
-    }
-
-    @NotNull
-    private Div createTumorColumn() {
-        Div div = new Div();
-        div.add(new Paragraph("").addStyle(reportResources.smallBodyHeadingStyle()));
-        renderTumorCharacteristics(div);
-        renderGenomicAlterations(div);
-
-        return div;
-    }
-
-    @NotNull
-    private Div createGermlineColumn() {
-        Div div = new Div();
-        div.add(new Paragraph("").addStyle(reportResources.smallBodyHeadingStyle()));
-        renderPharmacogenetics(div);
-        renderHla(div);
-        renderGermlineText(div);
-
-        return div;
+        renderTumorCharacteristics(reportDocument);
+        renderGenomicAlterations(reportDocument);
     }
 
     private void renderClinicalConclusionText(@NotNull Document reportDocument) {
@@ -192,10 +163,10 @@ public class SummaryChapter implements ReportChapter {
         }
     }
 
-    private void renderTumorCharacteristics(@NotNull Div divTumor) {
+    private void renderTumorCharacteristics(@NotNull Document reportDocument) {
         boolean hasReliablePurity = analysis().hasReliablePurity();
 
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
+        Div div = createSectionStartDiv(contentWidth());
 
         Table table = new Table(UnitValue.createPercentArray(new float[]{1, .33f, .66f}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
@@ -269,7 +240,7 @@ public class SummaryChapter implements ReportChapter {
 
         div.add(table);
 
-        divTumor.add(div);
+        reportDocument.add(div);
     }
 
     @NotNull
@@ -300,8 +271,8 @@ public class SummaryChapter implements ReportChapter {
         }
     }
 
-    private void renderGenomicAlterations(@NotNull Div divTumor) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
+    private void renderGenomicAlterations(@NotNull Document reportDocument) {
+        Div div = createSectionStartDiv(contentWidth());
 
         Table table = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
@@ -358,20 +329,35 @@ public class SummaryChapter implements ReportChapter {
         }
 
         div.add(table);
-        divTumor.add(div);
+        reportDocument.add(div);
     }
 
-    private void renderPharmacogenetics(@NotNull Div divGermline) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
+    private void renderGermline(@NotNull Document reportDocument) {
+        int width = 200;
+        int leftPosition = 400;
+
+        Div div = new Div();
+
+        div.add(renderPharmacogenetics());
+        div.add(new Paragraph(Strings.EMPTY)).setFontSize(2);
+        div.add(renderHla());
+        div.add(renderGermlineText());
+
+        reportDocument.add(div.setFixedPosition(leftPosition, 30,width));
+
+
+    }
+
+    private Table renderPharmacogenetics() {
         String title = "Pharmacogenetics";
 
         if (patientReport.pharmacogeneticsGenotypes().isEmpty()) {
-            div.add(tableUtil.createNoneReportTable(title,
+            return tableUtil.createNoneReportTable(title,
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[]{5, 10},
+            Table contentTable = TableUtil.createReportContentTable(new float[]{1, 3},
                     new Cell[]{tableUtil.createHeaderCell("Gene"),
                             tableUtil.createHeaderCell("Function")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
@@ -389,25 +375,23 @@ public class SummaryChapter implements ReportChapter {
                 contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics));
                 contentTable.addCell(tableUtil.createContentCell(concat(function)));
             }
-            div.add(tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY));
+            return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY);
         }
-        divGermline.add(div);
     }
 
-    private void renderHla(@NotNull Div divHla) {
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT_MAIN);
+    private Table renderHla() {
         String title = "HLA Alleles";
         if (!patientReport.hlaAllelesReportingData().hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
-            div.add(tableUtil.createNoConsentReportTable(title,
+            return tableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         } else if (patientReport.hlaAllelesReportingData().hlaAllelesReporting().isEmpty()) {
-            div.add(tableUtil.createNoneReportTable(title,
+            return tableUtil.createNoneReportTable(title,
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
-                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT));
+                    ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         } else {
             Table table = TableUtil.createReportContentTable(new float[]{8, 10},
                     new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele")},
@@ -426,22 +410,19 @@ public class SummaryChapter implements ReportChapter {
                 table.addCell(tableUtil.createContentCell(concat(germlineAllele)));
             }
 
-            div.add(tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY));
+            return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY);
         }
-        divHla.add(div);
     }
 
-    private void renderGermlineText(@NotNull Div divGermline) {
+    private Div renderGermlineText() {
         String text = "Data concerning cancer predisposition genes may be requested by a clinical geneticist after the patient has "
                 + "given informed consent.";
 
-        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        Div div = createSectionStartDivWithoutLineDivider(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         div.add(new Paragraph("Germline results").addStyle(reportResources.sectionTitleStyle()));
 
-        div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT).addStyle(reportResources.bodyTextStyle()).setFixedLeading(11));
-
-        divGermline.add(div);
-
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT)
+                .addStyle(reportResources.bodyTextStyle()).setFixedLeading(11));
     }
 
     @NotNull
@@ -460,6 +441,11 @@ public class SummaryChapter implements ReportChapter {
     @NotNull
     private static Div createSectionStartDiv(float width) {
         return new Div().setKeepTogether(true).setWidth(width).add(LineDivider.createLineDivider(width));
+    }
+
+    @NotNull
+    private static Div createSectionStartDivWithoutLineDivider(float width) {
+        return new Div().setKeepTogether(true).setWidth(width);
     }
 
     @NotNull

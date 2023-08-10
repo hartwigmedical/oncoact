@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.lama.client.model.Report;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -43,11 +42,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     @NotNull
     public String name() {
         return "Sample details & disclaimers";
-    }
-
-    @Override
-    public boolean isFullWidth() {
-        return false;
     }
 
     @Override
