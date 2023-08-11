@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.oncoact.copynumber.ReportableCNVFactory;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
@@ -37,12 +37,11 @@ public class CopyNumberEvidence {
             @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
             @Nullable List<PurpleGainLoss> allGermlineLosses) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLoss reportableGainLoss : ReportableCNVFactory.mergeCNVLists(reportableSomaticGainLosses,
-                reportableGermlineLosses)) {
+        for (PurpleGainLoss reportableGainLoss : ListUtil.mergeLists(reportableSomaticGainLosses, reportableGermlineLosses)) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (PurpleGainLoss gainLoss : ReportableCNVFactory.mergeCNVLists(allSomaticGainLosses, allGermlineLosses)) {
+        for (PurpleGainLoss gainLoss : ListUtil.mergeLists(allSomaticGainLosses, allGermlineLosses)) {
             if (!reportableSomaticGainLosses.contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }

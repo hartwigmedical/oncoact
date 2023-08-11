@@ -19,14 +19,13 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
-import com.hartwig.oncoact.copynumber.ReportableCNVFactory;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
-import com.hartwig.oncoact.disruption.ReportableGeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -61,7 +60,7 @@ public class GenomicAnalyzer {
         // gains & losses
         List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
         List<PurpleGainLoss> germlineLosses = orange.purple().reportableGermlineFullLosses();
-        List<PurpleGainLoss> reportableGainsLosses = ReportableCNVFactory.mergeCNVLists(somaticGainsLosses, germlineLosses);
+        List<PurpleGainLoss> reportableGainsLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
 
         // Determine chromosome copy number arm
         RefGenomeCoordinates refGenomeCoordinates =
@@ -75,9 +74,7 @@ public class GenomicAnalyzer {
         // homozygous disruptions
         List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(
-                somaticHomozygousDisruptions,
-                germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         //disruptions
         List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
@@ -93,8 +90,7 @@ public class GenomicAnalyzer {
             reportableGermlineGeneDisruptions = GeneDisruptionFactory.convert(reportableGermlineBreakends, allGermlineStructuralVariants);
         }
 
-        List<GeneDisruption> geneDisruptions = ReportableGeneDisruptionFactory.mergeGeneDisruptionsLists(reportableSomaticGeneDisruptions,
-                reportableGermlineGeneDisruptions);
+        List<GeneDisruption> geneDisruptions = ListUtil.mergeLists(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
         geneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();

@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.oncoact.disruption.ReportableGeneDisruptionFactory;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
@@ -35,9 +35,7 @@ public class DisruptionEvidence {
     public List<ProtectEvidence> evidence(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
             @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (HomozygousDisruption homozygousDisruption : ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(
-                somaticHomozygousDisruptions,
-                germlineHomozygousDisruptions)) {
+        for (HomozygousDisruption homozygousDisruption : ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions)) {
             result.addAll(evidence(homozygousDisruption));
         }
         return result;

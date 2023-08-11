@@ -30,8 +30,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.copynumber.ReportableCNVFactory;
-import com.hartwig.oncoact.disruption.ReportableGeneDisruptionFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.EventGenerator;
@@ -44,6 +42,7 @@ import com.hartwig.oncoact.rose.actionability.Condition;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -89,15 +88,13 @@ public final class ConclusionAlgo {
 
         List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
         List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
-        List<PurpleGainLoss> reportableGainLosses = ReportableCNVFactory.mergeCNVLists(somaticGainsLosses, germlineLosses);
+        List<PurpleGainLoss> reportableGainLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
 
         List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(
-                somaticHomozygousDisruptions,
-                germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
