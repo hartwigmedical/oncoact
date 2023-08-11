@@ -1,16 +1,17 @@
 package com.hartwig.oncoact.patientreporter.germline;
 
-import com.google.common.collect.Lists;
-import com.hartwig.oncoact.util.CsvFileReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.hartwig.oncoact.util.CsvFileReader;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 public final class GermlineReportingFile {
     private static final Logger LOGGER = LogManager.getLogger(GermlineReportingFile.class);
@@ -30,9 +31,9 @@ public final class GermlineReportingFile {
         String columnNameVariant = "Variant";
 
         final Map<String, Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
-        if (!fieldIndexMap.containsKey(columnNameGene) || !fieldIndexMap.containsKey(columnNameNotify) || !fieldIndexMap.containsKey(columnNameVariant)) {
-            throw new IllegalArgumentException(
-                    "Wrong column names " + fieldIndexMap.keySet() + " are present in germline reporting tsv!");
+        if (!fieldIndexMap.containsKey(columnNameGene) || !fieldIndexMap.containsKey(columnNameNotify) || !fieldIndexMap.containsKey(
+                columnNameVariant)) {
+            throw new IllegalArgumentException("Wrong column names " + fieldIndexMap.keySet() + " are present in germline reporting tsv!");
         }
 
         // Skip header

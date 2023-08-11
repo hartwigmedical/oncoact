@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.clinicaltransript;
 
 import com.google.common.collect.Maps;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ClinicalTranscriptModelTestFactory {

@@ -1,12 +1,13 @@
 package com.hartwig.oncoact.clinicaltransript;
 
-import com.google.common.collect.Maps;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import com.google.common.collect.Maps;
+
+import org.junit.Test;
 
 public class ClinicalTranscriptsModelTest {
 
@@ -19,5 +20,4 @@ public class ClinicalTranscriptsModelTest {
         assertEquals("NM_345", clinicalTranscriptsModel.findCanonicalTranscriptForGene("BRCA2"));
         assertNull(clinicalTranscriptsModel.findCanonicalTranscriptForGene("BRCA1"));
     }
-
 }

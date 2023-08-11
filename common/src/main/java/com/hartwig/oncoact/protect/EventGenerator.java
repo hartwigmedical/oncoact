@@ -1,14 +1,20 @@
 package com.hartwig.oncoact.protect;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
-import com.hartwig.oncoact.variant.ReportableVariant;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Set;
 import java.util.StringJoiner;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.Variant;
+import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
+import com.hartwig.oncoact.variant.ReportableVariant;
+
+import org.jetbrains.annotations.NotNull;
 
 public final class EventGenerator {
 
@@ -28,9 +34,13 @@ public final class EventGenerator {
     private static String reportableVariantEvent(@NotNull ReportableVariant reportableVariant) {
         PurpleTranscriptImpact purpleTranscriptImpact = reportableVariant.otherImpactClinical();
         if (purpleTranscriptImpact != null) {
-            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(), purpleTranscriptImpact.hgvsCodingImpact(),
-                    purpleTranscriptImpact.codingEffect().name(), purpleTranscriptImpact.codingEffect());
-            String variantEvent = reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(),
+                    purpleTranscriptImpact.hgvsCodingImpact(),
+                    purpleTranscriptImpact.codingEffect().name(),
+                    purpleTranscriptImpact.codingEffect());
+            String variantEvent = reportableVariant.isCanonical()
+                    ? canonicalVariantEvent(reportableVariant)
+                    : nonCanonicalVariantEvent(reportableVariant);
             return variantEvent + " (" + clinical + ")";
         } else {
             return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
@@ -74,7 +84,7 @@ public final class EventGenerator {
     @NotNull
     @VisibleForTesting
     static String toVariantEvent(@NotNull String protein, @NotNull String coding, @NotNull String effect,
-                                 @NotNull PurpleCodingEffect codingEffect) {
+            @NotNull PurpleCodingEffect codingEffect) {
         if (!protein.isEmpty() && !protein.equals("p.?")) {
             return protein;
         }

@@ -13,6 +13,7 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
@@ -20,7 +21,6 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -42,16 +42,16 @@ public class GenomicAnalyzer {
     private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel,
-                           @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
+            @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.germlineReportingModel = germlineReportingModel;
         this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               boolean germlineReportingLevel) {
-        List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
+            boolean germlineReportingLevel) {
+        List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
+                orange.linx().allSomaticStructuralVariants());
 
         List<GeneDisruption> reportableGeneDisruptions =
                 GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
@@ -60,7 +60,8 @@ public class GenomicAnalyzer {
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
         LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
 
-        List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH = InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
+        List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH =
+                InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
 
         Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
         Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
@@ -108,24 +109,29 @@ public class GenomicAnalyzer {
     }
 
     @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers(), clinicalTranscriptsModel);
+    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(),
+                purple.somaticDrivers(),
+                clinicalTranscriptsModel);
     }
 
     @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
         if (reportableGermlineVariants == null) {
             return Sets.newHashSet();
         }
 
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers(), clinicalTranscriptsModel);
+        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants,
+                purple.germlineDrivers(),
+                clinicalTranscriptsModel);
     }
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel,
-                                                                   boolean germlineReportingLevel) {
+            @NotNull GermlineReportingModel germlineReportingModel, boolean germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -149,7 +155,7 @@ public class GenomicAnalyzer {
 
     @VisibleForTesting
     static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
-                                                                @NotNull ReportableVariant variantToCompareWith) {
+            @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
             if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene())

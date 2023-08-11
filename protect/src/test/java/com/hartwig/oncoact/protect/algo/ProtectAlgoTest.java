@@ -34,6 +34,10 @@ public class ProtectAlgoTest {
         ActionableEvents events = ImmutableActionableEvents.builder().build();
         DoidParents doidParents = DoidParents.fromEdges(Lists.newArrayList());
 
-        return ProtectAlgo.build(events, Sets.newHashSet(), Lists.newArrayList(), doidParents, ClinicalTranscriptModelTestFactory.createEmpty());
+        return ProtectAlgo.build(events,
+                Sets.newHashSet(),
+                Lists.newArrayList(),
+                doidParents,
+                ClinicalTranscriptModelTestFactory.createEmpty());
     }
 }

@@ -1,13 +1,18 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.util.Formats;
+
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public abstract class ReportableVariant implements Variant {
 
     @NotNull

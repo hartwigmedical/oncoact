@@ -3,12 +3,12 @@ package com.hartwig.oncoact.rose;
 import java.io.IOException;
 import java.util.List;
 
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.DriverGeneFile;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
 import com.hartwig.oncoact.rose.actionability.ActionabilityFileReader;
 
@@ -28,7 +28,8 @@ public class RoseAlgo {
     private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     @NotNull
-    public static RoseAlgo build(@NotNull String actionabilityDatabaseTsv, @NotNull String driverGeneTsv, @NotNull String clinicalTranscriptsTsv) throws IOException {
+    public static RoseAlgo build(@NotNull String actionabilityDatabaseTsv, @NotNull String driverGeneTsv,
+            @NotNull String clinicalTranscriptsTsv) throws IOException {
         List<ActionabilityEntry> actionabilityEntry = readActionabilityEntries(actionabilityDatabaseTsv);
         List<DriverGene> driverGenes = readDriverGenesFromFile(driverGeneTsv);
         ClinicalTranscriptsModel clinicalTranscriptsModel = ClinicalTranscriptFile.buildFromTsv(clinicalTranscriptsTsv);
@@ -36,7 +37,8 @@ public class RoseAlgo {
         return new RoseAlgo(actionabilityEntry, driverGenes, clinicalTranscriptsModel);
     }
 
-    private RoseAlgo(final @NotNull List<ActionabilityEntry> actionabilityEntries, final @NotNull List<DriverGene> driverGenes, final @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+    private RoseAlgo(final @NotNull List<ActionabilityEntry> actionabilityEntries, final @NotNull List<DriverGene> driverGenes,
+            final @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.actionabilityEntries = actionabilityEntries;
         this.driverGenes = driverGenes;
         this.clinicalTranscriptsModel = clinicalTranscriptsModel;

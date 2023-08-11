@@ -1,9 +1,9 @@
 package com.hartwig.oncoact.clinicaltransript;
 
+import java.util.Map;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class ClinicalTranscriptsModel {
 

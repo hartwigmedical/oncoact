@@ -1,11 +1,12 @@
 package com.hartwig.oncoact.clinicaltransript;
 
-import com.google.common.io.Resources;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.io.Resources;
+
+import org.junit.Test;
 
 public class ClinicalTranscriptFileTest {
 
