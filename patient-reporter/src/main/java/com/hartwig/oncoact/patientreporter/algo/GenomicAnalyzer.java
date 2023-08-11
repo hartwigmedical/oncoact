@@ -48,7 +48,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               boolean germlineReportingLevel) {
+            boolean germlineReportingLevel) {
 
         // variants
         Set<ReportableVariant> reportableGermlineVariants = ReportableVariantFactory.createReportableGermlineVariants(orange.purple());
@@ -75,12 +75,13 @@ public class GenomicAnalyzer {
         // homozygous disruptions
         List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(somaticHomozygousDisruptions,
+        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(
+                somaticHomozygousDisruptions,
                 germlineHomozygousDisruptions);
 
         //disruptions
-        List<GeneDisruption> additionalSuspectBreakends =
-                GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
+        List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
+                orange.linx().allSomaticStructuralVariants());
 
         List<GeneDisruption> reportableSomaticGeneDisruptions =
                 GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
@@ -99,7 +100,8 @@ public class GenomicAnalyzer {
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
         LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
 
-        List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH = InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
+        List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH =
+                InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
 
         List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidences);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
@@ -135,8 +137,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel,
-                                                                   boolean germlineReportingLevel) {
+            @NotNull GermlineReportingModel germlineReportingModel, boolean germlineReportingLevel) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -160,7 +161,7 @@ public class GenomicAnalyzer {
 
     @VisibleForTesting
     static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
-                                                                @NotNull ReportableVariant variantToCompareWith) {
+            @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
             if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene())

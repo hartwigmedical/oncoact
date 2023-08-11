@@ -1,5 +1,11 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Objects;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -9,14 +15,9 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CopyNumberEvidenceTest {
 
@@ -46,7 +47,10 @@ public class CopyNumberEvidenceTest {
         List<PurpleGainLoss> reportableGermlineGainLosses = Lists.newArrayList(reportableGermlineDel);
         List<PurpleGainLoss> unreportedGainLosses = Lists.newArrayList();
         List<PurpleGainLoss> unreportedGermlineGainLosses = Lists.newArrayList();
-        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses, unreportedGainLosses, reportableGermlineGainLosses, unreportedGermlineGainLosses);
+        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses,
+                unreportedGainLosses,
+                reportableGermlineGainLosses,
+                unreportedGermlineGainLosses);
 
         assertEquals(3, evidences.size());
 
@@ -69,8 +73,10 @@ public class CopyNumberEvidenceTest {
     @NotNull
     private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
 
-        return evidences.stream().filter(x -> Objects.equals(x.gene(), geneToFind))
-                .findFirst().orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
 
     }
 }

@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
@@ -7,21 +11,22 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.variant.*;
+import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
+import com.hartwig.oncoact.variant.DriverInterpretation;
+import com.hartwig.oncoact.variant.ReportableVariant;
+import com.hartwig.oncoact.variant.ReportableVariantFactory;
+import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class VariantEvidence {
 
@@ -37,8 +42,8 @@ public class VariantEvidence {
     private final List<ActionableGene> genes;
 
     public VariantEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                           @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> ranges,
-                           @NotNull final List<ActionableGene> genes) {
+            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> ranges,
+            @NotNull final List<ActionableGene> genes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.hotspots = hotspots;
         this.ranges = ranges;
@@ -50,8 +55,8 @@ public class VariantEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
-                                          @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
-                                          @Nullable Collection<PurpleVariant> allGermlineVariants) {
+            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
+            @Nullable Collection<PurpleVariant> allGermlineVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant));

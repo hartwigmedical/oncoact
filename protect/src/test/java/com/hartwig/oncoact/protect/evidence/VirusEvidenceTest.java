@@ -1,21 +1,28 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.virus.*;
-import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.TestServeFactory;
-import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
-import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestServeFactory;
+import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
+import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 public class VirusEvidenceTest {
 
@@ -42,8 +49,10 @@ public class VirusEvidenceTest {
 
     @NotNull
     private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String event) {
-        return evidences.stream().filter(x -> Objects.equals(x.event(), event))
-                .findFirst().orElseThrow(() -> new IllegalStateException("Could not find evidence with genomic event: " + event));
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.event(), event))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence with genomic event: " + event));
     }
 
     @NotNull
@@ -64,7 +73,10 @@ public class VirusEvidenceTest {
                 .interpretation(VirusInterpretation.EBV)
                 .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
                 .build());
-        reportableViruses.add(TestVirusInterpreterFactory.builder().reported(true).virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN).build());
+        reportableViruses.add(TestVirusInterpreterFactory.builder()
+                .reported(true)
+                .virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN)
+                .build());
 
         Set<AnnotatedVirus> allViruses = Sets.newHashSet();
         allViruses.addAll(reportableViruses);
@@ -78,7 +90,10 @@ public class VirusEvidenceTest {
                 .interpretation(VirusInterpretation.EBV)
                 .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
                 .build());
-        allViruses.add(TestVirusInterpreterFactory.builder().reported(false).virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN).build());
+        allViruses.add(TestVirusInterpreterFactory.builder()
+                .reported(false)
+                .virusDriverLikelihoodType(VirusLikelihoodType.UNKNOWN)
+                .build());
 
         return ImmutableVirusInterpreterData.builder().reportableViruses(reportableViruses).allViruses(allViruses).build();
     }

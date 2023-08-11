@@ -95,12 +95,12 @@ public final class ConclusionAlgo {
 
         List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(somaticHomozygousDisruptions,
+        List<HomozygousDisruption> homozygousDisruptions = ReportableGeneDisruptionFactory.mergeHomozygousDisruptionsLists(
+                somaticHomozygousDisruptions,
                 germlineHomozygousDisruptions);
 
-        List<AnnotatedVirus> reportableViruses = Optional.ofNullable(rose.orange().virusInterpreter())
-                .map(VirusInterpreterData::reportableViruses)
-                .orElseGet(List::of);
+        List<AnnotatedVirus> reportableViruses =
+                Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
@@ -108,7 +108,9 @@ public final class ConclusionAlgo {
 
         generateStartSentence(conclusion);
         generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
-        generateVariantConclusion(conclusion, reportableVariants, actionabilityMap,
+        generateVariantConclusion(conclusion,
+                reportableVariants,
+                actionabilityMap,
                 driverGenesMap,
                 oncogenic,
                 actionable,
@@ -388,8 +390,9 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
-            @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-            @NotNull Set<String> oncogenic, @NotNull Set<String> actionable) {
+            @NotNull Collection<HomozygousDisruption> homozygousDisruptions,
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
 
         for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             oncogenic.add("homozygousDisruption");

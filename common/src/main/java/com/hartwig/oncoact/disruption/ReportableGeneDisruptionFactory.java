@@ -1,11 +1,12 @@
 package com.hartwig.oncoact.disruption;
 
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class ReportableGeneDisruptionFactory {
 
@@ -13,8 +14,9 @@ public class ReportableGeneDisruptionFactory {
     }
 
     @NotNull
-    public static List<HomozygousDisruption> mergeHomozygousDisruptionsLists(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
-                                                                             @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
+    public static List<HomozygousDisruption> mergeHomozygousDisruptionsLists(
+            @NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
+            @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
         List<HomozygousDisruption> allHomozygousDisruption = Lists.newArrayList();
 
         allHomozygousDisruption.addAll(somaticHomozygousDisruptions);
@@ -27,7 +29,7 @@ public class ReportableGeneDisruptionFactory {
 
     @NotNull
     public static List<GeneDisruption> mergeGeneDisruptionsLists(@NotNull List<GeneDisruption> somaticGeneDisruptions,
-                                                                 @Nullable List<GeneDisruption> germlineGeneDisruptions) {
+            @Nullable List<GeneDisruption> germlineGeneDisruptions) {
         List<GeneDisruption> allDisruptions = Lists.newArrayList();
         allDisruptions.addAll(somaticGeneDisruptions);
         if (germlineGeneDisruptions != null) {

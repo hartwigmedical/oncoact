@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -8,11 +11,9 @@ import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CopyNumberEvidence {
 
@@ -22,7 +23,7 @@ public class CopyNumberEvidence {
     private final List<ActionableGene> actionableGenes;
 
     public CopyNumberEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                              @NotNull final List<ActionableGene> actionableGenes) {
+            @NotNull final List<ActionableGene> actionableGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
@@ -33,10 +34,11 @@ public class CopyNumberEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
-                                          @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-                                          @Nullable List<PurpleGainLoss> allGermlineLosses) {
+            @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
+            @Nullable List<PurpleGainLoss> allGermlineLosses) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLoss reportableGainLoss : ReportableCNVFactory.mergeCNVLists(reportableSomaticGainLosses, reportableGermlineLosses)) {
+        for (PurpleGainLoss reportableGainLoss : ReportableCNVFactory.mergeCNVLists(reportableSomaticGainLosses,
+                reportableGermlineLosses)) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 

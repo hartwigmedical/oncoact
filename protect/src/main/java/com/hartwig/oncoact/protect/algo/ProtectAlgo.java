@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.evidence.ChordEvidence;
 import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
@@ -105,12 +105,14 @@ public class ProtectAlgo {
 
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
-                orange.purple().allSomaticVariants(), orange.purple().allGermlineVariants());
+                orange.purple().allSomaticVariants(),
+                orange.purple().allGermlineVariants());
         printExtraction("somatic and germline variants", variantEvidence);
 
-        List<ProtectEvidence> copyNumberEvidence =
-                copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(), orange.purple().allSomaticGainsLosses(),
-                        orange.purple().reportableGermlineFullLosses(), orange.purple().allGermlineFullLosses());
+        List<ProtectEvidence> copyNumberEvidence = copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(),
+                orange.purple().allSomaticGainsLosses(),
+                orange.purple().reportableGermlineFullLosses(),
+                orange.purple().allGermlineFullLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
         List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),

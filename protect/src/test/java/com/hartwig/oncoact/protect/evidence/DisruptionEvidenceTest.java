@@ -1,5 +1,11 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Objects;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
@@ -8,14 +14,9 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DisruptionEvidenceTest {
 
@@ -38,7 +39,8 @@ public class DisruptionEvidenceTest {
         HomozygousDisruption matchInact = create(geneInact);
         HomozygousDisruption nonMatch = create("other gene");
 
-        List<ProtectEvidence> evidences = disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch), Lists.newArrayList());
+        List<ProtectEvidence> evidences =
+                disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch), Lists.newArrayList());
 
         assertEquals(1, evidences.size());
         ProtectEvidence evidence = evidences.get(0);
@@ -60,7 +62,9 @@ public class DisruptionEvidenceTest {
 
     @NotNull
     private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        return evidences.stream().filter(x -> Objects.equals(x.gene(), geneToFind))
-                .findFirst().orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 }

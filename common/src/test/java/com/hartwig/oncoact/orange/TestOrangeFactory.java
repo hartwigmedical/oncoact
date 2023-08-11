@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.orange;
 
+import java.time.LocalDate;
+import java.util.Set;
+
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
@@ -8,12 +11,42 @@ import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaData;
 import com.hartwig.hmftools.datamodel.flagstat.ImmutableFlagstat;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
-import com.hartwig.hmftools.datamodel.linx.*;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxRecord;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxRecord;
 import com.hartwig.hmftools.datamodel.metrics.ImmutableWGSMetrics;
-import com.hartwig.hmftools.datamodel.orange.*;
+import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
+import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeSample;
+import com.hartwig.hmftools.datamodel.orange.OrangePlots;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.orange.OrangeSample;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.hmftools.datamodel.virus.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleCharacteristics;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
+import com.hartwig.hmftools.datamodel.purple.PurpleFit;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusBreakendQCStatus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.orange.chord.TestChordFactory;
 import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
 import com.hartwig.oncoact.orange.lilac.TestLilacFactory;
@@ -21,11 +54,9 @@ import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 public final class TestOrangeFactory {
 
@@ -54,20 +85,12 @@ public final class TestOrangeFactory {
 
     @NotNull
     public static OrangeSample createMinimalOrangeSample() {
-        return ImmutableOrangeSample.builder()
-                .flagstat(createMinimalFlagStat())
-                .metrics(createMinimalWgsMetrics())
-                .build();
+        return ImmutableOrangeSample.builder().flagstat(createMinimalFlagStat()).metrics(createMinimalWgsMetrics()).build();
     }
 
     @NotNull
     private static ImmutableFlagstat createMinimalFlagStat() {
-        return ImmutableFlagstat.builder()
-                .mappedProportion(0)
-                .secondaryCount(0)
-                .supplementaryCount(0)
-                .uniqueReadCount(0)
-                .build();
+        return ImmutableFlagstat.builder().mappedProportion(0).secondaryCount(0).supplementaryCount(0).uniqueReadCount(0).build();
     }
 
     @NotNull
@@ -166,17 +189,23 @@ public final class TestOrangeFactory {
         PurpleCopyNumber somaticCopyNumber =
                 TestPurpleFactory.copyNumberBuilder().chromosome("1").start(10).end(20).averageTumorCopyNumber(2.1).build();
 
-        PurpleGainLoss somaticGain = TestPurpleFactory.gainLossBuilder().gene("MYC").interpretation(CopyNumberInterpretation.FULL_GAIN)
+        PurpleGainLoss somaticGain = TestPurpleFactory.gainLossBuilder()
+                .gene("MYC")
+                .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .minCopies(38)
                 .maxCopies(40)
                 .build();
 
-        PurpleGainLoss somaticLoss = TestPurpleFactory.gainLossBuilder().gene("PTEN").interpretation(CopyNumberInterpretation.FULL_LOSS)
+        PurpleGainLoss somaticLoss = TestPurpleFactory.gainLossBuilder()
+                .gene("PTEN")
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
 
-        PurpleGainLoss germlineLoss = TestPurpleFactory.gainLossBuilder().gene("TP53").interpretation(CopyNumberInterpretation.FULL_LOSS)
+        PurpleGainLoss germlineLoss = TestPurpleFactory.gainLossBuilder()
+                .gene("TP53")
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
@@ -224,12 +253,7 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static PurpleFit createTestPurpleFit() {
-        return TestPurpleFactory.fitBuilder()
-                .hasSufficientQuality(true)
-                .containsTumorCells(false)
-                .purity(0.12)
-                .ploidy(3.1)
-                .build();
+        return TestPurpleFactory.fitBuilder().hasSufficientQuality(true).containsTumorCells(false).purity(0.12).ploidy(3.1).build();
     }
 
     @NotNull
@@ -336,10 +360,6 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static ChordRecord createTestChordRecord() {
-        return TestChordFactory.builder()
-                .brca1Value(0)
-                .brca2Value(0)
-                .hrdType(Strings.EMPTY)
-                .hrStatus(ChordStatus.HR_PROFICIENT).build();
+        return TestChordFactory.builder().brca1Value(0).brca2Value(0).hrdType(Strings.EMPTY).hrStatus(ChordStatus.HR_PROFICIENT).build();
     }
 }
