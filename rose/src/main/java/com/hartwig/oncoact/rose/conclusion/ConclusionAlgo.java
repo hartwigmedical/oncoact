@@ -27,11 +27,9 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.EventGenerator;
@@ -44,6 +42,7 @@ import com.hartwig.oncoact.rose.actionability.Condition;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -82,15 +81,23 @@ public final class ConclusionAlgo {
         Map<String, DriverGene> driverGenesMap = generateDriverGenesMap(rose.driverGenes());
 
         PurpleRecord purple = rose.orange().purple();
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(purple, rose.clinicalTranscriptsModel());
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(purple, rose.clinicalTranscriptsModel());
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(purple, rose.clinicalTranscriptsModel());
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(purple, rose.clinicalTranscriptsModel());
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
-        List<PurpleGainLoss> reportableGainLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
+        List<PurpleGainLoss> reportableGainLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
-        List<HomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+
+        List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+        List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
+        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
 
@@ -149,27 +156,6 @@ public final class ConclusionAlgo {
             driverGeneMap.put(entry.gene(), entry);
         }
         return driverGeneMap;
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple,
-            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(),
-                purple.somaticDrivers(),
-                clinicalTranscriptsModel);
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple,
-            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants,
-                purple.germlineDrivers(),
-                clinicalTranscriptsModel);
     }
 
     @NotNull

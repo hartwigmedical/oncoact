@@ -1,18 +1,21 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
-import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
@@ -23,6 +26,7 @@ import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -50,12 +54,52 @@ public class GenomicAnalyzer {
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
             boolean germlineReportingLevel) {
+
+        // variants
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
+        List<ReportableVariant> reportableVariants =
+                ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
+        Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
+                determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
+
+        // gains & losses
+        List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = orange.purple().reportableGermlineFullLosses();
+        List<PurpleGainLoss> reportableGainsLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
+
+        // Determine chromosome copy number arm
+        RefGenomeCoordinates refGenomeCoordinates =
+                orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
+        List<CnPerChromosomeArmData> copyNumberPerChromosome =
+                CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
+
+        // fusions
+        List<LinxFusion> geneFusions = orange.linx().reportableSomaticFusions();
+
+        // homozygous disruptions
+        List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
+        List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
+        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+
+        //disruptions
         List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
                 orange.linx().allSomaticStructuralVariants());
 
-        List<GeneDisruption> reportableGeneDisruptions =
+        List<GeneDisruption> reportableSomaticGeneDisruptions =
                 GeneDisruptionFactory.convert(orange.linx().reportableSomaticBreakends(), orange.linx().allSomaticStructuralVariants());
-        reportableGeneDisruptions.addAll(additionalSuspectBreakends);
+
+        List<GeneDisruption> reportableGermlineGeneDisruptions = Lists.newArrayList();
+        List<LinxBreakend> reportableGermlineBreakends = orange.linx().reportableGermlineBreakends();
+        List<LinxSvAnnotation> allGermlineStructuralVariants = orange.linx().allGermlineStructuralVariants();
+        if (reportableGermlineBreakends != null && allGermlineStructuralVariants != null) {
+            reportableGermlineGeneDisruptions = GeneDisruptionFactory.convert(reportableGermlineBreakends, allGermlineStructuralVariants);
+        }
+
+        List<GeneDisruption> geneDisruptions = ListUtil.mergeLists(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
+        geneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
         LOGGER.info(" Found an additional {} suspect gene copy numbers with LOH", suspectGeneCopyNumbersWithLOH.size());
@@ -63,22 +107,9 @@ public class GenomicAnalyzer {
         List<InterpretPurpleGeneCopyNumbers> interpretSuspectGeneCopyNumbersWithLOH =
                 InterpretPurpleGeneCopyNumbersFactory.convert(suspectGeneCopyNumbersWithLOH);
 
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
-        List<ReportableVariant> reportableVariants =
-                ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
-
-        Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
-                determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
-
         List<ProtectEvidence> nonTrialsOnLabel = ReportableEvidenceItemFactory.extractNonTrialsOnLabel(reportableEvidences);
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
-
-        RefGenomeCoordinates refGenomeCoordinates =
-                orange.refGenomeVersion() == OrangeRefGenomeVersion.V37 ? RefGenomeCoordinates.COORDS_37 : RefGenomeCoordinates.COORDS_38;
-        List<CnPerChromosomeArmData> copyNumberPerChromosome =
-                CnPerChromosomeFactory.extractCnPerChromosomeArm(orange.purple().allSomaticCopyNumbers(), refGenomeCoordinates);
 
         return ImmutableGenomicAnalysis.builder()
                 .purpleQCStatus(orange.purple().fit().qc().status())
@@ -98,35 +129,14 @@ public class GenomicAnalyzer {
                 .tumorMutationalBurden(orange.purple().characteristics().tumorMutationalBurdenPerMb())
                 .hrdValue(orange.chord().hrdValue())
                 .hrdStatus(orange.chord().hrStatus())
-                .gainsAndLosses(orange.purple().reportableSomaticGainsLosses())
+                .gainsAndLosses(reportableGainsLosses)
                 .cnPerChromosome(copyNumberPerChromosome)
-                .geneFusions(orange.linx().reportableSomaticFusions())
-                .geneDisruptions(reportableGeneDisruptions)
-                .homozygousDisruptions(orange.linx().somaticHomozygousDisruptions())
+                .geneFusions(geneFusions)
+                .geneDisruptions(geneDisruptions)
+                .homozygousDisruptions(homozygousDisruptions)
                 .reportableViruses(orange.virusInterpreter().reportableViruses())
                 .suspectGeneCopyNumbersWithLOH(interpretSuspectGeneCopyNumbersWithLOH)
                 .build();
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple,
-            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(),
-                purple.somaticDrivers(),
-                clinicalTranscriptsModel);
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple,
-            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants,
-                purple.germlineDrivers(),
-                clinicalTranscriptsModel);
     }
 
     @NotNull
