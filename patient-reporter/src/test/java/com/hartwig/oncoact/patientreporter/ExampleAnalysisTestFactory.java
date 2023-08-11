@@ -1,13 +1,33 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.*;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
@@ -18,15 +38,28 @@ import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.hla.*;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.hla.ImmutableHlaAllele;
+import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
+import com.hartwig.oncoact.hla.ImmutableHlaReporting;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.patientreporter.algo.*;
+import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
+import com.hartwig.oncoact.patientreporter.algo.QualityOverruleFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.protect.*;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
@@ -35,12 +68,9 @@ import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -55,9 +85,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-                                                              @NotNull PurpleQCStatus purpleQCStatus,
-                                                              boolean withUnreliablePurityOverrule) {
+    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
+            boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
@@ -86,32 +115,31 @@ public final class ExampleAnalysisTestFactory {
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
-        String summaryWithoutGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+        String summaryWithoutGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
-        String summaryWithoutGermlineLowPurity = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
-                + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
-                + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
+        String summaryWithoutGermlineLowPurity =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
+                        + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
+                        + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
 
-        String summaryWithGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
-
+        String summaryWithGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
         String clinicalSummary;
         if (config.includeSummary() && !config.reportGermline()) {
@@ -201,7 +229,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
+            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -228,8 +256,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome, @NotNull ChromosomeArm chromosomeArm,
+            double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -288,7 +316,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
@@ -322,11 +350,16 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511", "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513", "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515", "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517", "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519", "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
@@ -348,11 +381,16 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN:V600E",
                         Sets.newHashSet(),
                         EvidenceType.ACTIVATION,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511", "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513", "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515", "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517", "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519", "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
