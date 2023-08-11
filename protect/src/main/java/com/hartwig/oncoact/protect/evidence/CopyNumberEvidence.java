@@ -1,19 +1,19 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CopyNumberEvidence {
 
@@ -33,15 +33,16 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Collection<PurpleGainLoss> reportableGainLosses,
-            @NotNull Collection<PurpleGainLoss> allGainLosses) {
+    public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
+            @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
+            @Nullable List<PurpleGainLoss> allGermlineLosses) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLoss reportableGainLoss : reportableGainLosses) {
+        for (PurpleGainLoss reportableGainLoss : ListUtil.mergeLists(reportableSomaticGainLosses, reportableGermlineLosses)) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (PurpleGainLoss gainLoss : allGainLosses) {
-            if (!reportableGainLosses.contains(gainLoss)) {
+        for (PurpleGainLoss gainLoss : ListUtil.mergeLists(allSomaticGainLosses, allGermlineLosses)) {
+            if (!reportableSomaticGainLosses.contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }
         }
