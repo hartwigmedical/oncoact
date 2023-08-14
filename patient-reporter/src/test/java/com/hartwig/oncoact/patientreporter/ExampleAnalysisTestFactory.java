@@ -1112,7 +1112,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000288602", "c.1799T>A", "p.Val600Glu"))
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000288602", "c.179T>A", "p.Val601Glu"))
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .chromosome("7")
@@ -1393,35 +1393,36 @@ public final class ExampleAnalysisTestFactory {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build(), TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*2_HOM")
-                        .function("Reduced Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("UGT1A1")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("UGT1A1")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
 
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("DPYD")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build(),
+                                .gene("DPYD")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
                         TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*2_HOM")
@@ -1432,7 +1433,8 @@ public final class ExampleAnalysisTestFactory {
                                         + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
                                 .panelVersion("peach_prod_v1.3")
                                 .repoVersion("1.7")
-                                .build(), TestPeachFactory.builder()
+                                .build(),
+                        TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*2_HOM")
                                 .function("Toxicity Function")

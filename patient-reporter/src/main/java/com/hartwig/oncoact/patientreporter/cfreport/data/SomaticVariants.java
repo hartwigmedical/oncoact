@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.api.client.util.Lists;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -97,6 +98,22 @@ public final class SomaticVariants {
             return determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein);
         }
         return Strings.EMPTY;
+    }
+
+    @NotNull
+    public static List<String> determineVariantAnnotations(@NotNull String hgvsCoding, @NotNull String hgvsProtein,
+            @Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+        List<String> annotationList = Lists.newArrayList();
+        if (purpleTranscriptImpact != null) {
+            if (!hgvsProtein.equals(purpleTranscriptImpact.hgvsProteinImpact())
+                    && !hgvsCoding.equals(purpleTranscriptImpact.hgvsCodingImpact())) {
+                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+                annotationList.add(SomaticVariants.determineVariantAnnotationClinical(purpleTranscriptImpact));
+            } else {
+                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+            }
+        }
+        return annotationList;
     }
 
     public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {
