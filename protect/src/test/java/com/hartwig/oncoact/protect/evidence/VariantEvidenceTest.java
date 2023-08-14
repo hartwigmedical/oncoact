@@ -22,8 +22,7 @@ import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
-import com.hartwig.serve.datamodel.range.ActionableCodon;
-import com.hartwig.serve.datamodel.range.ActionableExon;
+import com.hartwig.serve.datamodel.range.ActionableRange;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
@@ -102,7 +101,7 @@ public class VariantEvidenceTest {
         int end = 15;
         MutationType mutationType = MutationType.MISSENSE;
 
-        ActionableCodon codon = TestServeFactory.codonBuilder()
+        ActionableRange codon = TestServeFactory.rangeBuilder()
                 .gene("codon")
                 .chromosome(chromosome)
                 .start(start)
@@ -111,7 +110,7 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableExon exon = TestServeFactory.exonBuilder()
+        ActionableRange exon = TestServeFactory.rangeBuilder()
                 .gene("exon")
                 .chromosome(chromosome)
                 .start(start)
@@ -120,7 +119,7 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableCodon codon1 = TestServeFactory.codonBuilder()
+        ActionableRange codon1 = TestServeFactory.rangeBuilder()
                 .gene("codon1")
                 .chromosome(chromosome)
                 .start(start)
@@ -128,7 +127,6 @@ public class VariantEvidenceTest {
                 .applicableMutationType(mutationType)
                 .source(Knowledgebase.CKB)
                 .build();
-
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),

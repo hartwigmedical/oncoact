@@ -21,12 +21,12 @@ import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
-import com.hartwig.serve.datamodel.range.ActionableCodon;
-import com.hartwig.serve.datamodel.range.ActionableExon;
+import com.hartwig.serve.datamodel.range.ActionableRange;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VariantEvidence {
 
@@ -37,16 +37,15 @@ public class VariantEvidence {
     @NotNull
     private final List<ActionableHotspot> hotspots;
     @NotNull
-    private final List<ActionableCodon> codons;
+    private final List<ActionableRange> codons;
     @NotNull
-    private final List<ActionableExon> exons;
+    private final List<ActionableRange> exons;
     @NotNull
     private final List<ActionableGene> genes;
 
     public VariantEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableCodon> codons,
-                           @NotNull final List<ActionableExon> exons,
-            @NotNull final List<ActionableGene> genes) {
+            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> codons,
+            @NotNull final List<ActionableRange> exons, @NotNull final List<ActionableGene> genes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.hotspots = hotspots;
         this.codons = codons;
@@ -91,25 +90,25 @@ public class VariantEvidence {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableHotspot hotspot : hotspots) {
             if (hotspotMatch(variant, hotspot)) {
-                evidences.add(evidence(variant, hotspot, mayReport));
+                evidences.add(evidence(variant, hotspot, mayReport, null));
             }
         }
 
-        for (ActionableCodon codon : codons) {
-            if (codonMatch(variant, codon)) {
-                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH));
+        for (ActionableRange codon : codons) {
+            if (rangeMatch(variant, codon)) {
+                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "codon"));
             }
         }
 
-        for (ActionableExon exon : exons) {
-            if (exonMatch(variant, exon)) {
-                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH));
+        for (ActionableRange exon : exons) {
+            if (rangeMatch(variant, exon)) {
+                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "exon"));
             }
         }
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH));
+                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, null));
             }
         }
 
@@ -117,7 +116,8 @@ public class VariantEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report) {
+    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report,
+            @Nullable String range) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
@@ -138,7 +138,7 @@ public class VariantEvidence {
             isCanonical = true;
         }
 
-        return personalizedEvidenceFactory.evidenceBuilder(actionable)
+        return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range)
                 .gene(variant.gene())
                 .transcript(transcript)
                 .isCanonical(isCanonical)
@@ -154,14 +154,9 @@ public class VariantEvidence {
                 .equals(variant.ref()) && hotspot.alt().equals(variant.alt());
     }
 
-    private static boolean codonMatch(@NotNull Variant variant, @NotNull ActionableCodon codon) {
-        return variant.chromosome().equals(codon.chromosome()) && variant.gene().equals(codon.gene()) && variant.position() >= codon.start()
-                && variant.position() <= codon.end() && meetsMutationType(variant, codon.applicableMutationType());
-    }
-
-    private static boolean exonMatch(@NotNull Variant variant, @NotNull ActionableExon exon) {
-        return variant.chromosome().equals(exon.chromosome()) && variant.gene().equals(exon.gene()) && variant.position() >= exon.start()
-                && variant.position() <= exon.end() && meetsMutationType(variant, exon.applicableMutationType());
+    private static boolean rangeMatch(@NotNull Variant variant, @NotNull ActionableRange range) {
+        return variant.chromosome().equals(range.chromosome()) && variant.gene().equals(range.gene()) && variant.position() >= range.start()
+                && variant.position() <= range.end() && meetsMutationType(variant, range.applicableMutationType());
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {

@@ -17,12 +17,12 @@ import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
-import com.hartwig.serve.datamodel.range.ActionableCodon;
-import com.hartwig.serve.datamodel.range.ActionableExon;
+import com.hartwig.serve.datamodel.range.ActionableRange;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PersonalizedEvidenceFactory {
 
@@ -50,7 +50,18 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
+    public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range) {
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSourceRange(actionable, range)));
+    }
+
+    @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable)));
+    }
+
+    @NotNull
+    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
+            @NotNull Set<KnowledgebaseSource> protectSource) {
         return ImmutableProtectEvidence.builder()
                 .treatment(ImmutableTreatment.builder()
                         .name(actionable.treatment().name())
@@ -60,7 +71,7 @@ public class PersonalizedEvidenceFactory {
                 .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().name()))
                 .level(actionable.level())
                 .direction(actionable.direction())
-                .sources(Sets.newHashSet(resolveProtectSource(actionable)));
+                .sources(protectSource);
     }
 
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
@@ -102,25 +113,44 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
+    private static KnowledgebaseSource resolveProtectSourceRange(@NotNull ActionableEvent actionable, @Nullable String range) {
+        return ImmutableKnowledgebaseSource.builder()
+                .name(actionable.source())
+                .sourceEvent(actionable.sourceEvent())
+                .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
+                .evidenceType(determineEvidenceType(actionable, range))
+                .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
+                .build();
+    }
+
+    @NotNull
     private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())
                 .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
-                .evidenceType(determineEvidenceType(actionable))
+                .evidenceType(determineEvidenceType(actionable, null))
                 .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
                 .build();
     }
 
     @VisibleForTesting
     @NotNull
-    static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable) {
+    static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable, @Nullable String range) {
         if (actionable instanceof ActionableHotspot) {
             return EvidenceType.HOTSPOT_MUTATION;
-        } else if (actionable instanceof ActionableCodon) {
-            return EvidenceType.CODON_MUTATION;
-        }else if (actionable instanceof ActionableExon) {
-            return EvidenceType.EXON_MUTATION;
+        } else if (actionable instanceof ActionableRange) {
+            if (range != null) {
+                if (range.equals("codon")) {
+                    return EvidenceType.CODON_MUTATION;
+                } else if (range.equals("exon")) {
+                    return EvidenceType.EXON_MUTATION;
+                } else {
+                    throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
+                }
+            } else {
+                throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
+            }
         } else if (actionable instanceof ActionableGene) {
             return fromActionableGene((ActionableGene) actionable);
         } else if (actionable instanceof ActionableFusion) {

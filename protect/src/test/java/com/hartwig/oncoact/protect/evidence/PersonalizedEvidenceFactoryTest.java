@@ -27,8 +27,7 @@ import com.hartwig.serve.datamodel.gene.ImmutableActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
-import com.hartwig.serve.datamodel.range.ActionableCodon;
-import com.hartwig.serve.datamodel.range.ActionableExon;
+import com.hartwig.serve.datamodel.range.ActionableRange;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -76,31 +75,31 @@ public class PersonalizedEvidenceFactoryTest {
     @Test
     public void canDetermineEvidenceTypes() {
         ActionableHotspot hotspot = TestServeFactory.createTestActionableHotspot();
-        assertEquals(EvidenceType.HOTSPOT_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(hotspot));
+        assertEquals(EvidenceType.HOTSPOT_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(hotspot, null));
 
-        ActionableCodon codon = TestServeFactory.createTestActionableCodon();
-        assertEquals(EvidenceType.CODON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(codon));
+        ActionableRange codon = TestServeFactory.createTestActionableRange();
+        assertEquals(EvidenceType.CODON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(codon, "codon"));
 
-        ActionableExon exon = TestServeFactory.createTestActionableExon();
-        assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(exon));
+        ActionableRange exon = TestServeFactory.createTestActionableRange();
+        assertEquals(EvidenceType.EXON_MUTATION, PersonalizedEvidenceFactory.determineEvidenceType(exon, "exon"));
 
         ActionableGene gene = TestServeFactory.geneBuilder().event(GeneEvent.INACTIVATION).build();
-        assertEquals(EvidenceType.INACTIVATION, PersonalizedEvidenceFactory.determineEvidenceType(gene));
+        assertEquals(EvidenceType.INACTIVATION, PersonalizedEvidenceFactory.determineEvidenceType(gene, null));
 
         ActionableGene amplification = TestServeFactory.geneBuilder().event(GeneEvent.AMPLIFICATION).build();
-        assertEquals(EvidenceType.AMPLIFICATION, PersonalizedEvidenceFactory.determineEvidenceType(amplification));
+        assertEquals(EvidenceType.AMPLIFICATION, PersonalizedEvidenceFactory.determineEvidenceType(amplification, null));
 
         ActionableGene overexpression = TestServeFactory.geneBuilder().event(GeneEvent.OVEREXPRESSION).build();
-        assertEquals(EvidenceType.OVER_EXPRESSION, PersonalizedEvidenceFactory.determineEvidenceType(overexpression));
+        assertEquals(EvidenceType.OVER_EXPRESSION, PersonalizedEvidenceFactory.determineEvidenceType(overexpression, null));
 
         ActionableFusion fusion = TestServeFactory.createTestActionableFusion();
-        assertEquals(EvidenceType.FUSION_PAIR, PersonalizedEvidenceFactory.determineEvidenceType(fusion));
+        assertEquals(EvidenceType.FUSION_PAIR, PersonalizedEvidenceFactory.determineEvidenceType(fusion, null));
 
         ActionableCharacteristic characteristic = TestServeFactory.createTestActionableCharacteristic();
-        assertEquals(EvidenceType.SIGNATURE, PersonalizedEvidenceFactory.determineEvidenceType(characteristic));
+        assertEquals(EvidenceType.SIGNATURE, PersonalizedEvidenceFactory.determineEvidenceType(characteristic, null));
 
         ActionableHLA hla = TestServeFactory.createTestActionableHLA();
-        assertEquals(EvidenceType.HLA, PersonalizedEvidenceFactory.determineEvidenceType(hla));
+        assertEquals(EvidenceType.HLA, PersonalizedEvidenceFactory.determineEvidenceType(hla, null));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class PersonalizedEvidenceFactoryTest {
         ActionableGene base = TestServeFactory.createTestActionableGene();
         for (GeneEvent geneLevelEvent : GeneEvent.values()) {
             ActionableGene gene = ImmutableActionableGene.builder().from(base).event(geneLevelEvent).build();
-            assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(gene));
+            assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(gene, null));
         }
     }
 
@@ -117,7 +116,7 @@ public class PersonalizedEvidenceFactoryTest {
         ActionableCharacteristic base = TestServeFactory.createTestActionableCharacteristic();
         for (TumorCharacteristicType type : TumorCharacteristicType.values()) {
             ActionableCharacteristic characteristic = ImmutableActionableCharacteristic.builder().from(base).type(type).build();
-            assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(characteristic));
+            assertNotNull(PersonalizedEvidenceFactory.determineEvidenceType(characteristic, null));
         }
     }
 
