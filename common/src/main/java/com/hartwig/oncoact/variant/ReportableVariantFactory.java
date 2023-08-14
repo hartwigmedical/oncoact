@@ -152,8 +152,6 @@ public final class ReportableVariantFactory {
                 .gene(variant.gene())
                 .chromosome(variant.chromosome())
                 .position(variant.position())
-                .affectedCodon(variant.canonicalImpact().affectedCodon())
-                .affectedExon(variant.canonicalImpact().affectedExon())
                 .ref(variant.ref())
                 .alt(variant.alt())
                 .otherReportedEffects(AltTranscriptReportableInfoFactory.serialize(variant.otherImpacts()))

@@ -28,12 +28,6 @@ public abstract class ReportableVariant implements Variant {
         return chromosome() + ":" + position();
     }
 
-    @Nullable
-    public abstract Integer affectedCodon();
-
-    @Nullable
-    public abstract Integer affectedExon();
-
     @NotNull
     public abstract String canonicalTranscript();
 
