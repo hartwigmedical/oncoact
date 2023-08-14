@@ -26,7 +26,6 @@ import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
@@ -121,12 +120,6 @@ public final class ConclusionAlgo {
         generateMSIConclusion(conclusion,
                 purple.characteristics().microsatelliteStatus(),
                 purple.characteristics().microsatelliteIndelsPerMb(),
-                actionabilityMap,
-                oncogenic,
-                actionable);
-        generateTMLConclusion(conclusion,
-                purple.characteristics().tumorMutationalLoadStatus(),
-                purple.characteristics().tumorMutationalLoad(),
                 actionabilityMap,
                 oncogenic,
                 actionable);
@@ -463,21 +456,6 @@ public final class ConclusionAlgo {
                 conclusion.add("- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
                 actionable.add("MSI");
                 oncogenic.add("MSI");
-            }
-        }
-    }
-
-    @VisibleForTesting
-    static void generateTMLConclusion(@NotNull List<String> conclusion, @NotNull PurpleTumorMutationalStatus tumorMutationalStatus,
-            int tumorMutationalLoad, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-            @NotNull Set<String> actionable) {
-        if (tumorMutationalStatus == PurpleTumorMutationalStatus.HIGH) {
-            ActionabilityKey keyTML = ImmutableActionabilityKey.builder().match("High-TML").type(TypeAlteration.POSITIVE).build();
-            ActionabilityEntry entry = actionabilityMap.get(keyTML);
-            if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add("- " + "TML (" + tumorMutationalLoad + ") " + entry.conclusion());
-                actionable.add("TML");
-                oncogenic.add("TML");
             }
         }
     }

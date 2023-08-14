@@ -11,29 +11,28 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.oncoact.drivergene.DriverCategory;
-import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
-import com.hartwig.oncoact.orange.TestOrangeFactory;
-import com.hartwig.oncoact.orange.chord.TestChordFactory;
-import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.drivergene.DriverCategory;
+import com.hartwig.oncoact.drivergene.DriverGene;
+import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
+import com.hartwig.oncoact.orange.TestOrangeFactory;
+import com.hartwig.oncoact.orange.chord.TestChordFactory;
+import com.hartwig.oncoact.orange.cuppa.TestCuppaFactory;
+import com.hartwig.oncoact.orange.linx.TestLinxFactory;
+import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
 import com.hartwig.oncoact.rose.ImmutableRoseData;
 import com.hartwig.oncoact.rose.RoseData;
@@ -273,39 +272,6 @@ public class ConclusionAlgoTest {
     }
 
     @Test
-    public void canGenerateTMLHighConclusion() {
-        List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
-
-        ConclusionAlgo.generateTMLConclusion(conclusion,
-                PurpleTumorMutationalStatus.HIGH,
-                200,
-                actionabilityMap,
-                Sets.newHashSet(),
-                Sets.newHashSet());
-
-        assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- TML (200) TML");
-    }
-
-    @Test
-    public void canGenerateTMLLowConclusion() {
-        List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
-
-        ConclusionAlgo.generateTMLConclusion(conclusion,
-                PurpleTumorMutationalStatus.LOW,
-                100,
-                actionabilityMap,
-                Sets.newHashSet(),
-                Sets.newHashSet());
-
-        assertEquals(0, conclusion.size());
-    }
-
-    @Test
     public void canGenerateTMBHighConclusion() {
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -532,9 +498,18 @@ public class ConclusionAlgoTest {
         Set<LinxFusion> fusions = Sets.newHashSet();
         fusions.add(linxFusionBuilder("BRAF", "BRAF", true).reportedType(LinxFusionType.EXON_DEL_DUP).build());
         fusions.add(linxFusionBuilder("CAV2", "MET", true).reportedType(LinxFusionType.KNOWN_PAIR).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25).fusedExonDown(14).reportedType(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26).fusedExonDown(18).reportedType(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15).fusedExonDown(23).reportedType(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25)
+                .fusedExonDown(14)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26)
+                .fusedExonDown(18)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15)
+                .fusedExonDown(23)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
         return fusions;
     }
 
