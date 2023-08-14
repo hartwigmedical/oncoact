@@ -77,18 +77,25 @@ public class ClinicalEvidenceFunctions {
                         Collections.sort(treatentSort);
                         treatment = String.join(",", treatentSort);
                         treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
+                        if (!hasHigherOrEqualEvidenceForEventAndTreatmentApproach(treatmentEvidences, evidence)
+                                && !treatment.equals(Strings.EMPTY)) {
+                            treatmentEvidences.add(evidence);
+                            evidencePerTreatmentMap.put(treatment, treatmentEvidences);
+                        }
                     }
                 } else {
                     if (treatmentJoin.isEmpty()) {
                         treatment = evidence.treatment().name();
                         treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
+                        if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)
+                                && !treatment.equals(Strings.EMPTY)) {
+                            treatmentEvidences.add(evidence);
+                            evidencePerTreatmentMap.put(treatment, treatmentEvidences);
+                        }
+
                     }
                 }
 
-                if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence) && !treatment.equals(Strings.EMPTY)) {
-                    treatmentEvidences.add(evidence);
-                    evidencePerTreatmentMap.put(treatment, treatmentEvidences);
-                }
             }
         }
         return evidencePerTreatmentMap;
@@ -97,8 +104,21 @@ public class ClinicalEvidenceFunctions {
     private static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
             @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().equals(evidenceToCheck.treatment()) && StringUtils.equals(evidence.gene(), evidenceToCheck.gene())
-                    && evidence.event().equals(evidenceToCheck.event())) {
+            if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
+                    evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
+                if (!evidenceToCheck.level().isHigher(evidence.level())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
+            @NotNull ProtectEvidence evidenceToCheck) {
+        for (ProtectEvidence evidence : evidences) {
+            if (evidence.treatment().relevantTreatmentApproaches().equals(evidenceToCheck.treatment().relevantTreatmentApproaches())
+                    && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
                     return true;
                 }
@@ -110,7 +130,7 @@ public class ClinicalEvidenceFunctions {
     @NotNull
     public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth,
             @NotNull String columnName) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 40, 15, 100, 60 },
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 40, 80, 25, 15, 40, 100, 60 },
                 new Cell[] { tableUtil.createHeaderCell(columnName, 2), tableUtil.createHeaderCell("OnLabel", 1),
                         tableUtil.createHeaderCell("Match", 1), tableUtil.createHeaderCell("Level", 1),
                         tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1),

@@ -429,7 +429,7 @@ public final class ExampleAnalysisTestFactory {
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.RESPONSIVE)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
