@@ -27,8 +27,8 @@ public final class GermlineReportingFile {
 
         List<GermlineReportingEntry> germlineReportingEntries = Lists.newArrayList();
         String columnNameGene = "Gene";
-        String columnNameNotify = "Notify";
-        String columnNameVariant = "Variant";
+        String columnNameNotify = "Notify Condition";
+        String columnNameVariant = "Notify Condition Filter";
 
         final Map<String, Integer> fieldIndexMap = CsvFileReader.getHeadersToDelimiter(lines.get(0), SEPARATOR);
         if (!fieldIndexMap.containsKey(columnNameGene) || !fieldIndexMap.containsKey(columnNameNotify) || !fieldIndexMap.containsKey(
