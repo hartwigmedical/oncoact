@@ -7,6 +7,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.hmftools.datamodel.purple.Variant;
@@ -31,7 +32,19 @@ public final class EventGenerator {
 
     @NotNull
     private static String reportableVariantEvent(@NotNull ReportableVariant reportableVariant) {
-        return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+        PurpleTranscriptImpact purpleTranscriptImpact = reportableVariant.otherImpactClinical();
+        if (purpleTranscriptImpact != null) {
+            String clinical = toVariantEvent(purpleTranscriptImpact.hgvsProteinImpact(),
+                    purpleTranscriptImpact.hgvsCodingImpact(),
+                    purpleTranscriptImpact.codingEffect().name(),
+                    purpleTranscriptImpact.codingEffect());
+            String variantEvent = reportableVariant.isCanonical()
+                    ? canonicalVariantEvent(reportableVariant)
+                    : nonCanonicalVariantEvent(reportableVariant);
+            return variantEvent + " (" + clinical + ")";
+        } else {
+            return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
+        }
     }
 
     @NotNull

@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.orange.TestOrangeFactory;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.germline.TestGermlineReportingModelFactory;
@@ -25,17 +27,14 @@ public class GenomicAnalyzerTest {
     @Test
     public void canRunOnExampleData() {
         GermlineReportingModel testGermlineReportingModel = TestGermlineReportingModelFactory.createEmpty();
-        GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel);
+        ClinicalTranscriptsModel testClinicalTranscriptsModel = ClinicalTranscriptModelTestFactory.createEmpty();
+        GenomicAnalyzer analyzer = new GenomicAnalyzer(testGermlineReportingModel, testClinicalTranscriptsModel);
 
         List<ProtectEvidence> noEvidences = Lists.newArrayList();
 
-        assertNotNull(analyzer.run(TestOrangeFactory.createMinimalTestOrangeRecord(),
-                noEvidences,
-                true));
+        assertNotNull(analyzer.run(TestOrangeFactory.createMinimalTestOrangeRecord(), noEvidences, true));
 
-        assertNotNull(analyzer.run(TestOrangeFactory.createProperTestOrangeRecord(),
-                noEvidences,
-                true));
+        assertNotNull(analyzer.run(TestOrangeFactory.createProperTestOrangeRecord(), noEvidences, true));
     }
 
     @Test

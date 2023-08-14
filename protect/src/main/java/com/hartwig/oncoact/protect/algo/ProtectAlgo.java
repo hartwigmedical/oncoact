@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -48,10 +49,13 @@ public class ProtectAlgo {
     private final HlaEvidence hlaEvidenceFactory;
     @NotNull
     private final WildTypeEvidence wildTypeEvidenceFactory;
+    @NotNull
+    private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     @NotNull
     public static ProtectAlgo build(@NotNull ActionableEvents actionableEvents, @NotNull Set<String> patientTumorDoids,
-            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel) {
+            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         PersonalizedEvidenceFactory personalizedEvidenceFactory = new PersonalizedEvidenceFactory(patientTumorDoids, doidParentModel);
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
@@ -77,14 +81,15 @@ public class ProtectAlgo {
                 virusEvidenceFactory,
                 chordEvidenceFactory,
                 hlaEvidenceFactory,
-                wildTypeEvidenceFactory);
+                wildTypeEvidenceFactory,
+                clinicalTranscriptsModel);
     }
 
     private ProtectAlgo(@NotNull final VariantEvidence variantEvidenceFactory, @NotNull final CopyNumberEvidence copyNumberEvidenceFactory,
             @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
             @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
             @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
-            @NotNull final WildTypeEvidence wildTypeEvidenceFactory) {
+            @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.variantEvidenceFactory = variantEvidenceFactory;
         this.copyNumberEvidenceFactory = copyNumberEvidenceFactory;
         this.disruptionEvidenceFactory = disruptionEvidenceFactory;
@@ -94,14 +99,17 @@ public class ProtectAlgo {
         this.chordEvidenceFactory = chordEvidenceFactory;
         this.hlaEvidenceFactory = hlaEvidenceFactory;
         this.wildTypeEvidenceFactory = wildTypeEvidenceFactory;
+        this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
     public List<ProtectEvidence> run(@NotNull OrangeRecord orange) {
         LOGGER.info("Evidence extraction started");
 
-        Set<ReportableVariant> reportableGermlineVariants = ReportableVariantFactory.createReportableGermlineVariants(orange.purple());
-        Set<ReportableVariant> reportableSomaticVariants = ReportableVariantFactory.createReportableSomaticVariants(orange.purple());
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
 
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,

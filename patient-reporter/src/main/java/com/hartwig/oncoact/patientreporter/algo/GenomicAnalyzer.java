@@ -16,6 +16,7 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
@@ -41,8 +42,13 @@ public class GenomicAnalyzer {
     @NotNull
     private final GermlineReportingModel germlineReportingModel;
 
-    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel) {
+    @NotNull
+    private final ClinicalTranscriptsModel clinicalTranscriptsModel;
+
+    public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel,
+            @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.germlineReportingModel = germlineReportingModel;
+        this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
@@ -50,8 +56,10 @@ public class GenomicAnalyzer {
             boolean germlineReportingLevel) {
 
         // variants
-        Set<ReportableVariant> reportableGermlineVariants = ReportableVariantFactory.createReportableGermlineVariants(orange.purple());
-        Set<ReportableVariant> reportableSomaticVariants = ReportableVariantFactory.createReportableSomaticVariants(orange.purple());
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
