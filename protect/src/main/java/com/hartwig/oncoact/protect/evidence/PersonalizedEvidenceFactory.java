@@ -50,8 +50,9 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSourceRange(actionable, range)));
+    public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
+            @Nullable Integer rangeRank) {
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSourceRange(actionable, range, rangeRank)));
     }
 
     @NotNull
@@ -113,12 +114,14 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    private static KnowledgebaseSource resolveProtectSourceRange(@NotNull ActionableEvent actionable, @Nullable String range) {
+    private static KnowledgebaseSource resolveProtectSourceRange(@NotNull ActionableEvent actionable, @Nullable String range,
+            @Nullable Integer rangeRank) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())
                 .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
                 .evidenceType(determineEvidenceType(actionable, range))
+                .rangeRank(rangeRank)
                 .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
                 .build();
     }

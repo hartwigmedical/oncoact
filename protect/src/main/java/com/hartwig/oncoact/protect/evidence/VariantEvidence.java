@@ -122,23 +122,38 @@ public class VariantEvidence {
         DriverInterpretation driverInterpretation;
         String transcript;
         boolean isCanonical;
+        Integer rangeRank = null;
 
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
-
             isGermline = reportable.source() == ReportableVariantSource.GERMLINE;
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
+            if (range != null) {
+                if (range.equals("codon")) {
+                    rangeRank = reportable.affectedCodon();
+                } else if (range.equals("exon")) {
+                    rangeRank = reportable.affectedExon();
+                }
+            }
         } else {
             PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;
             driverInterpretation = DriverInterpretation.LOW;
             transcript = purple.canonicalImpact().transcript();
             isCanonical = true;
+
+            if (range != null) {
+                if (range.equals("codon")) {
+                    rangeRank = purple.canonicalImpact().affectedCodon();
+                } else if (range.equals("exon")) {
+                    rangeRank = purple.canonicalImpact().affectedExon();
+                }
+            }
         }
 
-        return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range)
+        return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
                 .gene(variant.gene())
                 .transcript(transcript)
                 .isCanonical(isCanonical)
