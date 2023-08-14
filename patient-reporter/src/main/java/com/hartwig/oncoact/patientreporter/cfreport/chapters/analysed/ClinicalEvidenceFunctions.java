@@ -13,6 +13,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Icon;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.AminoAcids;
@@ -225,10 +226,9 @@ public class ClinicalEvidenceFunctions {
         String evidenceRank = Strings.EMPTY;
         String evidenceSource = source.evidenceType().display();
 
-        // TODO Review in context of having no more range rank.
-//        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
-//            evidenceRank = String.valueOf(source.rangeRank());
-//        }
+        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
+            evidenceRank = String.valueOf(source.rangeRank());
+        }
 
         String evidenceMerged;
         if (!evidenceRank.isEmpty()) {

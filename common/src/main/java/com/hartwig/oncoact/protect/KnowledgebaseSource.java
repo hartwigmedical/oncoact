@@ -24,6 +24,9 @@ public abstract class KnowledgebaseSource {
     @NotNull
     public abstract EvidenceType evidenceType();
 
+    @Nullable
+    public abstract Integer rangeRank();
+
     @NotNull
     public abstract Set<String> evidenceUrls();
 }

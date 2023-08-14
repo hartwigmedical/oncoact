@@ -32,7 +32,8 @@ public final class TestProtectFactory {
         return ImmutableKnowledgebaseSource.builder()
                 .name(Knowledgebase.UNKNOWN)
                 .sourceEvent(Strings.EMPTY)
-                .evidenceType(EvidenceType.ANY_MUTATION);
+                .evidenceType(EvidenceType.ANY_MUTATION)
+                .rangeRank(null);
     }
 
     @NotNull
