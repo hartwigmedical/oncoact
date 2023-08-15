@@ -206,7 +206,7 @@ public class SummaryChapter implements ReportChapter {
 
         Style dataStyle = hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
-        String eligible = analysis().tumorMutationalBurden() > 16 ? "High" : "Low";
+        String eligible = analysis().tumorMutationalBurdenStatus().name();
         String mutationalBurdenString = hasReliablePurity
                 ? eligible + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalBurden()) + ")"
                 : Formats.NA_STRING;
