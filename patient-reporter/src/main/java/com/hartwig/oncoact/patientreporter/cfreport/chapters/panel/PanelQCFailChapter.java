@@ -18,9 +18,14 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @NotNull
     private final PanelFailReport report;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public PanelQCFailChapter(@NotNull PanelFailReport report) {
+    public PanelQCFailChapter(@NotNull PanelFailReport report, @NotNull ReportResources reportResources) {
         this.report = report;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -47,9 +52,9 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
         reportDocument.add(createFailReasonDiv());
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
@@ -61,10 +66,13 @@ public class PanelQCFailChapter implements ReportChapter {
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(report.failExplanation().reportExplanationDetail()).addStyle(ReportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(reportResources.dataHighlightStyle()));
+        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        if (report.failExplanation().sampleFailReasonComment() != null) {
+            div.add(new Paragraph(report.failExplanation().sampleFailReasonComment() ).addStyle(reportResources.subTextBoldStyle())
+                    .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        }
+
         return div;
     }
 }

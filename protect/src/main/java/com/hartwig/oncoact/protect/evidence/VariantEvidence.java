@@ -59,13 +59,14 @@ public class VariantEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
-            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants) {
+            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
+            @Nullable Collection<PurpleVariant> allGermlineVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant));
         }
 
-        for (PurpleVariant somaticVariant : allSomaticVariants) {
+        for (PurpleVariant somaticVariant : ReportableVariantFactory.mergeAllVariantLists(allSomaticVariants, allGermlineVariants)) {
             if (!somaticVariant.reported()) {
                 evidences.addAll(evidence(somaticVariant));
             }
@@ -123,16 +124,16 @@ public class VariantEvidence {
         DriverInterpretation driverInterpretation;
         String transcript;
         boolean isCanonical;
-        Integer rangeRank = null;
+        Integer rangeRank;
 
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
+
             isGermline = reportable.source() == ReportableVariantSource.GERMLINE;
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
             rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
-
         } else {
             PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;

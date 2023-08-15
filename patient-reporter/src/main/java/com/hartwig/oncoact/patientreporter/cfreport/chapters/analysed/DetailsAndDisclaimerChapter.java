@@ -23,9 +23,13 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private final AnalysedPatientReport patientReport;
+    @NotNull
+    private final ReportResources reportResources;
 
-    public DetailsAndDisclaimerChapter(@NotNull AnalysedPatientReport patientReport) {
+    public DetailsAndDisclaimerChapter(@NotNull AnalysedPatientReport patientReport,
+                                       @NotNull ReportResources reportResources) {
         this.patientReport = patientReport;
+        this.reportResources = reportResources;
     }
 
     @NotNull
@@ -41,11 +45,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @Override
-    public boolean isFullWidth() {
-        return false;
-    }
-
-    @Override
     public void render(@NotNull Document reportDocument) throws IOException {
         Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
         table.setWidth(contentWidth());
@@ -54,15 +53,16 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createDisclaimerDiv(patientReport)));
         reportDocument.add(table);
 
-        reportDocument.add(ReportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath()));
-        reportDocument.add(ReportSignature.createEndOfReportIndication());
+        ReportSignature reportSignature = ReportSignature.create(reportResources);
+        reportDocument.add(reportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath()));
+        reportDocument.add(reportSignature.createEndOfReportIndication());
     }
 
     @NotNull
-    private static Div createSampleDetailsDiv(@NotNull AnalysedPatientReport patientReport) {
+    private Div createSampleDetailsDiv(@NotNull AnalysedPatientReport patientReport) {
         Div div = new Div();
 
-        div.add(new Paragraph("Sample details").addStyle(ReportResources.smallBodyHeadingStyle()));
+        div.add(new Paragraph("Sample details").addStyle(reportResources.smallBodyHeadingStyle()));
 
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
         div.add(createContentParagraph("The samples have been analyzed by Next Generation Sequencing using Whole Genome Sequencing"));
@@ -104,11 +104,11 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createDisclaimerDiv(@NotNull AnalysedPatientReport patientReport) {
+    private Div createDisclaimerDiv(@NotNull AnalysedPatientReport patientReport) {
         String pipelineVersion = patientReport.pipelineVersion() == null ? "No pipeline version is known" : patientReport.pipelineVersion();
         Div div = new Div();
 
-        div.add(new Paragraph("Disclaimer").addStyle(ReportResources.smallBodyHeadingStyle()));
+        div.add(new Paragraph("Disclaimer").addStyle(reportResources.smallBodyHeadingStyle()));
 
         div.add(createContentParagraph("The data on which this report is based is generated "
                 + "from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation and have passed all internal quality controls."));
@@ -138,7 +138,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createContentDivWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
+    private Div createContentDivWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
         Div div = new Div();
 
         div.add(createParaGraphWithLink(string1, string2, link));
@@ -146,15 +146,15 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph createParaGraphWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
-        return new Paragraph(string1).addStyle(ReportResources.subTextStyle())
+    private Paragraph createParaGraphWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(ReportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
+    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
         String pathologyId = patientReport.lamaPatientData().getPathologyNumber();
         String reportingId = patientReport.lamaPatientData().getReportingId();
 
@@ -176,28 +176,28 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph createContentParagraphRed(@NotNull String text) {
-        return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyleRed()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraphRed(@NotNull String text) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyleRed()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String text) {
-        return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraph(@NotNull String text) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
+    private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
 
     @NotNull
-    private static Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
                                                          @NotNull String regularPart2, @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
-                .add(new Text(boldPart2).addStyle(ReportResources.smallBodyBoldTextStyle()))
+                .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 

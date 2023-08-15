@@ -104,7 +104,7 @@ public class PanelReporterApplication {
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
                 config.panelQcFailReason(),
-                config.failReasonsDatabaseTsv());
+                config.sampleFailReasonComment());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);

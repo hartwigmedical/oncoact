@@ -1,9 +1,11 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -11,16 +13,22 @@ import com.itextpdf.layout.element.Paragraph;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public class QCFailChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "OncoAct tumor WGS report - Failed";
-
     @NotNull
     private final QCFailReport failReport;
+    @NotNull
+    private final ReportResources reportResources;
+    private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public QCFailChapter(@NotNull QCFailReport failReport) {
+    public QCFailChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
         this.failReport = failReport;
+        this.reportResources = reportResources;
+        this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
     }
 
     @NotNull
@@ -32,7 +40,21 @@ public class QCFailChapter implements ReportChapter {
     @NotNull
     @Override
     public String pdfTitle() {
-        return failReport.isCorrectedReport() ? TITLE_REPORT + " (Corrected)" : TITLE_REPORT;
+        Set<QCFailReason> tumorFailTitle = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.TCP_WGS_FAIL);
+
+        if (tumorFailTitle.contains(failReport.reason())) {
+            if (failReport.isCorrectedReport()) {
+                return "OncoAct tumor WGS report - failed tumor analysis (Corrected)";
+            } else {
+                return "OncoAct tumor WGS report - failed tumor analysis";
+            }
+        } else {
+            if (failReport.isCorrectedReport()) {
+                return "OncoAct tumor WGS report - failed analysis (Corrected)";
+            } else {
+                return "OncoAct tumor WGS report - failed analysis";
+            }
+        }
     }
 
     @Override
@@ -47,26 +69,29 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(TumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(), contentWidth()));
 
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(ReportResources.subTextSmallStyle()));
+                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),
-                failReport.failExplanation().reportExplanation(), failReport.failExplanation().reportExplanationDetail()));
+                failReport.failExplanation().reportExplanation(), failReport.failExplanation().sampleFailReasonComment()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 
     @NotNull
-    private static Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation, @NotNull String reportExplanationDetail) {
+    private Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation,
+                                    @Nullable String sampleFailReasonComment){
         Div div = new Div();
         div.setKeepTogether(true);
 
-        div.add(new Paragraph(reportReason).addStyle(ReportResources.dataHighlightStyle()));
-        div.add(new Paragraph(reportExplanation).addStyle(ReportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
-        div.add(new Paragraph(reportExplanationDetail).addStyle(ReportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(reportReason).addStyle(reportResources.dataHighlightStyle()));
+        div.add(new Paragraph(reportExplanation).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        if (sampleFailReasonComment != null) {
+            div.add(new Paragraph(sampleFailReasonComment).addStyle(reportResources.subTextBoldStyle())
+                    .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        }
         return div;
     }
 }

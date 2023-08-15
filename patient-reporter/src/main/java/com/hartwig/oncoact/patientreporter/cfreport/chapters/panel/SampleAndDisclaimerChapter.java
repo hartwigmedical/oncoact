@@ -22,9 +22,12 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private final PanelReport report;
+    @NotNull
+    private final ReportResources reportResources;
 
-    public SampleAndDisclaimerChapter(@NotNull PanelReport report) {
+    public SampleAndDisclaimerChapter(@NotNull PanelReport report, @NotNull ReportResources reportResources) {
         this.report = report;
+        this.reportResources = reportResources;
     }
 
     @NotNull
@@ -52,9 +55,9 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()));
         reportDocument.add(table);
-
-        reportDocument.add(ReportSignature.createSignatureDivPanel(report.signaturePath()));
-        reportDocument.add(ReportSignature.createEndOfReportIndication());
+        ReportSignature reportSignature = ReportSignature.create(reportResources);
+        reportDocument.add(reportSignature.createSignatureDivPanel(report.signaturePath()));
+        reportDocument.add(reportSignature.createEndOfReportIndication());
     }
 
     @NotNull
@@ -88,12 +91,12 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Paragraph createContentParagraphRed(@NotNull String text) {
-        return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyleRed()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraphRed(@NotNull String text) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyleRed()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId, boolean isStudy) {
+    private Paragraph generateHMFSampleIDParagraph(@NotNull String reportingId, boolean isStudy) {
         if (isStudy) {
             return createContentParagraph("Study id: ", reportingId);
         } else {
@@ -126,36 +129,36 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private static Div createDisclaimerDiv() {
+    private Div createDisclaimerDiv() {
         Div div = new Div();
-        div.add(new Paragraph("Disclaimer").addStyle(ReportResources.smallBodyHeadingStyle()));
+        div.add(new Paragraph("Disclaimer").addStyle(reportResources.smallBodyHeadingStyle()));
         return div;
     }
 
     @NotNull
-    private static Div createSampleDetailsDiv() {
+    private Div createSampleDetailsDiv() {
         Div div = new Div();
-        div.add(new Paragraph("Sample details").addStyle(ReportResources.smallBodyHeadingStyle()));
+        div.add(new Paragraph("Sample details").addStyle(reportResources.smallBodyHeadingStyle()));
         return div;
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
+    private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
             @NotNull String regularPart2, @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(ReportResources.smallBodyBoldTextStyle()))
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
-                .add(new Text(boldPart2).addStyle(ReportResources.smallBodyBoldTextStyle()))
+                .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
-    private static Paragraph createContentParagraph(@NotNull String text) {
-        return new Paragraph(text).addStyle(ReportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraph(@NotNull String text) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 }

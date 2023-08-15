@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -178,14 +179,12 @@ public class FusionEvidenceTest {
     @NotNull
     private static ProtectEvidence findByFusion(@NotNull List<ProtectEvidence> evidences, @NotNull LinxFusion fusion,
             @NotNull String treatment) {
-        String event = EventGenerator.fusionEvent(fusion);
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.event().equals(event) && evidence.treatment().name().equals(treatment)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Cannot find evidence with fusion event: " + event);
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.event(), EventGenerator.fusionEvent(fusion)) && Objects.equals(x.treatment().name(),
+                        treatment))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(
+                        "Cannot find evidence with fusion event: " + EventGenerator.fusionEvent(fusion)));
     }
 
     @Test
@@ -198,7 +197,11 @@ public class FusionEvidenceTest {
         ActionableFusion fusion = TestServeFactory.fusionBuilder()
                 .geneUp("EML4")
                 .minExonUp(minExonUp)
-                .maxExonUp(maxExonUp).geneDown("ALK").minExonDown(minExonDown).maxExonDown(maxExonDown).build();
+                .maxExonUp(maxExonUp)
+                .geneDown("ALK")
+                .minExonDown(minExonDown)
+                .maxExonDown(maxExonDown)
+                .build();
 
         FusionEvidence fusionEvidence =
                 new FusionEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(), Lists.newArrayList(fusion));

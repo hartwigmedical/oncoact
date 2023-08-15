@@ -72,7 +72,7 @@ public class AnalysedPatientReporter {
             PipelineVersion.checkPipelineVersion(pipelineVersion, config.expectedPipelineVersion(), config.overridePipelineVersion());
         }
 
-        GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel());
+        GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel(), reportData.clinicalTranscriptsModel());
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());

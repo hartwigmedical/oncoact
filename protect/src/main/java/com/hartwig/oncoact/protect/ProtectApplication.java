@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
 import com.hartwig.oncoact.doid.DiseaseOntology;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -70,7 +71,11 @@ public class ProtectApplication {
         List<DriverGene> driverGenes = DriverGeneFile.read(config.driverGeneTsv());
         LOGGER.info("  Read {} driver gene entries", driverGenes.size());
 
-        ProtectAlgo algo = ProtectAlgo.build(actionableEvents, patientTumorDoids, driverGenes, doidParentModel);
+        ProtectAlgo algo = ProtectAlgo.build(actionableEvents,
+                patientTumorDoids,
+                driverGenes,
+                doidParentModel,
+                ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv()));
         List<ProtectEvidence> evidences = algo.run(orange);
 
         String filename = config.outputDir() + File.separator + "protect.tsv";
