@@ -25,6 +25,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
@@ -53,7 +54,9 @@ public class ConclusionAlgoTest {
     @Test
     public void runsOnTestData() {
         ImmutableRoseData.Builder builder = ImmutableRoseData.builder();
-        RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord()).build();
+        RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord())
+                .clinicalTranscriptsModel(ClinicalTranscriptModelTestFactory.createEmpty())
+                .build();
         assertNotNull(ConclusionAlgo.generateConclusion(minimal));
 
         RoseData proper = builder.orange(TestOrangeFactory.createProperTestOrangeRecord()).build();
