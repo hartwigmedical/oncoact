@@ -177,9 +177,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         Table contentTable;
         if (DISPLAY_CLONAL_COLUMN) {
-            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 80, 70, 60, 40, 30, 60, 60, 50, 50 },
+            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 150, 60, 40, 30, 60, 60, 50, 50 },
                     new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Canonical Variant"), tableUtil.createHeaderCell("Clinical Variant"),
+                            tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
@@ -189,9 +189,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 80, 70, 60, 40, 30, 60, 60, 50 },
+            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 150, 60, 40, 30, 60, 60, 50 },
                     new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Canonical Variant"), tableUtil.createHeaderCell("Clinical Variant"),
+                            tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
@@ -202,32 +202,41 @@ public class GenomicAlterationsChapter implements ReportChapter {
         }
 
         for (ReportableVariant variant : SomaticVariants.sort(reportableVariants)) {
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.geneDisplayString(variant,
+            List<String> annotationList = SomaticVariants.determineVariantAnnotations(variant.canonicalHgvsCodingImpact(),
+                    variant.canonicalHgvsProteinImpact(),
+                    variant.otherImpactClinical());
+
+            Cell annotationCell = new Cell();
+            for (String annotation : annotationList) {
+                annotationCell.add(new Paragraph(annotation));
+            }
+            int annotationSize = annotationList.size();
+
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.geneDisplayString(variant,
                     notifyGermlineStatusPerVariant.get(variant),
                     variant.localPhaseSet(),
-                    variant.canonicalEffect())));
-            contentTable.addCell(tableUtil.createContentCell(variant.gDNA()));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.determineVariantAnnotationCanonical(variant.canonicalHgvsCodingImpact(),
-                    variant.canonicalHgvsProteinImpact())));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.determineVariantAnnotationClinical(variant.otherImpactClinical())));
-            contentTable.addCell(tableUtil.createContentCell(new Paragraph(
+                    variant.canonicalEffect()), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.gDNA(), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(annotationCell, annotationSize));
+
+            contentTable.addCell(tableUtil.createContentCellRowSpan(new Paragraph(
                     variant.alleleReadCount() + " / ").setFont(reportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(reportResources.fontRegular()))
-                    .setTextAlignment(TextAlignment.CENTER)));
-            contentTable.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity))
-                    .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.tVAFString(variant.tVAF(),
+                    .setTextAlignment(TextAlignment.CENTER), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity),
+                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.tVAFString(variant.tVAF(),
                     hasReliablePurity,
-                    variant.totalCopyNumber())).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.biallelicString(variant.biallelic(), hasReliablePurity))
-                    .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.hotspotString(variant.hotspot()))
+                    variant.totalCopyNumber()), annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.biallelicString(variant.biallelic(), hasReliablePurity),
+                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.hotspotString(variant.hotspot()), annotationSize)
                     .setTextAlignment(TextAlignment.CENTER));
             if (DISPLAY_CLONAL_COLUMN) {
-                contentTable.addCell(tableUtil.createContentCell(SomaticVariants.clonalString(variant.clonalLikelihood()))
-                        .setTextAlignment(TextAlignment.CENTER));
+                contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.clonalString(variant.clonalLikelihood()),
+                        annotationSize).setTextAlignment(TextAlignment.CENTER));
             }
-            contentTable.addCell(tableUtil.createContentCell(variant.driverLikelihoodInterpretation().display()))
+            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
                     .setTextAlignment(TextAlignment.CENTER);
         }
 
