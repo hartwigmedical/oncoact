@@ -1,5 +1,13 @@
 package com.hartwig.oncoact.rose.conclusion;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -13,7 +21,11 @@ import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
@@ -29,19 +41,18 @@ import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
 import com.hartwig.oncoact.rose.ImmutableRoseData;
 import com.hartwig.oncoact.rose.RoseData;
-import com.hartwig.oncoact.rose.actionability.*;
+import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
+import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.Condition;
+import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityEntry;
+import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class ConclusionAlgoTest {
 
@@ -66,7 +77,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).");
+        assertEquals(conclusion.get(0), "- Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).");
     }
 
     @Test
@@ -83,7 +94,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- Molecular Tissue of Origin classifier: Inconclusive.");
+        assertEquals(conclusion.get(0), "- Molecular Tissue of Origin classifier: Inconclusive.");
     }
 
     @Test
@@ -100,7 +111,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateCUPPAConclusion(conclusion, cuppaPrediction, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- Molecular Tissue of Origin classifier: Inconclusive (highest likelihood: Melanoma-60.1%).");
+        assertEquals(conclusion.get(0), "- Molecular Tissue of Origin classifier: Inconclusive (highest likelihood: Melanoma-60.1%).");
     }
 
     @Test
@@ -117,14 +128,20 @@ public class ConclusionAlgoTest {
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("CHEK2", TypeAlteration.INACTIVATION, "CHEK2", Condition.ONLY_HIGH, "CHEK2 inactivation");
+        actionabilityMap = append(actionabilityMap, "APC", TypeAlteration.ACTIVATING_MUTATION, "APC", Condition.HIGH_NO_ACTIONABLE, "APC");
         actionabilityMap =
-                append(actionabilityMap, "APC", TypeAlteration.ACTIVATING_MUTATION, "APC", Condition.HIGH_NO_ACTIONABLE, "APC");
-        actionabilityMap = append(actionabilityMap, "BRCA2", TypeAlteration.INACTIVATION, "BRCA2", Condition.ONLY_HIGH, "BRCA2 inactivation");
-        actionabilityMap = append(actionabilityMap, "BRCA1", TypeAlteration.INACTIVATION, "BRCA1", Condition.ONLY_HIGH, "BRCA1 inactivation");
+                append(actionabilityMap, "BRCA2", TypeAlteration.INACTIVATION, "BRCA2", Condition.ONLY_HIGH, "BRCA2 inactivation");
+        actionabilityMap =
+                append(actionabilityMap, "BRCA1", TypeAlteration.INACTIVATION, "BRCA1", Condition.ONLY_HIGH, "BRCA1 inactivation");
         actionabilityMap = append(actionabilityMap, "germline", TypeAlteration.GERMLINE, "germline", Condition.ONLY_HIGH, "germline");
         actionabilityMap =
                 append(actionabilityMap, "NOT_BIALLELIC", TypeAlteration.NOT_BIALLELIC, "NOT_BIALLELIC", Condition.OTHER, "not biallelic");
-        actionabilityMap = append(actionabilityMap, "TERT", TypeAlteration.PROMOTER_MUTATION, "TERT", Condition.HIGH_NO_ACTIONABLE, "TERT promotor mutation");
+        actionabilityMap = append(actionabilityMap,
+                "TERT",
+                TypeAlteration.PROMOTER_MUTATION,
+                "TERT",
+                Condition.HIGH_NO_ACTIONABLE,
+                "TERT promotor mutation");
         actionabilityMap =
                 append(actionabilityMap, "KRAS", TypeAlteration.ACTIVATING_MUTATION, "KRAS", Condition.HIGH_NO_ACTIONABLE, "KRAS");
         ChordRecord analysis = TestChordFactory.builder().hrdValue(0.8).hrStatus(ChordStatus.HR_DEFICIENT).build();
@@ -186,13 +203,12 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(createHomozygousDisruption("PTEN"),
-                createHomozygousDisruption("KRAS"));
+        Set<HomozygousDisruption> homozygousDisruptions =
+                Sets.newHashSet(createHomozygousDisruption("PTEN"), createHomozygousDisruption("KRAS"));
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("PTEN", TypeAlteration.INACTIVATION, "PTEN", Condition.ALWAYS, "PTEN");
-        actionabilityMap =
-                append(actionabilityMap, "KRAS", TypeAlteration.INACTIVATION, "KRAS", Condition.ALWAYS, "KRAS");
+        actionabilityMap = append(actionabilityMap, "KRAS", TypeAlteration.INACTIVATION, "KRAS", Condition.ALWAYS, "KRAS");
 
         ConclusionAlgo.generateHomozygousDisruptionConclusion(conclusion,
                 homozygousDisruptions,
@@ -201,8 +217,8 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet());
 
         assertEquals(2, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- PTEN PTEN");
-        assertEquals(new ArrayList<>(conclusion).get(1), "- KRAS KRAS");
+        assertEquals(conclusion.get(0), "- PTEN PTEN");
+        assertEquals(conclusion.get(1), "- KRAS KRAS");
 
     }
 
@@ -211,7 +227,8 @@ public class ConclusionAlgoTest {
         Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
         List<LilacAllele> alleles = Lists.newArrayList();
         List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ONLY_HIGH, "EBV");
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
+                create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ONLY_HIGH, "EBV");
         actionabilityMap = append(actionabilityMap, "HPV", TypeAlteration.POSITIVE, "HPV", Condition.ONLY_HIGH, "HPV");
         actionabilityMap = append(actionabilityMap, "MCV", TypeAlteration.POSITIVE, "MCV", Condition.ONLY_HIGH, "MCV");
 
@@ -227,7 +244,8 @@ public class ConclusionAlgoTest {
         Set<AnnotatedVirus> viruses = Sets.newHashSet();
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HLA-A*02", TypeAlteration.POSITIVE, "HLA-A*02", Condition.ALWAYS, "HLA-A*02");
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
+                create("HLA-A*02", TypeAlteration.POSITIVE, "HLA-A*02", Condition.ALWAYS, "HLA-A*02");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
@@ -240,8 +258,8 @@ public class ConclusionAlgoTest {
         Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02",
-                Condition.ALWAYS, "HPV-16 | HLA-A*02");
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
+                create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02", Condition.ALWAYS, "HPV-16 | HLA-A*02");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
@@ -260,7 +278,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateHrdConclusion(conclusion, chord, actionabilityMap, Sets.newHashSet(), Sets.newHashSet(), hrd);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- HRD (0.8) HRD");
+        assertEquals(conclusion.get(0), "- HRD (0.8) HRD");
     }
 
     @Test
@@ -287,7 +305,7 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- MSI (4.5) MSI");
+        assertEquals(conclusion.get(0), "- MSI (4.5) MSI");
     }
 
     @Test
@@ -319,7 +337,7 @@ public class ConclusionAlgoTest {
                 Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- TML (200) TML");
+        assertEquals(conclusion.get(0), "- TML (200) TML");
     }
 
     @Test
@@ -347,7 +365,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateTMBConclusion(conclusion, 15, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- TMB (15.0) TMB");
+        assertEquals(conclusion.get(0), "- TMB (15.0) TMB");
     }
 
     @Test
@@ -369,7 +387,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.16, true, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- low purity (16%)\n");
+        assertEquals(conclusion.get(0), "- low purity (16%)\n");
     }
 
     @Test
@@ -391,7 +409,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generatePurityConclusion(conclusion, 0.3, false, actionabilityMap);
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- unreliable\n");
+        assertEquals(conclusion.get(0), "- unreliable\n");
     }
 
     @Test
@@ -403,7 +421,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateTotalResults(conclusion, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- no_oncogenic");
+        assertEquals(conclusion.get(0), "- no_oncogenic");
     }
 
     @Test
@@ -417,20 +435,20 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateTotalResults(conclusion, actionabilityMap, oncogenic, Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(new ArrayList<>(conclusion).get(0), "- no_actionable");
+        assertEquals(conclusion.get(0), "- no_actionable");
     }
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> create(@NotNull String gene, @NotNull TypeAlteration typeAlteration,
-                                                                    @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
+            @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = Maps.newHashMap();
         return append(actionabilityMap, gene, typeAlteration, match, condition, conclusion);
     }
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> append(@NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-                                                                    @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
-                                                                    @NotNull String conclusion) {
+            @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
+            @NotNull String conclusion) {
         ActionabilityKey key = ImmutableActionabilityKey.builder().match(gene).type(typeAlteration).build();
         ActionabilityEntry entry =
                 ImmutableActionabilityEntry.builder().match(match).type(typeAlteration).condition(condition).conclusion(conclusion).build();
@@ -593,8 +611,14 @@ public class ConclusionAlgoTest {
     @NotNull
     private static Set<AnnotatedVirus> createTestVirusInterpreterEntries() {
         Set<AnnotatedVirus> virusEntries = Sets.newHashSet();
-        AnnotatedVirus virus1 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.EBV).virusDriverLikelihoodType(VirusLikelihoodType.LOW).build();
-        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder().interpretation(VirusInterpretation.HPV).virusDriverLikelihoodType(VirusLikelihoodType.HIGH).build();
+        AnnotatedVirus virus1 = TestVirusInterpreterFactory.builder()
+                .interpretation(VirusInterpretation.EBV)
+                .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
+                .build();
+        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder()
+                .interpretation(VirusInterpretation.HPV)
+                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .build();
         AnnotatedVirus virus3 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.MCV)
                 .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
@@ -634,9 +658,18 @@ public class ConclusionAlgoTest {
         Set<LinxFusion> fusions = Sets.newHashSet();
         fusions.add(linxFusionBuilder("BRAF", "BRAF", true).reportedType(LinxFusionType.EXON_DEL_DUP).build());
         fusions.add(linxFusionBuilder("CAV2", "MET", true).reportedType(LinxFusionType.KNOWN_PAIR).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25).fusedExonDown(14).reportedType(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26).fusedExonDown(18).reportedType(LinxFusionType.EXON_DEL_DUP).build());
-        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15).fusedExonDown(23).reportedType(LinxFusionType.EXON_DEL_DUP).build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(25)
+                .fusedExonDown(14)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(26)
+                .fusedExonDown(18)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
+        fusions.add(linxFusionBuilder("EGFR", "EGFR", true).fusedExonUp(15)
+                .fusedExonDown(23)
+                .reportedType(LinxFusionType.EXON_DEL_DUP)
+                .build());
         return fusions;
     }
 

@@ -1,34 +1,48 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.oncoact.hla.*;
-import com.hartwig.oncoact.orange.peach.TestPeachFactory;
-import com.hartwig.oncoact.patientreporter.*;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
-import com.hartwig.oncoact.patientreporter.panel.*;
-import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.util.Formats;
-import org.apache.logging.log4j.util.Strings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.hla.ImmutableHlaAllele;
+import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
+import com.hartwig.oncoact.hla.ImmutableHlaReporting;
+import com.hartwig.oncoact.orange.peach.TestPeachFactory;
+import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
+import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
+import com.hartwig.oncoact.patientreporter.OutputFileUtil;
+import com.hartwig.oncoact.patientreporter.PatientReport;
+import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
+import com.hartwig.oncoact.patientreporter.ReportData;
+import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
+import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
+import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
+import com.hartwig.oncoact.patientreporter.panel.PanelReport;
+import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.util.Formats;
+
+import org.apache.logging.log4j.util.Strings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class CFReportWriterTest {
 
@@ -42,42 +56,39 @@ public class CFReportWriterTest {
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
     private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
+    @NotNull
+    public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
+        return ImmutableAnalysedPatientReport.builder()
+                .from(analysedPatientReport)
+                .clinicalSummary(analysedPatientReport.clinicalSummary()
+                        + " The underlying data of these WGS results can be requested at Hartwig Medical "
+                        + "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                .build();
+    }
+
     @Test
     public void canGeneratePatientReportForCOLO829() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
-                .comments(COLO_COMMENT_STRING)
-                .build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
 
-        colo829Report =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(colo829Report)
-                        .clinicalSummary(colo829Report.clinicalSummary() + " The underlying data of these WGS results can be requested at Hartwig Medical " +
-                                "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
+        colo829Report = generateAnalysedPatientReport(colo829Report);
+
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
     @Test
     public void canGeneratePatientReportWithUnreliablePurity() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T")
-                .comments(COLO_COMMENT_STRING)
-                .build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
         AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
 
-        colo829Report =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(colo829Report)
-                        .clinicalSummary(colo829Report.clinicalSummary() + " The underlying data of these WGS results can be requested at Hartwig Medical " +
-                                "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
+        colo829Report = generateAnalysedPatientReport(colo829Report);
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -85,19 +96,13 @@ public class CFReportWriterTest {
     @Test
     @Ignore
     public void canGeneratePatientReportForStudySample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study")
-                .build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study").build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
 
-        patientReport =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(patientReport)
-                        .clinicalSummary(patientReport.clinicalSummary() + " The underlying data of these WGS results can be requested at Hartwig Medical " +
-                                "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -105,19 +110,13 @@ public class CFReportWriterTest {
     @Test
     @Ignore
     public void canGeneratePatientReportForDiagnosticSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic")
-                .build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic").build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
 
-        patientReport =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(patientReport)
-                        .clinicalSummary(patientReport.clinicalSummary() + " The underlying data of these WGS results can be requested at Hartwig Medical " +
-                                "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -136,12 +135,7 @@ public class CFReportWriterTest {
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
 
-        patientReport =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(patientReport)
-                        .clinicalSummary(patientReport.clinicalSummary() + " The underlying data of these WGS results can be requested at Hartwig Medical " +
-                                "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -258,10 +252,8 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
-        FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reportReason("reportReason")
-                .reportExplanation("reportExplanation")
-                .build();
+        FailedReason failExplanation =
+                ImmutableFailedReason.builder().reportReason("reportReason").reportExplanation("reportExplanation").build();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
@@ -284,9 +276,9 @@ public class CFReportWriterTest {
         writer.writePanelQCFailReport(patientReport, filename);
     }
 
-    private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString,
-                                             @NotNull QCFailReason reason, boolean correctedReport, boolean correctionReportExtern, @NotNull String comments,
-                                             @NotNull PurpleQCStatus purpleQCStatus) throws IOException {
+    private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString, @NotNull QCFailReason reason,
+            boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus)
+            throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         FailedReason failExplanation = ImmutableFailedReason.builder()
