@@ -31,7 +31,6 @@ import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -418,55 +417,51 @@ public final class ConclusionAlgo {
     static void generateVirusHLAConclusion(@NotNull List<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses, @NotNull Collection<LilacAllele> lilac,
                                            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Collection<String> oncogenic,
                                            @NotNull Collection<String> actionable) {
-        String HlaAllele = null;
-        for (LilacAllele allele : lilac) {
+        final String hlaAlleleString = "A*02:01";
+        boolean containsHlaAllele = lilac.stream().anyMatch(entry -> entry.allele().equals(hlaAlleleString));
 
-            if (allele.allele().equals("A*02:01")) {
-                HlaAllele = allele.allele();
-            }
-        }
-
-        if (reportableViruses.size() >= 1) {
+        if (!reportableViruses.isEmpty()) {
             for (AnnotatedVirus virus : reportableViruses) {
-                if (virus.interpretation() != null && HlaAllele != null) {
+                if (virus.interpretation() == null || virus.virusDriverLikelihoodType() != VirusLikelihoodType.HIGH) {
+                    continue;
+                }
+                if (containsHlaAllele) {
+                    if (virus.interpretation() != VirusInterpretation.HPV) {
+                        continue;
+                    }
                     ActionabilityKey key = ImmutableActionabilityKey.builder()
                             .match("HPV-16 | HLA-A*02")
                             .type(TypeAlteration.POSITIVE)
                             .build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-
-                    if (entry != null && entry.condition() == Condition.ALWAYS) {
-                        if (virus.interpretation() == VirusInterpretation.HPV && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
-                            oncogenic.add("HLA | virus");
-                            conclusion.add(conclusion.size(), "- " + HlaAllele + " " + virus.interpretation() + " " + entry.conclusion());
-                        }
+                    if (entry == null || entry.condition() != Condition.ALWAYS) {
+                        continue;
                     }
-                } else if (virus.interpretation() != null) {
+                    oncogenic.add("HLA | virus");
+                    conclusion.add("- " + hlaAlleleString + " " + virus.interpretation() + " " + entry.conclusion());
+                } else {
                     ActionabilityKey key = ImmutableActionabilityKey.builder()
-                            .match(virus.virusDriverLikelihoodType().equals(VirusLikelihoodType.HIGH) ? virus.interpretation().toString() : Strings.EMPTY)
+                            .match(virus.interpretation().toString())
                             .type(TypeAlteration.POSITIVE)
                             .build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-                    if (entry != null && entry.condition() == Condition.ONLY_HIGH) {
-                        if (virus.interpretation() != null && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
-                            actionable.add("virus");
-                            oncogenic.add("virus");
-                            conclusion.add(conclusion.size(), "- " + virus.interpretation() + " " + entry.conclusion());
-                        }
+                    if (entry == null || entry.condition() != Condition.ONLY_HIGH) {
+                        continue;
                     }
+                    actionable.add("virus");
+                    oncogenic.add("virus");
+                    conclusion.add("- " + virus.interpretation() + " " + entry.conclusion());
                 }
             }
-        } else {
-            if (HlaAllele != null) {
-                ActionabilityKey key = ImmutableActionabilityKey.builder()
-                        .match("HLA-A*02")
-                        .type(TypeAlteration.POSITIVE)
-                        .build();
-                ActionabilityEntry entry = actionabilityMap.get(key);
-                if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    oncogenic.add("hla");
-                    conclusion.add(conclusion.size(), "- " + HlaAllele + " " + entry.conclusion());
-                }
+        } else if (containsHlaAllele) {
+            ActionabilityKey key = ImmutableActionabilityKey.builder()
+                    .match("HLA-A*02")
+                    .type(TypeAlteration.POSITIVE)
+                    .build();
+            ActionabilityEntry entry = actionabilityMap.get(key);
+            if (entry != null && entry.condition() == Condition.ALWAYS) {
+                oncogenic.add("hla");
+                conclusion.add("- " + hlaAlleleString + " " + entry.conclusion());
             }
         }
     }
