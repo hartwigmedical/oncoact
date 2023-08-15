@@ -2,6 +2,7 @@ package com.hartwig.oncoact.protect.evidence;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -90,7 +91,7 @@ public class VariantEvidence {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableHotspot hotspot : hotspots) {
             if (hotspotMatch(variant, hotspot)) {
-                evidences.add(evidence(variant, hotspot, mayReport, null));
+                evidences.add(evidence(variant, hotspot, mayReport, "hotspot"));
             }
         }
 
@@ -108,7 +109,7 @@ public class VariantEvidence {
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, null));
+                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, "gene"));
             }
         }
 
@@ -130,27 +131,15 @@ public class VariantEvidence {
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
-            if (range != null) {
-                if (range.equals("codon")) {
-                    rangeRank = reportable.affectedCodon();
-                } else if (range.equals("exon")) {
-                    rangeRank = reportable.affectedExon();
-                }
-            }
+            rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
+
         } else {
             PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;
             driverInterpretation = DriverInterpretation.LOW;
             transcript = purple.canonicalImpact().transcript();
             isCanonical = true;
-
-            if (range != null) {
-                if (range.equals("codon")) {
-                    rangeRank = purple.canonicalImpact().affectedCodon();
-                } else if (range.equals("exon")) {
-                    rangeRank = purple.canonicalImpact().affectedExon();
-                }
-            }
+            rangeRank = determineRangeRank(range, purple.canonicalImpact().affectedCodon(), purple.canonicalImpact().affectedExon());
         }
 
         return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
@@ -162,6 +151,18 @@ public class VariantEvidence {
                 .reported(report)
                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
                 .build();
+    }
+
+    private static Integer determineRangeRank(@Nullable String range, @Nullable Integer affectedCodon, @Nullable Integer affectedExon) {
+        if (Objects.equals(range, "codon")) {
+            return affectedCodon;
+        } else if (Objects.equals(range, "exon")) {
+            return affectedExon;
+        } else if (Objects.equals(range, "hotspot") || Objects.equals(range, "gene")) {
+            return null;
+        } else {
+            throw new IllegalStateException("Unknown range string detected: " + range);
+        }
     }
 
     private static boolean hotspotMatch(@NotNull Variant variant, @NotNull ActionableHotspot hotspot) {

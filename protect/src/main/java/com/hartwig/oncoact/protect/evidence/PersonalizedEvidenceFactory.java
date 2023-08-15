@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -52,12 +53,12 @@ public class PersonalizedEvidenceFactory {
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
             @Nullable Integer rangeRank) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSourceRange(actionable, range, rangeRank)));
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)));
     }
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable)));
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, null, null)));
     }
 
     @NotNull
@@ -114,7 +115,7 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    private static KnowledgebaseSource resolveProtectSourceRange(@NotNull ActionableEvent actionable, @Nullable String range,
+    private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable, @Nullable String range,
             @Nullable Integer rangeRank) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
@@ -126,34 +127,13 @@ public class PersonalizedEvidenceFactory {
                 .build();
     }
 
-    @NotNull
-    private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable) {
-        return ImmutableKnowledgebaseSource.builder()
-                .name(actionable.source())
-                .sourceEvent(actionable.sourceEvent())
-                .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
-                .evidenceType(determineEvidenceType(actionable, null))
-                .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
-                .build();
-    }
-
     @VisibleForTesting
     @NotNull
     static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable, @Nullable String range) {
         if (actionable instanceof ActionableHotspot) {
             return EvidenceType.HOTSPOT_MUTATION;
         } else if (actionable instanceof ActionableRange) {
-            if (range != null) {
-                if (range.equals("codon")) {
-                    return EvidenceType.CODON_MUTATION;
-                } else if (range.equals("exon")) {
-                    return EvidenceType.EXON_MUTATION;
-                } else {
-                    throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
-                }
-            } else {
-                throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
-            }
+            return fromActionableRange(actionable, range);
         } else if (actionable instanceof ActionableGene) {
             return fromActionableGene((ActionableGene) actionable);
         } else if (actionable instanceof ActionableFusion) {
@@ -164,6 +144,17 @@ public class PersonalizedEvidenceFactory {
             return EvidenceType.HLA;
         } else {
             throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
+        }
+    }
+
+    @NotNull
+    private static EvidenceType fromActionableRange(final @NotNull ActionableEvent actionable, final @Nullable String range) {
+        if (Objects.equals(range, "codon")) {
+            return EvidenceType.CODON_MUTATION;
+        } else if (Objects.equals(range, "exon")) {
+            return EvidenceType.EXON_MUTATION;
+        } else {
+            throw new IllegalStateException("Unexpected actionable event detected in evidence " + actionable + "with range " + range);
         }
     }
 
