@@ -232,8 +232,8 @@ public class AnalysedPatientReporter {
 
         LOGGER.info(" CHORD analysis HRD prediction: {} ({})", analysis.hrdValue(), analysis.hrdStatus());
         LOGGER.info(" Microsatellite indels per Mb: {} ({})", analysis.microsatelliteIndelsPerMb(), analysis.microsatelliteStatus());
-        LOGGER.info(" Tumor mutational load: {} ({})", analysis.tumorMutationalLoad(), analysis.tumorMutationalLoadStatus());
-        LOGGER.info(" Tumor mutational burden: {}", analysis.tumorMutationalBurden());
+        LOGGER.info(" Tumor mutational burden: {} ({})", analysis.tumorMutationalBurden(), analysis.tumorMutationalBurdenStatus());
+        LOGGER.info(" Tumor mutational load: {}", analysis.tumorMutationalLoad());
 
         LOGGER.info("Printing actionability results for {}", lamaPatientData.getReportingId());
         LOGGER.info(" Tumor-specific evidence items found: {}", analysis.tumorSpecificEvidence().size());

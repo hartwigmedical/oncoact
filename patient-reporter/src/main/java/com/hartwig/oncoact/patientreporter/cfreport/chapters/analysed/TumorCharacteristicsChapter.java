@@ -149,9 +149,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
-        String tmlStatus = tumorMutationalStatusString(genomicAnalysis.tumorMutationalLoadStatus());
 
-        String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
+        String mutationalLoadString = hasReliablePurity ? NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false, reportResources);
         mutationalLoadChart.enabled(hasReliablePurity);
@@ -175,8 +174,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         double mutationalBurden = genomicAnalysis.tumorMutationalBurden();
-        String mutationalBurdenString =
-                hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb" : Formats.NA_STRING;
+        String tmbStatus = tumorMutationalBurdenString(genomicAnalysis.tumorMutationalBurdenStatus());
+
+        String mutationalBurdenString = hasReliablePurity
+                ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb"
+                : Formats.NA_STRING;
         BarChart mutationalBurdenChart = new BarChart(mutationalBurden,
                 MutationalBurden.RANGE_MIN,
                 MutationalBurden.RANGE_MAX,
@@ -382,7 +384,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static String tumorMutationalStatusString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
+    private static String tumorMutationalBurdenString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
         switch (tumorMutationalLoadStatus) {
             case HIGH: {
                 return "High";

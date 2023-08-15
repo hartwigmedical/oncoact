@@ -12,6 +12,24 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -25,17 +43,7 @@ import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
@@ -77,15 +85,14 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-                                                              @NotNull PurpleQCStatus purpleQCStatus,
-                                                              boolean withUnreliablePurityOverrule) {
+    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
+            boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
         double tumorMutationalBurden = 13.7394;
         double microsatelliteIndelsPerMb = 0.1221;
-        PurpleTumorMutationalStatus tumorMutationalLoadStatus = PurpleTumorMutationalStatus.HIGH;
+        PurpleTumorMutationalStatus tumorMutationalBurdenStatus = PurpleTumorMutationalStatus.LOW;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
         ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
@@ -108,32 +115,31 @@ public final class ExampleAnalysisTestFactory {
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
-        String summaryWithoutGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+        String summaryWithoutGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
-        String summaryWithoutGermlineLowPurity = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
-                + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
-                + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
+        String summaryWithoutGermlineLowPurity =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
+                        + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
+                        + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
 
-        String summaryWithGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
-
+        String summaryWithGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
         String clinicalSummary;
         if (config.includeSummary() && !config.reportGermline()) {
@@ -166,7 +172,7 @@ public final class ExampleAnalysisTestFactory {
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
                 .microsatelliteStatus(microsatelliteStatus)
                 .tumorMutationalLoad(tumorMutationalLoad)
-                .tumorMutationalLoadStatus(tumorMutationalLoadStatus)
+                .tumorMutationalBurdenStatus(tumorMutationalBurdenStatus)
                 .tumorMutationalBurden(tumorMutationalBurden)
                 .hrdValue(hrdValue)
                 .hrdStatus(hrdStatus)
@@ -223,7 +229,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
+            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -250,8 +256,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome, @NotNull ChromosomeArm chromosomeArm,
+            double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -310,7 +316,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
@@ -1367,35 +1373,36 @@ public final class ExampleAnalysisTestFactory {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build(), TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*2_HOM")
-                        .function("Reduced Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("UGT1A1")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("UGT1A1")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
 
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("DPYD")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build(),
+                                .gene("DPYD")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
                         TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*2_HOM")
@@ -1406,7 +1413,8 @@ public final class ExampleAnalysisTestFactory {
                                         + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
                                 .panelVersion("peach_prod_v1.3")
                                 .repoVersion("1.7")
-                                .build(), TestPeachFactory.builder()
+                                .build(),
+                        TestPeachFactory.builder()
                                 .gene("DPYD")
                                 .haplotype("*2_HOM")
                                 .function("Toxicity Function")
