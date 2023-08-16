@@ -1,5 +1,16 @@
 package com.hartwig.oncoact.rose.conclusion;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.StringJoiner;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -13,7 +24,12 @@ import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
@@ -24,18 +40,19 @@ import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.rose.ActionabilityConclusion;
 import com.hartwig.oncoact.rose.ImmutableActionabilityConclusion;
 import com.hartwig.oncoact.rose.RoseData;
-import com.hartwig.oncoact.rose.actionability.*;
+import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
+import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.Condition;
+import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
 
 public final class ConclusionAlgo {
 
@@ -75,9 +92,8 @@ public final class ConclusionAlgo {
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
         List<HomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
-        List<AnnotatedVirus> reportableViruses = Optional.ofNullable(rose.orange().virusInterpreter())
-                .map(VirusInterpreterData::reportableViruses)
-                .orElseGet(List::of);
+        List<AnnotatedVirus> reportableViruses =
+                Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
         List<LilacAllele> lilac = rose.orange().lilac().alleles();
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
@@ -87,7 +103,9 @@ public final class ConclusionAlgo {
         generatePlatform(conclusion);
         generateStartSentence(conclusion);
         generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
-        generateVariantConclusion(conclusion, reportableVariants, actionabilityMap,
+        generateVariantConclusion(conclusion,
+                reportableVariants,
+                actionabilityMap,
                 driverGenesMap,
                 oncogenic,
                 actionable,
@@ -172,9 +190,10 @@ public final class ConclusionAlgo {
     }
 
     private static void generatePlatform(@NotNull List<String> conclusion) {
-        conclusion.add(conclusion.size(), "Platform: HiSeqX (Illumina) WGS analysis, processed using Hartwig Medical" +
-                " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS).All activities are " +
-                "performed under ISO17025 accreditation (RVA, L633).\n");
+        conclusion.add(conclusion.size(),
+                "Platform: HiSeqX (Illumina) WGS analysis, processed using Hartwig Medical"
+                        + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS).All activities are "
+                        + "performed under ISO17025 accreditation (RVA, L633).\n");
     }
 
     private static void generateStartSentence(@NotNull List<String> conclusion) {
@@ -183,7 +202,7 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateCUPPAConclusion(@NotNull List<String> conclusion, @NotNull CuppaPrediction bestPrediction,
-                                        @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
         String likelihoodPercentage = Formats.formatPercentageDigit(bestPrediction.likelihood());
         if (bestPrediction.likelihood() < 0.8) {
             ActionabilityKey keyCuppaInconclusive =
@@ -204,16 +223,17 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyCuppa);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entry.conclusion()
-                        .replace("XXXX", bestPrediction.cancerType() + " (likelihood: " + likelihoodPercentage + ")"));
+                conclusion.add(conclusion.size(),
+                        "- " + entry.conclusion()
+                                .replace("XXXX", bestPrediction.cancerType() + " (likelihood: " + likelihoodPercentage + ")"));
             }
         }
     }
 
     @VisibleForTesting
     static void generateVariantConclusion(@NotNull List<String> conclusion, @NotNull List<ReportableVariant> reportableVariants,
-                                          @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Map<String, DriverGene> driverGenesMap,
-                                          @NotNull Set<String> oncogenic, @NotNull Set<String> actionable, @NotNull Set<String> HRD, @NotNull ChordRecord chord) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Map<String, DriverGene> driverGenesMap,
+            @NotNull Set<String> oncogenic, @NotNull Set<String> actionable, @NotNull Set<String> HRD, @NotNull ChordRecord chord) {
         Map<String, Set<VariantKey>> variantKeyList = Maps.newHashMap();
 
         for (ReportableVariant reportableVariant : reportableVariants) {
@@ -270,8 +290,8 @@ public final class ConclusionAlgo {
             ActionabilityKey keySomaticVariant = ImmutableActionabilityKey.builder().match(keyMap.getKey()).type(alteration).build();
             ActionabilityEntry entry = actionabilityMap.get(keySomaticVariant);
             if (entry != null) {
-                if ((keyMap.getValue().iterator().next().driverInterpretation() == DriverInterpretation.HIGH
-                        && (entry.condition() == Condition.ONLY_HIGH || entry.condition() == Condition.HIGH_NO_ACTIONABLE))) {
+                if ((keyMap.getValue().iterator().next().driverInterpretation() == DriverInterpretation.HIGH && (
+                        entry.condition() == Condition.ONLY_HIGH || entry.condition() == Condition.HIGH_NO_ACTIONABLE))) {
                     if (entry.condition() == Condition.ONLY_HIGH) {
                         actionable.add("variant");
                     }
@@ -285,8 +305,9 @@ public final class ConclusionAlgo {
                             ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
                             if (entryBiallelic.condition() == Condition.OTHER) {
                                 String sentence = entry.conclusion();
-                                conclusion.add(conclusion.size(), "- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation", "inactivating mutation") + " "
-                                        + entryBiallelic.conclusion());
+                                conclusion.add(conclusion.size(),
+                                        "- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation",
+                                                "inactivating mutation") + " " + entryBiallelic.conclusion());
                             }
                         } else {
                             conclusion.add(conclusion.size(), "- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
@@ -304,8 +325,8 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateCNVConclusion(@NotNull List<String> conclusion, @NotNull Collection<PurpleGainLoss> reportableGainLosses,
-                                      @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                      @NotNull Set<String> actionable) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
             oncogenic.add("CNV");
 
@@ -338,7 +359,7 @@ public final class ConclusionAlgo {
     }
 
     private static void addSentenceToCNVConclusion(@NotNull String conclusionSentence, @NotNull String gene,
-                                                   @NotNull List<String> conclusion, @NotNull Collection<String> actionable) {
+            @NotNull List<String> conclusion, @NotNull Collection<String> actionable) {
         if (!conclusion.contains(conclusionSentence)) {
             conclusion.add(conclusion.size(), conclusionSentence);
             actionable.add("CNV");
@@ -347,8 +368,8 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateFusionConclusion(@NotNull List<String> conclusion, @NotNull Collection<LinxFusion> reportableFusions,
-                                         @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                         @NotNull Set<String> actionable) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
         for (LinxFusion fusion : reportableFusions) {
             oncogenic.add("fusion");
 
@@ -360,8 +381,9 @@ public final class ConclusionAlgo {
                         .build();
                 ActionabilityEntry entry = actionabilityMap.get(keyFusion);
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(), "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                            + fusion.geneContextEnd() + ") " + entry.conclusion());
+                    conclusion.add(conclusion.size(),
+                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                                    + fusion.geneContextEnd() + ") " + entry.conclusion());
                     actionable.add("fusion");
                 }
             } else if (fusion.reportedType() == LinxFusionType.EXON_DEL_DUP) {
@@ -369,8 +391,9 @@ public final class ConclusionAlgo {
                         ImmutableActionabilityKey.builder().match(fusion.geneStart()).type(TypeAlteration.INTERNAL_DELETION).build();
                 ActionabilityEntry entry = actionabilityMap.get(keyFusion);
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(), "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                            + fusion.geneContextEnd() + ") " + entry.conclusion());
+                    conclusion.add(conclusion.size(),
+                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                                    + fusion.geneContextEnd() + ") " + entry.conclusion());
                     actionable.add("fusion");
                 }
             } else if (FUSION_TYPES.contains(fusion.reportedType())) {
@@ -383,12 +406,14 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entryEnd = actionabilityMap.get(keyFusionEnd);
 
                 if (entryStart != null && entryStart.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(), "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                            + fusion.geneContextEnd() + ") " + entryStart.conclusion());
+                    conclusion.add(conclusion.size(),
+                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                                    + fusion.geneContextEnd() + ") " + entryStart.conclusion());
                     actionable.add("fusion");
                 } else if (entryEnd != null && entryEnd.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(), "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                            + fusion.geneContextEnd() + ") " + entryEnd.conclusion());
+                    conclusion.add(conclusion.size(),
+                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                                    + fusion.geneContextEnd() + ") " + entryEnd.conclusion());
                     actionable.add("fusion");
                 }
             }
@@ -397,8 +422,9 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
-                                                       @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-                                                       @NotNull Set<String> oncogenic, @NotNull Set<String> actionable) {
+            @NotNull Collection<HomozygousDisruption> homozygousDisruptions,
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
 
         for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             oncogenic.add("homozygousDisruption");
@@ -414,9 +440,9 @@ public final class ConclusionAlgo {
     }
 
     @VisibleForTesting
-    static void generateVirusHLAConclusion(@NotNull List<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses, @NotNull Collection<LilacAllele> lilac,
-                                           @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Collection<String> oncogenic,
-                                           @NotNull Collection<String> actionable) {
+    static void generateVirusHLAConclusion(@NotNull List<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses,
+            @NotNull Collection<LilacAllele> lilac, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
+            @NotNull Collection<String> oncogenic, @NotNull Collection<String> actionable) {
         final String hlaAlleleString = "A*02:01";
         boolean containsHlaAllele = lilac.stream().anyMatch(entry -> entry.allele().equals(hlaAlleleString));
 
@@ -429,10 +455,8 @@ public final class ConclusionAlgo {
                     if (virus.interpretation() != VirusInterpretation.HPV) {
                         continue;
                     }
-                    ActionabilityKey key = ImmutableActionabilityKey.builder()
-                            .match("HPV-16 | HLA-A*02")
-                            .type(TypeAlteration.POSITIVE)
-                            .build();
+                    ActionabilityKey key =
+                            ImmutableActionabilityKey.builder().match("HPV-16 | HLA-A*02").type(TypeAlteration.POSITIVE).build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
                     if (entry == null || entry.condition() != Condition.ALWAYS) {
                         continue;
@@ -454,10 +478,7 @@ public final class ConclusionAlgo {
                 }
             }
         } else if (containsHlaAllele) {
-            ActionabilityKey key = ImmutableActionabilityKey.builder()
-                    .match("HLA-A*02")
-                    .type(TypeAlteration.POSITIVE)
-                    .build();
+            ActionabilityKey key = ImmutableActionabilityKey.builder().match("HLA-A*02").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(key);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
                 oncogenic.add("hla");
@@ -468,8 +489,8 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateHrdConclusion(@NotNull List<String> conclusion, @NotNull ChordRecord chord,
-                                      @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                      @NotNull Set<String> actionable, @NotNull Set<String> HRD) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable, @NotNull Set<String> HRD) {
         if (chord.hrStatus() == ChordStatus.HR_DEFICIENT) {
             ActionabilityKey keyHRD = ImmutableActionabilityKey.builder().match("HRD").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyHRD);
@@ -479,10 +500,12 @@ public final class ConclusionAlgo {
                             ImmutableActionabilityKey.builder().match("NO_HRD_CAUSE").type(TypeAlteration.NO_HRD_CAUSE).build();
                     ActionabilityEntry entryNoHRd = actionabilityMap.get(keyNoHRD);
                     if (entryNoHRd != null && entry.condition() == Condition.OTHER) {
-                        conclusion.add(conclusion.size(), "- " + "HRD (" + chord.hrdValue() + ") " + entry.conclusion() + entryNoHRd.conclusion());
+                        conclusion.add(conclusion.size(),
+                                "- " + "HRD (" + chord.hrdValue() + ") " + entry.conclusion() + entryNoHRd.conclusion());
                     }
                 }
-                conclusion.add(conclusion.size(), "- " + "HRD (" + DOUBLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
+                conclusion.add(conclusion.size(),
+                        "- " + "HRD (" + DOUBLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
 
                 actionable.add("HRD");
                 oncogenic.add("HRD");
@@ -492,13 +515,14 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateMSIConclusion(@NotNull List<String> conclusion, @NotNull PurpleMicrosatelliteStatus microsatelliteStatus,
-                                      double microsatelliteMb, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                      @NotNull Set<String> actionable) {
+            double microsatelliteMb, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
         if (microsatelliteStatus == PurpleMicrosatelliteStatus.MSI) {
             ActionabilityKey keyMSI = ImmutableActionabilityKey.builder().match("MSI").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyMSI);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add(conclusion.size(), "- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
+                conclusion.add(conclusion.size(),
+                        "- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
                 actionable.add("MSI");
                 oncogenic.add("MSI");
             }
@@ -507,8 +531,8 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateTMLConclusion(@NotNull List<String> conclusion, @NotNull PurpleTumorMutationalStatus tumorMutationalStatus,
-                                      int tumorMutationalLoad, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                      @NotNull Set<String> actionable) {
+            int tumorMutationalLoad, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
         if (tumorMutationalStatus == PurpleTumorMutationalStatus.HIGH) {
             ActionabilityKey keyTML = ImmutableActionabilityKey.builder().match("High-TML").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTML);
@@ -522,8 +546,8 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateTMBConclusion(@NotNull List<String> conclusion, double tumorMutationalBurden,
-                                      @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-                                      @NotNull Set<String> actionable) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
+            @NotNull Set<String> actionable) {
         if (tumorMutationalBurden >= TMB_CUTOFF) {
             ActionabilityKey keyTMB = ImmutableActionabilityKey.builder().match("High-TMB").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTMB);
@@ -537,7 +561,7 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generatePurityConclusion(@NotNull List<String> conclusion, double purity, boolean containsTumorCells,
-                                         @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
+            @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap) {
         if (!containsTumorCells) {
             ActionabilityKey keyReliable =
                     ImmutableActionabilityKey.builder().match("PURITY_UNRELIABLE").type(TypeAlteration.PURITY_UNRELIABLE).build();
@@ -558,7 +582,7 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateTotalResults(@NotNull List<String> conclusion, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-                                     @NotNull Set<String> oncogenic, @NotNull Set<String> actionable) {
+            @NotNull Set<String> oncogenic, @NotNull Set<String> actionable) {
         if (oncogenic.size() == 0) {
             ActionabilityKey keyOncogenic =
                     ImmutableActionabilityKey.builder().match("NO_ONCOGENIC").type(TypeAlteration.NO_ONCOGENIC).build();
