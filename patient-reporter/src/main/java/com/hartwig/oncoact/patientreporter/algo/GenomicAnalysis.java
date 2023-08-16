@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
@@ -54,10 +57,10 @@ public abstract class GenomicAnalysis {
 
     public abstract int tumorMutationalLoad();
 
-    @NotNull
-    public abstract PurpleTumorMutationalStatus tumorMutationalLoadStatus();
-
     public abstract double tumorMutationalBurden();
+
+    @NotNull
+    public abstract PurpleTumorMutationalStatus tumorMutationalBurdenStatus();
 
     public abstract double hrdValue();
 

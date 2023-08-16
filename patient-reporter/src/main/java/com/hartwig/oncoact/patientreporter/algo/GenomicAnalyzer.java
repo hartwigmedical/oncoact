@@ -16,6 +16,7 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
@@ -24,6 +25,7 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
+import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.ListUtil;
@@ -125,7 +127,9 @@ public class GenomicAnalyzer {
                 .microsatelliteIndelsPerMb(orange.purple().characteristics().microsatelliteIndelsPerMb())
                 .microsatelliteStatus(orange.purple().characteristics().microsatelliteStatus())
                 .tumorMutationalLoad(orange.purple().characteristics().tumorMutationalLoad())
-                .tumorMutationalLoadStatus(orange.purple().characteristics().tumorMutationalLoadStatus())
+                .tumorMutationalBurdenStatus(orange.purple().characteristics().tumorMutationalBurdenPerMb() >= MutationalBurden.THRESHOLD
+                        ? PurpleTumorMutationalStatus.HIGH
+                        : PurpleTumorMutationalStatus.LOW)
                 .tumorMutationalBurden(orange.purple().characteristics().tumorMutationalBurdenPerMb())
                 .hrdValue(orange.chord().hrdValue())
                 .hrdStatus(orange.chord().hrStatus())
