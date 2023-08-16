@@ -58,7 +58,7 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, null, null)));
+        return evidenceBuilderRange(actionable, null, null);
     }
 
     @NotNull
