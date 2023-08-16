@@ -143,7 +143,7 @@ public class PersonalizedEvidenceFactory {
         } else if (actionable instanceof ActionableHLA) {
             return EvidenceType.HLA;
         } else {
-            throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
+            throw new IllegalStateException("Unexpected actionable event detected in evidence: " + actionable);
         }
     }
 
