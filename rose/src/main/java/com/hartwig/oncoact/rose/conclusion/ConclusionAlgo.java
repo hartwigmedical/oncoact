@@ -131,7 +131,6 @@ public final class ConclusionAlgo {
                 actionable);
         generateTMBConclusion(conclusion, purple.characteristics().tumorMutationalBurdenPerMb(), actionabilityMap, oncogenic, actionable);
         generateTotalResults(conclusion, actionabilityMap, oncogenic, actionable);
-
         return ImmutableActionabilityConclusion.builder().conclusion(conclusion).build();
     }
 
@@ -187,18 +186,17 @@ public final class ConclusionAlgo {
     }
 
     private static void generateTechnique(@NotNull List<String> conclusion) {
-        conclusion.add(conclusion.size(), "Technique: WGS");
+        conclusion.add("Technique: WGS");
     }
 
     private static void generatePlatform(@NotNull List<String> conclusion) {
-        conclusion.add(conclusion.size(),
-                "Platform: HiSeqX (Illumina) WGS analysis, processed using Hartwig Medical"
-                        + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are "
-                        + "performed under ISO17025 accreditation (RVA, L633).\n");
+        conclusion.add("Platform: HiSeqX (Illumina) WGS analysis, processed using Hartwig Medical"
+                + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are "
+                + "performed under ISO17025 accreditation (RVA, L633).\n");
     }
 
     private static void generateStartSentence(@NotNull List<String> conclusion) {
-        conclusion.add(conclusion.size(), "Sample showing: ");
+        conclusion.add("Sample showing: ");
     }
 
     @VisibleForTesting
@@ -212,10 +210,10 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(keyCuppaInconclusive);
             if (entry != null && entry.condition() == Condition.OTHER) {
                 if (bestPrediction.likelihood() >= 0.5) {
-                    conclusion.add(conclusion.size(),
+                    conclusion.add(
                             "- " + entry.conclusion().replace("xxx - xx%", bestPrediction.cancerType() + "-" + likelihoodPercentage));
                 } else {
-                    conclusion.add(conclusion.size(), "- " + entry.conclusion().replace(" (highest likelihood: xxx - xx%)", ""));
+                    conclusion.add("- " + entry.conclusion().replace(" (highest likelihood: xxx - xx%)", ""));
                 }
 
             }
@@ -224,9 +222,8 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyCuppa);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(),
-                        "- " + entry.conclusion()
-                                .replace("XXXX", bestPrediction.cancerType() + " (likelihood: " + likelihoodPercentage + ")"));
+                conclusion.add("- " + entry.conclusion()
+                        .replace("XXXX", bestPrediction.cancerType() + " (likelihood: " + likelihoodPercentage + ")"));
             }
         }
     }
@@ -305,18 +302,17 @@ public final class ConclusionAlgo {
                             ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
                             if (entryBiallelic.condition() == Condition.OTHER) {
                                 String sentence = entry.conclusion();
-                                conclusion.add(conclusion.size(),
-                                        "- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation",
-                                                "inactivating mutation") + " " + entryBiallelic.conclusion());
+                                conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation",
+                                        "inactivating mutation") + " " + entryBiallelic.conclusion());
                             }
                         } else {
-                            conclusion.add(conclusion.size(), "- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
+                            conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
                         }
                     } else {
-                        conclusion.add(conclusion.size(), "- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
+                        conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
                     }
                 } else if (isHRDGene && chord.hrStatus() == ChordStatus.HR_DEFICIENT) {
-                    conclusion.add(conclusion.size(), "- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
+                    conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
                     actionable.add("variant");
                 }
             }
@@ -361,7 +357,7 @@ public final class ConclusionAlgo {
     private static void addSentenceToCNVConclusion(@NotNull String conclusionSentence, @NotNull String gene,
             @NotNull List<String> conclusion, @NotNull Collection<String> actionable) {
         if (!conclusion.contains(conclusionSentence)) {
-            conclusion.add(conclusion.size(), conclusionSentence);
+            conclusion.add(conclusionSentence);
             actionable.add("CNV");
         }
     }
@@ -381,9 +377,8 @@ public final class ConclusionAlgo {
                         .build();
                 ActionabilityEntry entry = actionabilityMap.get(keyFusion);
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(),
-                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                                    + fusion.geneContextEnd() + ") " + entry.conclusion());
+                    conclusion.add("- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                            + fusion.geneContextEnd() + ") " + entry.conclusion());
                     actionable.add("fusion");
                 }
             } else if (fusion.reportedType() == LinxFusionType.EXON_DEL_DUP) {
@@ -391,9 +386,8 @@ public final class ConclusionAlgo {
                         ImmutableActionabilityKey.builder().match(fusion.geneStart()).type(TypeAlteration.INTERNAL_DELETION).build();
                 ActionabilityEntry entry = actionabilityMap.get(keyFusion);
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(),
-                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                                    + fusion.geneContextEnd() + ") " + entry.conclusion());
+                    conclusion.add("- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                            + fusion.geneContextEnd() + ") " + entry.conclusion());
                     actionable.add("fusion");
                 }
             } else if (FUSION_TYPES.contains(fusion.reportedType())) {
@@ -406,14 +400,12 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entryEnd = actionabilityMap.get(keyFusionEnd);
 
                 if (entryStart != null && entryStart.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(),
-                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                                    + fusion.geneContextEnd() + ") " + entryStart.conclusion());
+                    conclusion.add("- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                            + fusion.geneContextEnd() + ") " + entryStart.conclusion());
                     actionable.add("fusion");
                 } else if (entryEnd != null && entryEnd.condition() == Condition.ALWAYS) {
-                    conclusion.add(conclusion.size(),
-                            "- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
-                                    + fusion.geneContextEnd() + ") " + entryEnd.conclusion());
+                    conclusion.add("- " + fusion.geneStart() + " - " + fusion.geneEnd() + " (" + fusion.geneContextStart() + " - "
+                            + fusion.geneContextEnd() + ") " + entryEnd.conclusion());
                     actionable.add("fusion");
                 }
             }
@@ -433,7 +425,7 @@ public final class ConclusionAlgo {
                     ImmutableActionabilityKey.builder().match(homozygousDisruption.gene()).type(TypeAlteration.INACTIVATION).build();
             ActionabilityEntry entry = actionabilityMap.get(keyHomozygousDisruption);
             if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
-                conclusion.add(conclusion.size(), "- " + homozygousDisruption.gene() + " " + entry.conclusion());
+                conclusion.add("- " + homozygousDisruption.gene() + " " + entry.conclusion());
                 actionable.add("homozygousDisruption");
             }
         }
@@ -462,7 +454,7 @@ public final class ConclusionAlgo {
                         if (virus.interpretation() == VirusInterpretation.HPV
                                 && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
                             oncogenic.add("HLA | virus");
-                            conclusion.add(conclusion.size(), "- " + HlaAllele + " " + virus.interpretation() + " " + entry.conclusion());
+                            conclusion.add("- " + HlaAllele + " " + virus.interpretation() + " " + entry.conclusion());
                         }
                     }
                 } else if (virus.interpretation() != null) {
@@ -477,7 +469,7 @@ public final class ConclusionAlgo {
                         if (virus.interpretation() != null && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
                             actionable.add("virus");
                             oncogenic.add("virus");
-                            conclusion.add(conclusion.size(), "- " + virus.interpretation() + " " + entry.conclusion());
+                            conclusion.add("- " + virus.interpretation() + " " + entry.conclusion());
                         }
                     }
                 }
@@ -488,7 +480,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(key);
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
                     oncogenic.add("hla");
-                    conclusion.add(conclusion.size(), "- " + HlaAllele + " " + entry.conclusion());
+                    conclusion.add("- " + HlaAllele + " " + entry.conclusion());
                 }
             }
         }
@@ -507,12 +499,10 @@ public final class ConclusionAlgo {
                             ImmutableActionabilityKey.builder().match("NO_HRD_CAUSE").type(TypeAlteration.NO_HRD_CAUSE).build();
                     ActionabilityEntry entryNoHRd = actionabilityMap.get(keyNoHRD);
                     if (entryNoHRd != null && entry.condition() == Condition.OTHER) {
-                        conclusion.add(conclusion.size(),
-                                "- " + "HRD (" + chord.hrdValue() + ") " + entry.conclusion() + entryNoHRd.conclusion());
+                        conclusion.add("- " + "HRD (" + chord.hrdValue() + ") " + entry.conclusion() + entryNoHRd.conclusion());
                     }
                 }
-                conclusion.add(conclusion.size(),
-                        "- " + "HRD (" + DOUBLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
+                conclusion.add("- " + "HRD (" + DOUBLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
 
                 actionable.add("HRD");
                 oncogenic.add("HRD");
@@ -528,8 +518,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyMSI = ImmutableActionabilityKey.builder().match("MSI").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyMSI);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add(conclusion.size(),
-                        "- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
+                conclusion.add("- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
                 actionable.add("MSI");
                 oncogenic.add("MSI");
             }
@@ -544,7 +533,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyTML = ImmutableActionabilityKey.builder().match("High-TML").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTML);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add(conclusion.size(), "- " + "TML (" + tumorMutationalLoad + ") " + entry.conclusion());
+                conclusion.add("- " + "TML (" + tumorMutationalLoad + ") " + entry.conclusion());
                 actionable.add("TML");
                 oncogenic.add("TML");
             }
@@ -559,7 +548,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyTMB = ImmutableActionabilityKey.builder().match("High-TMB").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTMB);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add(conclusion.size(), "- " + "TMB (" + tumorMutationalBurden + ") " + entry.conclusion());
+                conclusion.add("- " + "TMB (" + tumorMutationalBurden + ") " + entry.conclusion());
                 actionable.add("TMB");
                 oncogenic.add("TMB");
             }
@@ -575,14 +564,14 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entryReliable = actionabilityMap.get(keyReliable);
             if (entryReliable != null && entryReliable.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entryReliable.conclusion() + "\n");
+                conclusion.add("- " + entryReliable.conclusion() + "\n");
             }
         } else if (purity < PURITY_CUTOFF) {
             ActionabilityKey keyPurity = ImmutableActionabilityKey.builder().match("PURITY").type(TypeAlteration.PURITY).build();
 
             ActionabilityEntry entry = actionabilityMap.get(keyPurity);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
+                conclusion.add("- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
             }
         }
     }
@@ -596,14 +585,14 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyOncogenic);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entry.conclusion());
+                conclusion.add("- " + entry.conclusion());
             }
         } else if (actionable.size() == 0) {
             ActionabilityKey keyActionable =
                     ImmutableActionabilityKey.builder().match("NO_ACTIONABLE").type(TypeAlteration.NO_ACTIONABLE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyActionable);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add(conclusion.size(), "- " + entry.conclusion());
+                conclusion.add("- " + entry.conclusion());
             }
         }
     }
