@@ -296,7 +296,12 @@ public final class ConclusionAlgo {
 
                     DriverGene driverGene = driverGenesMap.get(keyMap.getKey());
                     if ((driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG) && variants.size() == 1) {
-                        if (!keyMap.getValue().iterator().next().biallelic()) {
+                        if (keyMap.getValue().size() != 1) {
+                            throw new IllegalStateException(String.format("The keyMap must contain one item, but its current size is [%s].",
+                                    keyMap.getValue().size()));
+                        }
+                        var variantKey = keyMap.getValue().iterator().next();
+                        if (!variantKey.biallelic()) {
                             ActionabilityKey keyBiallelic =
                                     ImmutableActionabilityKey.builder().match("NOT_BIALLELIC").type(TypeAlteration.NOT_BIALLELIC).build();
                             ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
