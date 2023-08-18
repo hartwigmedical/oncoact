@@ -275,30 +275,25 @@ public final class ConclusionAlgo {
             ActionabilityKey keySomaticVariant = ImmutableActionabilityKey.builder().match(keyMap.getKey()).type(alteration).build();
             ActionabilityEntry entry = actionabilityMap.get(keySomaticVariant);
             if (entry != null) {
-                if ((keyMap.getValue().iterator().next().driverInterpretation() == DriverInterpretation.HIGH && (
+                if (keyMap.getValue().size() != 1) {
+                    throw new IllegalStateException(String.format("The keyMap must contain exactly one item, but its current size is [%s].",
+                            keyMap.getValue().size()));
+                }
+                var variantKey = keyMap.getValue().iterator().next();
+                if ((variantKey.driverInterpretation() == DriverInterpretation.HIGH && (
                         entry.condition() == Condition.ONLY_HIGH || entry.condition() == Condition.HIGH_NO_ACTIONABLE))) {
                     if (entry.condition() == Condition.ONLY_HIGH) {
                         actionable.add("variant");
                     }
-
                     DriverGene driverGene = driverGenesMap.get(keyMap.getKey());
-                    if ((driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG) && variants.size() == 1) {
-                        if (keyMap.getValue().size() != 1) {
-                            throw new IllegalStateException(String.format("The keyMap must contain one item, but its current size is [%s].",
-                                    keyMap.getValue().size()));
-                        }
-                        var variantKey = keyMap.getValue().iterator().next();
-                        if (!variantKey.biallelic()) {
-                            ActionabilityKey keyBiallelic =
-                                    ImmutableActionabilityKey.builder().match("NOT_BIALLELIC").type(TypeAlteration.NOT_BIALLELIC).build();
-                            ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
-                            if (entryBiallelic.condition() == Condition.OTHER) {
-                                String sentence = entry.conclusion();
-                                conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation",
-                                        "inactivating mutation") + " " + entryBiallelic.conclusion());
-                            }
-                        } else {
-                            conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
+                    if (driverGene != null && driverGene.likelihoodType() == DriverCategory.TSG && variants.size() == 1 && !variantKey.biallelic()) {
+                        ActionabilityKey keyBiallelic =
+                                ImmutableActionabilityKey.builder().match("NOT_BIALLELIC").type(TypeAlteration.NOT_BIALLELIC).build();
+                        ActionabilityEntry entryBiallelic = actionabilityMap.get(keyBiallelic);
+                        if (entryBiallelic.condition() == Condition.OTHER) {
+                            String sentence = entry.conclusion();
+                            conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + sentence.replace("inactivation",
+                                    "inactivating mutation") + " " + entryBiallelic.conclusion());
                         }
                     } else {
                         conclusion.add("- " + keyMap.getKey() + " (" + variantMerging + ") " + entry.conclusion());
