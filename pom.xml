@@ -37,7 +37,7 @@
         <protect.version>3.0</protect.version>
         <rose.version>2.0</rose.version>
 
-        <serve.version>local-SNAPSHOT</serve.version>
+        <serve.version>2.4.0</serve.version>
         <orange-datamodel.version>1.2.0</orange-datamodel.version>
         <lama-client.version>2.0.6</lama-client.version>
         <silo-diagnostic-client.version>3.0.5</silo-diagnostic-client.version>
