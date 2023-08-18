@@ -39,7 +39,7 @@
 
         <serve.version>local-SNAPSHOT</serve.version>
         <orange-datamodel.version>1.2.0</orange-datamodel.version>
-        <lama-client.version>2.0.0-alpha.66</lama-client.version>
+        <lama-client.version>2.0.6</lama-client.version>
         <silo-client.version>2.3.0</silo-client.version>
 
         <commons.cli.version>1.5.0</commons.cli.version>
