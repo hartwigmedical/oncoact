@@ -20,4 +20,7 @@ public abstract class VariantKey {
     public abstract DriverInterpretation driverInterpretation();
 
     public abstract boolean biallelic();
+
+    @NotNull
+    public abstract String canonicalEffect();
 }

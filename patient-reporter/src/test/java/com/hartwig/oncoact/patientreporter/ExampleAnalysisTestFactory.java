@@ -95,7 +95,7 @@ public final class ExampleAnalysisTestFactory {
         int tumorMutationalLoad = 186;
         double tumorMutationalBurden = 13.7394;
         double microsatelliteIndelsPerMb = 0.1221;
-        PurpleTumorMutationalStatus tumorMutationalLoadStatus = PurpleTumorMutationalStatus.HIGH;
+        PurpleTumorMutationalStatus tumorMutationalBurdenStatus = PurpleTumorMutationalStatus.LOW;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
         ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
@@ -175,7 +175,7 @@ public final class ExampleAnalysisTestFactory {
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
                 .microsatelliteStatus(microsatelliteStatus)
                 .tumorMutationalLoad(tumorMutationalLoad)
-                .tumorMutationalLoadStatus(tumorMutationalLoadStatus)
+                .tumorMutationalBurdenStatus(tumorMutationalBurdenStatus)
                 .tumorMutationalBurden(tumorMutationalBurden)
                 .hrdValue(hrdValue)
                 .hrdStatus(hrdStatus)
