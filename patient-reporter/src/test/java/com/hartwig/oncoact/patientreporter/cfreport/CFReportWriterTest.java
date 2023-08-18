@@ -25,6 +25,7 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
@@ -55,6 +56,16 @@ public class CFReportWriterTest {
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
     private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
+    @NotNull
+    public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
+        return ImmutableAnalysedPatientReport.builder()
+                .from(analysedPatientReport)
+                .clinicalSummary(analysedPatientReport.clinicalSummary()
+                        + " The underlying data of these WGS results can be requested at Hartwig Medical "
+                        + "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                .build();
+    }
+
     @Test
     public void canGeneratePatientReportForCOLO829() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
@@ -62,6 +73,9 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+
+        colo829Report = generateAnalysedPatientReport(colo829Report);
+
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -73,6 +87,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+
+        colo829Report = generateAnalysedPatientReport(colo829Report);
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -85,6 +101,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -97,6 +115,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -114,6 +134,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }

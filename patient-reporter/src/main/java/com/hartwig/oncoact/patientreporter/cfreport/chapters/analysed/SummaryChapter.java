@@ -111,7 +111,6 @@ public class SummaryChapter implements ReportChapter {
         renderSpecialRemarkText(reportDocument);
 
         renderGermline(reportDocument);
-
         renderTumorCharacteristics(reportDocument);
         renderGenomicAlterations(reportDocument);
     }
@@ -119,9 +118,9 @@ public class SummaryChapter implements ReportChapter {
     private void renderClinicalConclusionText(@NotNull Document reportDocument) {
         String text = patientReport.clinicalSummary();
         String clinicalConclusion = Strings.EMPTY;
-        if (text == null) {
-            String sentence = "An overview of all detected cancer associated DNA aberrations can be found in the report";
+        String sentence = "An overview of all detected oncogenic DNA aberrations can be found in the report.";
 
+        if (text == null) {
             if (!analysis().hasReliablePurity()) {
                 clinicalConclusion = "Of note, WGS analysis indicated a very low abundance of genomic aberrations, which can be caused "
                         + "by a low tumor percentage in the received tumor material or due to genomic very stable/normal tumor type. "
@@ -135,14 +134,16 @@ public class SummaryChapter implements ReportChapter {
                         + "This result should therefore be considered with caution.\n" + sentence;
             }
         } else {
-            clinicalConclusion = text;
+            clinicalConclusion = text + sentence;
         }
 
         if (!clinicalConclusion.isEmpty()) {
             Div div = createSectionStartDiv(contentWidth());
             div.add(new Paragraph("Summary of most relevant findings").addStyle(reportResources.sectionTitleStyle()));
 
-            div.add(new Paragraph(text).setWidth(contentWidth()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(11));
+            div.add(new Paragraph(clinicalConclusion).setWidth(contentWidth())
+                    .addStyle(reportResources.bodyTextStyle())
+                    .setFixedLeading(11));
             div.add(new Paragraph("\nFurther interpretation of these results within the patient’s clinical context is required "
                     + "by a clinician with support of a molecular tumor board.").addStyle(reportResources.subTextStyle()));
 
@@ -210,6 +211,7 @@ public class SummaryChapter implements ReportChapter {
         String mutationalBurdenString = hasReliablePurity
                 ? eligible + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalBurden()) + ")"
                 : Formats.NA_STRING;
+
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational burden").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalBurdenString).addStyle(dataStyle)));

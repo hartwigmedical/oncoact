@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public enum Condition {
     ONLY_HIGH,
     ALWAYS,
-    ALWAYS_NO_ACTIONABLE,
+    HIGH_NO_ACTIONABLE,
     OTHER;
 
     @NotNull
