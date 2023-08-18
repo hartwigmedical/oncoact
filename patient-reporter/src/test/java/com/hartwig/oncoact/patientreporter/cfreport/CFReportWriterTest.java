@@ -25,6 +25,7 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
@@ -55,6 +56,16 @@ public class CFReportWriterTest {
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
     private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
+    @NotNull
+    public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
+        return ImmutableAnalysedPatientReport.builder()
+                .from(analysedPatientReport)
+                .clinicalSummary(analysedPatientReport.clinicalSummary()
+                        + " The underlying data of these WGS results can be requested at Hartwig Medical "
+                        + "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                .build();
+    }
+
     @Test
     public void canGeneratePatientReportForCOLO829() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
@@ -62,6 +73,9 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+
+        colo829Report = generateAnalysedPatientReport(colo829Report);
+
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -73,6 +87,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+
+        colo829Report = generateAnalysedPatientReport(colo829Report);
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
@@ -85,6 +101,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -97,6 +115,8 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
@@ -114,16 +134,18 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+
+        patientReport = generateAnalysedPatientReport(patientReport);
         writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
         writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
     }
 
     @Test
     @Ignore
-    public void canGenerateInsufficientDNAReport() throws IOException {
-        generateQCFailReport("CPCT01_insufficient_dna-FOR-082",
+    public void canGenerateHartwigProcessingIssueReport() throws IOException {
+        generateQCFailReport("CPCT01_hartwig_processing_issue",
                 null,
-                QCFailReason.INSUFFICIENT_DNA,
+                QCFailReason.HARTWIG_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
@@ -132,10 +154,10 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateTechnicalFailureReport() throws IOException {
-        generateQCFailReport("CPCT02-technical_failure-FOR-102",
+    public void canGenerateIsolationFailReport() throws IOException {
+        generateQCFailReport("CPCT01_isolation_fail",
                 null,
-                QCFailReason.TECHNICAL_FAILURE,
+                QCFailReason.ISOLATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
@@ -144,46 +166,58 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateSufficientTCPQCFailReport() throws IOException {
-        generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Fail",
-                "70%",
-                QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.FAIL_CONTAMINATION);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateSufficientTCPQCFailReportPASS() throws IOException {
-        generateQCFailReport("CPCT03-sufficient_tcp_qc_failure-FOR-083_Pass",
-                "70%",
-                QCFailReason.SUFFICIENT_TCP_QC_FAILURE,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateInsufficientTCPAfterDeepWGSReport() throws IOException {
-        generateQCFailReport("CPCT04-insufficient_tcp_deep_wgs-FOR-100",
-                "18%",
-                QCFailReason.INSUFFICIENT_TCP_DEEP_WGS,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
-    }
-
-    @Test
-    @Ignore
-    public void canGenerateInsufficientTCPAfterShallowReport() throws IOException {
-        generateQCFailReport("CPCT05-insufficient_tcp_shallow_wgs-FOR-100",
+    public void canGenerateTcpShallowFailReport() throws IOException {
+        generateQCFailReport("CPCT01_tcp_shallow_fail",
                 null,
-                QCFailReason.INSUFFICIENT_TCP_SHALLOW_WGS,
+                QCFailReason.TCP_SHALLOW_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGeneratePreparationFailReport() throws IOException {
+        generateQCFailReport("CPCT01_preparation_fail",
+                null,
+                QCFailReason.PREPARATION_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGenerateHartwigTumorProcessingIssueReport() throws IOException {
+        generateQCFailReport("CPCT01_hartwig_tumor_processing_issue",
+                null,
+                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGeneratePipelineFailReport() throws IOException {
+        generateQCFailReport("CPCT01_pipeline_fail",
+                null,
+                QCFailReason.PIPELINE_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS);
+    }
+
+    @Test
+    @Ignore
+    public void canGenerateTcpWgsFailReport() throws IOException {
+        generateQCFailReport("CPCT01_tcp_wgs_fail",
+                null,
+                QCFailReason.TCP_WGS_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
@@ -218,12 +252,8 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
-        FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reasonKey("key")
-                .reportReason("reportReason")
-                .reportExplanation("reportExplanation")
-                .reportExplanationDetail("reportExplanationDetail")
-                .build();
+        FailedReason failExplanation =
+                ImmutableFailedReason.builder().reportReason("reportReason").reportExplanation("reportExplanation").build();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
@@ -252,10 +282,9 @@ public class CFReportWriterTest {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reasonKey("key")
                 .reportReason("reportReason")
                 .reportExplanation("reportExplanation")
-                .reportExplanationDetail("reportExplanationDetail")
+                .sampleFailReasonComment("sampleFailReasonComment")
                 .build();
 
         QCFailReport patientReport = ImmutableQCFailReport.builder()

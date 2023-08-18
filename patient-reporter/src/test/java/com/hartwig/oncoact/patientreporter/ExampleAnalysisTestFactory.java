@@ -21,11 +21,13 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
@@ -92,7 +94,7 @@ public final class ExampleAnalysisTestFactory {
         int tumorMutationalLoad = 186;
         double tumorMutationalBurden = 13.7394;
         double microsatelliteIndelsPerMb = 0.1221;
-        PurpleTumorMutationalStatus tumorMutationalLoadStatus = PurpleTumorMutationalStatus.HIGH;
+        PurpleTumorMutationalStatus tumorMutationalBurdenStatus = PurpleTumorMutationalStatus.LOW;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
         ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
@@ -172,7 +174,7 @@ public final class ExampleAnalysisTestFactory {
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
                 .microsatelliteStatus(microsatelliteStatus)
                 .tumorMutationalLoad(tumorMutationalLoad)
-                .tumorMutationalLoadStatus(tumorMutationalLoadStatus)
+                .tumorMutationalBurdenStatus(tumorMutationalBurdenStatus)
                 .tumorMutationalBurden(tumorMutationalBurden)
                 .hrdValue(hrdValue)
                 .hrdStatus(hrdStatus)
@@ -360,6 +362,7 @@ public final class ExampleAnalysisTestFactory {
                                 "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
                                 "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
                                 "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
@@ -1062,7 +1065,7 @@ public final class ExampleAnalysisTestFactory {
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
-                .onLabel(true)
+                .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESISTANT)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
@@ -1150,6 +1153,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000288602", "c.179T>A", "p.Val601Glu"))
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .chromosome("7")
@@ -1179,6 +1183,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant2 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p16)")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000498124", "c.203_204delCG", "p.Ala68fs"))
                 .transcript("ENST00000498124")
                 .isCanonical(true)
                 .chromosome("9")
@@ -1208,6 +1213,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p14ARF)")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000579755", "c.246_247delCG", "p.Gly83fs"))
                 .transcript("ENST00000579755")
                 .isCanonical(false)
                 .chromosome("9")
@@ -1237,6 +1243,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TERT")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000310581", "c.-125_-124delCCinsTT", Strings.EMPTY))
                 .transcript("ENST00000310581")
                 .isCanonical(true)
                 .chromosome("5")
@@ -1266,6 +1273,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant5 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("SF3B1")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000335508", "c.2153C>T", "p.Pro718Leu"))
                 .transcript("ENST00000335508")
                 .isCanonical(true)
                 .chromosome("2")
@@ -1295,6 +1303,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant6 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TP63")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000264731", "c.1497G>T", "p.Met499Ile"))
                 .transcript("ENST00000264731")
                 .isCanonical(true)
                 .chromosome("3")
@@ -1322,6 +1331,18 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6);
+    }
+
+    @NotNull
+    private static PurpleTranscriptImpact purpleTranscriptImpactClinical(@NotNull String transcript, @NotNull String hgvsCodingImpact,
+            @NotNull String hgvsProteinImpact) {
+        return ImmutablePurpleTranscriptImpact.builder()
+                .transcript(transcript)
+                .hgvsCodingImpact(hgvsCodingImpact)
+                .hgvsProteinImpact(hgvsProteinImpact)
+                .spliceRegion(false)
+                .codingEffect(PurpleCodingEffect.UNDEFINED)
+                .build();
     }
 
     @NotNull
@@ -1413,26 +1434,59 @@ public final class ExampleAnalysisTestFactory {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("UGT1A1")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("UGT1A1")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
+
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("DPYD")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("DPYD")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Toxicity Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
+
         return pharmacogeneticsMap;
     }
 

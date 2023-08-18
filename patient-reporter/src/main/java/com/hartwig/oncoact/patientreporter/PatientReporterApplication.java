@@ -3,14 +3,16 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Map;
 
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
-import com.hartwig.oncoact.patientreporter.qcfail.*;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
@@ -83,6 +85,11 @@ public class PatientReporterApplication {
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
 
+            report = ImmutableAnalysedPatientReport.builder()
+                    .from(report)
+                    .clinicalSummary(report.clinicalSummary() + "The underlying data of these WGS results"
+                            + " can be requested at Hartwig Medical Foundation" + " (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                    .build();
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
 
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());

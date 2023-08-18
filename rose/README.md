@@ -1,7 +1,10 @@
 # Relevant Oncogenic Summary of Eligibility
-ROSE makes an actionability summary of the clinical relevant (for the Netherlands) genomic events and signatures as determined by the Hartwig pipeline. 
+
+ROSE makes an actionability summary of the clinical relevant (for the Netherlands) genomic events and signatures as determined by the
+Hartwig pipeline.
 
 ## Contents
+
 - [What is present in the summary database?](#actionability-summary)
 - [How is actionability matched against genomic events and signatures?](#matching-of-actionability-based-on-genomic-events-and-signatures)
 - [What output is produced by ROSE?](#rose-output)
@@ -10,7 +13,9 @@ ROSE makes an actionability summary of the clinical relevant (for the Netherland
 - [Version history and download links](#version-history-and-download-links)
 
 ## Actionability summary
-For determining which genomic events or signatures are actionable in the NL an actionability summary database is used. This database has the following format:
+
+For determining which genomic events or signatures are actionable in the NL an actionability summary database is used. This database has the
+following format:
 
 | Field           | Description                                                                            | Example                                                               |
 |-----------------|----------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
@@ -46,7 +51,7 @@ The field type alteration could contain the following values which are specific 
 | ACTIVATING_MUTATION_BRAF_CLASS_III | Actionable when the mutation is a class III mutation                                                                           |
 | PROMOTER_MUTATION                  | Actionable when the variant is a promoter mutation                                                                             |
 
-The field type alteration could also contain the following values which are related to disclaimers or general information which are 
+The field type alteration could also contain the following values which are related to disclaimers or general information which are
 important to know for interpretation of the clinical relevance:
 
 | Field              | Description                                                                                                      |
@@ -64,98 +69,120 @@ important to know for interpretation of the clinical relevance:
 | VUS_REMARK         | A sentence that the detected variant is a VUS                                                                    |
 
 ## Matching of actionability based on genomic events and signatures
+
 Genomic events and signatures are categorized in six categories and actionability is matched for every category independently.
 
 #### SNVs and (small) INDELs
-Small variants (SNVs and INDELs) are determined by [PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md). 
+
+Small variants (SNVs and INDELs) are determined by [PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md).
 For the small variants, the variants should be meets with the following conditions:
-- For variants which are present in ONCO genes: 
-  - The type alteration will be annotated with ACTIVATING_MUTATION
-  - Actionability is only match when the variant is a high driver variant 
+
+- For variants which are present in ONCO genes:
+    - The type alteration will be annotated with ACTIVATING_MUTATION
+    - Actionability is only match when the variant is a high driver variant
 
 - For variants which are present in TSG genes:
-  - The type alteration will be annotated with INACTIVATION 
-  - Actionability is match when the variant is a high driver variant and condition is annotated with ONLY HIGH. Also, for some of called 
-variants the precense is relevant for clinical interpretation but without actionability, the condition is annotated  ALWAYS_NO_ACTIONABLE
-and will be added into the conclusion unless the driver likelihood. 
-  - Checking the presence if the variant is bi-allelic. When an intact allele is still present, we notify this for interpretation
+    - The type alteration will be annotated with INACTIVATION
+    - Actionability is match when the variant is a high driver variant and condition is annotated with ONLY HIGH. Also, for some of called
+      variants the precense is relevant for clinical interpretation but without actionability, the condition is annotated
+      ALWAYS_NO_ACTIONABLE
+      and will be added into the conclusion unless the driver likelihood.
+    - Checking the presence if the variant is bi-allelic. When an intact allele is still present, we notify this for interpretation
 
-Next to this there are some other logics: 
-- When the HRD signature is called, the HRD variants are also mentioned in the conclusion unless the driver likelihood 
-- When there are 2 or more variants of the same gene this will be shown in one sentence. 
+Next to this there are some other logics:
+
+- When the HRD signature is called, the HRD variants are also mentioned in the conclusion unless the driver likelihood
+- When there are 2 or more variants of the same gene this will be shown in one sentence.
 
 Do note that germline and somatic variants are treated equally. It is not considered relevant for clinical evidence whether the variant is
 present in the germline already or has been acquired by the tumor somatically.
 
 #### Copy numbers
+
 Actionability on amplifications and deletions is considered applicable in case a gene has been classified as amplified or deleted by
-[PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md). If a CNV is called, the actionability will be match with the following type alteration: 
+[PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md). If a CNV is called, the actionability will be match with
+the following type alteration:
+
 - If it is an amplification the type alteration will be AMPLIFICATION
 - If it is a deletion the type alteration will be LOSS
 
-When the CNV is present in the actionability db the gene copy numbers of that gene is also added to the conclusion 
+When the CNV is present in the actionability db the gene copy numbers of that gene is also added to the conclusion
 
 #### Homozygous disruptions
-When a gene has been homozygously disrupted according to [LINX](https://github.com/hartwigmedical/hmftools/tree/master/linx/README.md), the actionability will always match with the
+
+When a gene has been homozygously disrupted according to [LINX](https://github.com/hartwigmedical/hmftools/tree/master/linx/README.md), the
+actionability will always match with the
 type alteration INACTIVATION.
 
 #### Fusions
-For fusions that are deemed reportable according to [LINX](https://github.com/hartwigmedical/hmftools/tree/master/linx/README.md), the following matching is performed:
-- Fusions will be match to the actionability unless the driver likelihood 
-- If fusion type is EXON_DEL_DUP this will match to the type alteration INTERNAL_DELETION actionability
-- If fusion type is EXON_DEL_DUP and gene is EGFR with the specific range (25;26 exon up and 14;18 exon down) it will match to the 
-actionability of KINASE_DOMAIN_DUPLICATION for EGFR
-- If fusion type is PROMISCUOUS_3, PROMISCUOUS_5, KNOWN_PAIR, IG_KNOWN_PAIR or IG_PROMISCUOUS this will match to the type alteration
-FUSION for actionability when the fusion gene is either on 3' promiscuous or 5' side 
 
-For every actionable fusion the range of the fusion will also be added. 
+For fusions that are deemed reportable according to [LINX](https://github.com/hartwigmedical/hmftools/tree/master/linx/README.md), the
+following matching is performed:
+
+- Fusions will be match to the actionability unless the driver likelihood
+- If fusion type is EXON_DEL_DUP this will match to the type alteration INTERNAL_DELETION actionability
+- If fusion type is EXON_DEL_DUP and gene is EGFR with the specific range (25;26 exon up and 14;18 exon down) it will match to the
+  actionability of KINASE_DOMAIN_DUPLICATION for EGFR
+- If fusion type is PROMISCUOUS_3, PROMISCUOUS_5, KNOWN_PAIR, IG_KNOWN_PAIR or IG_PROMISCUOUS this will match to the type alteration
+  FUSION for actionability when the fusion gene is either on 3' promiscuous or 5' side
+
+For every actionable fusion the range of the fusion will also be added.
 
 #### Viral presence
-For matching viral presence to actionability, the interpretation by [Virus Interpreter](https://github.com/hartwigmedical/hmftools/tree/master/virus-interpreter/README.md) is used. 
-The type alteration will be POSITIVE and the virus should be present in the actionability database. Also, the actionability is meets 
+
+For matching viral presence to actionability, the interpretation
+by [Virus Interpreter](https://github.com/hartwigmedical/hmftools/tree/master/virus-interpreter/README.md) is used.
+The type alteration will be POSITIVE and the virus should be present in the actionability database. Also, the actionability is meets
 unless the driver likelihood
 
 #### Signatures
+
 The signatures are categorized in four categories and actionability is matched for every category independently.
 
 ###### HRD
-When a tumor has the signature homologous recombination repair, which means a value >= 0.5 with the status homologous recombination 
-deficient, according to [CHORD](https://github.com/UMCUGenetics/CHORD) the signature is match for actionability. Also, when there is no 
-support for this signature this will be also mentioned. 
+
+When a tumor has the signature homologous recombination repair, which means a value >= 0.5 with the status homologous recombination
+deficient, according to [CHORD](https://github.com/UMCUGenetics/CHORD) the signature is match for actionability. Also, when there is no
+support for this signature this will be also mentioned.
 
 ###### MSI
-When a tumor has the signature microsatellite instability, which means a value >= 4 with the status MSI,  according to 
-[PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md) the signature is match for actionability.
 
-###### TML
-When a tumor has the signature tumor mutational load, which means a value >= 140 with the TML high status, according to 
+When a tumor has the signature microsatellite instability, which means a value >= 4 with the status MSI, according to
 [PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md) the signature is match for actionability.
 
 ###### TMB
-When a tumor has the signature tumor mutational burden, which means a value >= 10, according to 
+
+When a tumor has the signature tumor mutational burden, which means a value >= 16, according to
 [PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md) the signature is match for actionability.
 
 #### Other matchings for the clinical conclusion
 
 ###### Tumor location of the patient
-At the start of the clinical conclusion, the patient tumor location is mentioned. 
+
+At the start of the clinical conclusion, the patient tumor location is mentioned.
 
 ###### Molecular Tissue of Origin classifier
-The molecular tissue of origin classifier predicts the primary tumor location of the patient based on the WGS data by 
-[CUPPA](https://github.com/hartwigmedical/hmftools/tree/master/cuppa/README.md). When this classify a tumor location with a likelihood above the 80% the primary tumor location is added with 
-their likelihood. 
-However, it is also possible that the likelihood is below the 80% and then the tumor prediction is 'inconclusive'. When 'inconclusive' 
-is predicted but with a likelihood above 50% the classification is also added with highest likelihood. When the likleihood is below 50% then 
-only 'inconclusive' is shown in the conclusion. 
+
+The molecular tissue of origin classifier predicts the primary tumor location of the patient based on the WGS data by
+[CUPPA](https://github.com/hartwigmedical/hmftools/tree/master/cuppa/README.md). When this classify a tumor location with a likelihood above
+the 80% the primary tumor location is added with
+their likelihood.
+However, it is also possible that the likelihood is below the 80% and then the tumor prediction is 'inconclusive'. When 'inconclusive'
+is predicted but with a likelihood above 50% the classification is also added with highest likelihood. When the likleihood is below 50% then
+only 'inconclusive' is shown in the conclusion.
 
 ###### Disclaimer of tumor purity
-For every sample which we have analysed the tumor purity will be determined. For this, there are two flavours: 
+
+For every sample which we have analysed the tumor purity will be determined. For this, there are two flavours:
+
 - when the tumor purity couldn't be reliable determined, this will be mentioned
 - when the tumor purity is below the 20% a disclaimer is added that the result should be interpret with caution
 
 ###### General information
-In every clinical conclusion a sentence is mentioned that an overview of oncogenic DNA aberations can be found in the report. Next to this 
-we could append some extra information: 
+
+In every clinical conclusion a sentence is mentioned that an overview of oncogenic DNA aberations can be found in the report. Next to this
+we could append some extra information:
+
 - When there are oncogenic DNA aberrations could be detected but those aberrations didn't actionable this will be mentioned in the summary
 - When no oncogenic DNA aberrations could be detected this will be mentioned in the summary
 
@@ -167,8 +194,9 @@ ROSE produces a tsv with the clinical eligibility of that sample
 |------------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | conclusion | The clinical conclusion of the sample | BRCA2 inactivation, potential benefit from PARP inhibitors <enter> BRCA1 inactivation, potential benefit from PARP inhibitors <enter> |
 
-## Known issues 
-The following field type alteration didn't interpret currently but present in the actionability db: 
+## Known issues
+
+The following field type alteration didn't interpret currently but present in the actionability db:
 
 | Field                              |
 |------------------------------------|
@@ -182,13 +210,16 @@ The following field type alteration didn't interpret currently but present in th
 | VUS_REMARK                         |
 
 ## Building Rose
+
 Build a docker image for rose:
+
 ```shell
 git tag rose-{{semver-version}}
 git push origin rose-{{semver-version}}
 ```
 
 Copy the orange JSON input to the input volume.
+
 ```shell
 docker container create --name temp -v rose-input:/data busybox
 docker cp /path/to/orange.json temp:/data/orange.json
@@ -196,6 +227,7 @@ docker rm temp
 ```
 
 Run rose with the expected arguments.
+
 ```shell
 docker run --rm \
 --name rose \
@@ -205,21 +237,22 @@ eu.gcr.io/hmf-build/oncoact/rose:{{semver-version}}
 ```
 
 ## Version History and Download Links
+
 - [1.3](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.3)
-  - Solve the bug of purity percentage
+    - Solve the bug of purity percentage
 - [1.2](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.2)
-  - Updating the matching of fusions (updating fusion name + adding the fusion range)
-  - Support combining variants of the same gene and determine the balletic status of the variants 
-  - Add variants of HRD genes to the conclusion when the signature is HRD 
-  - Add the positive calls of viruses 
-  - Add the gene copy number to the CNV. (min copy number for losses and max copy number for gains)
-  - Update the output layout of ROSE. 
-    - Remove sample ID 
-    - Add every clinical relevant finding to an new row
+    - Updating the matching of fusions (updating fusion name + adding the fusion range)
+    - Support combining variants of the same gene and determine the balletic status of the variants
+    - Add variants of HRD genes to the conclusion when the signature is HRD
+    - Add the positive calls of viruses
+    - Add the gene copy number to the CNV. (min copy number for losses and max copy number for gains)
+    - Update the output layout of ROSE.
+        - Remove sample ID
+        - Add every clinical relevant finding to an new row
 - [1.1](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.1)
-  - Add the primary tumor location of the patient at the start of the clinical summary 
-  - Add space between signature and the score of the signature 
-  - Improve variant annotation due to use canonical annotation when protein annotation is empty 
-  - Use the correct input file of the driver gene tsv dependent of the reference genome version
+    - Add the primary tumor location of the patient at the start of the clinical summary
+    - Add space between signature and the score of the signature
+    - Improve variant annotation due to use canonical annotation when protein annotation is empty
+    - Use the correct input file of the driver gene tsv dependent of the reference genome version
 - [1.0](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.0)
     - Initial release. 

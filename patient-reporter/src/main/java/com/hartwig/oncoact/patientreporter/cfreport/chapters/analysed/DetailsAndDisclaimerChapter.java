@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.lama.client.model.Report;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -27,8 +26,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     @NotNull
     private final ReportResources reportResources;
 
-    public DetailsAndDisclaimerChapter(@NotNull AnalysedPatientReport patientReport,
-                                       @NotNull ReportResources reportResources) {
+    public DetailsAndDisclaimerChapter(@NotNull AnalysedPatientReport patientReport, @NotNull ReportResources reportResources) {
         this.patientReport = patientReport;
         this.reportResources = reportResources;
     }
@@ -46,13 +44,8 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @Override
-    public boolean isFullWidth() {
-        return false;
-    }
-
-    @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsDiv(patientReport)));
         table.addCell(TableUtil.createLayoutCell());
@@ -75,23 +68,25 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(patientReport.lamaPatientData().getReferenceArrivalDate(),
-                patientReport.lamaPatientData().getTumorArrivalDate());
+        String earliestArrivalDate =
+                LamaInterpretation.extractEarliestArrivalDate(patientReport.lamaPatientData().getReferenceArrivalDate(),
+                        patientReport.lamaPatientData().getTumorArrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
                 patientReport.reportDate()));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 patientReport.lamaPatientData().getTumorSampleBarcode()));
-        div.add(createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the blood sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode())));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", patientReport.lamaPatientData().getSopString()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ",
+                patientReport.lamaPatientData().getSopString()));
         String whoVerified = "This report was generated " + patientReport.user();
 
         div.add(createContentParagraph(whoVerified));
@@ -100,9 +95,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(createContentParagraph("The hospital patient ID is: ", patientReport.lamaPatientData().getReportingId()));
 
-        div.add(createContentParagraph("The project name of sample is: ",
-                patientReport.lamaPatientData().getContractCode()));
-
+        div.add(createContentParagraph("The project name of sample is: ", patientReport.lamaPatientData().getContractCode()));
 
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
@@ -123,7 +116,9 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 " based on ",
                 patientReport.qsFormNumber() + "."));
         div.add(createContentParagraph("(basic) UDI-DI: ", patientReport.udiDi() + "."));
-        div.add(createContentDivWithLink("The OncoAct user manual can be found at ", ReportResources.MANUAL + ".", ReportResources.MANUAL + "."));
+        div.add(createContentDivWithLink("The OncoAct user manual can be found at ",
+                ReportResources.MANUAL + ".",
+                ReportResources.MANUAL + "."));
         div.add(createContentParagraph("This report is based on pipeline version ", pipelineVersion + "."));
         div.add(createContentParagraph("The ‘primary tumor location’ and ‘primary tumor type’ have influence on the "
                 + "clinical evidence/study matching. No check is performed to verify the received information."));
@@ -172,10 +167,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         }
 
         if (pathologyId != null) {
-            return createContentParagraphTwice(interpretId,
-                    reportingId,
-                    " and the pathology tissue ID is: ",
-                    pathologyId);
+            return createContentParagraphTwice(interpretId, reportingId, " and the pathology tissue ID is: ", pathologyId);
         } else {
             return createContentParagraph(interpretId, reportingId);
         }
@@ -197,10 +189,9 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
-
     @NotNull
-    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
+            @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

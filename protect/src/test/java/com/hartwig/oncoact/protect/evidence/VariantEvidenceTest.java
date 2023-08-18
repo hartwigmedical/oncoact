@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -78,7 +79,8 @@ public class VariantEvidenceTest {
 
         List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
                 Sets.newHashSet(),
-                Sets.newHashSet(unreportedMatch));
+                Sets.newHashSet(unreportedMatch),
+                Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 
@@ -184,7 +186,7 @@ public class VariantEvidenceTest {
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet());
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(3, evidences.size());
 
@@ -239,7 +241,8 @@ public class VariantEvidenceTest {
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().codingEffect(PurpleCodingEffect.NONE).build())
                 .build());
 
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants);
+        List<ProtectEvidence> evidences =
+                variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 
@@ -256,13 +259,10 @@ public class VariantEvidenceTest {
 
     @NotNull
     private static ProtectEvidence findByGene(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.gene().equals(geneToFind)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 
     @NotNull

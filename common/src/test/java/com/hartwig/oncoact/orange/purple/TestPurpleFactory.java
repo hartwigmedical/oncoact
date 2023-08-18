@@ -65,9 +65,9 @@ public final class TestPurpleFactory {
                 .microsatelliteIndelsPerMb(0.1)
                 .microsatelliteStatus(PurpleMicrosatelliteStatus.MSS)
                 .tumorMutationalBurdenPerMb(13)
-                .tumorMutationalBurdenStatus(PurpleTumorMutationalStatus.HIGH)
-                .tumorMutationalLoad(185)
-                .tumorMutationalLoadStatus(PurpleTumorMutationalStatus.HIGH)
+                .tumorMutationalBurdenStatus(PurpleTumorMutationalStatus.LOW)
+                .tumorMutationalLoad(2)
+                .tumorMutationalLoadStatus(PurpleTumorMutationalStatus.LOW)
                 .wholeGenomeDuplication(false)
                 .svTumorMutationalBurden(0);
     }

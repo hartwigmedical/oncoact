@@ -37,7 +37,7 @@ public interface PatientReporterConfig {
     // Params specific for QC Fail reports
     String QC_FAIL = "qc_fail";
     String QC_FAIL_REASON = "qc_fail_reason";
-    String FAIL_DB_TSV = "fail_db_tsv";
+    String SAMPLE_FAIL_REASON_COMMENT = "sample_fail_reason_comment";
 
     // Params specific for actual patient reports
     String ORANGE_JSON = "orange_json";
@@ -50,6 +50,7 @@ public interface PatientReporterConfig {
 
     // Resources used for generating an analysed patient report
     String GERMLINE_REPORTING_TSV = "germline_reporting_tsv";
+    String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
     String HAS_CORRECTIONS = "has_corrections";
     String CORRECTION_JSON = "correction_json";
 
@@ -79,7 +80,7 @@ public interface PatientReporterConfig {
 
         options.addOption(QC_FAIL, false, "If set, generates a qc-fail report.");
         options.addOption(QC_FAIL_REASON, true, "One of: " + Strings.join(Lists.newArrayList(QCFailReason.validIdentifiers()), ','));
-        options.addOption(FAIL_DB_TSV, true, "Path towards the reasons of the failures TSV file.");
+        options.addOption(SAMPLE_FAIL_REASON_COMMENT, true, "If set, add an extra comment of the failure of the sample.");
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(LAMA_JSON, true, "The path towards the LAMA json of the sample");
@@ -89,6 +90,7 @@ public interface PatientReporterConfig {
         options.addOption(ROSE_TSV, true, "Path towards the ROSE TSV file.");
 
         options.addOption(GERMLINE_REPORTING_TSV, true, "Path towards a TSV containing germline reporting config.");
+        options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         options.addOption(HAS_CORRECTIONS, false, "If provided, expect a correction json.");
         options.addOption(CORRECTION_JSON, true, "If provided, the path towards a correction json.");
@@ -131,7 +133,7 @@ public interface PatientReporterConfig {
     QCFailReason qcFailReason();
 
     @Nullable
-    String failReasonsDatabaseTsv();
+    String sampleFailReasonComment();
 
     @NotNull
     String orangeJson();
@@ -156,6 +158,9 @@ public interface PatientReporterConfig {
 
     @NotNull
     String germlineReportingTsv();
+
+    @NotNull
+    String clinicalTranscriptsTsv();
 
     @Nullable
     String correctionJson();
@@ -182,10 +187,8 @@ public interface PatientReporterConfig {
         boolean isQCFail = cmd.hasOption(QC_FAIL);
         boolean requirePipelineVersion = cmd.hasOption(REQUIRE_PIPELINE_VERSION_FILE);
         QCFailReason qcFailReason = null;
-        String failReasonsDatabaseTsv = null;
         if (isQCFail) {
             String qcFailReasonString = nonOptionalValue(cmd, QC_FAIL_REASON);
-            failReasonsDatabaseTsv = nonOptionalFile(cmd, FAIL_DB_TSV);
             qcFailReason = QCFailReason.fromIdentifier(qcFailReasonString);
             if (qcFailReason == null) {
                 throw new ParseException("Did not recognize QC Fail reason: " + qcFailReasonString);
@@ -201,6 +204,7 @@ public interface PatientReporterConfig {
         String roseTsv = null;
 
         String germlineReportingTsv = Strings.EMPTY;
+        String clinicalTranscriptsTsv = Strings.EMPTY;
 
         if (isQCFail && qcFailReason.isDeepWGSDataAvailable()) {
             if (requirePipelineVersion) {
@@ -219,6 +223,7 @@ public interface PatientReporterConfig {
             roseTsv = nonOptionalFile(cmd, ROSE_TSV);
 
             germlineReportingTsv = nonOptionalFile(cmd, GERMLINE_REPORTING_TSV);
+            clinicalTranscriptsTsv = nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV);
         }
 
         String correctionJson = null;
@@ -235,7 +240,7 @@ public interface PatientReporterConfig {
                 .udiDi(nonOptionalValue(cmd, UDI_DI))
                 .qcFail(isQCFail)
                 .qcFailReason(qcFailReason)
-                .failReasonsDatabaseTsv(failReasonsDatabaseTsv)
+                .sampleFailReasonComment(cmd.getOptionValue(SAMPLE_FAIL_REASON_COMMENT))
                 .orangeJson(orangeJson)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .diagnosticSiloJson(cmd.hasOption(IS_DIAGNOSTIC) ? nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON) : null)
@@ -244,6 +249,7 @@ public interface PatientReporterConfig {
                 .protectEvidenceTsv(protectEvidenceTsv)
                 .roseTsv(roseTsv)
                 .germlineReportingTsv(germlineReportingTsv)
+                .clinicalTranscriptsTsv(clinicalTranscriptsTsv)
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .requirePipelineVersionFile(requirePipelineVersion)

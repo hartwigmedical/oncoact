@@ -3,6 +3,7 @@ package com.hartwig.oncoact.variant;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.util.Formats;
 
@@ -16,6 +17,9 @@ public abstract class ReportableVariant implements Variant {
 
     @NotNull
     public abstract ReportableVariantSource source();
+
+    @Nullable
+    public abstract PurpleTranscriptImpact otherImpactClinical();
 
     @NotNull
     public abstract String transcript();
