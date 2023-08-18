@@ -2,7 +2,6 @@ package com.hartwig.oncoact.protect.evidence;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -27,6 +26,7 @@ import com.hartwig.serve.datamodel.range.ActionableRange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VariantEvidence {
 
@@ -55,13 +55,14 @@ public class VariantEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
-            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants) {
+            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
+            @Nullable Collection<PurpleVariant> allGermlineVariants) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant));
         }
 
-        for (PurpleVariant somaticVariant : allSomaticVariants) {
+        for (PurpleVariant somaticVariant : ReportableVariantFactory.mergeAllVariantLists(allSomaticVariants, allGermlineVariants)) {
             if (!somaticVariant.reported()) {
                 evidences.addAll(evidence(somaticVariant));
             }

@@ -202,4 +202,18 @@ public final class TableUtil {
         c.setMargin(0);
         return c;
     }
+
+    @NotNull
+    public Cell createContentCellRowSpan(@NotNull String text, int rowSpan) {
+        return createContentCellRowSpan(new Paragraph(text), rowSpan);
+    }
+
+    @NotNull
+    public Cell createContentCellRowSpan(@NotNull IBlockElement element, int rowSpan) {
+        return new Cell(rowSpan, 1).setBorder(Border.NO_BORDER)
+                .setBorderBottom(new SolidBorder(ReportResources.PALETTE_MID_GREY, 0.25f))
+                .addStyle(reportResources.tableContentStyle())
+                .setKeepTogether(true)
+                .add(element);
+    }
 }

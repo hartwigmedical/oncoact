@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
@@ -39,7 +39,8 @@ public class DisruptionEvidenceTest {
         HomozygousDisruption matchInact = create(geneInact);
         HomozygousDisruption nonMatch = create("other gene");
 
-        List<ProtectEvidence> evidences = disruptionEvidence.evidence(Sets.newHashSet(matchAmp, matchInact, nonMatch));
+        List<ProtectEvidence> evidences =
+                disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch), Lists.newArrayList());
 
         assertEquals(1, evidences.size());
         ProtectEvidence evidence = evidences.get(0);
@@ -47,12 +48,23 @@ public class DisruptionEvidenceTest {
         assertEquals(geneInact, evidence.gene());
         assertEquals(DisruptionEvidence.HOMOZYGOUS_DISRUPTION_EVENT, evidence.event());
 
-        assertEquals(evidence.sources().size(), 1);
-        assertEquals(EvidenceType.INACTIVATION, evidence.sources().iterator().next().evidenceType());
+        ProtectEvidence inactEvidence = find(evidences, geneInact);
+        assertTrue(inactEvidence.reported());
+        assertEquals(inactEvidence.sources().size(), 1);
+        assertEquals(EvidenceType.INACTIVATION, inactEvidence.sources().iterator().next().evidenceType());
+
     }
 
     @NotNull
     private static HomozygousDisruption create(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
+    }
+
+    @NotNull
+    private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 }

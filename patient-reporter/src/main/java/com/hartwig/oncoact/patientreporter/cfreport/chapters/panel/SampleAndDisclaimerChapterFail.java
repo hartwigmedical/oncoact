@@ -14,6 +14,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +49,7 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -79,11 +80,13 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
                 " with barcode ",
                 report.lamaPatientData().getTumorSampleBarcode()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.lamaPatientData().getSopString()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ",
+                report.lamaPatientData().getSopString()));
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.lamaPatientData())));
+        div.add(createContentParagraph("This report is addressed to: ",
+                LamaInterpretation.hospitalContactReport(report.lamaPatientData())));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;
@@ -140,8 +143,8 @@ public class SampleAndDisclaimerChapterFail implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                  @NotNull String regularPart2, @NotNull String boldPart2) {
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
+            @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

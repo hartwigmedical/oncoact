@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
@@ -11,16 +15,13 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
+
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
 
 public class PatientReporterApplication {
 
@@ -81,17 +82,14 @@ public class PatientReporterApplication {
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
         reportWriter.writeAnalysedPatientReport(report, outputFilePath);
 
-        report =
-                ImmutableAnalysedPatientReport.builder()
-                        .from(report)
-                        .clinicalSummary(report.clinicalSummary() + "The underlying data of these WGS results" +
-                                " can be requested at Hartwig Medical Foundation" +
-                                " (diagnosticsupport@hartwigmedicalfoundation.nl).")
-                        .build();
-
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
 
+            report = ImmutableAnalysedPatientReport.builder()
+                    .from(report)
+                    .clinicalSummary(report.clinicalSummary() + "The underlying data of these WGS results"
+                            + " can be requested at Hartwig Medical Foundation" + " (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                    .build();
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
 
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());

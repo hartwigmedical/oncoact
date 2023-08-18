@@ -1,16 +1,13 @@
 package com.hartwig.oncoact.protect.algo;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
-import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.evidence.ChordEvidence;
 import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
@@ -52,10 +49,13 @@ public class ProtectAlgo {
     private final HlaEvidence hlaEvidenceFactory;
     @NotNull
     private final WildTypeEvidence wildTypeEvidenceFactory;
+    @NotNull
+    private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     @NotNull
     public static ProtectAlgo build(@NotNull ActionableEvents actionableEvents, @NotNull Set<String> patientTumorDoids,
-            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel) {
+            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         PersonalizedEvidenceFactory personalizedEvidenceFactory = new PersonalizedEvidenceFactory(patientTumorDoids, doidParentModel);
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
@@ -81,14 +81,15 @@ public class ProtectAlgo {
                 virusEvidenceFactory,
                 chordEvidenceFactory,
                 hlaEvidenceFactory,
-                wildTypeEvidenceFactory);
+                wildTypeEvidenceFactory,
+                clinicalTranscriptsModel);
     }
 
     private ProtectAlgo(@NotNull final VariantEvidence variantEvidenceFactory, @NotNull final CopyNumberEvidence copyNumberEvidenceFactory,
             @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
             @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
             @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
-            @NotNull final WildTypeEvidence wildTypeEvidenceFactory) {
+            @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.variantEvidenceFactory = variantEvidenceFactory;
         this.copyNumberEvidenceFactory = copyNumberEvidenceFactory;
         this.disruptionEvidenceFactory = disruptionEvidenceFactory;
@@ -98,25 +99,32 @@ public class ProtectAlgo {
         this.chordEvidenceFactory = chordEvidenceFactory;
         this.hlaEvidenceFactory = hlaEvidenceFactory;
         this.wildTypeEvidenceFactory = wildTypeEvidenceFactory;
+        this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
     public List<ProtectEvidence> run(@NotNull OrangeRecord orange) {
         LOGGER.info("Evidence extraction started");
 
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(orange.purple());
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(orange.purple());
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(orange.purple(), clinicalTranscriptsModel);
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(orange.purple(), clinicalTranscriptsModel);
 
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
-                orange.purple().allSomaticVariants());
+                orange.purple().allSomaticVariants(),
+                orange.purple().allGermlineVariants());
         printExtraction("somatic and germline variants", variantEvidence);
 
-        List<ProtectEvidence> copyNumberEvidence =
-                copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(), orange.purple().allSomaticGainsLosses());
+        List<ProtectEvidence> copyNumberEvidence = copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(),
+                orange.purple().allSomaticGainsLosses(),
+                orange.purple().reportableGermlineFullLosses(),
+                orange.purple().allGermlineFullLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
-        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions());
+        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),
+                orange.linx().germlineHomozygousDisruptions());
         printExtraction("homozygous disruptions", disruptionEvidence);
 
         List<ProtectEvidence> fusionEvidence =
@@ -174,21 +182,6 @@ public class ProtectAlgo {
                 reportedCount(updatedForBlacklist));
 
         return updatedForBlacklist;
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     private static void printExtraction(@NotNull String title, @NotNull List<ProtectEvidence> evidences) {

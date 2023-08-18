@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleCharacteristics;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PurpleSignatureEvidence {
 
-    private static final double DEFAULT_HIGH_TMB_CUTOFF = 10D;
+    private static final double DEFAULT_HIGH_TMB_CUTOFF = 16D;
 
     static final Set<TumorCharacteristicType> PURPLE_CHARACTERISTICS = Sets.newHashSet(TumorCharacteristicType.MICROSATELLITE_UNSTABLE,
             TumorCharacteristicType.MICROSATELLITE_STABLE,
@@ -56,14 +55,6 @@ public class PurpleSignatureEvidence {
                     evidence = evaluateMSS(signature, characteristics);
                     break;
                 }
-                case HIGH_TUMOR_MUTATIONAL_LOAD: {
-                    evidence = evaluateHighTML(signature, characteristics);
-                    break;
-                }
-                case LOW_TUMOR_MUTATIONAL_LOAD: {
-                    evidence = evaluateLowTML(signature, characteristics);
-                    break;
-                }
                 case HIGH_TUMOR_MUTATIONAL_BURDEN: {
                     evidence = evaluateHighTMB(signature, characteristics);
                     break;
@@ -87,36 +78,16 @@ public class PurpleSignatureEvidence {
 
     @Nullable
     private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
-                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.microsatelliteIndelsPerMb())
-                : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI;
+        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
+                characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI;
 
         return isMatch ? toEvidence(signature) : null;
     }
 
     @Nullable
     private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
-                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.microsatelliteIndelsPerMb())
-                : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSS;
-
-        return isMatch ? toEvidence(signature) : null;
-    }
-
-    @Nullable
-    private ProtectEvidence evaluateHighTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalLoad()) : characteristics.tumorMutationalLoadStatus() == PurpleTumorMutationalStatus.HIGH;
-
-        return isMatch ? toEvidence(signature) : null;
-    }
-
-    @Nullable
-    private ProtectEvidence evaluateLowTML(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalLoad()) : characteristics.tumorMutationalLoadStatus() == PurpleTumorMutationalStatus.LOW;
+                characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSS;
 
         return isMatch ? toEvidence(signature) : null;
     }
