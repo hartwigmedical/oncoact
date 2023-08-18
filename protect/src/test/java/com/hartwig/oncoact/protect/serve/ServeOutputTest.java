@@ -1,13 +1,14 @@
 package com.hartwig.oncoact.protect.serve;
 
-import com.google.common.io.Resources;
-import com.hartwig.serve.datamodel.ActionableEventsLoader;
-import com.hartwig.serve.datamodel.RefGenome;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertNotNull;
+import com.google.common.io.Resources;
+import com.hartwig.serve.datamodel.ActionableEventsLoader;
+import com.hartwig.serve.datamodel.RefGenome;
+
+import org.junit.Test;
 
 public class ServeOutputTest {
 

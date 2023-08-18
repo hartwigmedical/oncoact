@@ -89,8 +89,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
+    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 120, 80, 25, 40, 120, 60 },
                 new Cell[] { tableUtil.createHeaderCell("Treatment", 2), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Level", 1), tableUtil.createHeaderCell("Response", 1),
@@ -102,8 +101,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
+    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 170, 80, 170 },
                 new Cell[] { tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Genomic event", 1) },
@@ -193,7 +191,8 @@ public class ClinicalEvidenceFunctions {
                             cellResistant = tableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle());
                         }
 
-                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources, responsive.level().name())));
+                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources,
+                                responsive.level().name())));
 
                         levelTable.addCell(cellLevel);
                         responseTable.addCell(cellResistant);
