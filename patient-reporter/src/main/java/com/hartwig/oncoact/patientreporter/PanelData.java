@@ -1,8 +1,8 @@
 package com.hartwig.oncoact.patientreporter;
 
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

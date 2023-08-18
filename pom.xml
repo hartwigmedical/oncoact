@@ -40,7 +40,7 @@
         <serve.version>local-SNAPSHOT</serve.version>
         <orange-datamodel.version>1.2.0</orange-datamodel.version>
         <lama-client.version>2.0.6</lama-client.version>
-        <silo-client.version>2.3.0</silo-client.version>
+        <silo-diagnostic-client.version>3.0.5</silo-diagnostic-client.version>
 
         <commons.cli.version>1.5.0</commons.cli.version>
         <immutables.version>2.5.5</immutables.version>
@@ -150,9 +150,9 @@
                 <version>${lama-client.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.hartwig.silo.client</groupId>
-                <artifactId>java-client</artifactId>
-                <version>${silo-client.version}</version>
+                <groupId>com.hartwig.silo.diagnostic.client</groupId>
+                <artifactId>diagnostic-silo-client</artifactId>
+                <version>${silo-diagnostic-client.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hartwig</groupId>

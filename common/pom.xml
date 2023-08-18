@@ -27,8 +27,8 @@
             <artifactId>client</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hartwig.silo.client</groupId>
-            <artifactId>java-client</artifactId>
+            <groupId>com.hartwig.silo.diagnostic.client</groupId>
+            <artifactId>diagnostic-silo-client</artifactId>
         </dependency>
 
         <dependency>

@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
-import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
+import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
+import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
@@ -16,8 +16,8 @@ import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -75,8 +75,7 @@ public class PanelReporterApplication {
 
     private void generatePanelAnalysedReport() throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(
-                config.comments(),
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
                 config.expectedPipelineVersion(),
@@ -99,8 +98,7 @@ public class PanelReporterApplication {
 
     private void generatePanelQCFail() throws IOException {
         PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config), reportDate);
-        PanelFailReport report = reporter.run(
-                config.comments(),
+        PanelFailReport report = reporter.run(config.comments(),
                 config.isCorrectedReport(),
                 config.isCorrectedReportExtern(),
                 config.panelQcFailReason(),
@@ -120,7 +118,7 @@ public class PanelReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-                                                                     @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
+            @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(panelReport);
     }
 

@@ -6,7 +6,7 @@ import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
-import com.hartwig.silo.client.model.PatientInformationResponse;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
@@ -49,8 +49,8 @@ public final class SidePanel {
 
     }
 
-    public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData, @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate,
-                                boolean fullHeight) {
+    public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData,
+            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize);
@@ -102,7 +102,8 @@ public final class SidePanel {
             if (biopsySite != null) {
                 biopsyLocation = biopsySite.getLocation();
                 biopsySubLocation = biopsySite.getSubLocation();
-                biopsyLateralisation = biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
+                biopsyLateralisation =
+                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
                 isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
             }
 
@@ -121,10 +122,7 @@ public final class SidePanel {
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
         float size = -pageSize.getHeight() / 2;
-        canvas.rectangle(pageSize.getWidth(),
-                pageSize.getHeight(),
-                -RECTANGLE_WIDTH,
-                fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
+        canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
