@@ -23,6 +23,7 @@ public interface RoseConfig {
 
     String ACTIONABILITY_DATABASE_TSV = "actionability_database_tsv";
     String DRIVER_GENE_TSV = "driver_gene_tsv";
+    String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
 
     // Some additional optional params and flags
     String LOG_DEBUG = "log_debug";
@@ -36,6 +37,7 @@ public interface RoseConfig {
 
         options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data of the actionability database can be found.");
         options.addOption(DRIVER_GENE_TSV, true, "Path to driver gene TSV");
+        options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
 
@@ -55,6 +57,9 @@ public interface RoseConfig {
     String driverGeneTsv();
 
     @NotNull
+    String clinicalTranscriptsTsv();
+
+    @NotNull
     static RoseConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -65,6 +70,7 @@ public interface RoseConfig {
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
                 .actionabilityDatabaseTsv(nonOptionalFile(cmd, ACTIONABILITY_DATABASE_TSV))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
+                .clinicalTranscriptsTsv(nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV))
                 .build();
     }
 

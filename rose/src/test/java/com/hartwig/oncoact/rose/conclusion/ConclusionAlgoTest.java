@@ -25,10 +25,10 @@ import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
@@ -59,7 +59,9 @@ public class ConclusionAlgoTest {
     @Test
     public void runsOnTestData() {
         ImmutableRoseData.Builder builder = ImmutableRoseData.builder();
-        RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord()).build();
+        RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord())
+                .clinicalTranscriptsModel(ClinicalTranscriptModelTestFactory.createEmpty())
+                .build();
         assertNotNull(ConclusionAlgo.generateConclusion(minimal));
 
         RoseData proper = builder.orange(TestOrangeFactory.createProperTestOrangeRecord()).build();
@@ -219,7 +221,6 @@ public class ConclusionAlgoTest {
         assertEquals(2, conclusion.size());
         assertEquals(conclusion.get(0), "- PTEN PTEN");
         assertEquals(conclusion.get(1), "- KRAS KRAS");
-
     }
 
     @Test
@@ -316,39 +317,6 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateMSIConclusion(conclusion,
                 PurpleMicrosatelliteStatus.MSS,
                 3.2,
-                actionabilityMap,
-                Sets.newHashSet(),
-                Sets.newHashSet());
-
-        assertEquals(0, conclusion.size());
-    }
-
-    @Test
-    public void canGenerateTMLHighConclusion() {
-        List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
-
-        ConclusionAlgo.generateTMLConclusion(conclusion,
-                PurpleTumorMutationalStatus.HIGH,
-                200,
-                actionabilityMap,
-                Sets.newHashSet(),
-                Sets.newHashSet());
-
-        assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- TML (200) TML");
-    }
-
-    @Test
-    public void canGenerateTMLLowConclusion() {
-        List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("High-TML", TypeAlteration.POSITIVE, "High-TML", Condition.ALWAYS, "TML");
-
-        ConclusionAlgo.generateTMLConclusion(conclusion,
-                PurpleTumorMutationalStatus.LOW,
-                100,
                 actionabilityMap,
                 Sets.newHashSet(),
                 Sets.newHashSet());

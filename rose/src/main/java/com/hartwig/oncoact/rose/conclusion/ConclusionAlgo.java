@@ -28,8 +28,6 @@ import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
@@ -46,6 +44,7 @@ import com.hartwig.oncoact.rose.actionability.Condition;
 import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
 import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -84,15 +83,23 @@ public final class ConclusionAlgo {
         Map<String, DriverGene> driverGenesMap = generateDriverGenesMap(rose.driverGenes());
 
         PurpleRecord purple = rose.orange().purple();
-        Set<ReportableVariant> reportableSomaticVariants = createReportableSomaticVariants(purple);
-        Set<ReportableVariant> reportableGermlineVariants = createReportableGermlineVariants(purple);
+        Set<ReportableVariant> reportableSomaticVariants =
+                ReportableVariantFactory.createReportableSomaticVariants(purple, rose.clinicalTranscriptsModel());
+        Set<ReportableVariant> reportableGermlineVariants =
+                ReportableVariantFactory.createReportableGermlineVariants(purple, rose.clinicalTranscriptsModel());
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
-        List<PurpleGainLoss> reportableGainLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
+        List<PurpleGainLoss> reportableGainLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
-        List<HomozygousDisruption> homozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+
+        List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+        List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
+        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
         List<LilacAllele> lilac = rose.orange().lilac().alleles();
@@ -123,14 +130,9 @@ public final class ConclusionAlgo {
                 actionabilityMap,
                 oncogenic,
                 actionable);
-        generateTMLConclusion(conclusion,
-                purple.characteristics().tumorMutationalLoadStatus(),
-                purple.characteristics().tumorMutationalLoad(),
-                actionabilityMap,
-                oncogenic,
-                actionable);
         generateTMBConclusion(conclusion, purple.characteristics().tumorMutationalBurdenPerMb(), actionabilityMap, oncogenic, actionable);
         generateTotalResults(conclusion, actionabilityMap, oncogenic, actionable);
+
         return ImmutableActionabilityConclusion.builder().conclusion(conclusion).build();
     }
 
@@ -151,21 +153,6 @@ public final class ConclusionAlgo {
             driverGeneMap.put(entry.gene(), entry);
         }
         return driverGeneMap;
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple) {
-        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(), purple.somaticDrivers());
-    }
-
-    @NotNull
-    private static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple) {
-        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
-        if (reportableGermlineVariants == null) {
-            return Sets.newHashSet();
-        }
-
-        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, purple.germlineDrivers());
     }
 
     @NotNull
@@ -526,21 +513,6 @@ public final class ConclusionAlgo {
                 conclusion.add("- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
                 actionable.add("MSI");
                 oncogenic.add("MSI");
-            }
-        }
-    }
-
-    @VisibleForTesting
-    static void generateTMLConclusion(@NotNull List<String> conclusion, @NotNull PurpleTumorMutationalStatus tumorMutationalStatus,
-            int tumorMutationalLoad, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-            @NotNull Set<String> actionable) {
-        if (tumorMutationalStatus == PurpleTumorMutationalStatus.HIGH) {
-            ActionabilityKey keyTML = ImmutableActionabilityKey.builder().match("High-TML").type(TypeAlteration.POSITIVE).build();
-            ActionabilityEntry entry = actionabilityMap.get(keyTML);
-            if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add("- " + "TML (" + tumorMutationalLoad + ") " + entry.conclusion());
-                actionable.add("TML");
-                oncogenic.add("TML");
             }
         }
     }

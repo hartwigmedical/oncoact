@@ -44,11 +44,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @Override
-    public boolean isFullWidth() {
-        return false;
-    }
-
-    @Override
     public void render(@NotNull Document reportDocument) throws IOException {
         Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
         table.setWidth(contentWidth());

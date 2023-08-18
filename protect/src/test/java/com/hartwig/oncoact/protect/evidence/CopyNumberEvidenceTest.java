@@ -4,12 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -25,46 +24,59 @@ public class CopyNumberEvidenceTest {
     @Test
     public void canDetermineCopyNumberEvidence() {
         String geneAmp = "geneAmp";
+        String geneInact = "geneInact";
         String geneDel = "geneDel";
         ActionableGene amp = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.AMPLIFICATION).build();
-        ActionableGene inactivation = TestServeFactory.geneBuilder().gene(geneDel).event(GeneEvent.INACTIVATION).build();
+        ActionableGene inactivation = TestServeFactory.geneBuilder().gene(geneInact).event(GeneEvent.INACTIVATION).build();
+        ActionableGene deletion = TestServeFactory.geneBuilder().gene(geneDel).event(GeneEvent.DELETION).build();
         ActionableGene fusion = TestServeFactory.geneBuilder().gene(geneAmp).event(GeneEvent.FUSION).build();
 
         CopyNumberEvidence copyNumberEvidence =
-                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion));
+                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion, deletion));
 
         PurpleGainLoss reportableAmp =
                 TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(CopyNumberInterpretation.FULL_GAIN).build();
         PurpleGainLoss reportableDel =
-                TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
+                TestPurpleFactory.gainLossBuilder().gene(geneInact).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         PurpleGainLoss ampOnOtherGene =
                 TestPurpleFactory.gainLossBuilder().gene("other gene").interpretation(CopyNumberInterpretation.PARTIAL_GAIN).build();
+        PurpleGainLoss reportableGermlineDel =
+                TestPurpleFactory.gainLossBuilder().gene(geneDel).interpretation(CopyNumberInterpretation.FULL_LOSS).build();
 
-        Set<PurpleGainLoss> reportableGainLosses = Sets.newHashSet(reportableAmp, reportableDel, ampOnOtherGene);
-        Set<PurpleGainLoss> unreportedGainLosses = Sets.newHashSet();
-        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableGainLosses, unreportedGainLosses);
+        List<PurpleGainLoss> reportableSomaticGainLosses = Lists.newArrayList(reportableAmp, reportableDel, ampOnOtherGene);
+        List<PurpleGainLoss> reportableGermlineGainLosses = Lists.newArrayList(reportableGermlineDel);
+        List<PurpleGainLoss> unreportedGainLosses = Lists.newArrayList();
+        List<PurpleGainLoss> unreportedGermlineGainLosses = Lists.newArrayList();
+        List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses,
+                unreportedGainLosses,
+                reportableGermlineGainLosses,
+                unreportedGermlineGainLosses);
 
-        assertEquals(2, evidences.size());
+        assertEquals(3, evidences.size());
 
         ProtectEvidence ampEvidence = find(evidences, geneAmp);
         assertTrue(ampEvidence.reported());
         assertEquals(ampEvidence.sources().size(), 1);
         assertEquals(EvidenceType.AMPLIFICATION, ampEvidence.sources().iterator().next().evidenceType());
 
+        ProtectEvidence inactEvidence = find(evidences, geneInact);
+        assertTrue(inactEvidence.reported());
+        assertEquals(inactEvidence.sources().size(), 1);
+        assertEquals(EvidenceType.INACTIVATION, inactEvidence.sources().iterator().next().evidenceType());
+
         ProtectEvidence delEvidence = find(evidences, geneDel);
         assertTrue(delEvidence.reported());
         assertEquals(delEvidence.sources().size(), 1);
-        assertEquals(EvidenceType.INACTIVATION, delEvidence.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.DELETION, delEvidence.sources().iterator().next().evidenceType());
     }
 
     @NotNull
     private static ProtectEvidence find(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.gene().equals(geneToFind)) {
-                return evidence;
-            }
-        }
 
-        throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
+
     }
 }

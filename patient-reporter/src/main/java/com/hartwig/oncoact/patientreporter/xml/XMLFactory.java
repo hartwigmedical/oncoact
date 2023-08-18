@@ -1,5 +1,10 @@
 package com.hartwig.oncoact.patientreporter.xml;
 
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -10,25 +15,24 @@ import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.cfreport.data.*;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
+import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class XMLFactory {
 
     private static final DecimalFormat DOUBLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.##");
     private static final DecimalFormat NO_DECIMAL_FORMAT = ReportResources.decimalFormat("#");
     private static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
-
 
     private XMLFactory() {
     }
@@ -81,8 +85,8 @@ public class XMLFactory {
                 .valuePath(cupAnalyse == null ? null : Map.of("value", cupAnalyse))
                 .build());
 
-        String disclaimer = "- Further interpretation of these results within the patient’s clinical context is " +
-                "required by a clinician with support of a molecular tumor board." + "\n";
+        String disclaimer = "- Further interpretation of these results within the patient’s clinical context is "
+                + "required by a clinician with support of a molecular tumor board." + "\n";
         disclaimer += report.qsFormNumber().equals(QsFormNumber.FOR_209.display()) ? "- Due to the lower tumor purity potential "
                 + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
                 + "considered with caution. " + "\n" : Strings.EMPTY;
@@ -97,7 +101,10 @@ public class XMLFactory {
 
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]msscore")
-                .valuePath(Map.of("value", hasReliablePurity ? DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().microsatelliteIndelsPerMb()) : Formats.NA_STRING))
+                .valuePath(Map.of("value",
+                        hasReliablePurity
+                                ? DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().microsatelliteIndelsPerMb())
+                                : Formats.NA_STRING))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]msstatus")
@@ -105,26 +112,31 @@ public class XMLFactory {
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]tumuload")
-                .valuePath(Map.of("value", hasReliablePurity ? NO_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad()) : Formats.NA_STRING))
+                .valuePath(Map.of("value",
+                        hasReliablePurity ? NO_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad()) : Formats.NA_STRING))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]tumulosta")
-                .valuePath(Map.of("value", report.genomicAnalysis().tumorMutationalLoadStatus().name()))
+                .valuePath(Map.of("value", report.genomicAnalysis().tumorMutationalBurdenStatus().name()))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]tutmb")
-                .valuePath(Map.of("value", hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalBurden()) : Formats.NA_STRING))
+                .valuePath(Map.of("value",
+                        hasReliablePurity
+                                ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalBurden())
+                                : Formats.NA_STRING))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]horesco")
                 .valuePath(Map.of("value",
-                        report.genomicAnalysis().hrdStatus() == ChordStatus.CANNOT_BE_DETERMINED ? "N/A" : DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().hrdValue())))
+                        report.genomicAnalysis().hrdStatus() == ChordStatus.CANNOT_BE_DETERMINED
+                                ? "N/A"
+                                : DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().hrdValue())))
                 .build());
         xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]horestu")
                 .valuePath(Map.of("value", report.genomicAnalysis().hrdStatus().name()))
                 .build());
-
 
         addReportableVariantsToXML(report.genomicAnalysis().reportableVariants(), xml, hasReliablePurity);
         addGainLossesToXML(report.genomicAnalysis().gainsAndLosses(), report.genomicAnalysis().cnPerChromosome(), xml, hasReliablePurity);
@@ -148,7 +160,7 @@ public class XMLFactory {
     }
 
     public static void addGainLossesToXML(@NotNull List<PurpleGainLoss> gainLosses, @NotNull List<CnPerChromosomeArmData> chromosomeArmData,
-                                          @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
+            @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
         int count = 1;
         for (PurpleGainLoss gainLoss : GainsAndLosses.sort(gainLosses)) {
             xmlList.add(ImmutableKeyXML.builder()
@@ -180,7 +192,7 @@ public class XMLFactory {
     }
 
     public static void addHomozygousDisruptionsToXML(@NotNull List<HomozygousDisruption> homozygousDisruptions,
-                                                     @NotNull List<KeyXML> xmlList) {
+            @NotNull List<KeyXML> xmlList) {
         int count = 1;
         for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             xmlList.add(ImmutableKeyXML.builder()
@@ -199,8 +211,8 @@ public class XMLFactory {
         }
     }
 
-    public static void addReportableVariantsToXML(@NotNull List<ReportableVariant> reportableVariants,
-                                                  @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
+    public static void addReportableVariantsToXML(@NotNull List<ReportableVariant> reportableVariants, @NotNull List<KeyXML> xmlList,
+            boolean hasReliablePurity) {
         int count = 1;
         for (ReportableVariant reportableVariant : SomaticVariants.sort(reportableVariants)) {
             xmlList.add(ImmutableKeyXML.builder()
