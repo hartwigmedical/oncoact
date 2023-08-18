@@ -436,7 +436,7 @@ public final class ConclusionAlgo {
             }
         }
 
-        if (reportableViruses.size() >= 1) {
+        if (!reportableViruses.isEmpty()) {
             for (AnnotatedVirus virus : reportableViruses) {
                 if (virus.interpretation() != null && HlaAllele != null) {
                     ActionabilityKey key =
