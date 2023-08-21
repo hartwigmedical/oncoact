@@ -15,6 +15,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Icon;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.AminoAcids;
@@ -28,8 +29,6 @@ import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.VerticalAlignment;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,9 +44,8 @@ public class ClinicalEvidenceFunctions {
         this.evidenceItems = new EvidenceItems(reportResources);
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(ClinicalEvidenceFunctions.class);
-
     private static final String TREATMENT_DELIMITER = " + ";
+
     private static final String RESPONSE_SYMBOL = "\u25B2";
     private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
@@ -263,10 +261,9 @@ public class ClinicalEvidenceFunctions {
         String evidenceRank = Strings.EMPTY;
         String evidenceSource = source.evidenceType().display();
 
-        // TODO Review in context of having no more range rank.
-        //        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
-        //            evidenceRank = String.valueOf(source.rangeRank());
-        //        }
+        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
+            evidenceRank = String.valueOf(source.rangeRank());
+        }
 
         String evidenceMerged;
         if (!evidenceRank.isEmpty()) {

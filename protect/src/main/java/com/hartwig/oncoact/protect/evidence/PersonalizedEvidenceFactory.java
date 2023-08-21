@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -22,6 +23,7 @@ import com.hartwig.serve.datamodel.range.ActionableRange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PersonalizedEvidenceFactory {
 
@@ -49,7 +51,19 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
+    public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
+            @Nullable Integer rangeRank) {
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)));
+    }
+
+    @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
+        return evidenceBuilderRange(actionable, null, null);
+    }
+
+    @NotNull
+    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
+            @NotNull Set<KnowledgebaseSource> protectSource) {
         return ImmutableProtectEvidence.builder()
                 .treatment(ImmutableTreatment.builder()
                         .name(actionable.treatment().name())
@@ -59,7 +73,7 @@ public class PersonalizedEvidenceFactory {
                 .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().name()))
                 .level(actionable.level())
                 .direction(actionable.direction())
-                .sources(Sets.newHashSet(resolveProtectSource(actionable)));
+                .sources(protectSource);
     }
 
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
@@ -101,23 +115,25 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable) {
+    private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable, @Nullable String range,
+            @Nullable Integer rangeRank) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())
                 .sourceUrls(Sets.newTreeSet(actionable.sourceUrls()))
-                .evidenceType(determineEvidenceType(actionable))
+                .evidenceType(determineEvidenceType(actionable, range))
+                .rangeRank(rangeRank)
                 .evidenceUrls(Sets.newTreeSet(actionable.evidenceUrls()))
                 .build();
     }
 
     @VisibleForTesting
     @NotNull
-    static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable) {
+    static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable, @Nullable String range) {
         if (actionable instanceof ActionableHotspot) {
             return EvidenceType.HOTSPOT_MUTATION;
         } else if (actionable instanceof ActionableRange) {
-            return fromActionableRange((ActionableRange) actionable);
+            return fromActionableRange(actionable, range);
         } else if (actionable instanceof ActionableGene) {
             return fromActionableGene((ActionableGene) actionable);
         } else if (actionable instanceof ActionableFusion) {
@@ -127,15 +143,19 @@ public class PersonalizedEvidenceFactory {
         } else if (actionable instanceof ActionableHLA) {
             return EvidenceType.HLA;
         } else {
-            throw new IllegalStateException("Unexpected actionable event detected in variant evidence: " + actionable);
+            throw new IllegalStateException("Unexpected actionable event detected in evidence: " + actionable);
         }
     }
 
     @NotNull
-    private static EvidenceType fromActionableRange(@NotNull ActionableRange range) {
-        // Might be a shaky assumption that exons are never length 3...
-        int length = 1 + range.end() - range.start();
-        return length == 3 ? EvidenceType.CODON_MUTATION : EvidenceType.EXON_MUTATION;
+    private static EvidenceType fromActionableRange(final @NotNull ActionableEvent actionable, final @Nullable String range) {
+        if (Objects.equals(range, "codon")) {
+            return EvidenceType.CODON_MUTATION;
+        } else if (Objects.equals(range, "exon")) {
+            return EvidenceType.EXON_MUTATION;
+        } else {
+            throw new IllegalStateException("Unexpected actionable event detected in evidence " + actionable + "with range " + range);
+        }
     }
 
     @NotNull

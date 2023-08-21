@@ -1,13 +1,12 @@
 package com.hartwig.oncoact.patientreporter.diagnosticsilo;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public class DiagnosticSiloJsonInterpretation {
     private static final Logger LOGGER = LogManager.getLogger(DiagnosticSiloJsonInterpretation.class);
@@ -23,8 +22,8 @@ public class DiagnosticSiloJsonInterpretation {
             LOGGER.warn("Initials of the patient are unknown");
         }
 
-        String surname = determineSurname(
-                nullToEmpty(patientInformationData.getBirthSurname()), nullToEmpty(patientInformationData.getSurname()));
+        String surname =
+                determineSurname(nullToEmpty(patientInformationData.getBirthSurname()), nullToEmpty(patientInformationData.getSurname()));
         if (surname.isEmpty()) {
             LOGGER.warn("Surname of the patient is unknown");
         }
