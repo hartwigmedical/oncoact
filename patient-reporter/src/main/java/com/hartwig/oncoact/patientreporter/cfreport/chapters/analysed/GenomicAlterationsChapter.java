@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -20,7 +24,17 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
-import com.hartwig.oncoact.patientreporter.cfreport.data.*;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneDisruptions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
+import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
+import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
+import com.hartwig.oncoact.patientreporter.cfreport.data.LohGenes;
+import com.hartwig.oncoact.patientreporter.cfreport.data.Pharmacogenetics;
+import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
+import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
+import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
@@ -30,12 +44,9 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.TextAlignment;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class GenomicAlterationsChapter implements ReportChapter {
 
@@ -52,9 +63,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     private final GeneFusions geneFusions;
 
-
-    public GenomicAlterationsChapter(@NotNull final AnalysedPatientReport patientReport,
-                                     @NotNull final ReportResources reportResources) {
+    public GenomicAlterationsChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
         this.reportResources = reportResources;
         this.tableUtil = new TableUtil(reportResources);
@@ -110,7 +119,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
         String title = "Tumor purity & ploidy";
 
         Table contentTable =
-                TableUtil.createReportContentTable(new float[]{90, 95, 50}, new Cell[]{}, ReportResources.CONTENT_WIDTH_WIDE_SMALL);
+                TableUtil.createReportContentTable(new float[] { 90, 95, 50 }, new Cell[] {}, ReportResources.CONTENT_WIDTH_WIDE_SMALL);
 
         double impliedPurityPercentage = MathUtil.mapPercentage(purity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
         renderTumorPurity(hasReliablePurity,
@@ -142,7 +151,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     private void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-                                          @NotNull Table table) {
+            @NotNull Table table) {
 
         String label = "Tumor purity";
         table.addCell(tableUtil.createContentCell(label));
@@ -160,7 +169,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createTumorVariantsTable(@NotNull List<ReportableVariant> reportableVariants,
-                                                  @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
+            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
         String title = "Tumor specific variants";
         if (reportableVariants.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
@@ -168,54 +177,66 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         Table contentTable;
         if (DISPLAY_CLONAL_COLUMN) {
-            contentTable = TableUtil.createReportContentTable(new float[]{60, 70, 80, 70, 60, 40, 30, 60, 60, 50, 50},
-                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Variant"), tableUtil.createHeaderCell("Protein"),
+            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 150, 60, 40, 30, 60, 60, 50, 50 },
+                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
+                            tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Biallelic").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Hotspot").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Clonal").setTextAlignment(TextAlignment.CENTER),
-                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER)},
+                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            contentTable = TableUtil.createReportContentTable(new float[]{60, 70, 80, 70, 60, 40, 30, 60, 60, 50},
-                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
-                            tableUtil.createHeaderCell("Variant"), tableUtil.createHeaderCell("Protein"),
+            contentTable = TableUtil.createReportContentTable(new float[] { 60, 70, 150, 60, 40, 30, 60, 60, 50 },
+                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Position"),
+                            tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Biallelic").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Hotspot").setTextAlignment(TextAlignment.CENTER),
-                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER)},
+                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
         }
 
         for (ReportableVariant variant : SomaticVariants.sort(reportableVariants)) {
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.geneDisplayString(variant,
-                    notifyGermlineStatusPerVariant.get(variant), variant.localPhaseSet(), variant.canonicalEffect())));
-            contentTable.addCell(tableUtil.createContentCell(variant.gDNA()));
-            contentTable.addCell(tableUtil.createContentCell(variant.canonicalHgvsCodingImpact()));
-            contentTable.addCell(tableUtil.createContentCell(variant.canonicalHgvsProteinImpact()));
-            contentTable.addCell(tableUtil.createContentCell(new Paragraph(
+            List<String> annotationList = SomaticVariants.determineVariantAnnotations(variant.canonicalHgvsCodingImpact(),
+                    variant.canonicalHgvsProteinImpact(),
+                    variant.otherImpactClinical());
+
+            Cell annotationCell = new Cell();
+            for (String annotation : annotationList) {
+                annotationCell.add(new Paragraph(annotation));
+            }
+            int annotationSize = annotationList.size();
+
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.geneDisplayString(variant,
+                    notifyGermlineStatusPerVariant.get(variant),
+                    variant.localPhaseSet(),
+                    variant.canonicalEffect()), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.gDNA(), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(annotationCell, annotationSize));
+
+            contentTable.addCell(tableUtil.createContentCellRowSpan(new Paragraph(
                     variant.alleleReadCount() + " / ").setFont(reportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(reportResources.fontRegular()))
-                    .setTextAlignment(TextAlignment.CENTER)));
-            contentTable.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity))
-                    .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.tVAFString(variant.tVAF(),
+                    .setTextAlignment(TextAlignment.CENTER), annotationSize));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity),
+                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.tVAFString(variant.tVAF(),
                     hasReliablePurity,
-                    variant.totalCopyNumber())).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.biallelicString(variant.biallelic(), hasReliablePurity))
-                    .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(SomaticVariants.hotspotString(variant.hotspot()))
+                    variant.totalCopyNumber()), annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.biallelicString(variant.biallelic(), hasReliablePurity),
+                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.hotspotString(variant.hotspot()), annotationSize)
                     .setTextAlignment(TextAlignment.CENTER));
             if (DISPLAY_CLONAL_COLUMN) {
-                contentTable.addCell(tableUtil.createContentCell(SomaticVariants.clonalString(variant.clonalLikelihood()))
-                        .setTextAlignment(TextAlignment.CENTER));
+                contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.clonalString(variant.clonalLikelihood()),
+                        annotationSize).setTextAlignment(TextAlignment.CENTER));
             }
-            contentTable.addCell(tableUtil.createContentCell(variant.driverLikelihoodInterpretation().display()))
+            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
                     .setTextAlignment(TextAlignment.CENTER);
         }
 
@@ -230,27 +251,22 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(reportResources.subTextStyle())));
         }
 
-        if (SomaticVariants.hasVariantsInCis(reportableVariants)) {
-            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
-                    .add(new Paragraph("\n= Marked variants are present in cis").addStyle(reportResources.subTextStyle())));
-        }
-
         return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
     @NotNull
     private Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
-                                                   @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
+            @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
         String title = "Tumor specific gains & losses";
         if (gainsAndLosses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
-        Table contentTable = TableUtil.createReportContentTable(new float[]{80, 80, 100, 80, 60, 60, 150},
-                new Cell[]{tableUtil.createHeaderCell("Chromosome"), tableUtil.createHeaderCell("Region"),
+        Table contentTable = TableUtil.createReportContentTable(new float[] { 80, 80, 100, 80, 60, 60, 150 },
+                new Cell[] { tableUtil.createHeaderCell("Chromosome"), tableUtil.createHeaderCell("Region"),
                         tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Type"), tableUtil.createHeaderCell("min copies"),
                         tableUtil.createHeaderCell("max copies"),
-                        tableUtil.createHeaderCell("Chromosome arm copies").setTextAlignment(TextAlignment.CENTER)},
+                        tableUtil.createHeaderCell("Chromosome arm copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         List<PurpleGainLoss> sortedGainsAndLosses = GainsAndLosses.sort(gainsAndLosses);
@@ -278,9 +294,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
             return tableUtil.createNoneReportTable(title, subtitle, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
-        Table contentTable = TableUtil.createReportContentTable(new float[]{80, 80, 100},
-                new Cell[]{tableUtil.createHeaderCell("Chromosome"), tableUtil.createHeaderCell("Region"),
-                        tableUtil.createHeaderCell("Gene")},
+        Table contentTable = TableUtil.createReportContentTable(new float[] { 80, 80, 100 },
+                new Cell[] { tableUtil.createHeaderCell("Chromosome"), tableUtil.createHeaderCell("Region"),
+                        tableUtil.createHeaderCell("Gene") },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
@@ -305,17 +321,19 @@ public class GenomicAlterationsChapter implements ReportChapter {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
-        Table table = TableUtil.createReportContentTable(new float[]{1, 1, 1, 1},
-                new Cell[]{tableUtil.createHeaderCell("Location"), tableUtil.createHeaderCell("Gene"),
+        Table table = TableUtil.createReportContentTable(new float[] { 1, 1, 1, 1 },
+                new Cell[] { tableUtil.createHeaderCell("Location"), tableUtil.createHeaderCell("Gene"),
                         tableUtil.createHeaderCell("Tumor minor allele copies").setTextAlignment(TextAlignment.CENTER),
-                        tableUtil.createHeaderCell("Tumor copies").setTextAlignment(TextAlignment.CENTER)},
+                        tableUtil.createHeaderCell("Tumor copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         for (InterpretPurpleGeneCopyNumbers LOHgenes : LohGenes.sort(suspectGeneCopyNumbersWithLOH)) {
             table.addCell(tableUtil.createContentCell(LOHgenes.chromosome() + LOHgenes.chromosomeBand()));
             table.addCell(tableUtil.createContentCell(LOHgenes.geneName()));
-            table.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minMinorAlleleCopyNumber())).setTextAlignment(TextAlignment.CENTER));
-            table.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minCopyNumber())).setTextAlignment(TextAlignment.CENTER));
+            table.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minMinorAlleleCopyNumber()))
+                    .setTextAlignment(TextAlignment.CENTER));
+            table.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(LOHgenes.minCopyNumber()))
+                    .setTextAlignment(TextAlignment.CENTER));
         }
 
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
@@ -328,14 +346,14 @@ public class GenomicAlterationsChapter implements ReportChapter {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
-        Table contentTable = TableUtil.createReportContentTable(new float[]{80, 70, 80, 80, 40, 40, 40, 65, 40},
-                new Cell[]{tableUtil.createHeaderCell("Fusion"),
+        Table contentTable = TableUtil.createReportContentTable(new float[] { 80, 70, 80, 80, 40, 40, 40, 65, 40 },
+                new Cell[] { tableUtil.createHeaderCell("Fusion"),
                         tableUtil.createHeaderCell("Type").setTextAlignment(TextAlignment.CENTER),
                         tableUtil.createHeaderCell("5' Transcript"), tableUtil.createHeaderCell("3' Transcript"),
                         tableUtil.createHeaderCell("5' End"), tableUtil.createHeaderCell("3' Start"),
                         tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
                         tableUtil.createHeaderCell("Phasing").setTextAlignment(TextAlignment.CENTER),
-                        tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER)},
+                        tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         for (LinxFusion fusion : GeneFusions.sort(fusions)) {
@@ -361,13 +379,13 @@ public class GenomicAlterationsChapter implements ReportChapter {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
 
-        Table contentTable = TableUtil.createReportContentTable(new float[]{60, 50, 100, 50, 80, 85, 85},
-                new Cell[]{tableUtil.createHeaderCell("Location"), tableUtil.createHeaderCell("Gene"),
+        Table contentTable = TableUtil.createReportContentTable(new float[] { 60, 50, 100, 50, 80, 85, 85 },
+                new Cell[] { tableUtil.createHeaderCell("Location"), tableUtil.createHeaderCell("Gene"),
                         tableUtil.createHeaderCell("Disrupted range"),
                         tableUtil.createHeaderCell("Type").setTextAlignment(TextAlignment.CENTER),
                         tableUtil.createHeaderCell("Cluster ID").setTextAlignment(TextAlignment.CENTER),
                         tableUtil.createHeaderCell("Disrupted copies").setTextAlignment(TextAlignment.CENTER),
-                        tableUtil.createHeaderCell("Undisrupted copies").setTextAlignment(TextAlignment.CENTER)},
+                        tableUtil.createHeaderCell("Undisrupted copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         for (GeneDisruption disruption : GeneDisruptions.sort(disruptions)) {
@@ -377,8 +395,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(tableUtil.createContentCell(disruption.type())).setTextAlignment(TextAlignment.CENTER);
             contentTable.addCell(tableUtil.createContentCell(String.valueOf(disruption.clusterId()))
                     .setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(disruption.junctionCopyNumber(),
-                    hasReliablePurity)).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(disruption.junctionCopyNumber(), hasReliablePurity))
+                    .setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(tableUtil.createContentCell(GeneUtil.roundCopyNumber(disruption.undisruptedCopyNumber(),
                     hasReliablePurity)).setTextAlignment(TextAlignment.CENTER));
         }
@@ -388,11 +406,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private Table createHlaTable(@NotNull HlaAllelesReportingData lilac, boolean hasReliablePurity) {
         String title = "HLA Alleles";
-        Table table = TableUtil.createReportContentTable(new float[]{10, 10, 10, 10, 10, 10},
-                new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
+        Table table = TableUtil.createReportContentTable(new float[] { 10, 10, 10, 10, 10, 10 },
+                new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
                         tableUtil.createHeaderCell("Germline copies"), tableUtil.createHeaderCell("Tumor copies"),
                         tableUtil.createHeaderCell("Number somatic mutations*"),
-                        tableUtil.createHeaderCell("Interpretation: presence in tumor")},
+                        tableUtil.createHeaderCell("Interpretation: presence in tumor") },
                 ReportResources.CONTENT_WIDTH_WIDE);
         if (!lilac.hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
@@ -408,11 +426,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 List<HlaReporting> allele = lilac.hlaAllelesReporting().get(sortAllele);
                 table.addCell(tableUtil.createContentCell(sortAllele));
 
-                Table tableGermlineAllele = new Table(new float[]{1});
-                Table tableGermlineCopies = new Table(new float[]{1});
-                Table tableTumorCopies = new Table(new float[]{1});
-                Table tableSomaticMutations = new Table(new float[]{1});
-                Table tablePresenceInTumor = new Table(new float[]{1});
+                Table tableGermlineAllele = new Table(new float[] { 1 });
+                Table tableGermlineCopies = new Table(new float[] { 1 });
+                Table tableTumorCopies = new Table(new float[] { 1 });
+                Table tableSomaticMutations = new Table(new float[] { 1 });
+                Table tablePresenceInTumor = new Table(new float[] { 1 });
 
                 for (HlaReporting hlaAlleleReporting : HLAAllele.sort(allele)) {
                     tableGermlineAllele.addCell(tableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
@@ -446,15 +464,17 @@ public class GenomicAlterationsChapter implements ReportChapter {
         if (viruses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[]{150, 160, 100, 40},
-                    new Cell[]{tableUtil.createHeaderCell("Virus"),
+            Table contentTable = TableUtil.createReportContentTable(new float[] { 150, 160, 100, 40 },
+                    new Cell[] { tableUtil.createHeaderCell("Virus"),
                             tableUtil.createHeaderCell("Number of detected integration sites").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Viral coverage").setTextAlignment(TextAlignment.CENTER),
-                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER)},
+                            tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             for (AnnotatedVirus virus : viruses) {
-                contentTable.addCell(tableUtil.createContentCell(ViralPresence.interpretVirusName(virus.name(), virus.interpretation(), virus.virusDriverLikelihoodType())));
+                contentTable.addCell(tableUtil.createContentCell(ViralPresence.interpretVirusName(virus.name(),
+                        virus.interpretation(),
+                        virus.virusDriverLikelihoodType())));
                 contentTable.addCell(tableUtil.createContentCell(ViralPresence.integrations(virus)).setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(tableUtil.createContentCell(ViralPresence.percentageCovered(virus))
                         .setTextAlignment(TextAlignment.CENTER));
@@ -473,28 +493,30 @@ public class GenomicAlterationsChapter implements ReportChapter {
         if (pharmacogeneticsMap.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[]{60, 60, 60, 100, 60},
-                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
+            Table contentTable = TableUtil.createReportContentTable(new float[] { 60, 60, 60, 100, 60 },
+                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
                             tableUtil.createHeaderCell("Function"), tableUtil.createHeaderCell("Linked drugs"),
-                            tableUtil.createHeaderCell("Source")},
+                            tableUtil.createHeaderCell("Source") },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsMap.keySet());
             for (String sortPharmacogenetics : sortedPharmacogenetics) {
                 List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsMap.get(sortPharmacogenetics);
-                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics.equals("UGT1A1") ? sortPharmacogenetics + "#" : sortPharmacogenetics));
+                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics.equals("UGT1A1")
+                        ? sortPharmacogenetics + "#"
+                        : sortPharmacogenetics));
 
-                Table tableGenotype = new Table(new float[]{1});
-                Table tableFunction = new Table(new float[]{1});
-                Table tableLinkedDrugs = new Table(new float[]{1});
-                Table tableSource = new Table(new float[]{1});
+                Table tableGenotype = new Table(new float[] { 1 });
+                Table tableFunction = new Table(new float[] { 1 });
+                Table tableLinkedDrugs = new Table(new float[] { 1 });
+                Table tableSource = new Table(new float[] { 1 });
 
                 for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
                     tableGenotype.addCell(tableUtil.createTransparentCell(pharmacogeneticsGenotype.haplotype()));
                     tableFunction.addCell(tableUtil.createTransparentCell(pharmacogeneticsGenotype.function()));
                     tableLinkedDrugs.addCell(tableUtil.createTransparentCell(pharmacogeneticsGenotype.linkedDrugs()));
-                    tableSource.addCell(tableUtil.createTransparentCell(new Paragraph(Pharmacogenetics.sourceName(
-                                    pharmacogeneticsGenotype.urlPrescriptionInfo())).addStyle(reportResources.dataHighlightLinksStyle()))
+                    tableSource.addCell(tableUtil.createTransparentCell(new Paragraph(Pharmacogenetics.sourceName(pharmacogeneticsGenotype.urlPrescriptionInfo())).addStyle(
+                                    reportResources.dataHighlightLinksStyle()))
                             .setAction(PdfAction.createURI(Pharmacogenetics.url(pharmacogeneticsGenotype.urlPrescriptionInfo()))));
                 }
 
@@ -504,8 +526,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 contentTable.addCell(tableUtil.createContentCell(tableSource));
             }
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
-                    .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical " +
-                            "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
+                    .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical "
+                            + "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
                             .setTextAlignment(TextAlignment.CENTER))));
 
             return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);

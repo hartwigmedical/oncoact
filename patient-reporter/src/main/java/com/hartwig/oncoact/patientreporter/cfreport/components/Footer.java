@@ -37,7 +37,7 @@ public class Footer {
         canvas.addXObject(pageNumberTemplate, 58, 20);
         pageNumberTemplates.add(new PageNumberTemplate(pageNumber, version, pageNumberTemplate, reportResources));
 
-        BaseMarker.renderMarkerGrid(fullWidth ? 5 : 3, 1, 156, 87, 22, 0, .2f, 0, canvas);
+        BaseMarker.renderMarkerGrid(5, 1, 156, 87, 22, 0, .2f, 0, canvas);
 
         canvas.release();
     }

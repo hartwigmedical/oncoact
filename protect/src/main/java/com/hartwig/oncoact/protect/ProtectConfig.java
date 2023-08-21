@@ -31,6 +31,7 @@ public interface ProtectConfig {
     String SERVE_ACTIONABILITY_DIRECTORY = "serve_actionability_dir";
     String DOID_JSON = "doid_json";
     String DRIVER_GENE_TSV = "driver_gene_tsv";
+    String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
 
     // Some additional optional params and flags
     String LOG_DEBUG = "log_debug";
@@ -46,6 +47,7 @@ public interface ProtectConfig {
         options.addOption(SERVE_ACTIONABILITY_DIRECTORY, true, "Path towards the SERVE actionability directory.");
         options.addOption(DOID_JSON, true, "Path to JSON file containing the full DOID tree.");
         options.addOption(DRIVER_GENE_TSV, true, "Path to driver gene TSV");
+        options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
 
@@ -71,6 +73,9 @@ public interface ProtectConfig {
     String driverGeneTsv();
 
     @NotNull
+    String clinicalTranscriptsTsv();
+
+    @NotNull
     static ProtectConfig createConfig(@NotNull CommandLine cmd) throws ParseException, IOException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -83,6 +88,7 @@ public interface ProtectConfig {
                 .serveActionabilityDir(nonOptionalDir(cmd, SERVE_ACTIONABILITY_DIRECTORY))
                 .doidJsonFile(nonOptionalFile(cmd, DOID_JSON))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
+                .clinicalTranscriptsTsv(nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV))
                 .build();
     }
 

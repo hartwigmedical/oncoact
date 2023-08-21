@@ -75,16 +75,18 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
                 " and ",
                 report.reportDate()));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(report.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 report.lamaPatientData().getTumorSampleBarcode()));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor sample."));
-        div.add(createContentParagraph("This experiment is performed according to lab procedures: ", report.lamaPatientData().getSopString()));
+        div.add(createContentParagraph("This experiment is performed according to lab procedures: ",
+                report.lamaPatientData().getSopString()));
         String whoVerified = "This report was generated " + report.user();
 
         div.add(createContentParagraph(whoVerified));
-        div.add(createContentParagraph("This report is addressed to: ", LamaInterpretation.hospitalContactReport(report.lamaPatientData())));
+        div.add(createContentParagraph("This report is addressed to: ",
+                LamaInterpretation.hospitalContactReport(report.lamaPatientData())));
         report.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;
@@ -113,8 +115,7 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
                 ReportResources.VERSION_REPORT,
                 " based on ",
                 report.qsFormNumber() + "."));
-        div.add(createContentParagraph("This report is based on pipeline version ",
-                pipelineVersion));
+        div.add(createContentParagraph("This report is based on pipeline version ", pipelineVersion));
 
         div.add(createContentParagraph("No check is performed to verify the ‘primary tumor location’ and ‘primary tumor type’ information."));
         div.add(createContentParagraph("The results in this report and in the result files are solely based on the results of the DNA "
@@ -149,8 +150,8 @@ public class SampleAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
+            @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -19,8 +18,8 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.failedreasondb.FailedDBFile;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
@@ -47,12 +46,15 @@ public class QCFailReporter {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 
-        String failReasonsDatabaseTsv = config.failReasonsDatabaseTsv();
-        assert failReasonsDatabaseTsv != null;
-        Map<String, FailedReason> failedDatabaseMap = FailedDBFile.buildFromTsv(failReasonsDatabaseTsv);
-        FailedReason failedDatabase = failedDatabaseMap.get(Objects.requireNonNull(config.qcFailReason()).identifier());
+        FailedReason failedDatabase = ImmutableFailedReason.builder()
+                .reportReason(reason.reportReason())
+                .reportExplanation(reason.reportExplanation())
+                .sampleFailReasonComment(config.sampleFailReasonComment())
+                .build();
 
-        if (reason.equals(QCFailReason.SUFFICIENT_TCP_QC_FAILURE) || reason.equals(QCFailReason.INSUFFICIENT_TCP_DEEP_WGS)) {
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.PIPELINE_FAIL, QCFailReason.TCP_WGS_FAIL);
+
+        if (qcFailReasons.contains(reason)) {
             if (config.requirePipelineVersionFile()) {
                 String pipelineVersionFile = config.pipelineVersionFile();
                 assert pipelineVersionFile != null;

@@ -8,8 +8,11 @@ import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
-import com.hartwig.oncoact.patientreporter.qcfail.*;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
@@ -76,12 +79,17 @@ public class PatientReporterApplication {
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
-        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
         reportWriter.writeAnalysedPatientReport(report, outputFilePath);
 
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
 
+            report = ImmutableAnalysedPatientReport.builder()
+                    .from(report)
+                    .clinicalSummary(report.clinicalSummary() + "The underlying data of these WGS results"
+                            + " can be requested at Hartwig Medical Foundation" + " (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                    .build();
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
 
             reportWriter.writeXMLAnalysedFile(report, config.outputDirData());
@@ -95,7 +103,7 @@ public class PatientReporterApplication {
         QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
-        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
 
         reportWriter.writeQCFailReport(report, outputFilePath);
 
@@ -109,7 +117,7 @@ public class PatientReporterApplication {
     }
 
     @NotNull
-    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport) {
-        return outputDirReport + File.separator + "report.pdf";
+    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport, @NotNull PatientReport patientReport) {
+        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
     }
 }

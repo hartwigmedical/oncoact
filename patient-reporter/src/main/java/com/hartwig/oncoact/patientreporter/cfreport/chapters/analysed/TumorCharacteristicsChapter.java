@@ -47,8 +47,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     @NotNull
     private final ReportResources reportResources;
 
-    public TumorCharacteristicsChapter(@NotNull final AnalysedPatientReport patientReport,
-                                       @NotNull final ReportResources reportResources) {
+    public TumorCharacteristicsChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
         this.reportResources = reportResources;
     }
@@ -94,7 +93,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         }
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
-        BarChart hrChart = new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, "Low", "High", false, reportResources);
+        BarChart hrChart =
+                new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, "Low", "High", false, reportResources);
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
@@ -118,8 +118,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + DOUBLE_DECIMAL_FORMAT.format(
                         genomicAnalysis.microsatelliteIndelsPerMb()) : Formats.NA_STRING;
 
-        BarChart satelliteChart =
-                new BarChart(microSatelliteStability, MicrosatelliteStatus.RANGE_MIN, MicrosatelliteStatus.RANGE_MAX, "MSS", "MSI", false, reportResources);
+        BarChart satelliteChart = new BarChart(microSatelliteStability,
+                MicrosatelliteStatus.RANGE_MIN,
+                MicrosatelliteStatus.RANGE_MAX,
+                "MSS",
+                "MSI",
+                false,
+                reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
         satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
@@ -144,9 +149,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
-        String tmlStatus = tumorMutationalStatusString(genomicAnalysis.tumorMutationalLoadStatus());
 
-        String mutationalLoadString = hasReliablePurity ? tmlStatus + " " + NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
+        String mutationalLoadString = hasReliablePurity ? NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false, reportResources);
         mutationalLoadChart.enabled(hasReliablePurity);
@@ -154,7 +158,6 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
         mutationalLoadChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalLoadChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(mutationalLoadChart.max()));
-        mutationalLoadChart.setIndicator(MutationalLoad.THRESHOLD, "High (" + NO_DECIMAL_FORMAT.format(MutationalLoad.THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("Tumor mutational load",
                 mutationalLoadString,
@@ -171,16 +174,27 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         double mutationalBurden = genomicAnalysis.tumorMutationalBurden();
-        String mutationalBurdenString =
-                hasReliablePurity ? SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb" : Formats.NA_STRING;
-        BarChart mutationalBurdenChart =
-                new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, "Low", "High", false, reportResources);
+        String tmbStatus = tumorMutationalBurdenString(genomicAnalysis.tumorMutationalBurdenStatus());
+
+        String mutationalBurdenString = hasReliablePurity
+                ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) + " variants per Mb"
+                : Formats.NA_STRING;
+        BarChart mutationalBurdenChart = new BarChart(mutationalBurden,
+                MutationalBurden.RANGE_MIN,
+                MutationalBurden.RANGE_MAX,
+                "Low",
+                "High",
+                false,
+                reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
                 DOUBLE_DECIMAL_FORMAT);
         mutationalBurdenChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalBurdenChart.enableOvershoot(">" + SINGLE_DECIMAL_FORMAT.format(mutationalBurdenChart.max()));
+        mutationalBurdenChart.setIndicator(MutationalBurden.THRESHOLD,
+                "High (" + NO_DECIMAL_FORMAT.format(MutationalBurden.THRESHOLD) + ")");
+
         reportDocument.add(createCharacteristicDiv("Tumor mutational burden",
                 mutationalBurdenString,
                 "The tumor mutational burden score represents the number of all somatic variants across the "
@@ -304,7 +318,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
     @NotNull
     private Div createCharacteristicDiv(@NotNull String title, @NotNull String highlight, @NotNull String description,
-                                        @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
+            @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
         Div div = new Div();
         div.setKeepTogether(true);
 
@@ -370,7 +384,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     @NotNull
-    private static String tumorMutationalStatusString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
+    private static String tumorMutationalBurdenString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
         switch (tumorMutationalLoadStatus) {
             case HIGH: {
                 return "High";

@@ -46,7 +46,7 @@ public class RoseApplication {
     }
 
     public void run() throws IOException {
-        RoseAlgo algo = RoseAlgo.build(config.actionabilityDatabaseTsv(), config.driverGeneTsv());
+        RoseAlgo algo = RoseAlgo.build(config.actionabilityDatabaseTsv(), config.driverGeneTsv(), config.clinicalTranscriptsTsv());
         RoseData rose = algo.run(config);
 
         ActionabilityConclusion actionabilityConclusion = ConclusionAlgo.generateConclusion(rose);

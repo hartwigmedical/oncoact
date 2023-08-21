@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -40,6 +41,7 @@ public class VariantEvidenceTest {
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(hotspot),
+                Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList());
 
@@ -78,7 +80,8 @@ public class VariantEvidenceTest {
 
         List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
                 Sets.newHashSet(),
-                Sets.newHashSet(unreportedMatch));
+                Sets.newHashSet(unreportedMatch),
+                Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 
@@ -100,8 +103,8 @@ public class VariantEvidenceTest {
         int end = 15;
         MutationType mutationType = MutationType.MISSENSE;
 
-        ActionableRange rangeHigh = TestServeFactory.rangeBuilder()
-                .gene("geneHigh")
+        ActionableRange codon = TestServeFactory.rangeBuilder()
+                .gene("codon")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
@@ -109,8 +112,8 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeMedium = TestServeFactory.rangeBuilder()
-                .gene("geneMedium")
+        ActionableRange exon = TestServeFactory.rangeBuilder()
+                .gene("exon")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
@@ -118,8 +121,8 @@ public class VariantEvidenceTest {
                 .source(Knowledgebase.CKB)
                 .build();
 
-        ActionableRange rangeLow = TestServeFactory.rangeBuilder()
-                .gene("geneLow")
+        ActionableRange codon1 = TestServeFactory.rangeBuilder()
+                .gene("codon1")
                 .chromosome(chromosome)
                 .start(start)
                 .end(end)
@@ -129,11 +132,12 @@ public class VariantEvidenceTest {
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
-                Lists.newArrayList(rangeHigh, rangeMedium, rangeLow),
+                Lists.newArrayList(codon, codon1),
+                Lists.newArrayList(exon),
                 Lists.newArrayList());
 
         ReportableVariant variantMatchHigh = TestReportableVariantFactory.builder()
-                .gene("geneHigh")
+                .gene("exon")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -141,7 +145,7 @@ public class VariantEvidenceTest {
                 .driverLikelihood(0.9)
                 .build();
         ReportableVariant variantMatchMedium = TestReportableVariantFactory.builder()
-                .gene("geneMedium")
+                .gene("codon")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -149,7 +153,7 @@ public class VariantEvidenceTest {
                 .driverLikelihood(0.5)
                 .build();
         ReportableVariant variantMatchLow = TestReportableVariantFactory.builder()
-                .gene("geneLow")
+                .gene("codon1")
                 .chromosome(chromosome)
                 .position(start + 1)
                 .canonicalHgvsCodingImpact("match")
@@ -184,27 +188,27 @@ public class VariantEvidenceTest {
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet());
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(3, evidences.size());
 
-        ProtectEvidence evidenceHigh = findByGene(evidences, "geneHigh");
+        ProtectEvidence evidenceHigh = findByGene(evidences, "exon");
         assertTrue(evidenceHigh.reported());
         assertEquals("match", evidenceHigh.event());
         assertEquals(evidenceHigh.sources().size(), 1);
         assertEquals(EvidenceType.EXON_MUTATION, evidenceHigh.sources().iterator().next().evidenceType());
 
-        ProtectEvidence evidenceMedium = findByGene(evidences, "geneMedium");
+        ProtectEvidence evidenceMedium = findByGene(evidences, "codon");
         assertFalse(evidenceMedium.reported());
         assertEquals("match", evidenceMedium.event());
         assertEquals(evidenceMedium.sources().size(), 1);
-        assertEquals(EvidenceType.EXON_MUTATION, evidenceMedium.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.CODON_MUTATION, evidenceMedium.sources().iterator().next().evidenceType());
 
-        ProtectEvidence evidenceLow = findByGene(evidences, "geneLow");
+        ProtectEvidence evidenceLow = findByGene(evidences, "codon1");
         assertFalse(evidenceLow.reported());
         assertEquals("match", evidenceLow.event());
         assertEquals(evidenceLow.sources().size(), 1);
-        assertEquals(EvidenceType.EXON_MUTATION, evidenceLow.sources().iterator().next().evidenceType());
+        assertEquals(EvidenceType.CODON_MUTATION, evidenceLow.sources().iterator().next().evidenceType());
     }
 
     @Test
@@ -223,6 +227,7 @@ public class VariantEvidenceTest {
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
+                Lists.newArrayList(),
                 Lists.newArrayList(actionableGene1, actionableGene2, actionableGene3));
 
         ReportableVariant driverOnActivatedGene = withGeneAndDriverLikelihood(activatedGene, 1D);
@@ -239,7 +244,8 @@ public class VariantEvidenceTest {
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().codingEffect(PurpleCodingEffect.NONE).build())
                 .build());
 
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants);
+        List<ProtectEvidence> evidences =
+                variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet());
 
         assertEquals(2, evidences.size());
 
@@ -256,13 +262,10 @@ public class VariantEvidenceTest {
 
     @NotNull
     private static ProtectEvidence findByGene(@NotNull List<ProtectEvidence> evidences, @NotNull String geneToFind) {
-        for (ProtectEvidence evidence : evidences) {
-            if (evidence.gene().equals(geneToFind)) {
-                return evidence;
-            }
-        }
-
-        throw new IllegalStateException("Could not find evidence for gene: " + geneToFind);
+        return evidences.stream()
+                .filter(x -> Objects.equals(x.gene(), geneToFind))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Could not find evidence for gene: " + geneToFind));
     }
 
     @NotNull

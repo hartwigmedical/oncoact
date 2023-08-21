@@ -1,6 +1,8 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import com.hartwig.lama.client.model.PatientReporterData;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -57,7 +59,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
         table.addCell(TableUtil.createLayoutCell());
@@ -67,10 +69,16 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Div createSampleDetailsColumn() {
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_PROCESSING_ISSUE,
+                QCFailReason.TCP_SHALLOW_FAIL,
+                QCFailReason.TCP_WGS_FAIL,
+                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
+                QCFailReason.PIPELINE_FAIL);
+
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(reportIsBasedOnTumorSampleArrivedAt());
-        if (!failReport.reason().equals(QCFailReason.INSUFFICIENT_DNA)) {
+        if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
         div.add(resultsAreObtainedBetweenDates());
@@ -113,15 +121,13 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportHospitalPatientID() {
-        return createContentParagraph("The hospital patient ID is ",
-                failReport.lamaPatientData().getPatientId());
+        return createContentParagraph("The hospital patient ID is ", failReport.lamaPatientData().getPatientId());
 
     }
 
     @NotNull
     private Paragraph reportCohortCode() {
-        return createContentParagraph("The contract code is  ",
-                failReport.lamaPatientData().getContractCode());
+        return createContentParagraph("The contract code is  ", failReport.lamaPatientData().getContractCode());
     }
 
     @NotNull
@@ -136,7 +142,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the tumor sample which arrived on ",
+        return createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 failReport.lamaPatientData().getTumorSampleBarcode());
@@ -144,7 +150,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the blood sample which arrived on ",
+        return createContentParagraphTwice("This experiment is performed on the blood sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
@@ -177,8 +183,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
             shallowPurity = Integer.toString(purity);
         }
 
-        String effectivePurity =
-                failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity;
+        String effectivePurity = failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity;
         if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
@@ -247,8 +252,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart,
-                                                         @NotNull String regularPart2, @NotNull String boldPart2) {
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
+            @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
@@ -257,7 +262,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwiceWithOneBold(@NotNull String regularPart, @NotNull String boldPart,
-                                                                    @NotNull String regularPart2, @NotNull String boldPart2) {
+            @NotNull String regularPart2, @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

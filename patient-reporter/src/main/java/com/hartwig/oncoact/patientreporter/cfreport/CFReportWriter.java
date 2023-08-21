@@ -108,7 +108,7 @@ public class CFReportWriter implements ReportWriter {
 
     public void writeReportDataToJson(@NotNull PatientReport report, @NotNull String outputDirData) throws IOException {
         if (writeToFile) {
-            String outputFileData = outputDirData + File.separator + "report.json";
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileNameForJson(report);
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
             writer.write(convertToJson(report));
             writer.close();
@@ -119,17 +119,17 @@ public class CFReportWriter implements ReportWriter {
     public void writeXMLAnalysedFile(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath)
             throws IOException {
         ReportXML xmlReport = XMLFactory.generateXMLData(report);
-        writeReportDataToXML(xmlReport, outputFilePath);
+        writeReportDataToXML(xmlReport, outputFilePath, report);
     }
 
-    public void writeReportDataToXML(@NotNull ReportXML importWGS, @NotNull String outputDirData)
+    public void writeReportDataToXML(@NotNull ReportXML importWGS, @NotNull String outputDirData, @NotNull PatientReport report)
             throws IOException {
         if (writeToFile) {
 
             XmlMapper xmlMapper = new XmlMapper();
             xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
 
-            String outputFileData = outputDirData + File.separator + "report.xml";
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileNameForXML(report);
 
             xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFileData), importWGS);
 

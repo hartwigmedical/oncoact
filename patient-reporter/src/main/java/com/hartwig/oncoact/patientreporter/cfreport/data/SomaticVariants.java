@@ -5,12 +5,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.api.client.util.Lists;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
@@ -73,23 +75,50 @@ public final class SomaticVariants {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {
-        for (ReportableVariant reportableVariant : reportableVariants) {
-            if (reportableVariant.localPhaseSet() != null) {
-                return true;
-            }
-        }
-
         return false;
     }
 
     @NotNull
+    public static String determineVariantAnnotationCanonical(@NotNull String hgvsCoding, @NotNull String hgvsProtein) {
+        if (!hgvsCoding.isEmpty() && !hgvsProtein.isEmpty()) {
+            return hgvsCoding + " (" + hgvsProtein + ")";
+        } else if (!hgvsCoding.isEmpty()) {
+            return hgvsCoding;
+        } else if (!hgvsProtein.isEmpty()) {
+            return hgvsProtein;
+        }
+        return Strings.EMPTY;
+    }
+
+    @NotNull
+    public static String determineVariantAnnotationClinical(@Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+        if (purpleTranscriptImpact != null) {
+            String hgvsCoding = purpleTranscriptImpact.hgvsCodingImpact();
+            String hgvsProtein = purpleTranscriptImpact.hgvsProteinImpact();
+            return determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein);
+        }
+        return Strings.EMPTY;
+    }
+
+    @NotNull
+    public static List<String> determineVariantAnnotations(@NotNull String hgvsCoding, @NotNull String hgvsProtein,
+            @Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+        List<String> annotationList = Lists.newArrayList();
+        if (purpleTranscriptImpact != null) {
+            if (!hgvsProtein.equals(purpleTranscriptImpact.hgvsProteinImpact())
+                    && !hgvsCoding.equals(purpleTranscriptImpact.hgvsCodingImpact())) {
+                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+                annotationList.add(SomaticVariants.determineVariantAnnotationClinical(purpleTranscriptImpact));
+            } else {
+                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+            }
+        }
+        return annotationList;
+    }
+
+    @NotNull
     public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @Nullable Integer localPhaseSet,
-                                           @NotNull String canonicalEffect) {
+            @NotNull String canonicalEffect) {
         String footer = Strings.EMPTY;
         if (notifyGermline) {
             footer = footer + "#";
@@ -212,7 +241,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
-                                                @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -238,7 +267,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
-                                                @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {

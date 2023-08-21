@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleDriver;
 import com.hartwig.hmftools.datamodel.purple.PurpleDriverType;
+import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,29 +32,58 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
+    public static Set<ReportableVariant> createReportableSomaticVariants(@NotNull PurpleRecord purple,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+        return ReportableVariantFactory.toReportableSomaticVariants(purple.reportableSomaticVariants(),
+                purple.somaticDrivers(),
+                clinicalTranscriptsModel);
+    }
+
+    @NotNull
+    public static Set<ReportableVariant> createReportableGermlineVariants(@NotNull PurpleRecord purple,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+        Collection<PurpleVariant> reportableGermlineVariants = purple.reportableGermlineVariants();
+        Collection<PurpleDriver> germlineDrivers = purple.germlineDrivers();
+
+        if (reportableGermlineVariants == null || germlineDrivers == null) {
+            return Sets.newHashSet();
+        }
+
+        return ReportableVariantFactory.toReportableGermlineVariants(reportableGermlineVariants, germlineDrivers, clinicalTranscriptsModel);
+    }
+
+    @NotNull
     public static Set<ReportableVariant> toReportableGermlineVariants(@NotNull Collection<PurpleVariant> germlineVariants,
-            @NotNull Collection<PurpleDriver> germlineDrivers) {
+            @NotNull Collection<PurpleDriver> germlineDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> germlineMutationDrivers =
                 germlineDrivers.stream().filter(x -> x.driver() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
-        return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE);
+        return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE, clinicalTranscriptsModel);
     }
 
     @NotNull
     public static Set<ReportableVariant> toReportableSomaticVariants(@NotNull Collection<PurpleVariant> somaticVariants,
-            @NotNull Collection<PurpleDriver> somaticDrivers) {
+            @NotNull Collection<PurpleDriver> somaticDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> somaticMutationDrivers =
                 somaticDrivers.stream().filter(x -> x.driver() == PurpleDriverType.MUTATION).collect(Collectors.toList());
-        return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC);
+        return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC, clinicalTranscriptsModel);
     }
 
     @NotNull
     private static Set<ReportableVariant> toReportableVariants(@NotNull Iterable<PurpleVariant> variants,
-            @NotNull Iterable<PurpleDriver> drivers, @NotNull ReportableVariantSource source) {
+            @NotNull Iterable<PurpleDriver> drivers, @NotNull ReportableVariantSource source,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         Map<DriverKey, PurpleDriver> driverMap = DriverMap.create(drivers);
         Set<ReportableVariant> reportableVariants = Sets.newHashSet();
 
         for (PurpleVariant variant : variants) {
+
             if (variant.reported()) {
+
+                PurpleTranscriptImpact purpleTranscriptImpact = variant.otherImpacts()
+                        .stream()
+                        .filter(x -> x.transcript().equals(clinicalTranscriptsModel.findCanonicalTranscriptForGene(variant.gene())))
+                        .findFirst()
+                        .orElse(null);
                 ImmutableReportableVariant.Builder builder = fromVariant(variant, source);
 
                 PurpleDriver canonicalDriver = findCanonicalEntryForVariant(driverMap, variant);
@@ -59,6 +91,7 @@ public final class ReportableVariantFactory {
                     reportableVariants.add(builder.driverLikelihood(canonicalDriver.driverLikelihood())
                             .transcript(canonicalDriver.transcript())
                             .isCanonical(true)
+                            .otherImpactClinical(purpleTranscriptImpact)
                             .build());
                 }
 
@@ -68,6 +101,7 @@ public final class ReportableVariantFactory {
                     reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
                             .transcript(nonCanonicalDriver.transcript())
                             .isCanonical(false)
+                            .otherImpactClinical(purpleTranscriptImpact)
                             .canonicalHgvsCodingImpact(firstOtherImpact.hgvsCodingImpact())
                             .canonicalHgvsProteinImpact(firstOtherImpact.hgvsProteinImpact())
                             .build());
@@ -114,6 +148,25 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
+    public static List<PurpleVariant> mergeAllVariantLists(@NotNull Iterable<PurpleVariant> list1,
+            @Nullable Iterable<PurpleVariant> list2) {
+
+        List<PurpleVariant> result = Lists.newArrayList();
+
+        for (PurpleVariant variant : list1) {
+            result.add(ImmutablePurpleVariant.builder().from(variant).build());
+        }
+
+        if (list2 != null) {
+            for (PurpleVariant variant : list2) {
+                result.add(ImmutablePurpleVariant.builder().from(variant).build());
+            }
+        }
+
+        return result;
+    }
+
+    @NotNull
     public static List<ReportableVariant> mergeVariantLists(@NotNull Iterable<ReportableVariant> list1,
             @NotNull Iterable<ReportableVariant> list2) {
         List<ReportableVariant> result = Lists.newArrayList();
@@ -152,6 +205,8 @@ public final class ReportableVariantFactory {
                 .gene(variant.gene())
                 .chromosome(variant.chromosome())
                 .position(variant.position())
+                .affectedCodon(variant.canonicalImpact().affectedCodon())
+                .affectedExon(variant.canonicalImpact().affectedExon())
                 .ref(variant.ref())
                 .alt(variant.alt())
                 .otherReportedEffects(AltTranscriptReportableInfoFactory.serialize(variant.otherImpacts()))

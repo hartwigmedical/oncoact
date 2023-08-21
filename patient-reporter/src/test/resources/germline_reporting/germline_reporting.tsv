@@ -1,4 +1,4 @@
-Gene	Notify	Variant
+Gene	Notify Condition	Notify Condition Filter
 APC	ALWAYS
 ATM	ALWAYS
 MITF	ONLY_SPECIFIC_VARIANT	p.Glu987Lys

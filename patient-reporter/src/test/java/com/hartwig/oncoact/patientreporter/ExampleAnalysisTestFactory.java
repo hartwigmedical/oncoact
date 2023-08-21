@@ -12,6 +12,26 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
+import com.hartwig.hmftools.datamodel.chord.ChordStatus;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -25,17 +45,7 @@ import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.hla.ImmutableHlaAllele;
 import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
 import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
@@ -63,6 +73,7 @@ import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -77,15 +88,14 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config,
-                                                              @NotNull PurpleQCStatus purpleQCStatus,
-                                                              boolean withUnreliablePurityOverrule) {
+    public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
+            boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.31";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 186;
         double tumorMutationalBurden = 13.7394;
         double microsatelliteIndelsPerMb = 0.1221;
-        PurpleTumorMutationalStatus tumorMutationalLoadStatus = PurpleTumorMutationalStatus.HIGH;
+        PurpleTumorMutationalStatus tumorMutationalBurdenStatus = PurpleTumorMutationalStatus.LOW;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
         ChordStatus hrdStatus = ChordStatus.HR_PROFICIENT;
@@ -108,32 +118,31 @@ public final class ExampleAnalysisTestFactory {
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
 
-        String summaryWithoutGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+        String summaryWithoutGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
-        String summaryWithoutGermlineLowPurity = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
-                + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
-                + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
+        String summaryWithoutGermlineLowPurity =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
+                        + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
+                        + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
 
-        String summaryWithGermline = "Melanoma sample showing:\n"
-                + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
-                + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
-
+        String summaryWithGermline =
+                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
+                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
+                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
+                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
+                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
+                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
 
         String clinicalSummary;
         if (config.includeSummary() && !config.reportGermline()) {
@@ -166,7 +175,7 @@ public final class ExampleAnalysisTestFactory {
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
                 .microsatelliteStatus(microsatelliteStatus)
                 .tumorMutationalLoad(tumorMutationalLoad)
-                .tumorMutationalLoadStatus(tumorMutationalLoadStatus)
+                .tumorMutationalBurdenStatus(tumorMutationalBurdenStatus)
                 .tumorMutationalBurden(tumorMutationalBurden)
                 .hrdValue(hrdValue)
                 .hrdStatus(hrdStatus)
@@ -223,7 +232,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
+            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -250,8 +259,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome,
-                                                                     @NotNull ChromosomeArm chromosomeArm, double copyNumber) {
+    public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome, @NotNull ChromosomeArm chromosomeArm,
+            double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -310,12 +319,14 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @NotNull Set<String> evidenceUrls) {
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer range,
+            @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
                 .sourceUrls(sourceUrls)
                 .evidenceType(protectEvidenceType)
+                .rangeRank(range)
                 .evidenceUrls(evidenceUrls)
                 .build();
     }
@@ -344,7 +355,50 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Cobimetinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
+                        "PTEN:V600E",
+                        Sets.newHashSet(),
+                        EvidenceType.ACTIVATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -356,7 +410,7 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Immuno", "Target"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
@@ -366,6 +420,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF:V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
@@ -378,44 +433,24 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Trametinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Target", "Combi"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.RESPONSIVE)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA"))))
-                .build());
-
-        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("Trametinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                        "BRAF:V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -437,11 +472,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808"))))
                 .build());
 
@@ -464,6 +501,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"))))
                 .build());
 
@@ -486,6 +524,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25672916"))))
                 .build());
         return evidenceItemsOnLabel;
@@ -515,6 +554,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/11087"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -537,6 +577,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10560"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -559,6 +600,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -581,6 +623,7 @@ public final class ExampleAnalysisTestFactory {
                         "TumMutLoad_HIGH",
                         Sets.newHashSet("https://trial-eye.com/hmf/4866"),
                         EvidenceType.SIGNATURE,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -603,6 +646,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/15589"),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -625,11 +669,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF ACTIVATING MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.ACTIVATION,
+                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "BRAF V600",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.CODON_MUTATION,
+                                600,
                                 Sets.newHashSet())))
                 .build());
 
@@ -652,6 +698,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet("https://trial-eye.com/hmf/11284"),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet())))
                 .build());
 
@@ -674,6 +721,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/14995"),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet())))
                 .build());
 
@@ -696,11 +744,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "PTEN INACTIVATION MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.INACTIVATION,
+                                null,
                                 Sets.newHashSet())))
                 .build());
         return trialsOnLabel;
@@ -731,6 +781,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024", "http://www.ncbi.nlm.nih.gov/pubmed/19571295"))))
                 .build());
 
@@ -753,6 +804,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
                 .build());
 
@@ -775,6 +827,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
@@ -782,6 +835,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19884556",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19001320",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/25666295",
@@ -807,6 +861,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/27729313"))))
                 .build());
 
@@ -829,6 +884,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -851,6 +907,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -873,6 +930,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
                 .build());
 
@@ -895,6 +953,7 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF:V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
@@ -902,11 +961,13 @@ public final class ExampleAnalysisTestFactory {
                                 "BRAF V600",
                                 Sets.newHashSet(),
                                 EvidenceType.CODON_MUTATION,
+                                600,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
                                 EvidenceType.HOTSPOT_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320"))))
                 .build());
 
@@ -929,6 +990,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22492957"))))
                 .build());
 
@@ -951,6 +1013,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600E",
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
                 .build());
 
@@ -973,6 +1036,7 @@ public final class ExampleAnalysisTestFactory {
                         "BRAF V600",
                         Sets.newHashSet(),
                         EvidenceType.CODON_MUTATION,
+                        600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/26287849"))))
                 .build());
 
@@ -995,11 +1059,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN oncogenic mutation",
                                 Sets.newHashSet(),
                                 EvidenceType.ANY_MUTATION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703", "http://www.ncbi.nlm.nih.gov/pubmed/19398573")),
                         createTestProtectSource(Knowledgebase.VICC_CGI,
                                 "PTEN deletion",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/19398573"))))
                 .build());
@@ -1023,6 +1089,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703"))))
                 .build());
 
@@ -1045,6 +1112,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23989949"))))
                 .build());
 
@@ -1067,6 +1135,7 @@ public final class ExampleAnalysisTestFactory {
                         "PTEN LOSS",
                         Sets.newHashSet(),
                         EvidenceType.DELETION,
+                        null,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25300346"))))
                 .build());
 
@@ -1089,11 +1158,13 @@ public final class ExampleAnalysisTestFactory {
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334")),
                         createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "PTEN LOSS",
                                 Sets.newHashSet(),
                                 EvidenceType.DELETION,
+                                null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970"))))
                 .build());
         return evidenceItemsOffLabel;
@@ -1104,6 +1175,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000288602", "c.179T>A", "p.Val601Glu"))
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .chromosome("7")
@@ -1133,6 +1205,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant2 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p16)")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000498124", "c.203_204delCG", "p.Ala68fs"))
                 .transcript("ENST00000498124")
                 .isCanonical(true)
                 .chromosome("9")
@@ -1162,6 +1235,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
                 .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p14ARF)")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000579755", "c.246_247delCG", "p.Gly83fs"))
                 .transcript("ENST00000579755")
                 .isCanonical(false)
                 .chromosome("9")
@@ -1191,6 +1265,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TERT")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000310581", "c.-125_-124delCCinsTT", Strings.EMPTY))
                 .transcript("ENST00000310581")
                 .isCanonical(true)
                 .chromosome("5")
@@ -1220,6 +1295,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant5 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("SF3B1")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000335508", "c.2153C>T", "p.Pro718Leu"))
                 .transcript("ENST00000335508")
                 .isCanonical(true)
                 .chromosome("2")
@@ -1249,6 +1325,7 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant6 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TP63")
+                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000264731", "c.1497G>T", "p.Met499Ile"))
                 .transcript("ENST00000264731")
                 .isCanonical(true)
                 .chromosome("3")
@@ -1276,6 +1353,18 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6);
+    }
+
+    @NotNull
+    private static PurpleTranscriptImpact purpleTranscriptImpactClinical(@NotNull String transcript, @NotNull String hgvsCodingImpact,
+            @NotNull String hgvsProteinImpact) {
+        return ImmutablePurpleTranscriptImpact.builder()
+                .transcript(transcript)
+                .hgvsCodingImpact(hgvsCodingImpact)
+                .hgvsProteinImpact(hgvsProteinImpact)
+                .spliceRegion(false)
+                .codingEffect(PurpleCodingEffect.UNDEFINED)
+                .build();
     }
 
     @NotNull
@@ -1367,26 +1456,59 @@ public final class ExampleAnalysisTestFactory {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("UGT1A1")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("Irinotecan")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("UGT1A1")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("UGT1A1")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("Irinotecan")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
+
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
-                        .gene("DPYD")
-                        .haplotype("*1_HOM")
-                        .function("Normal Function")
-                        .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                        .panelVersion("peach_prod_v1.3")
-                        .repoVersion("1.7")
-                        .build()));
+                                .gene("DPYD")
+                                .haplotype("*1_HOM")
+                                .function("Normal Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Reduced Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build(),
+                        TestPeachFactory.builder()
+                                .gene("DPYD")
+                                .haplotype("*2_HOM")
+                                .function("Toxicity Function")
+                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                                .panelVersion("peach_prod_v1.3")
+                                .repoVersion("1.7")
+                                .build()));
+
         return pharmacogeneticsMap;
     }
 
