@@ -45,7 +45,7 @@ public class EvidenceReportingFunctionsTest {
 
     @Test
     public void respectMaxReportingLevel() {
-        List<ProtectEvidence> hartwigEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.HARTWIG_CURATED);
+        List<ProtectEvidence> hartwigEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.HARTWIG_GENE_CURATED);
         List<ProtectEvidence> hartwigFiltered = EvidenceReportingFunctions.applyReportingAlgo(hartwigEvidences);
         assertEquals(3, hartwigFiltered.size());
         assertEquals(0, reported(hartwigFiltered).size());

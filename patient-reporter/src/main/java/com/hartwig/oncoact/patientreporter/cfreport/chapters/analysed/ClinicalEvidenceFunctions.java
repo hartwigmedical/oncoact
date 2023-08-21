@@ -13,6 +13,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Icon;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.AminoAcids;
@@ -88,8 +89,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
+    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 120, 80, 25, 40, 120, 60 },
                 new Cell[] { tableUtil.createHeaderCell("Treatment", 2), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Level", 1), tableUtil.createHeaderCell("Response", 1),
@@ -101,8 +101,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
+    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
         Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 170, 80, 170 },
                 new Cell[] { tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Genomic event", 1) },
@@ -192,7 +191,8 @@ public class ClinicalEvidenceFunctions {
                             cellResistant = tableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle());
                         }
 
-                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources, responsive.level().name())));
+                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources,
+                                responsive.level().name())));
 
                         levelTable.addCell(cellLevel);
                         responseTable.addCell(cellResistant);
@@ -232,10 +232,9 @@ public class ClinicalEvidenceFunctions {
         String evidenceRank = Strings.EMPTY;
         String evidenceSource = source.evidenceType().display();
 
-        // TODO Review in context of having no more range rank.
-//        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
-//            evidenceRank = String.valueOf(source.rangeRank());
-//        }
+        if (source.evidenceType().equals(EvidenceType.CODON_MUTATION) || source.evidenceType().equals(EvidenceType.EXON_MUTATION)) {
+            evidenceRank = String.valueOf(source.rangeRank());
+        }
 
         String evidenceMerged;
         if (!evidenceRank.isEmpty()) {

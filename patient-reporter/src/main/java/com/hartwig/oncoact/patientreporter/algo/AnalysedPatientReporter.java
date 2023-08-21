@@ -38,7 +38,6 @@ import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -158,15 +157,7 @@ public class AnalysedPatientReporter {
         List<ProtectEvidence> reportableEvidenceItems = Lists.newArrayList();
         for (ProtectEvidence evidence : evidences) {
             if (evidence.reported()) {
-                //TODO; switch to reportableEvidenceItems.add(evidence) when ready to use for reporting
-                reportableEvidenceItems.add(ImmutableProtectEvidence.builder()
-                        .from(evidence)
-                        .treatment(ImmutableTreatment.builder()
-                                .from(evidence.treatment())
-                                .relevantTreatmentApproaches(Sets.newHashSet())
-                                .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                                .build())
-                        .build());
+                reportableEvidenceItems.add(ImmutableProtectEvidence.builder().from(evidence).build());
             }
         }
         LOGGER.info(" Loaded {} reportable evidence items from {}", reportableEvidenceItems.size(), protectEvidenceTsv);

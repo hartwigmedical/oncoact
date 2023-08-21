@@ -1,10 +1,11 @@
 package com.hartwig.oncoact.patientreporter.diagnosticsilo;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
+import static org.junit.Assert.assertEquals;
+
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class DiagnosticSiloJsonInterpretationTest {
 
@@ -19,7 +20,8 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setSurname("Jong");
         patientInformationData.setBirthSurname("Jong-Oud");
 
-        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " (" + patientInformationData.getGender() + ")";
+        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " ("
+                + patientInformationData.getGender() + ")";
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 
@@ -37,7 +39,6 @@ public class DiagnosticSiloJsonInterpretationTest {
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 
-
     @Test
     public void extractPatientNameNoBirthSurname() {
         PatientInformationResponse patientInformationData = new PatientInformationResponse();
@@ -48,7 +49,9 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setSurname("Jong");
 
-        String result = patientInformationData.getInitials() + " " + patientInformationData.getSurname() + " (" + patientInformationData.getGender() + ")";
+        String result =
+                patientInformationData.getInitials() + " " + patientInformationData.getSurname() + " (" + patientInformationData.getGender()
+                        + ")";
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 
@@ -62,7 +65,8 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setBirthSurname("Jong-Oud");
 
-        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " (" + patientInformationData.getGender() + ")";
+        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " ("
+                + patientInformationData.getGender() + ")";
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 

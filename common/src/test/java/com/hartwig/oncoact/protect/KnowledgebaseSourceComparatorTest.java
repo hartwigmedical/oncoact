@@ -31,6 +31,6 @@ public class KnowledgebaseSourceComparatorTest {
 
     @NotNull
     private static KnowledgebaseSource create(@NotNull Knowledgebase name, @NotNull String sourceEvent, @NotNull EvidenceType evidentType) {
-        return TestProtectFactory.sourceBuilder().name(name).sourceEvent(sourceEvent).evidenceType(evidentType).build();
+        return TestProtectFactory.sourceBuilder().name(name).sourceEvent(sourceEvent).evidenceType(evidentType).rangeRank(null).build();
     }
 }

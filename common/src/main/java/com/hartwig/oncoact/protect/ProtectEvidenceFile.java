@@ -127,7 +127,7 @@ public final class ProtectEvidenceFile {
         }
         return joiner.toString();
     }
-    
+
     @NotNull
     private static Set<String> stringToDrugClasses(@NotNull String fieldValue) {
         return Sets.newHashSet(fieldValue.split(TREATMENT_APPROACH_DELIMITER));
@@ -148,6 +148,7 @@ public final class ProtectEvidenceFile {
             }
             joiner.add(sourceUrls.toString());
             joiner.add(source.evidenceType().toString());
+            joiner.add(nullToEmptyString(source.rangeRank()));
 
             StringJoiner evidenceUrls = new StringJoiner(SOURCES_ITEM_URL_DELIMITER);
             for (String url : source.evidenceUrls()) {
@@ -168,13 +169,26 @@ public final class ProtectEvidenceFile {
         for (String entry : sourcesString.split(SOURCES_DELIMITER)) {
             String[] items = entry.split("\\" + SOURCES_ITEM_DELIMITER, -1);
 
-            sources.add(ImmutableKnowledgebaseSource.builder()
-                    .name(Knowledgebase.lookupKnowledgebase(items[0]))
-                    .sourceEvent(items[1])
-                    .sourceUrls(urlsToSet(items[2]))
-                    .evidenceType(EvidenceType.valueOf(items[3]))
-                    .evidenceUrls(urlsToSet(items[4]))
-                    .build());
+            if (items.length == 5) {
+                sources.add(ImmutableKnowledgebaseSource.builder()
+                        .name(Knowledgebase.lookupKnowledgebase(items[0]))
+                        .sourceEvent(items[1])
+                        .sourceUrls(urlsToSet(items[2]))
+                        .evidenceType(EvidenceType.valueOf(items[3]))
+                        .rangeRank(null)
+                        .evidenceUrls(urlsToSet(items[4]))
+                        .build());
+            } else if (items.length == 6) {
+                sources.add(ImmutableKnowledgebaseSource.builder()
+                        .name(Knowledgebase.lookupKnowledgebase(items[0]))
+                        .sourceEvent(items[1])
+                        .sourceUrls(urlsToSet(items[2]))
+                        .evidenceType(EvidenceType.valueOf(items[3]))
+                        .rangeRank(NullToInteger(items[4]))
+                        .evidenceUrls(urlsToSet(items[5]))
+                        .build());
+            }
+
         }
         return sources;
     }
@@ -206,4 +220,15 @@ public final class ProtectEvidenceFile {
     private static String emptyToNullString(@NotNull String value) {
         return !value.isEmpty() ? value : null;
     }
+
+    @NotNull
+    private static String nullToEmptyString(@Nullable Integer string) {
+        return string != null ? String.valueOf(string) : Strings.EMPTY;
+    }
+
+    @Nullable
+    private static Integer NullToInteger(@Nullable String value) {
+        return value != null && !value.equals(Strings.EMPTY) ? Integer.valueOf(value) : null;
+    }
+
 }

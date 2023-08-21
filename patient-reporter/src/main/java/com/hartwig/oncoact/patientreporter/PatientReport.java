@@ -7,8 +7,8 @@ import java.util.Optional;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
-import com.hartwig.silo.client.model.PatientInformationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
