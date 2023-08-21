@@ -22,7 +22,6 @@ import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
@@ -81,19 +80,6 @@ public class CFReportWriterTest {
     }
 
     @Test
-    public void canGeneratePatientReportWithUnreliablePurity() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
-
-        colo829Report = generateAnalysedPatientReport(colo829Report);
-        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
-    }
-
-    @Test
     @Ignore
     public void canGeneratePatientReportForStudySample() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study").build();
@@ -122,28 +108,24 @@ public class CFReportWriterTest {
     }
 
     @Test
-    @Ignore
-    public void canGeneratePatientReportForInsufficientTCPSample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_INSUFFICIENT_TUMOR-FOR-209")
-                .comments(FULL_TABLES_COMMENT_STRING)
-                .impliedTumorPurity(0.19)
-                .qcForNumber(QsFormNumber.FOR_209)
-                .build();
-        AnalysedPatientReport patientReport =
-                ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.WARN_LOW_PURITY);
+    public void canGeneratePatientReportForDiagnosticSampleUnreliable() throws IOException {
+        //FOR 209
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic").comments(COLO_COMMENT_STRING).build();
+        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writeAnalysedPatientReport(patientReport, testReportFilePath(patientReport));
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
 
-        patientReport = generateAnalysedPatientReport(patientReport);
-        writer.writeJsonAnalysedFile(patientReport, REPORT_BASE_DIR);
-        writer.writeXMLAnalysedFile(patientReport, REPORT_BASE_DIR);
+        colo829Report = generateAnalysedPatientReport(colo829Report);
+        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
     @Test
     @Ignore
-    public void canGenerateHartwigProcessingIssueReport() throws IOException {
-        generateQCFailReport("CPCT01_hartwig_processing_issue",
+    public void canGenerateWgsProcessingIssue() throws IOException {
+        //wgs_processing_issue
+        generateQCFailReport("wgs_processing_issue",
                 null,
                 QCFailReason.HARTWIG_PROCESSING_ISSUE,
                 false,
@@ -154,8 +136,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateIsolationFailReport() throws IOException {
-        generateQCFailReport("CPCT01_isolation_fail",
+    public void canGenerateWgsIsolationFailure() throws IOException {
+        //wgs_isolation_fail
+        generateQCFailReport("wgs_isolation_fail",
                 null,
                 QCFailReason.ISOLATION_FAIL,
                 false,
@@ -166,8 +149,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateTcpShallowFailReport() throws IOException {
-        generateQCFailReport("CPCT01_tcp_shallow_fail",
+    public void canGenerateWgsTcpShallowFail() throws IOException {
+        //wgs_tcp_shallow_fail
+        generateQCFailReport("wgs_tcp_shallow_fail",
                 null,
                 QCFailReason.TCP_SHALLOW_FAIL,
                 false,
@@ -178,8 +162,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGeneratePreparationFailReport() throws IOException {
-        generateQCFailReport("CPCT01_preparation_fail",
+    public void canGenerateWgsPreparationFail() throws IOException {
+        //wgs_preparation_fail
+        generateQCFailReport("wgs_preparation_fail",
                 null,
                 QCFailReason.PREPARATION_FAIL,
                 false,
@@ -190,8 +175,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateHartwigTumorProcessingIssueReport() throws IOException {
-        generateQCFailReport("CPCT01_hartwig_tumor_processing_issue",
+    public void canGenerateWgsTumorProcessingIssue() throws IOException {
+        //wgs_tumor_processing_issue
+        generateQCFailReport("wgs_tumor_processing_issue",
                 null,
                 QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
                 false,
@@ -202,8 +188,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGeneratePipelineFailReport() throws IOException {
-        generateQCFailReport("CPCT01_pipeline_fail",
+    public void canGenerateWgsPipelineFail() throws IOException {
+        //wgs_pipeline_fail
+        generateQCFailReport("wgs_pipeline_fail",
                 null,
                 QCFailReason.PIPELINE_FAIL,
                 false,
@@ -214,14 +201,9 @@ public class CFReportWriterTest {
 
     @Test
     @Ignore
-    public void canGenerateTcpWgsFailReport() throws IOException {
-        generateQCFailReport("CPCT01_tcp_wgs_fail",
-                null,
-                QCFailReason.TCP_WGS_FAIL,
-                false,
-                false,
-                COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+    public void canGenerateWgsTcpFail() throws IOException {
+        //wgs_tcp_fail
+        generateQCFailReport("wgs_tcp_fail", null, QCFailReason.TCP_WGS_FAIL, false, false, COMMENT_STRING_QC_FAIL, PurpleQCStatus.PASS);
     }
 
     @Test

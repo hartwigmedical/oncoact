@@ -116,16 +116,6 @@ public final class SomaticVariants {
         return annotationList;
     }
 
-    public static boolean hasVariantsInCis(@NotNull List<ReportableVariant> reportableVariants) {
-        for (ReportableVariant reportableVariant : reportableVariants) {
-            if (reportableVariant.localPhaseSet() != null) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @NotNull
     public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @Nullable Integer localPhaseSet,
             @NotNull String canonicalEffect) {

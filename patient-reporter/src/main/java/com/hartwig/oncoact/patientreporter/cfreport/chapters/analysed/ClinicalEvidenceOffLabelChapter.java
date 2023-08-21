@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -40,19 +41,28 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull final Document document) {
+
         GenomicAnalysis analysis = report.genomicAnalysis();
+        List<ProtectEvidence> reportedOnLabel = analysis.tumorSpecificEvidence();
         List<ProtectEvidence> reportedOffLabel = analysis.offLabelEvidence();
-        addTreatmentSection(document, "Evidence on other tumor types", reportedOffLabel);
+
+        List<ProtectEvidence> allEvidences = Lists.newArrayList();
+        allEvidences.addAll(reportedOnLabel);
+        allEvidences.addAll(reportedOffLabel);
+
+        addTreatmentSection(document, allEvidences);
         document.add(clinicalEvidenceFunctions.noteEvidence());
         document.add(clinicalEvidenceFunctions.noteGlossaryTerms());
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
-    private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean requireOnLabel = false;
+    private void addTreatmentSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         Map<String, List<ProtectEvidence>> offLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(clinicalEvidenceFunctions.createTreatmentTable(header, offLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatment");
+        document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment",
+                offLabelTreatments,
+                contentWidth(),
+                "Treatment"));
     }
 }

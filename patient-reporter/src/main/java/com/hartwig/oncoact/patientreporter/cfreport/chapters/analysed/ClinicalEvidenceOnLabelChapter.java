@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -32,8 +33,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     @NotNull
     private final AnalysedPatientReport report;
 
-    public ClinicalEvidenceOnLabelChapter(@NotNull final AnalysedPatientReport report,
-                                          @NotNull final ReportResources reportResources) {
+    public ClinicalEvidenceOnLabelChapter(@NotNull final AnalysedPatientReport report, @NotNull final ReportResources reportResources) {
         this.report = report;
         clinicalEvidenceFunctions = new ClinicalEvidenceFunctions(reportResources);
     }
@@ -43,10 +43,15 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         GenomicAnalysis analysis = report.genomicAnalysis();
         List<ProtectEvidence> reportedOnLabel = analysis.tumorSpecificEvidence();
-        addTreatmentSection(document, "Tumor type specific evidence", reportedOnLabel);
-
+        List<ProtectEvidence> reportedOffLabel = analysis.offLabelEvidence();
         List<ProtectEvidence> reportedStudies = analysis.clinicalTrials();
-        addTrialSection(document, "Tumor type specific clinical trials (NL)", reportedStudies);
+
+        List<ProtectEvidence> allEvidences = Lists.newArrayList();
+        allEvidences.addAll(reportedOnLabel);
+        allEvidences.addAll(reportedOffLabel);
+
+        addTreatmentSection(document, allEvidences);
+        addTrialSection(document, reportedStudies);
 
         document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore "
                 + "certain tumor types may not be eligible for the DRUP.\n"));
@@ -58,21 +63,24 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
-    private void addTreatmentSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean requireOnLabel = true;
+    private void addTreatmentSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(clinicalEvidenceFunctions.createTreatmentTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
+        document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment approach",
+                onLabelTreatments,
+                contentWidth(),
+                "Treatment approach"));
     }
 
-    private void addTrialSection(@NotNull Document document, @NotNull String header, @NotNull List<ProtectEvidence> evidences) {
-        boolean requireOnLabel = true;
+    private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, requireOnLabel);
-        document.add(clinicalEvidenceFunctions.createTrialTable(header, onLabelTreatments, contentWidth()));
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
+        document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical trials (NL)",
+                onLabelTreatments,
+                contentWidth()));
     }
 }

@@ -356,7 +356,49 @@ public final class ExampleAnalysisTestFactory {
                         Sets.newHashSet(),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Cobimetinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
+                        "PTEN:V600E",
+                        Sets.newHashSet(),
+                        EvidenceType.ACTIVATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -368,7 +410,7 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Immuno", "Target"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
@@ -391,12 +433,12 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Trametinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Target", "Combi"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.RESPONSIVE)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
                                 "BRAF V600E",
                                 Sets.newHashSet(),
@@ -409,29 +451,6 @@ public final class ExampleAnalysisTestFactory {
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.google.com/#q=FDA"))))
-                .build());
-
-        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("Trametinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                        "BRAF:V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")

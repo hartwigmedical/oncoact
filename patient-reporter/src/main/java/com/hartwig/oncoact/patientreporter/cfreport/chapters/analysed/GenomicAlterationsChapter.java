@@ -251,11 +251,6 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(reportResources.subTextStyle())));
         }
 
-        if (SomaticVariants.hasVariantsInCis(reportableVariants)) {
-            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
-                    .add(new Paragraph("\n= Marked variants are present in cis").addStyle(reportResources.subTextStyle())));
-        }
-
         return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
