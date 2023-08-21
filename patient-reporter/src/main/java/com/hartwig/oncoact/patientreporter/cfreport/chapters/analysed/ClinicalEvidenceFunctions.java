@@ -60,7 +60,7 @@ public class ClinicalEvidenceFunctions {
             Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
 
     @NotNull
-    public static Map<String, List<ProtectEvidence>> buildTreatmenthMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
+    public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
             Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 

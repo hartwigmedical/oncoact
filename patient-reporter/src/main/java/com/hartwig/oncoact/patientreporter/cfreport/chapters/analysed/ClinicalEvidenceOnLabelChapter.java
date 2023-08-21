@@ -67,7 +67,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmenthMap(evidences, flagGermline, null, "treatmentApproach");
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
         document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment approach",
                 onLabelTreatments,
                 contentWidth(),
@@ -78,7 +78,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmenthMap(evidences, flagGermline, true, "study");
+                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
         document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical trials (NL)",
                 onLabelTreatments,
                 contentWidth()));
