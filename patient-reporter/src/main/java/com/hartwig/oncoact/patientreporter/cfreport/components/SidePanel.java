@@ -4,6 +4,7 @@ import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
@@ -37,7 +38,9 @@ public final class SidePanel {
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                fullHeight);
+                fullHeight,
+                !patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) && !patientReport.qsFormNumber()
+                        .equals(QsFormNumber.FOR_080.display()));
     }
 
     public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
@@ -45,16 +48,30 @@ public final class SidePanel {
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                fullHeight);
+                fullHeight,
+                !patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) && !patientReport.qsFormNumber()
+                        .equals(QsFormNumber.FOR_080.display()));
 
     }
 
     public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData,
-            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight) {
+            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight,
+            boolean isFailure) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
-        renderBackgroundRect(fullHeight, canvas, pageSize);
-        BaseMarker.renderMarkerGrid(5, (fullHeight ? 13 : 3), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
+
+        int height;
+        if (fullHeight) {
+            if (!isFailure) {
+                height = 13;
+            } else {
+                height = 120;
+            }
+        } else {
+            height = 3;
+        }
+        BaseMarker.renderMarkerGrid(5, height, CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
@@ -120,11 +137,24 @@ public final class SidePanel {
 
     }
 
-    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
-        float size = -pageSize.getHeight() / 2;
-        canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
-        canvas.setFillColor(ReportResources.PALETTE_BLUE);
-        canvas.fill();
+    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize,
+            boolean isFailure) {
+        if (!isFailure) {
+            float size = -pageSize.getHeight() / 2;
+            canvas.rectangle(pageSize.getWidth(),
+                    pageSize.getHeight(),
+                    -RECTANGLE_WIDTH,
+                    fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
+            canvas.setFillColor(ReportResources.PALETTE_BLUE);
+            canvas.fill();
+        } else {
+            canvas.rectangle(pageSize.getWidth(),
+                    pageSize.getHeight(),
+                    -RECTANGLE_WIDTH,
+                    fullHeight ? -pageSize.getHeight() : -RECTANGLE_HEIGHT_SHORT);
+            canvas.setFillColor(ReportResources.PALETTE_BLUE);
+            canvas.fill();
+        }
     }
 
     @NotNull

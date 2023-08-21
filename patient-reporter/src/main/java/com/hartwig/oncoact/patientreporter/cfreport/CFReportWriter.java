@@ -1,21 +1,39 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Set;
+
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.lama.client.model.Report;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.*;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.CircosChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOffLabelChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOnLabelChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.DetailsAndDisclaimerChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ExplanationChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.GenomicAlterationsChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.SummaryChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.TumorCharacteristicsChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailPGXChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.*;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelExplanationChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelQCFailChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapterFail;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
@@ -28,13 +46,10 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.property.AreaBreakType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.util.Set;
 
 public class CFReportWriter implements ReportWriter {
 
@@ -55,10 +70,11 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportResources reportResources = ReportResources.create();
-        ReportChapter[] chapters = new ReportChapter[]{new SummaryChapter(report, reportResources), new ClinicalEvidenceOnLabelChapter(report, reportResources),
-                new ClinicalEvidenceOffLabelChapter(report, reportResources), new GenomicAlterationsChapter(report, reportResources),
-                new TumorCharacteristicsChapter(report, reportResources), new CircosChapter(report, reportResources), new ExplanationChapter(reportResources),
-                new DetailsAndDisclaimerChapter(report, reportResources)};
+        ReportChapter[] chapters = new ReportChapter[] { new SummaryChapter(report, reportResources),
+                new ClinicalEvidenceOnLabelChapter(report, reportResources), new ClinicalEvidenceOffLabelChapter(report, reportResources),
+                new GenomicAlterationsChapter(report, reportResources), new TumorCharacteristicsChapter(report, reportResources),
+                new CircosChapter(report, reportResources), new ExplanationChapter(reportResources),
+                new DetailsAndDisclaimerChapter(report, reportResources) };
 
         writeReport(reportResources, report, chapters, outputFilePath);
     }
@@ -69,16 +85,25 @@ public class CFReportWriter implements ReportWriter {
         if (report.reason().isDeepWGSDataAvailable()) {
             Set<PurpleQCStatus> purpleQCStatuses = report.purpleQC();
             if (purpleQCStatuses != null && !purpleQCStatuses.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
-                writeReport(reportResources, report,
-                        new ReportChapter[]{new QCFailChapter(report, reportResources), new QCFailPGXChapter(report, reportResources),
-                                new QCFailDisclaimerChapter(report, reportResources)},
+                writeReport(reportResources,
+                        report,
+                        new ReportChapter[] { new QCFailChapter(report, reportResources), new QCFailPGXChapter(report, reportResources),
+                                new QCFailDisclaimerChapter(report, reportResources) },
                         outputFilePath);
             } else {
-                writeReport(reportResources, report, new ReportChapter[]{new QCFailChapter(report, reportResources), new QCFailDisclaimerChapter(report, reportResources)}, outputFilePath);
+                writeReport(reportResources,
+                        report,
+                        new ReportChapter[] { new QCFailChapter(report, reportResources),
+                                new QCFailDisclaimerChapter(report, reportResources) },
+                        outputFilePath);
             }
 
         } else {
-            writeReport(reportResources, report, new ReportChapter[]{new QCFailChapter(report, reportResources), new QCFailDisclaimerChapter(report, reportResources)}, outputFilePath);
+            writeReport(reportResources,
+                    report,
+                    new ReportChapter[] { new QCFailChapter(report, reportResources),
+                            new QCFailDisclaimerChapter(report, reportResources) },
+                    outputFilePath);
         }
 
     }
@@ -87,14 +112,16 @@ public class CFReportWriter implements ReportWriter {
     public void writePanelAnalysedReport(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException {
         ReportResources reportResources = ReportResources.create();
         ReportChapter[] chapters =
-                new ReportChapter[]{new PanelChapter(report, reportResources), new PanelExplanationChapter(reportResources), new SampleAndDisclaimerChapter(report, reportResources)};
+                new ReportChapter[] { new PanelChapter(report, reportResources), new PanelExplanationChapter(reportResources),
+                        new SampleAndDisclaimerChapter(report, reportResources) };
         writePanel(reportResources, report, chapters, outputFilePath);
     }
 
     @Override
     public void writePanelQCFailReport(@NotNull PanelFailReport report, @NotNull String outputFilePath) throws IOException {
         ReportResources reportResources = ReportResources.create();
-        ReportChapter[] chapters = new ReportChapter[]{new PanelQCFailChapter(report, reportResources), new SampleAndDisclaimerChapterFail(report, reportResources)};
+        ReportChapter[] chapters = new ReportChapter[] { new PanelQCFailChapter(report, reportResources),
+                new SampleAndDisclaimerChapterFail(report, reportResources) };
         writePanel(reportResources, report, chapters, outputFilePath);
     }
 
@@ -116,8 +143,7 @@ public class CFReportWriter implements ReportWriter {
         }
     }
 
-    public void writeXMLAnalysedFile(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath)
-            throws IOException {
+    public void writeXMLAnalysedFile(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportXML xmlReport = XMLFactory.generateXMLData(report);
         writeReportDataToXML(xmlReport, outputFilePath, report);
     }
@@ -148,8 +174,8 @@ public class CFReportWriter implements ReportWriter {
                 .toJson(report);
     }
 
-    private void writeReport(@NotNull ReportResources reportResources, @NotNull PatientReport patientReport, @NotNull ReportChapter[] chapters, @NotNull String outputFilePath)
-            throws IOException {
+    private void writeReport(@NotNull ReportResources reportResources, @NotNull PatientReport patientReport,
+            @NotNull ReportChapter[] chapters, @NotNull String outputFilePath) throws IOException {
         Document doc = initializeReport(outputFilePath, writeToFile);
         PdfDocument pdfDocument = doc.getPdfDocument();
 
@@ -212,8 +238,9 @@ public class CFReportWriter implements ReportWriter {
                 .toJson(report);
     }
 
-    private void writePanel(@NotNull ReportResources reportResources, @NotNull com.hartwig.oncoact.patientreporter.PanelReport patientReport, @NotNull ReportChapter[] chapters,
-                            @NotNull String outputFilePath) throws IOException {
+    private void writePanel(@NotNull ReportResources reportResources,
+            @NotNull com.hartwig.oncoact.patientreporter.PanelReport patientReport, @NotNull ReportChapter[] chapters,
+            @NotNull String outputFilePath) throws IOException {
         Document doc = initializeReport(outputFilePath, writeToFile);
         PdfDocument pdfDocument = doc.getPdfDocument();
 
