@@ -125,7 +125,7 @@ public final class SidePanel {
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation));
 
             if (isPrimaryTumor != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
+                cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy from primary tumor", String.valueOf(isPrimaryTumor)));
             }
         }
 
