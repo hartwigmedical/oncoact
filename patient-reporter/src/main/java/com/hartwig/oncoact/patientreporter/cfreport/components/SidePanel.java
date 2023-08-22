@@ -97,16 +97,12 @@ public final class SidePanel {
                 }
 
                 if (patientInformationData.getBirthdate() != null) {
-                    cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", patientInformationData.getBirthdate()));
                 }
             }
 
             if (lamaPatientData.getRequesterName() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
-
-            }
-            if (lamaPatientData.getRequesterEmail() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", lamaPatientData.getRequesterEmail()));
 
             }
 

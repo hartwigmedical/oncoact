@@ -117,15 +117,10 @@ public final class SomaticVariants {
     }
 
     @NotNull
-    public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @Nullable Integer localPhaseSet,
-            @NotNull String canonicalEffect) {
+    public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @NotNull String canonicalEffect) {
         String footer = Strings.EMPTY;
         if (notifyGermline) {
             footer = footer + "#";
-        }
-
-        if (localPhaseSet != null) {
-            footer = footer + "=";
         }
 
         // TODO Check whether evaluation still works

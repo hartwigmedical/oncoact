@@ -239,7 +239,7 @@ public class SummaryChapter implements ReportChapter {
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
-                .add(new Paragraph("Virus (high driver").addStyle(reportResources.bodyTextStyle())));
+                .add(new Paragraph("Virus").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
 
         div.add(table);

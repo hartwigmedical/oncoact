@@ -42,6 +42,6 @@ public class DiagnosticSiloJsonInterpretation {
 
     @NotNull
     private static String determineSurname(@NotNull String birthSurname, @NotNull String surname) {
-        return !birthSurname.equals(Strings.EMPTY) ? birthSurname : surname;
+        return surname.equals(Strings.EMPTY) ? birthSurname : surname;
     }
 }
