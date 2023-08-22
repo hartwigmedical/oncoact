@@ -108,21 +108,21 @@ public final class SidePanel {
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
             BiopsySite biopsySite = lamaPatientData.getBiopsySite();
-            String biopsyLocation = Strings.EMPTY;
-            String biopsySubLocation = Strings.EMPTY;
-            BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
-            Boolean isPrimaryTumor = null;
+            String biopsyLocation = "-";
+            String biopsySubLocation = "-";
+            String biopsyLateralisation = "-";
+            String isPrimaryTumor = "-";
             if (biopsySite != null) {
                 biopsyLocation = biopsySite.getLocation();
                 biopsySubLocation = biopsySite.getSubLocation();
                 biopsyLateralisation =
-                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
-                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
+                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().getValue() : biopsyLateralisation;
+                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? String.valueOf(biopsySite.getIsPrimaryTumor()) : "-";
             }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation));
 
             if (isPrimaryTumor != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
