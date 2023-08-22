@@ -64,7 +64,7 @@ public final class SidePanel {
         int height;
         if (fullHeight) {
             if (!isFailure) {
-                height = 13;
+                height = 12;
             } else {
                 height = 120;
             }
@@ -137,10 +137,7 @@ public final class SidePanel {
             boolean isFailure) {
         if (!isFailure) {
             float size = -pageSize.getHeight() / 2;
-            canvas.rectangle(pageSize.getWidth(),
-                    pageSize.getHeight(),
-                    -RECTANGLE_WIDTH,
-                    fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
+            canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 70 : -RECTANGLE_HEIGHT_SHORT);
             canvas.setFillColor(ReportResources.PALETTE_BLUE);
             canvas.fill();
         } else {

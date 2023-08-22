@@ -346,7 +346,7 @@ public class SummaryChapter implements ReportChapter {
         div.add(renderHla());
         div.add(renderGermlineText());
 
-        reportDocument.add(div.setFixedPosition(leftPosition, 30, width));
+        reportDocument.add(div.setFixedPosition(leftPosition, 70, width));
 
     }
 
