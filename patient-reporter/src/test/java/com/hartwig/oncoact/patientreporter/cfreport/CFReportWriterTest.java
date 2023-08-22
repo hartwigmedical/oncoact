@@ -56,9 +56,14 @@ public class CFReportWriterTest {
 
     @NotNull
     public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
+        String technique = "Technique: WGS";
+        String platform = "Platform: NovaSeq 6000 (Illumina) WGS analysis, processed using Hartwig MedicalOncoAct® software and "
+                + "reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are performed under ISO17025 "
+                + "accreditation (RVA, L633).";
+
         return ImmutableAnalysedPatientReport.builder()
                 .from(analysedPatientReport)
-                .clinicalSummary(analysedPatientReport.clinicalSummary()
+                .clinicalSummary(technique + "\n" + platform + "\n\n" + analysedPatientReport.clinicalSummary()
                         + " The underlying data of these WGS results can be requested at Hartwig Medical "
                         + "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
                 .build();
