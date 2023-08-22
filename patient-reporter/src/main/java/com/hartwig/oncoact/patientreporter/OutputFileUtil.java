@@ -1,14 +1,11 @@
 package com.hartwig.oncoact.patientreporter;
 
-import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-
-import org.apache.logging.log4j.util.Strings;
-import org.jetbrains.annotations.NotNull;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.hartwig.lama.client.model.PatientReporterData;
+
+import org.jetbrains.annotations.NotNull;
 
 public final class OutputFileUtil {
 
@@ -18,41 +15,36 @@ public final class OutputFileUtil {
     @NotNull
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
         String filePrefix = getFilePrefix(report);
-        String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + failPrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
+        return filePrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
         String filePrefix = getFilePrefix(report);
-        String failPrefix = report instanceof PanelFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + failPrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
+        return filePrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
-        String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJson(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
-        String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForXML(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
-        String failPrefix = report instanceof QCFailReport ? "_failed" : Strings.EMPTY;
         String fileSuffix = report.isCorrectedReport() ? "_corrected.xml" : ".xml";
-        return filePrefix + failPrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
     }
 
     @NotNull
