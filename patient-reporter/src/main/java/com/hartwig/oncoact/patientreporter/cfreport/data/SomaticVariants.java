@@ -112,6 +112,8 @@ public final class SomaticVariants {
             } else {
                 annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
             }
+        } else {
+            annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
         }
         return annotationList;
     }
