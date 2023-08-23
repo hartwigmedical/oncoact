@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
+import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -44,7 +45,8 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null);
+        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
@@ -60,8 +62,8 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-
-        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, NA_STRING, null, null);
+        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
@@ -94,18 +96,20 @@ public class ReportingDb {
                 }
             }
         }
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
         writeApiUpdateJson(outputDirectory,
                 tumorBarcode,
                 cohort,
                 reportType,
                 purity,
                 hasReliableQuality,
-                hasReliablePurity);
+                hasReliablePurity,
+                outputFileName);
     }
 
     private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String displayName,
-            final String reportType, final String purity, final Boolean hasReliableQuality,
-            final Boolean hasReliablePurity) throws IOException {
+            final String reportType, final String purity, final Boolean hasReliableQuality, final Boolean hasReliablePurity,
+            final String outputFilename) throws IOException {
         File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
         Map<String, Object> payload = new HashMap<>();
@@ -115,6 +119,7 @@ public class ReportingDb {
         payload.put("cohort", displayName);
         payload.put("has_reliable_quality", hasReliableQuality != null ? hasReliableQuality : NA_STRING);
         payload.put("has_reliable_purity", hasReliablePurity != null ? hasReliablePurity : NA_STRING);
+        payload.put("output_file_name", outputFilename);
 
         appendToFile(outputFile.getAbsolutePath(),
                 new GsonBuilder().serializeNulls()
@@ -138,8 +143,8 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null);
+        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null, outputFileName);
     }
 
     private static void appendToFile(@NotNull String reportingDbTsv, @NotNull String stringToAppend) throws IOException {

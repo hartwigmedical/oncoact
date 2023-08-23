@@ -119,7 +119,7 @@ public class PanelReporterApplication {
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
             @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
-        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(panelReport);
+        return outputDirReport + File.separator + (OutputFileUtil.generateOutputFileName(panelReport) + ".pdf");
     }
 
     @NotNull
