@@ -43,7 +43,7 @@ public class DatabaseAccess implements AutoCloseable {
             throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
-        var password = System.getenv().get(passwordEnvVariable);
+        String password = System.getenv().get(passwordEnvVariable);
 
         this.connection = DriverManager.getConnection(url, userName, password);
         String catalog = connection.getCatalog();

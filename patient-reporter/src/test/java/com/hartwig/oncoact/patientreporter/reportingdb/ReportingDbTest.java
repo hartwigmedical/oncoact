@@ -4,7 +4,6 @@ import static java.lang.String.join;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
@@ -12,8 +11,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
@@ -34,8 +31,7 @@ public class ReportingDbTest {
         writer.write("tumorBarcode\tsampleId\tcohort\treportDate\treportType\tpurity\thasReliableQuality\thasReliablePurity\n");
         writer.close();
 
-        ExampleAnalysisConfig config =
-                new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
 
         ReportingDb reportingDb = new ReportingDb();
 

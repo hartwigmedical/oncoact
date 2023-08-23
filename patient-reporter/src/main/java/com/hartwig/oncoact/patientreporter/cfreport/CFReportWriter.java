@@ -192,7 +192,7 @@ public class CFReportWriter implements ReportWriter {
     public void writeReportDataToJson(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report, @NotNull String outputDirData)
             throws IOException {
         if (writeToFile) {
-            String outputFileData = outputDirData + File.separator + (OutputFileUtil.generateOutputFileName(report) + ".json");
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".json";
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
             writer.write(convertToJson(report));
             writer.close();

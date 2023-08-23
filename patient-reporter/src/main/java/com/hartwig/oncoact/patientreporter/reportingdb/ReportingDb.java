@@ -40,7 +40,7 @@ public class ReportingDb {
             }
         }
 
-        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
         writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
@@ -54,7 +54,7 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
         writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
@@ -120,7 +120,7 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-        var outputFileName = OutputFileUtil.generateOutputFileName(report);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
         writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
