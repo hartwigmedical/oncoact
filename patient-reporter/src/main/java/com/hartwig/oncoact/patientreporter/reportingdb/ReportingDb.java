@@ -6,9 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import com.google.gson.GsonBuilder;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
@@ -32,9 +30,6 @@ public class ReportingDb {
     }
 
     public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
-        String displayName = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = "oncopanel_result_report";
 
         if (report.isCorrectedReport()) {
@@ -46,13 +41,10 @@ public class ReportingDb {
         }
 
         var outputFileName = OutputFileUtil.generateOutputFileName(report);
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null, outputFileName);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
-        String cohort = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = report.panelFailReason().identifier();
 
         if (report.isCorrectedReport()) {
@@ -63,14 +55,10 @@ public class ReportingDb {
             }
         }
         var outputFileName = OutputFileUtil.generateOutputFileName(report);
-        writeApiUpdateJson(outputDirectory, tumorBarcode, cohort, reportType, NA_STRING, null, null, outputFileName);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
-        String cohort = report.lamaPatientData().getCohort();
-
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         GenomicAnalysis analysis = report.genomicAnalysis();
 
         String purity = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(analysis.impliedPurity());
@@ -97,29 +85,21 @@ public class ReportingDb {
             }
         }
         String outputFileName = OutputFileUtil.generateOutputFileName(report);
-        writeApiUpdateJson(outputDirectory,
-                tumorBarcode,
-                cohort,
-                reportType,
-                purity,
-                hasReliableQuality,
-                hasReliablePurity,
-                outputFileName);
+        writeApiUpdateJson(outputDirectory, reportType, purity, hasReliableQuality, hasReliablePurity, outputFileName);
     }
 
-    private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String displayName,
-            final String reportType, final String purity, final Boolean hasReliableQuality, final Boolean hasReliablePurity,
-            final String outputFilename) throws IOException {
+    private void writeApiUpdateJson(final String outputDirectory, final String reportType, final String purity,
+            final Boolean hasReliableQuality, final Boolean hasReliablePurity, final String outputFilename) throws IOException {
         File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("barcode", tumorBarcode);
-        payload.put("report_type", reportType);
-        payload.put("purity", purity.equals(NA_STRING) ? purity : Float.parseFloat(purity));
-        payload.put("cohort", displayName);
-        payload.put("has_reliable_quality", hasReliableQuality != null ? hasReliableQuality : NA_STRING);
-        payload.put("has_reliable_purity", hasReliablePurity != null ? hasReliablePurity : NA_STRING);
-        payload.put("output_file_name", outputFilename);
+
+        ReportCreated payload = ReportCreated.builder()
+                .reportType(reportType)
+                .purity(purity.equals(NA_STRING) ? null : Float.parseFloat(purity))
+                .hasReliablePurity(hasReliablePurity)
+                .hasReliableQuality(hasReliableQuality)
+                .outputFileName(outputFilename)
+                .build();
 
         appendToFile(outputFile.getAbsolutePath(),
                 new GsonBuilder().serializeNulls()
@@ -131,9 +111,6 @@ public class ReportingDb {
     }
 
     public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String displayName = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = report.reason().identifier();
 
         if (report.isCorrectedReport()) {
@@ -144,7 +121,7 @@ public class ReportingDb {
             }
         }
         var outputFileName = OutputFileUtil.generateOutputFileName(report);
-        writeApiUpdateJson(outputDirectory, tumorBarcode, displayName, reportType, NA_STRING, null, null, outputFileName);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     private static void appendToFile(@NotNull String reportingDbTsv, @NotNull String stringToAppend) throws IOException {

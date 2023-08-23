@@ -51,12 +51,11 @@ public class ReportingDbTest {
                 .create()
                 .fromJson(join("\n", Files.readAllLines(expectedOutput.toPath())), new TypeToken<Map<String, Object>>() {
                 }.getType());
-        assertEquals(output.get("has_reliable_quality"), true);
-        assertEquals(output.get("has_reliable_purity"), true);
-        assertEquals(output.get("purity"), 1.0);
-        assertEquals(output.get("cohort"), "cohort");
-        assertEquals(output.get("report_type"), "dna_analysis_report");
-        assertEquals(output.get("barcode"), "tumorIsolationBarcode");
-        assertNull(output.get("create_time"));
+        assertEquals(true, output.get("hasReliableQuality"));
+        assertEquals(true, output.get("hasReliablePurity"));
+        assertEquals(1.0, output.get("purity"));
+        assertEquals("dna_analysis_report", output.get("reportType"));
+        String withStrippedDate = output.get("outputFileName").toString().substring(9);
+        assertEquals("hospitalName_reportingId_oncoact_tumor_wgs_report", withStrippedDate);
     }
 }
