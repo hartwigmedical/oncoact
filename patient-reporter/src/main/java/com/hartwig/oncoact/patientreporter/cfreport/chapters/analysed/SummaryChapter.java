@@ -207,7 +207,7 @@ public class SummaryChapter implements ReportChapter {
 
         Style dataStyle = hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
-        String eligible = analysis().tumorMutationalBurdenStatus().name();
+        String eligible = analysis().tumorMutationalBurdenStatus().display();
         String mutationalBurdenString = hasReliablePurity
                 ? eligible + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalBurden()) + ")"
                 : Formats.NA_STRING;
@@ -216,7 +216,7 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Tumor mutational burden").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalBurdenString).addStyle(dataStyle)));
 
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().name() + " ("
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().display() + " ("
                 + DOUBLE_DECIMAL_FORMAT.format(analysis().microsatelliteIndelsPerMb()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(reportResources.bodyTextStyle())));
@@ -227,7 +227,7 @@ public class SummaryChapter implements ReportChapter {
 
         if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
                 || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus().name() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
+            hrdString = analysis().hrdStatus().display() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
             hrdStyle = reportResources.dataHighlightStyle();
         } else {
             hrdString = Formats.NA_STRING;
@@ -336,7 +336,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderGermline(@NotNull Document reportDocument) {
-        int width = 200;
+        int width = 180;
         int leftPosition = 400;
 
         Div div = new Div();

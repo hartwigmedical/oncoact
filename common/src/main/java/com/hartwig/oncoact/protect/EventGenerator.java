@@ -41,7 +41,7 @@ public final class EventGenerator {
             String variantEvent = reportableVariant.isCanonical()
                     ? canonicalVariantEvent(reportableVariant)
                     : nonCanonicalVariantEvent(reportableVariant);
-            return variantEvent + " (" + clinical + ")";
+            return variantEvent.equals(clinical) ? variantEvent : variantEvent + " (" + clinical + ")";
         } else {
             return reportableVariant.isCanonical() ? canonicalVariantEvent(reportableVariant) : nonCanonicalVariantEvent(reportableVariant);
         }

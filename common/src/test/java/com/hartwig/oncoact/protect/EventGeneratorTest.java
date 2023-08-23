@@ -75,7 +75,7 @@ public class EventGeneratorTest {
     @Test
     public void canGenerateEventForReportableVariantWithClinicalTranscriptCoding() {
         ReportableVariant base = generateReportableVariant("transcript", "coding", Strings.EMPTY, false);
-        assertEquals("coding (coding)", EventGenerator.variantEvent(base));
+        assertEquals("coding", EventGenerator.variantEvent(base));
         assertNotNull(EventGenerator.variantEvent(base));
     }
 
