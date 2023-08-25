@@ -16,37 +16,37 @@ public enum QCFailReason {
             QsFormNumber.FOR_082,
             "Processing failure",
             "Whole Genome Sequencing could not be successfully performed on the \n "
-                    + "received biomaterial(s) due to a processing issue."),
+                    + "received biomaterial(s) due to a lab technical issue."),
     ISOLATION_FAIL("isolation_fail",
             QCFailType.LOW_QUALITY_BIOPSY,
             false,
             QsFormNumber.FOR_082,
             "Insufficient quality of received biomaterial(s)",
-            "Whole Genome Sequencing could not be successfully performed on the \n"
-                    + "received biomaterial(s) because not enough DNA was present after DNA isolation. \n "
-                    + "This is likely due to poor quality of the received biomaterial(s)."),
+            "Whole Genome Sequencing could not be successfully performed on the \n "
+                    + "received biomaterial(s) because the DNA yield was insufficient after DNA isolation. \n"
+                    + "This is likely due to poor quality or too small amounts of the received biomaterial(s).  "),
     TCP_SHALLOW_FAIL("tcp_shallow_fail",
             QCFailType.LOW_QUALITY_BIOPSY,
             false,
             QsFormNumber.FOR_082,
             "Insufficient quality of received biomaterial(s)",
             "Whole Genome Sequencing could not be successfully performed on the \n"
-                    + "received biomaterial(s) because shallow sequencing analysis showed the tumor cell \n " + "percentage was too low."),
+                    + "received biomaterial(s) because shallow sequencing analysis showed the tumor cell \n percentage was too low."),
     PREPARATION_FAIL("preparation_fail",
             QCFailType.LOW_QUALITY_BIOPSY,
             false,
             QsFormNumber.FOR_082,
             "Insufficient quality of received biomaterial(s)",
             "Whole Genome Sequencing could not be successfully performed on the \n"
-                    + "received biomaterial(s) because not enough DNA was present after sample preparation. \n"
-                    + "This is likely due to poor quality of the received " + "biomaterial(s)."),
+                    + "received biomaterial(s) because the quality control of the sample preparation failed. \n"
+                    + "This is likely due to poor quality of the received biomaterial(s)."),
     HARTWIG_TUMOR_PROCESSING_ISSUE("hartwig_tumor_processing_issue",
             QCFailType.LOW_QUALITY_BIOPSY,
             false,
             QsFormNumber.FOR_083,
             "Processing failure of tumor analysis",
             "Whole Genome Sequencing could not be successfully performed on the \n "
-                    + "received tumor biomaterial due to a processing issue."),
+                    + "received tumor biomaterial due to a data processing issue."),
     PIPELINE_FAIL("pipeline_fail",
             QCFailType.LOW_QUALITY_BIOPSY,
             true,
@@ -60,7 +60,7 @@ public enum QCFailReason {
             QsFormNumber.FOR_083,
             "Insufficient quality of received biomaterial(s)",
             "Whole Genome Sequencing could not be successfully performed on the \n"
-                    + "received biomaterial(s) because sequencing analysis showed the tumor cell \n" + "percentage was too low.");
+                    + "received biomaterial(s) because sequencing analysis showed the tumor cell \n percentage was too low.");
 
     @NotNull
     private final String identifier;
