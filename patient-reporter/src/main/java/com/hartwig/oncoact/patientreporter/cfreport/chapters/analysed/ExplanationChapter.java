@@ -37,7 +37,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10, }));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 15, 1, 15, 1, 15, }));
         table.setWidth(contentWidth());
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the report in general")));
