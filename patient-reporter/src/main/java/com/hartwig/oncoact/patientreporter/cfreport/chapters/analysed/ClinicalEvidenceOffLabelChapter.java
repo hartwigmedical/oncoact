@@ -19,7 +19,7 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "WGS based therapy approaches \n- other ";
+        return "WGS based therapy approaches other";
     }
 
     @NotNull

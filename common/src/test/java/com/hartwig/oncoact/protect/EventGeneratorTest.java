@@ -25,11 +25,14 @@ public class EventGeneratorTest {
     @Test
     public void canTestToVariantEvent() {
         assertEquals("p.Gly12Cys",
-                EventGenerator.toVariantEvent("p.Gly12Cys", "c.123A>C", "missense_variant", PurpleCodingEffect.MISSENSE));
-        assertEquals("c.123A>C splice", EventGenerator.toVariantEvent("p.?", "c.123A>C", "missense_variant", PurpleCodingEffect.SPLICE));
-        assertEquals("c.123A>C", EventGenerator.toVariantEvent("", "c.123A>C", "missense_variant", PurpleCodingEffect.MISSENSE));
-        assertEquals("splice", EventGenerator.toVariantEvent("", "", "splice", PurpleCodingEffect.SPLICE));
-        assertEquals("missense_variant", EventGenerator.toVariantEvent("", "", "missense_variant", PurpleCodingEffect.MISSENSE));
+                EventGenerator.determineVariantAnnotation("c.123A>C", "p.Gly12Cys", "missense_variant", PurpleCodingEffect.MISSENSE));
+        assertEquals("c.123A>C splice",
+                EventGenerator.determineVariantAnnotation("c.123A>C", "p.?", "missense_variant", PurpleCodingEffect.SPLICE));
+        assertEquals("c.123A>C",
+                EventGenerator.determineVariantAnnotation("c.123A>C", "", "missense_variant", PurpleCodingEffect.MISSENSE));
+        assertEquals("splice", EventGenerator.determineVariantAnnotation("", "", "splice", PurpleCodingEffect.SPLICE));
+        assertEquals("missense_variant",
+                EventGenerator.determineVariantAnnotation("", "", "missense_variant", PurpleCodingEffect.MISSENSE));
     }
 
     @NotNull
@@ -49,9 +52,10 @@ public class EventGeneratorTest {
             @NotNull String hgvsProteinImpact, boolean isCanonical) {
         return TestReportableVariantFactory.builder()
                 .isCanonical(isCanonical)
-                .canonicalHgvsCodingImpact("coding")
+                .transcript("transcript canonical")
+                .canonicalHgvsCodingImpact("coding canonical")
+                .canonicalHgvsCodingImpact("protein canonical")
                 .otherImpactClinical(purpleTranscriptImpact(transcript, hgvsCodingImpact, hgvsProteinImpact))
-                .otherReportedEffects(createAltTranscriptInfo())
                 .build();
     }
 
@@ -59,36 +63,30 @@ public class EventGeneratorTest {
     private static ReportableVariant generateReportableVariant(boolean isCanonical) {
         return TestReportableVariantFactory.builder()
                 .isCanonical(isCanonical)
-                .canonicalHgvsCodingImpact("coding")
+                .canonicalHgvsCodingImpact("coding canonical")
                 .otherImpactClinical(null)
-                .otherReportedEffects(createAltTranscriptInfo())
                 .build();
     }
 
     @Test
     public void canGenerateEventForReportableVariantWithClinicalTranscriptProtein() {
-        ReportableVariant base = generateReportableVariant("transcript", "coding", "protein", false);
-        assertEquals("coding (protein)", EventGenerator.variantEvent(base));
+        ReportableVariant base = generateReportableVariant("transcript", "coding", "protein", true);
+        assertEquals("protein canonical (protein)", EventGenerator.variantEvent(base));
         assertNotNull(EventGenerator.variantEvent(base));
     }
 
     @Test
     public void canGenerateEventForReportableVariantWithClinicalTranscriptCoding() {
         ReportableVariant base = generateReportableVariant("transcript", "coding", Strings.EMPTY, false);
-        assertEquals("coding", EventGenerator.variantEvent(base));
+        assertEquals("protein canonical (coding)", EventGenerator.variantEvent(base));
         assertNotNull(EventGenerator.variantEvent(base));
     }
 
     @Test
     public void canGenerateEventForReportableVariant() {
         ReportableVariant base = generateReportableVariant(true);
-        assertEquals("coding", EventGenerator.variantEvent(base));
+        assertEquals("coding canonical", EventGenerator.variantEvent(base));
         assertNotNull(EventGenerator.variantEvent(base));
-    }
-
-    @NotNull
-    private static String createAltTranscriptInfo() {
-        return "trans|coding||effect|MISSENSE";
     }
 
     @Test

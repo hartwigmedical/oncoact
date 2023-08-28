@@ -18,6 +18,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
+import com.hartwig.oncoact.protect.EventGenerator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -107,6 +108,8 @@ public final class ReportableVariantFactory {
                                     .otherImpactClinical(null)
                                     .canonicalHgvsCodingImpact(transcriptImpact.hgvsCodingImpact())
                                     .canonicalHgvsProteinImpact(transcriptImpact.hgvsProteinImpact())
+                                    .canonicalEffect(EventGenerator.concat(transcriptImpact.effects()))
+                                    .canonicalCodingEffect(transcriptImpact.codingEffect())
                                     .build());
                         }
                     }
@@ -208,7 +211,6 @@ public final class ReportableVariantFactory {
                 .affectedExon(variant.canonicalImpact().affectedExon())
                 .ref(variant.ref())
                 .alt(variant.alt())
-                .otherReportedEffects(AltTranscriptReportableInfoFactory.serialize(variant.otherImpacts()))
                 .canonicalTranscript(variant.canonicalImpact().transcript())
                 .canonicalEffect(concatEffects(variant.canonicalImpact().effects()))
                 .canonicalCodingEffect(variant.canonicalImpact().codingEffect())

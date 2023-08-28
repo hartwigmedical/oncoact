@@ -1,8 +1,8 @@
 package com.hartwig.oncoact.variant;
 
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 
 import org.apache.logging.log4j.util.Strings;
@@ -26,7 +26,6 @@ public final class TestReportableVariantFactory {
                 .ref(Strings.EMPTY)
                 .alt(Strings.EMPTY)
                 .type(PurpleVariantType.SNP)
-                .otherReportedEffects(Strings.EMPTY)
                 .canonicalTranscript("123")
                 .canonicalEffect(Strings.EMPTY)
                 .canonicalCodingEffect(PurpleCodingEffect.UNDEFINED)

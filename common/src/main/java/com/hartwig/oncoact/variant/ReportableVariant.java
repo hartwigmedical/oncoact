@@ -53,9 +53,6 @@ public abstract class ReportableVariant implements Variant {
     @NotNull
     public abstract String canonicalHgvsProteinImpact();
 
-    @NotNull
-    public abstract String otherReportedEffects();
-
     public abstract int totalReadCount();
 
     public abstract int alleleReadCount();
