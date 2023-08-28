@@ -104,7 +104,7 @@ public final class ReportableVariantFactory {
                             reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
                                     .transcript(nonCanonicalDriver.transcript())
                                     .isCanonical(false)
-                                    .otherImpactClinical(purpleTranscriptImpact)
+                                    .otherImpactClinical(null)
                                     .canonicalHgvsCodingImpact(transcriptImpact.hgvsCodingImpact())
                                     .canonicalHgvsProteinImpact(transcriptImpact.hgvsProteinImpact())
                                     .build());
