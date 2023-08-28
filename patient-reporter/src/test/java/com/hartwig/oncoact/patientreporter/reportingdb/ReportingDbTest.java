@@ -33,12 +33,11 @@ public class ReportingDbTest {
         writer.write("tumorBarcode\tsampleId\tcohort\treportDate\treportType\tpurity\thasReliableQuality\thasReliablePurity\n");
         writer.close();
 
-        ExampleAnalysisConfig config =
-                new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_wgs_analysis_api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
@@ -54,7 +53,7 @@ public class ReportingDbTest {
         assertEquals(output.get("has_reliable_purity"), true);
         assertEquals(output.get("purity"), 1.0);
         assertEquals(output.get("cohort"), "cohort");
-        assertEquals(output.get("report_type"), "dna_analysis_report");
+        assertEquals(output.get("report_type"), "wgs_analysis");
         assertEquals(output.get("barcode"), "tumorIsolationBarcode");
         assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
     }

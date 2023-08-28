@@ -131,13 +131,13 @@ public class CFReportWriterTest {
         //wgs_processing_issue
         generateQCFailReport("wgs_processing_issue",
                 null,
-                QCFailReason.HARTWIG_PROCESSING_ISSUE,
+                QCFailReason.WGS_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.HARTWIG_PROCESSING_ISSUE.reportReason(),
-                QCFailReason.HARTWIG_PROCESSING_ISSUE.reportExplanation());
+                QCFailReason.WGS_PROCESSING_ISSUE.reportReason(),
+                QCFailReason.WGS_PROCESSING_ISSUE.reportExplanation());
     }
 
     @Test
@@ -146,13 +146,13 @@ public class CFReportWriterTest {
         //wgs_isolation_fail
         generateQCFailReport("wgs_isolation_fail",
                 null,
-                QCFailReason.ISOLATION_FAIL,
+                QCFailReason.WGS_ISOLATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.ISOLATION_FAIL.reportReason(),
-                QCFailReason.ISOLATION_FAIL.reportExplanation());
+                QCFailReason.WGS_ISOLATION_FAIL.reportReason(),
+                QCFailReason.WGS_ISOLATION_FAIL.reportExplanation());
     }
 
     @Test
@@ -161,13 +161,13 @@ public class CFReportWriterTest {
         //wgs_tcp_shallow_fail
         generateQCFailReport("wgs_tcp_shallow_fail",
                 null,
-                QCFailReason.TCP_SHALLOW_FAIL,
+                QCFailReason.WGS_TCP_SHALLOW_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.TCP_SHALLOW_FAIL.reportReason(),
-                QCFailReason.TCP_SHALLOW_FAIL.reportExplanation());
+                QCFailReason.WGS_TCP_SHALLOW_FAIL.reportReason(),
+                QCFailReason.WGS_TCP_SHALLOW_FAIL.reportExplanation());
     }
 
     @Test
@@ -176,13 +176,13 @@ public class CFReportWriterTest {
         //wgs_preparation_fail
         generateQCFailReport("wgs_preparation_fail",
                 null,
-                QCFailReason.PREPARATION_FAIL,
+                QCFailReason.WGS_PREPARATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.PREPARATION_FAIL.reportReason(),
-                QCFailReason.PREPARATION_FAIL.reportExplanation());
+                QCFailReason.WGS_PREPARATION_FAIL.reportReason(),
+                QCFailReason.WGS_PREPARATION_FAIL.reportExplanation());
     }
 
     @Test
@@ -191,13 +191,13 @@ public class CFReportWriterTest {
         //wgs_tumor_processing_issue
         generateQCFailReport("wgs_tumor_processing_issue",
                 null,
-                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE.reportReason(),
-                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE.reportExplanation());
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE.reportReason(),
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE.reportExplanation());
     }
 
     @Test
@@ -206,13 +206,13 @@ public class CFReportWriterTest {
         //wgs_pipeline_fail
         generateQCFailReport("wgs_pipeline_fail",
                 null,
-                QCFailReason.PIPELINE_FAIL,
+                QCFailReason.WGS_PIPELINE_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.PIPELINE_FAIL.reportReason(),
-                QCFailReason.PIPELINE_FAIL.reportExplanation());
+                QCFailReason.WGS_PIPELINE_FAIL.reportReason(),
+                QCFailReason.WGS_PIPELINE_FAIL.reportExplanation());
     }
 
     @Test
@@ -221,13 +221,13 @@ public class CFReportWriterTest {
         //wgs_tcp_fail
         generateQCFailReport("wgs_tcp_fail",
                 null,
-                QCFailReason.TCP_WGS_FAIL,
+                QCFailReason.WGS_TCP_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
                 PurpleQCStatus.PASS,
-                QCFailReason.TCP_WGS_FAIL.reportReason(),
-                QCFailReason.TCP_WGS_FAIL.reportExplanation());
+                QCFailReason.WGS_TCP_FAIL.reportReason(),
+                QCFailReason.WGS_TCP_FAIL.reportExplanation());
     }
 
     @Test
@@ -259,15 +259,15 @@ public class CFReportWriterTest {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
         FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reportReason(PanelFailReason.PANEL_FAILURE.reportReason())
-                .reportExplanation(PanelFailReason.PANEL_FAILURE.reportExplanation())
+                .reportReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportReason())
+                .reportExplanation(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportExplanation())
                 .build();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
-                .panelFailReason(PanelFailReason.PANEL_FAILURE)
+                .panelFailReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL)
                 .failExplanation(failExplanation)
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)

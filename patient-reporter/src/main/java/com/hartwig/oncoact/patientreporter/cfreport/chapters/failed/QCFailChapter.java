@@ -40,7 +40,7 @@ public class QCFailChapter implements ReportChapter {
     @NotNull
     @Override
     public String pdfTitle() {
-        Set<QCFailReason> tumorFailTitle = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.TCP_WGS_FAIL);
+        Set<QCFailReason> tumorFailTitle = Sets.newHashSet(QCFailReason.WGS_TUMOR_PROCESSING_ISSUE, QCFailReason.WGS_TCP_FAIL);
 
         if (tumorFailTitle.contains(failReport.reason())) {
             if (failReport.isCorrectedReport()) {

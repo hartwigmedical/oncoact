@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 public enum PanelFailReason {
 
-    PANEL_FAILURE("insufficient_dna_panel",
+    PANEL_RESULTS_REPORT_FAIL("panel_result_report_fail",
             QsFormNumber.FOR_345,
             "Insufficient quality of received biomaterial(s)",
             "Next Generation Sequencing could not be successfully performed on the \n "

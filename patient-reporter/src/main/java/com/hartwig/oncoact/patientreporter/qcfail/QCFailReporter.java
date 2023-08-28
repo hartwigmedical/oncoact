@@ -52,7 +52,8 @@ public class QCFailReporter {
                 .sampleFailReasonComment(config.sampleFailReasonComment())
                 .build();
 
-        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE, QCFailReason.PIPELINE_FAIL, QCFailReason.TCP_WGS_FAIL);
+        Set<QCFailReason> qcFailReasons =
+                Sets.newHashSet(QCFailReason.WGS_TUMOR_PROCESSING_ISSUE, QCFailReason.WGS_PIPELINE_FAIL, QCFailReason.WGS_TCP_FAIL);
 
         if (qcFailReasons.contains(reason)) {
             if (config.requirePipelineVersionFile()) {

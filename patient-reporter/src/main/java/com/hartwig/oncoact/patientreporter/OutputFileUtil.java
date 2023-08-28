@@ -16,35 +16,35 @@ public final class OutputFileUtil {
     public static String generateOutputFileNameForPdfPanelResultReport(@NotNull PanelReport report) {
         String filePrefix = getFilePrefix(report);
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
+        return filePrefix + "_oncoact_panel_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJsonPanel(@NotNull PanelReport report) {
         String filePrefix = getFilePrefix(report);
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + "oncoact_tumor_ngs_result_report" + fileSuffix;
+        return filePrefix + "_oncoact_panel_result_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForPdfReport(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
         String fileSuffix = report.isCorrectedReport() ? "_corrected.pdf" : ".pdf";
-        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_wgs_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForJson(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
         String fileSuffix = report.isCorrectedReport() ? "_corrected.json" : ".json";
-        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_wgs_report" + fileSuffix;
     }
 
     @NotNull
     public static String generateOutputFileNameForXML(@NotNull PatientReport report) {
         String filePrefix = getFilePrefix(report);
         String fileSuffix = report.isCorrectedReport() ? "_corrected.xml" : ".xml";
-        return filePrefix + "_oncoact_tumor_wgs_report" + fileSuffix;
+        return filePrefix + "_oncoact_wgs_report" + fileSuffix;
     }
 
     @NotNull

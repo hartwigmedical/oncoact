@@ -37,7 +37,7 @@ public class ReportingDb {
         String displayName = report.lamaPatientData().getCohort();
         String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
 
-        String reportType = "oncopanel_result_report";
+        String reportType = "panel_result_report";
 
         if (report.isCorrectedReport()) {
             if (report.isCorrectedReportExtern()) {
@@ -85,9 +85,9 @@ public class ReportingDb {
             reportType = "report_without_conclusion";
         } else {
             if (hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF) {
-                reportType = "dna_analysis_report";
+                reportType = "wgs_analysis";
             } else {
-                reportType = "dna_analysis_report_insufficient_tcp";
+                reportType = "wgs_analysis_low_purity";
             }
 
             if (report.isCorrectedReport()) {
