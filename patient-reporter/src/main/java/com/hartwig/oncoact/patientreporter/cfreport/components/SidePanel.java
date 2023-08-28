@@ -116,7 +116,7 @@ public final class SidePanel {
                 biopsyLocation = biopsySite.getLocation();
                 biopsySubLocation = biopsySite.getSubLocation();
                 biopsyLateralisation =
-                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().getValue() : biopsyLateralisation;
+                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().toString() : biopsyLateralisation;
                 isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? String.valueOf(biopsySite.getIsPrimaryTumor()) : "-";
             }
 
