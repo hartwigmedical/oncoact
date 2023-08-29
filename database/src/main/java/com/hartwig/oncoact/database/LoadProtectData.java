@@ -55,7 +55,7 @@ public class LoadProtectData {
         Options options = new Options();
         options.addOption(SAMPLE, true, "The tumor sample.");
         options.addOption(PROTECT_EVIDENCE_TSV, true, "Path towards the protect evidence tsv.");
-        addDatabaseCmdLineArgs(options);
+        addDatabaseCmdLineArgs(options, false);
         return options;
     }
 }

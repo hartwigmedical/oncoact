@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.lama.client.model.Report;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.ReportWriter;
@@ -108,7 +107,7 @@ public class CFReportWriter implements ReportWriter {
 
     public void writeReportDataToJson(@NotNull PatientReport report, @NotNull String outputDirData) throws IOException {
         if (writeToFile) {
-            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileNameForJson(report);
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".json";
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
             writer.write(convertToJson(report));
             writer.close();
@@ -129,7 +128,7 @@ public class CFReportWriter implements ReportWriter {
             XmlMapper xmlMapper = new XmlMapper();
             xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
 
-            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileNameForXML(report);
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".xml";
 
             xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFileData), importWGS);
 
@@ -193,7 +192,7 @@ public class CFReportWriter implements ReportWriter {
     public void writeReportDataToJson(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report, @NotNull String outputDirData)
             throws IOException {
         if (writeToFile) {
-            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileNameForJsonPanel(report);
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".json";
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
             writer.write(convertToJson(report));
             writer.close();

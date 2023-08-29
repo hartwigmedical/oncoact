@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import com.google.gson.GsonBuilder;
@@ -33,12 +31,11 @@ public class ReportingDbTest {
         writer.write("tumorBarcode\tsampleId\tcohort\treportDate\treportType\tpurity\thasReliableQuality\thasReliablePurity\n");
         writer.close();
 
-        ExampleAnalysisConfig config =
-                new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("CPCT01_SUCCESS").build();
 
         ReportingDb reportingDb = new ReportingDb();
 
-        File expectedOutput = new File("/tmp/reportingId_tumorIsolationBarcode_dna_analysis_report_api-update.json");
+        File expectedOutput = new File("/tmp/api-update.json");
         Files.deleteIfExists(expectedOutput.toPath());
         assertFalse(expectedOutput.exists());
         reportingDb.appendAnalysedReport(ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS),
@@ -50,12 +47,11 @@ public class ReportingDbTest {
                 .create()
                 .fromJson(join("\n", Files.readAllLines(expectedOutput.toPath())), new TypeToken<Map<String, Object>>() {
                 }.getType());
-        assertEquals(output.get("has_reliable_quality"), true);
-        assertEquals(output.get("has_reliable_purity"), true);
-        assertEquals(output.get("purity"), 1.0);
-        assertEquals(output.get("cohort"), "cohort");
-        assertEquals(output.get("report_type"), "dna_analysis_report");
-        assertEquals(output.get("barcode"), "tumorIsolationBarcode");
-        assertEquals(output.get("report_date"), LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MMM-y")));
+        assertEquals(true, output.get("hasReliableQuality"));
+        assertEquals(true, output.get("hasReliablePurity"));
+        assertEquals(1.0, output.get("purity"));
+        assertEquals("dna_analysis_report", output.get("reportType"));
+        String withStrippedDate = output.get("outputFileName").toString().substring(9);
+        assertEquals("hospitalName_reportingId_oncoact_tumor_wgs_report", withStrippedDate);
     }
 }

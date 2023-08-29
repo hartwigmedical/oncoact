@@ -1,0 +1,31 @@
+package com.hartwig.oncoact.patientreporter.reportingdb;
+
+import javax.annotation.Nullable;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.immutables.value.Value;
+
+@Value.Immutable
+@Value.Style(jdkOnly = true)
+@JsonDeserialize(as = ImmutableReportCreated.class)
+@JsonSerialize(as = ImmutableReportCreated.class)
+public interface ReportCreated {
+    String reportType();
+
+    @Nullable
+    Float purity();
+
+    @Nullable
+    Boolean hasReliableQuality();
+
+    @Nullable
+    Boolean hasReliablePurity();
+
+    String outputFileName();
+
+    static ImmutableReportCreated.Builder builder() {
+        return ImmutableReportCreated.builder();
+    }
+}

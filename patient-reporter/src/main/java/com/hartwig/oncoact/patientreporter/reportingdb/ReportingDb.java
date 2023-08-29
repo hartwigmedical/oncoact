@@ -1,18 +1,15 @@
 package com.hartwig.oncoact.patientreporter.reportingdb;
 
-import static java.lang.String.format;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import com.google.gson.GsonBuilder;
+import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -33,10 +30,6 @@ public class ReportingDb {
     }
 
     public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
-        String displayName = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = "oncopanel_result_report";
 
         if (report.isCorrectedReport()) {
@@ -47,14 +40,11 @@ public class ReportingDb {
             }
         }
 
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendPanelFailReport(@NotNull PanelFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
-        String cohort = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = report.panelFailReason().identifier();
 
         if (report.isCorrectedReport()) {
@@ -64,15 +54,11 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, cohort, reportType, report.reportDate(), NA_STRING, null, null);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
-        String cohort = report.lamaPatientData().getCohort();
-
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         GenomicAnalysis analysis = report.genomicAnalysis();
 
         String purity = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(analysis.impliedPurity());
@@ -98,30 +84,22 @@ public class ReportingDb {
                 }
             }
         }
-        writeApiUpdateJson(outputDirectory,
-                tumorBarcode,
-                report.lamaPatientData().getReportingId(),
-                cohort,
-                reportType,
-                report.reportDate(),
-                purity,
-                hasReliableQuality,
-                hasReliablePurity);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, reportType, purity, hasReliableQuality, hasReliablePurity, outputFileName);
     }
 
-    private void writeApiUpdateJson(final String outputDirectory, final String tumorBarcode, final String sampleName,
-            final String displayName, final String reportType, final String reportDate, final String purity,
-            final Boolean hasReliableQuality, final Boolean hasReliablePurity) throws IOException {
-        File outputFile = new File(outputDirectory, format("%s_%s_%s_api-update.json", sampleName, tumorBarcode, reportType));
+    private void writeApiUpdateJson(final String outputDirectory, final String reportType, final String purity,
+            final Boolean hasReliableQuality, final Boolean hasReliablePurity, final String outputFilename) throws IOException {
+        File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("barcode", tumorBarcode);
-        payload.put("report_type", reportType);
-        payload.put("report_date", reportDate);
-        payload.put("purity", purity.equals(NA_STRING) ? purity : Float.parseFloat(purity));
-        payload.put("cohort", displayName);
-        payload.put("has_reliable_quality", hasReliableQuality != null ? hasReliableQuality : NA_STRING);
-        payload.put("has_reliable_purity", hasReliablePurity != null ? hasReliablePurity : NA_STRING);
+
+        ReportCreated payload = ReportCreated.builder()
+                .reportType(reportType)
+                .purity(purity.equals(NA_STRING) ? null : Float.parseFloat(purity))
+                .hasReliablePurity(hasReliablePurity)
+                .hasReliableQuality(hasReliableQuality)
+                .outputFileName(outputFilename)
+                .build();
 
         appendToFile(outputFile.getAbsolutePath(),
                 new GsonBuilder().serializeNulls()
@@ -133,10 +111,6 @@ public class ReportingDb {
     }
 
     public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String sampleName = report.lamaPatientData().getReportingId();
-        String displayName = report.lamaPatientData().getCohort();
-        String tumorBarcode = report.lamaPatientData().getTumorIsolationBarcode();
-
         String reportType = report.reason().identifier();
 
         if (report.isCorrectedReport()) {
@@ -146,8 +120,8 @@ public class ReportingDb {
                 reportType = reportType + "_corrected_internal";
             }
         }
-
-        writeApiUpdateJson(outputDirectory, tumorBarcode, sampleName, displayName, reportType, report.reportDate(), NA_STRING, null, null);
+        String outputFileName = OutputFileUtil.generateOutputFileName(report);
+        writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, outputFileName);
     }
 
     private static void appendToFile(@NotNull String reportingDbTsv, @NotNull String stringToAppend) throws IOException {

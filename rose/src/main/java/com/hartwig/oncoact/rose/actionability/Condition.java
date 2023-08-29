@@ -16,6 +16,6 @@ public enum Condition {
             }
         }
 
-        throw new IllegalStateException("Cannot resolve condition: '{}' " + conditionInput);
+        throw new IllegalStateException("Cannot resolve condition: " + conditionInput);
     }
 }
