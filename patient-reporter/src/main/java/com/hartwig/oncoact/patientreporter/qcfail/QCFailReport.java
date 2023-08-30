@@ -25,10 +25,6 @@ public abstract class QCFailReport implements PatientReport {
 
     @Override
     @NotNull
-    public abstract PatientReporterData lamaPatientData();
-
-    @Override
-    @NotNull
     public abstract String qsFormNumber();
 
     @NotNull

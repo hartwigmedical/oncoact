@@ -124,6 +124,6 @@ public class PatientReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport, @NotNull PatientReport patientReport) {
-        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
+        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName(patientReport) + ".pdf";
     }
 }

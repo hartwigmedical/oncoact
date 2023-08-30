@@ -108,6 +108,8 @@ public class QCFailReporter {
                 .isCorrectedReportExtern(Optional.ofNullable(reportData.correction())
                         .map(Correction::isCorrectedReportExtern)
                         .orElse(false))
+                .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .signaturePath(reportData.signaturePath())
                 .logoRVAPath(reportData.logoRVAPath())
                 .logoCompanyPath(reportData.logoCompanyPath())

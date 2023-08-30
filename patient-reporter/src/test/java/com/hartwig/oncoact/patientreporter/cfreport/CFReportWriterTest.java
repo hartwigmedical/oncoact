@@ -402,7 +402,7 @@ public class CFReportWriterTest {
 
     @NotNull
     private static String testReportFilePath(@NotNull PatientReport patientReport) {
-        String fileName = OutputFileUtil.generateOutputFileNameForPdfReport(patientReport);
+        String fileName = OutputFileUtil.generateOutputFileName(patientReport) + ".pdf";
         String newFileName = fileName;
         if (TIMESTAMP_FILES) {
             int extensionStart = fileName.lastIndexOf('.');
@@ -413,7 +413,7 @@ public class CFReportWriterTest {
 
     @NotNull
     private static String testReportFilePathPanel(@NotNull com.hartwig.oncoact.patientreporter.PanelReport patientReport) {
-        String fileName = OutputFileUtil.generateOutputFileNameForPdfPanelResultReport(patientReport);
+        String fileName = OutputFileUtil.generateOutputFileName(patientReport) + ".pdf";
         String newFileName = fileName;
         if (TIMESTAMP_FILES) {
             int extensionStart = fileName.lastIndexOf('.');
