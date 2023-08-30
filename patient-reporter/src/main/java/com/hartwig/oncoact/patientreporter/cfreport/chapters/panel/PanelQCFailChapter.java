@@ -54,7 +54,8 @@ public class PanelQCFailChapter implements ReportChapter {
     public void render(@NotNull Document reportDocument) {
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location' \n"
-                + "is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
+                + "is based on information received from the originating hospital.").setMarginTop(10)
+                .addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
         reportDocument.add(createFailReasonDiv());
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
