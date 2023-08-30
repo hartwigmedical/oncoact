@@ -3,6 +3,7 @@ package com.hartwig.oncoact.protect;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import com.google.common.base.Strings;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -23,61 +24,52 @@ public final class EventGenerator {
     @NotNull
     public static String determineVariantAnnotation(@Nullable String hgvsCoding, @Nullable String hgvsProtein, @NotNull String effect,
             @NotNull PurpleCodingEffect codingEffect) {
-        if (hgvsProtein != null && !hgvsProtein.isEmpty() && !hgvsProtein.equals("p.?")) {
+        if (!Strings.isNullOrEmpty(hgvsProtein) && !hgvsProtein.equals("p.?")) {
             return hgvsProtein;
         }
 
-        if (hgvsCoding != null && !hgvsCoding.isEmpty()) {
+        if (!Strings.isNullOrEmpty(hgvsCoding)) {
             return codingEffect == PurpleCodingEffect.SPLICE ? hgvsCoding + " splice" : hgvsCoding;
         }
 
         return effect;
     }
 
-    @Nullable
-    public static String determineVariantAnnotationClinical(@Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
-        if (purpleTranscriptImpact != null) {
-            String hgvsCoding = purpleTranscriptImpact.hgvsCodingImpact();
-            String hgvsProtein = purpleTranscriptImpact.hgvsProteinImpact();
-            return determineVariantAnnotation(hgvsCoding,
-                    hgvsProtein,
-                    concat(purpleTranscriptImpact.effects()),
-                    purpleTranscriptImpact.codingEffect());
-        }
-        return null;
-    }
-
     @NotNull
     public static String variantEvent(@NotNull Variant variant) {
         if (variant instanceof ReportableVariant) {
-            ReportableVariant reportableVariant = (ReportableVariant) variant;
-            String variantEvent = canonicalVariantEvent(reportableVariant);
-            String clinical = determineVariantAnnotationClinical(reportableVariant.otherImpactClinical());
-            if (clinical == null || variantEvent.equals(clinical)) {
-                return variantEvent;
-            }
-            return variantEvent + " (" + clinical + ")";
-
+            return reportableVariant((ReportableVariant) variant);
+        } else if (variant instanceof PurpleVariant) {
+            PurpleTranscriptImpact purpleTranscriptImpact = ((PurpleVariant) variant).canonicalImpact();
+            return determineVariantAnnotationClinical(purpleTranscriptImpact);
         } else {
-            return canonicalVariantEvent(variant);
+            throw new IllegalArgumentException(String.format("Unexpected variant type. Variant was: %s", variant));
         }
     }
 
     @NotNull
-    private static String canonicalVariantEvent(@NotNull Variant variant) {
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            return determineVariantAnnotation(reportable.canonicalHgvsCodingImpact(),
-                    reportable.canonicalHgvsProteinImpact(),
-                    reportable.canonicalEffect(),
-                    reportable.canonicalCodingEffect());
-        } else {
-            PurpleVariant purple = (PurpleVariant) variant;
-            return determineVariantAnnotation(purple.canonicalImpact().hgvsCodingImpact(),
-                    purple.canonicalImpact().hgvsProteinImpact(),
-                    concat(purple.canonicalImpact().effects()),
-                    purple.canonicalImpact().codingEffect());
+    private static String reportableVariant(final ReportableVariant variant) {
+        String variantEvent = determineVariantAnnotation(variant.canonicalHgvsCodingImpact(),
+                variant.canonicalHgvsProteinImpact(),
+                variant.canonicalEffect(),
+                variant.canonicalCodingEffect());
+        PurpleTranscriptImpact otherImpactClinical = variant.otherImpactClinical();
+        if (otherImpactClinical == null) {
+            return variantEvent;
         }
+        String clinical = determineVariantAnnotationClinical(otherImpactClinical);
+        if (variantEvent.equals(clinical)) {
+            return variantEvent;
+        }
+        return variantEvent + " (" + clinical + ")";
+    }
+
+    @NotNull
+    private static String determineVariantAnnotationClinical(@NotNull PurpleTranscriptImpact purpleTranscriptImpact) {
+        return determineVariantAnnotation(purpleTranscriptImpact.hgvsCodingImpact(),
+                purpleTranscriptImpact.hgvsProteinImpact(),
+                concat(purpleTranscriptImpact.effects()),
+                purpleTranscriptImpact.codingEffect());
     }
 
     @NotNull

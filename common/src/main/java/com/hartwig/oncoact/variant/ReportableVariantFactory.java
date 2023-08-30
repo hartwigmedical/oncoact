@@ -29,7 +29,7 @@ public final class ReportableVariantFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(ReportableVariantFactory.class);
     private static final Set<PurpleDriverType> MUTATION_DRIVER_TYPES =
-            Sets.newHashSet(PurpleDriverType.MUTATION, PurpleDriverType.GERMLINE_MUTATION);
+            Set.of(PurpleDriverType.MUTATION, PurpleDriverType.GERMLINE_MUTATION);
 
     private ReportableVariantFactory() {
     }
