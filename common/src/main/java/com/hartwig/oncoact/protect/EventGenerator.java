@@ -75,15 +75,11 @@ public final class EventGenerator {
                     reportableVariant.canonicalCodingEffect(),
                     reportableVariant.canonicalEffect()).toString();
             String clinical = determineVariantAnnotationClinical(reportableVariant.otherImpactClinical());
-            if (clinical != null) {
-                if (variantEvent.equals(clinical)) {
-                    return variantEvent;
-                } else {
-                    return variantEvent + " (" + clinical + ")";
-                }
-            } else {
+            if (clinical == null || variantEvent.equals(clinical)) {
                 return variantEvent;
             }
+            return variantEvent + " (" + clinical + ")";
+            
         } else {
             return canonicalVariantEvent(variant);
         }

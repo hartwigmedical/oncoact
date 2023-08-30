@@ -104,7 +104,8 @@ public class SummaryChapter implements ReportChapter {
 
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),
                 contentWidth()));
-        reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
+        reportDocument.add(new Paragraph()); // Added for create an empty space between both elements
+        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(reportResources.subTextStyle()));
 
         renderClinicalConclusionText(reportDocument);
@@ -338,6 +339,7 @@ public class SummaryChapter implements ReportChapter {
     private void renderGermline(@NotNull Document reportDocument) {
         int width = 180;
         int leftPosition = 400;
+        int bottomPosition = 70;
 
         Div div = new Div();
 
@@ -346,7 +348,7 @@ public class SummaryChapter implements ReportChapter {
         div.add(renderHla());
         div.add(renderGermlineText());
 
-        reportDocument.add(div.setFixedPosition(leftPosition, 70, width));
+        reportDocument.add(div.setFixedPosition(leftPosition, bottomPosition, width));
 
     }
 

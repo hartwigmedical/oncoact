@@ -71,8 +71,8 @@ public class QCFailChapter implements ReportChapter {
     public void render(@NotNull Document reportDocument) {
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(),
                 contentWidth()));
-
-        reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
+        reportDocument.add(new Paragraph()); // Added for create an empty space between both elements
+        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
                 + "  \nis based on information received from the originating hospital.").addStyle(reportResources.subTextStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 

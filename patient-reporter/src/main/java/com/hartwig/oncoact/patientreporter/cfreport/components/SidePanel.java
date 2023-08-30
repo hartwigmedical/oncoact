@@ -61,16 +61,7 @@ public final class SidePanel {
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
 
-        int height;
-        if (fullHeight) {
-            if (!isFailure) {
-                height = 12;
-            } else {
-                height = 120;
-            }
-        } else {
-            height = 3;
-        }
+        int height = fullHeight ? (isFailure ? 120 : 12) : 3;
         BaseMarker.renderMarkerGrid(5, height, CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
@@ -123,31 +114,24 @@ public final class SidePanel {
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation));
-
-            if (isPrimaryTumor != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy from primary tumor", String.valueOf(isPrimaryTumor)));
-            }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy from primary tumor", isPrimaryTumor));
         }
-
         canvas.release();
-
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize,
             boolean isFailure) {
-        if (!isFailure) {
-            float size = -pageSize.getHeight() / 2;
-            canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 70 : -RECTANGLE_HEIGHT_SHORT);
-            canvas.setFillColor(ReportResources.PALETTE_BLUE);
-            canvas.fill();
-        } else {
+        if (isFailure) {
             canvas.rectangle(pageSize.getWidth(),
                     pageSize.getHeight(),
                     -RECTANGLE_WIDTH,
                     fullHeight ? -pageSize.getHeight() : -RECTANGLE_HEIGHT_SHORT);
-            canvas.setFillColor(ReportResources.PALETTE_BLUE);
-            canvas.fill();
+        } else {
+            float size = -pageSize.getHeight() / 2;
+            canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 70 : -RECTANGLE_HEIGHT_SHORT);
         }
+        canvas.setFillColor(ReportResources.PALETTE_BLUE);
+        canvas.fill();
     }
 
     @NotNull

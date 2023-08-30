@@ -103,17 +103,12 @@ public final class SomaticVariants {
     @NotNull
     public static List<String> determineVariantAnnotations(@NotNull String hgvsCoding, @NotNull String hgvsProtein,
             @Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+
         List<String> annotationList = Lists.newArrayList();
-        if (purpleTranscriptImpact != null) {
-            if (!hgvsProtein.equals(purpleTranscriptImpact.hgvsProteinImpact())
-                    && !hgvsCoding.equals(purpleTranscriptImpact.hgvsCodingImpact())) {
-                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
-                annotationList.add(SomaticVariants.determineVariantAnnotationClinical(purpleTranscriptImpact));
-            } else {
-                annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
-            }
-        } else {
-            annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+        annotationList.add(SomaticVariants.determineVariantAnnotationCanonical(hgvsCoding, hgvsProtein));
+        if (purpleTranscriptImpact != null && !hgvsProtein.equals(purpleTranscriptImpact.hgvsProteinImpact()) && !hgvsCoding.equals(
+                purpleTranscriptImpact.hgvsCodingImpact())) {
+            annotationList.add(SomaticVariants.determineVariantAnnotationClinical(purpleTranscriptImpact));
         }
         return annotationList;
     }
@@ -125,7 +120,6 @@ public final class SomaticVariants {
             footer = footer + "#";
         }
 
-        // TODO Check whether evaluation still works
         if (canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
                 || canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString())) {
             footer = footer + "+";

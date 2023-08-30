@@ -249,21 +249,16 @@ public class ClinicalEvidenceFunctions {
                         addTreatment = false;
                     }
 
-                    if (evidenceType.equals("treatmentApproach")) {
+                    if (evidenceType.equals("treatmentApproach") || evidenceType.equals("treatment")) {
                         table.addCell(tableUtil.createContentCell(cellOnLabel));
                         table.addCell(tableUtil.createContentCell(cellType));
                         table.addCell(tableUtil.createContentCell(cellLevel));
                         table.addCell(tableUtil.createContentCell(cellResistant));
                         table.addCell(tableUtil.createContentCell(cellPredicted));
                         table.addCell(tableUtil.createContentCell(cellGenomic));
-                    } else if (evidenceType.equals("treatment")) {
-                        table.addCell(tableUtil.createContentCell(cellOnLabel));
-                        table.addCell(tableUtil.createContentCell(cellType));
-                        table.addCell(tableUtil.createContentCell(cellLevel));
-                        table.addCell(tableUtil.createContentCell(cellResistant));
-                        table.addCell(tableUtil.createContentCell(cellPredicted));
-                        table.addCell(tableUtil.createContentCell(cellGenomic));
-                        table.addCell(tableUtil.createContentCell(publications));
+                        if (evidenceType.equals("treatment")) {
+                            table.addCell(tableUtil.createContentCell(publications));
+                        }
                     } else {
                         table.addCell(tableUtil.createContentCell(cellType));
                         table.addCell(tableUtil.createContentCell(cellGenomic));
