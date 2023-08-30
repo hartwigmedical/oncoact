@@ -51,15 +51,19 @@ public class CFReportWriterTest {
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
     private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829. Where is referred to CKB, "
             + "VICC evidence is listed due to licensing restrictions.";
-    private static final String FULL_TABLES_COMMENT_STRING = "This is a test report with all tables filled in";
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
     private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
 
     @NotNull
     public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
+        String technique = "Technique: WGS";
+        String platform = "Platform: NovaSeq 6000 (Illumina) WGS analysis, processed using Hartwig MedicalOncoAct® software and "
+                + "reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are performed under ISO17025 "
+                + "accreditation (RVA, L633).";
+
         return ImmutableAnalysedPatientReport.builder()
                 .from(analysedPatientReport)
-                .clinicalSummary(analysedPatientReport.clinicalSummary()
+                .clinicalSummary(technique + "\n" + platform + "\n\n" + analysedPatientReport.clinicalSummary()
                         + " The underlying data of these WGS results can be requested at Hartwig Medical "
                         + "Foundation (diagnosticsupport@hartwigmedicalfoundation.nl).")
                 .build();
@@ -127,11 +131,13 @@ public class CFReportWriterTest {
         //wgs_processing_issue
         generateQCFailReport("wgs_processing_issue",
                 null,
-                QCFailReason.HARTWIG_PROCESSING_ISSUE,
+                QCFailReason.WGS_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_PROCESSING_ISSUE.reportReason(),
+                QCFailReason.WGS_PROCESSING_ISSUE.reportExplanation());
     }
 
     @Test
@@ -140,11 +146,13 @@ public class CFReportWriterTest {
         //wgs_isolation_fail
         generateQCFailReport("wgs_isolation_fail",
                 null,
-                QCFailReason.ISOLATION_FAIL,
+                QCFailReason.WGS_ISOLATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_ISOLATION_FAIL.reportReason(),
+                QCFailReason.WGS_ISOLATION_FAIL.reportExplanation());
     }
 
     @Test
@@ -153,11 +161,13 @@ public class CFReportWriterTest {
         //wgs_tcp_shallow_fail
         generateQCFailReport("wgs_tcp_shallow_fail",
                 null,
-                QCFailReason.TCP_SHALLOW_FAIL,
+                QCFailReason.WGS_TCP_SHALLOW_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_TCP_SHALLOW_FAIL.reportReason(),
+                QCFailReason.WGS_TCP_SHALLOW_FAIL.reportExplanation());
     }
 
     @Test
@@ -166,11 +176,13 @@ public class CFReportWriterTest {
         //wgs_preparation_fail
         generateQCFailReport("wgs_preparation_fail",
                 null,
-                QCFailReason.PREPARATION_FAIL,
+                QCFailReason.WGS_PREPARATION_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_PREPARATION_FAIL.reportReason(),
+                QCFailReason.WGS_PREPARATION_FAIL.reportExplanation());
     }
 
     @Test
@@ -179,11 +191,13 @@ public class CFReportWriterTest {
         //wgs_tumor_processing_issue
         generateQCFailReport("wgs_tumor_processing_issue",
                 null,
-                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE.reportReason(),
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE.reportExplanation());
     }
 
     @Test
@@ -192,18 +206,28 @@ public class CFReportWriterTest {
         //wgs_pipeline_fail
         generateQCFailReport("wgs_pipeline_fail",
                 null,
-                QCFailReason.PIPELINE_FAIL,
+                QCFailReason.WGS_PIPELINE_FAIL,
                 false,
                 false,
                 COMMENT_STRING_QC_FAIL,
-                PurpleQCStatus.PASS);
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_PIPELINE_FAIL.reportReason(),
+                QCFailReason.WGS_PIPELINE_FAIL.reportExplanation());
     }
 
     @Test
     @Ignore
     public void canGenerateWgsTcpFail() throws IOException {
         //wgs_tcp_fail
-        generateQCFailReport("wgs_tcp_fail", null, QCFailReason.TCP_WGS_FAIL, false, false, COMMENT_STRING_QC_FAIL, PurpleQCStatus.PASS);
+        generateQCFailReport("wgs_tcp_fail",
+                null,
+                QCFailReason.WGS_TCP_FAIL,
+                false,
+                false,
+                COMMENT_STRING_QC_FAIL,
+                PurpleQCStatus.PASS,
+                QCFailReason.WGS_TCP_FAIL.reportReason(),
+                QCFailReason.WGS_TCP_FAIL.reportExplanation());
     }
 
     @Test
@@ -234,14 +258,16 @@ public class CFReportWriterTest {
     public void generateFailPanelReport() throws IOException {
         ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
 
-        FailedReason failExplanation =
-                ImmutableFailedReason.builder().reportReason("reportReason").reportExplanation("reportExplanation").build();
+        FailedReason failExplanation = ImmutableFailedReason.builder()
+                .reportReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportReason())
+                .reportExplanation(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportExplanation())
+                .build();
 
         PanelFailReport patientReport = ImmutablePanelFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
-                .panelFailReason(PanelFailReason.PANEL_FAILURE)
+                .panelFailReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL)
                 .failExplanation(failExplanation)
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)
@@ -259,13 +285,13 @@ public class CFReportWriterTest {
     }
 
     private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString, @NotNull QCFailReason reason,
-            boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus)
-            throws IOException {
+            boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus,
+            @NotNull String reportReason, @NotNull String reportExplanation) throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reportReason("reportReason")
-                .reportExplanation("reportExplanation")
+                .reportReason(reportReason)
+                .reportExplanation(reportExplanation)
                 .sampleFailReasonComment("sampleFailReasonComment")
                 .build();
 
@@ -293,7 +319,7 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeQCFailReport(patientReport, filename);
-        writer.writeJsonFailedFile(patientReport, REPORT_BASE_DIR);
+        // writer.writeJsonFailedFile(patientReport, REPORT_BASE_DIR);
     }
 
     @NotNull

@@ -91,7 +91,7 @@ public class ReportableVariantFactoryTest {
                 .build();
 
         PurpleDriver driverNonCanonical =
-                TestPurpleFactory.driverBuilder().gene("gene").transcript("transcript 2").driverLikelihood(0.6).build();
+                TestPurpleFactory.driverBuilder().gene("gene").transcript("transcript 2").driverLikelihood(0.6).isCanonical(false).build();
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableSomaticVariants(Sets.newHashSet(variant),
                 Sets.newHashSet(driverNonCanonical),

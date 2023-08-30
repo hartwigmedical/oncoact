@@ -21,7 +21,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "Therapy details (Tumor type specific)";
+        return "WGS based therapy approaches";
     }
 
     @NotNull
@@ -68,10 +68,9 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
-        document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment approach",
+        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level therapy approaches",
                 onLabelTreatments,
-                contentWidth(),
-                "Treatment approach"));
+                contentWidth()));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
@@ -79,7 +78,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
-        document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical trials (NL)",
+        document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
                 onLabelTreatments,
                 contentWidth()));
     }

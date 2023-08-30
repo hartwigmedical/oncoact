@@ -50,8 +50,8 @@ public class ReportingDbTest {
         assertEquals(true, output.get("hasReliableQuality"));
         assertEquals(true, output.get("hasReliablePurity"));
         assertEquals(1.0, output.get("purity"));
-        assertEquals("dna_analysis_report", output.get("reportType"));
+        assertEquals("wgs_analysis", output.get("reportType"));
         String withStrippedDate = output.get("outputFileName").toString().substring(9);
-        assertEquals("hospitalName_reportingId_oncoact_tumor_wgs_report", withStrippedDate);
+        assertEquals("hospitalName_reportingId_oncoact_wgs_report", withStrippedDate);
     }
 }

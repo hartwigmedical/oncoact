@@ -106,9 +106,6 @@ public final class ConclusionAlgo {
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
         generatePurityConclusion(conclusion, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
-        generateTechnique(conclusion);
-        generatePlatform(conclusion);
-        generateStartSentence(conclusion);
         generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
         generateVariantConclusion(conclusion,
                 reportableVariants,
@@ -169,20 +166,6 @@ public final class ConclusionAlgo {
         }
 
         return best;
-    }
-
-    private static void generateTechnique(@NotNull List<String> conclusion) {
-        conclusion.add("Technique: WGS");
-    }
-
-    private static void generatePlatform(@NotNull List<String> conclusion) {
-        conclusion.add("Platform: HiSeqX (Illumina) WGS analysis, processed using Hartwig Medical"
-                + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are "
-                + "performed under ISO17025 accreditation (RVA, L633).\n");
-    }
-
-    private static void generateStartSentence(@NotNull List<String> conclusion) {
-        conclusion.add("Sample showing: ");
     }
 
     @VisibleForTesting

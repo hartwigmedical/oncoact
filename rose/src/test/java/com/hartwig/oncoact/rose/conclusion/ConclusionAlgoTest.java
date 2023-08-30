@@ -22,6 +22,7 @@ import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
@@ -163,7 +164,7 @@ public class ConclusionAlgoTest {
         assertTrue(conclusion.contains("- BRCA1 (c.123A>C, p.Val600Arg, p.Val602Arg) BRCA1 inactivation"));
         assertTrue(conclusion.contains("- BRCA2 (c.1235A>C splice) BRCA2 inactivation"));
         assertTrue(conclusion.contains("- TERT (c.-124C>T) TERT promotor mutation"));
-        assertTrue(conclusion.contains("- KRAS (p.Pro72Leu) KRAS"));
+        assertTrue(conclusion.contains("- KRAS (p.Arg58* (p.Arg59*)) KRAS"));
     }
 
     @Test
@@ -504,7 +505,6 @@ public class ConclusionAlgoTest {
                 .canonicalHgvsProteinImpact("p.Arg58*")
                 .canonicalHgvsCodingImpact("c.172C>T")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
-                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
                 .biallelic(true)
                 .driverLikelihood(0.82)
                 .build();
@@ -514,9 +514,16 @@ public class ConclusionAlgoTest {
                 .isCanonical(false)
                 .canonicalTranscript("transcript1")
                 .canonicalHgvsProteinImpact("p.Arg58*")
-                .canonicalHgvsCodingImpact("c.172C>T")
+                .canonicalHgvsCodingImpact("c.171C>T")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
-                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
+                .otherImpactClinical(ImmutablePurpleTranscriptImpact.builder()
+                        .hgvsCodingImpact("c.172C>T")
+                        .hgvsProteinImpact("p.Arg59*")
+                        .transcript("transcript2")
+                        .spliceRegion(false)
+                        .effects(Sets.newHashSet())
+                        .codingEffect(PurpleCodingEffect.MISSENSE)
+                        .build())
                 .biallelic(true)
                 .driverLikelihood(0.82)
                 .build();
@@ -526,9 +533,16 @@ public class ConclusionAlgoTest {
                 .isCanonical(false)
                 .canonicalTranscript("transcript1")
                 .canonicalHgvsProteinImpact("p.Arg58*")
-                .canonicalHgvsCodingImpact("c.172C>T")
+                .canonicalHgvsCodingImpact("c.17C>T")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
-                .otherReportedEffects("ENST00000579755|c.215C>T|p.Pro72Leu|missense_variant|MISSENSE")
+                .otherImpactClinical(ImmutablePurpleTranscriptImpact.builder()
+                        .hgvsCodingImpact("c.1723C>T")
+                        .hgvsProteinImpact("p.Arg59*")
+                        .transcript("transcript2")
+                        .spliceRegion(false)
+                        .effects(Sets.newHashSet())
+                        .codingEffect(PurpleCodingEffect.MISSENSE)
+                        .build())
                 .biallelic(false)
                 .driverLikelihood(0.9)
                 .build();

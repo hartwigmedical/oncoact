@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
+import java.util.Optional;
+
 import com.hartwig.lama.client.model.TumorType;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.itextpdf.layout.element.Paragraph;
@@ -8,8 +10,6 @@ import com.itextpdf.layout.property.UnitValue;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public final class TumorLocationAndTypeTable {
 
@@ -29,8 +29,11 @@ public final class TumorLocationAndTypeTable {
 
         String tumorLocation = Optional.ofNullable(tumorType).map(TumorType::getLocation).orElse("");
         table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, tumorLocation)));
+
         String type = Optional.ofNullable(tumorType).map(TumorType::getType).orElse("");
-        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, type)));
+        String extra = Optional.ofNullable(tumorType).map(TumorType::getExtra).orElse("");
+        String combined = extra.isEmpty() ? type : type + " | " + extra;
+        table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, combined)));
 
         return table;
     }

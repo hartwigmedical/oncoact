@@ -41,7 +41,7 @@
     "locationPalgaCode": "locationPalgaCode",
     "subLocation": "subLocation",
     "subLocationPalgaCode": "subLocationPalgaCode",
-    "lateralisation": "LEFT",
+    "lateralisation": "Left",
     "isPrimaryTumor": true
   },
   "sopString": "sopString",

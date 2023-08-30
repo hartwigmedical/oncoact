@@ -19,7 +19,7 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "Therapy details (Other tumor types)";
+        return "WGS based therapy approaches other";
     }
 
     @NotNull
@@ -60,9 +60,6 @@ public class ClinicalEvidenceOffLabelChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         Map<String, List<ProtectEvidence>> offLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatment");
-        document.add(clinicalEvidenceFunctions.createTreatmentTable("Tumor type specific evidence based on treatment",
-                offLabelTreatments,
-                contentWidth(),
-                "Treatment"));
+        document.add(clinicalEvidenceFunctions.createTreatmentTable("Other therapy matches", offLabelTreatments, contentWidth()));
     }
 }

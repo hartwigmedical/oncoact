@@ -69,11 +69,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Div createSampleDetailsColumn() {
-        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.HARTWIG_PROCESSING_ISSUE,
-                QCFailReason.TCP_SHALLOW_FAIL,
-                QCFailReason.TCP_WGS_FAIL,
-                QCFailReason.HARTWIG_TUMOR_PROCESSING_ISSUE,
-                QCFailReason.PIPELINE_FAIL);
+        Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.WGS_PROCESSING_ISSUE,
+                QCFailReason.WGS_TCP_SHALLOW_FAIL,
+                QCFailReason.WGS_TCP_FAIL,
+                QCFailReason.WGS_TUMOR_PROCESSING_ISSUE,
+                QCFailReason.WGS_PIPELINE_FAIL);
 
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());

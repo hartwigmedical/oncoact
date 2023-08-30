@@ -18,6 +18,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
+import com.hartwig.oncoact.protect.EventGenerator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 public final class ReportableVariantFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(ReportableVariantFactory.class);
+    private static final Set<PurpleDriverType> MUTATION_DRIVER_TYPES =
+            Set.of(PurpleDriverType.MUTATION, PurpleDriverType.GERMLINE_MUTATION);
 
     private ReportableVariantFactory() {
     }
@@ -97,17 +100,21 @@ public final class ReportableVariantFactory {
 
                 PurpleDriver nonCanonicalDriver = findNonCanonicalEntryForVariant(driverMap, variant);
                 if (nonCanonicalDriver != null) {
-                    PurpleTranscriptImpact firstOtherImpact = variant.otherImpacts().iterator().next();
-                    reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
-                            .transcript(nonCanonicalDriver.transcript())
-                            .isCanonical(false)
-                            .otherImpactClinical(purpleTranscriptImpact)
-                            .canonicalHgvsCodingImpact(firstOtherImpact.hgvsCodingImpact())
-                            .canonicalHgvsProteinImpact(firstOtherImpact.hgvsProteinImpact())
-                            .build());
+                    for (PurpleTranscriptImpact transcriptImpact : variant.otherImpacts()) {
+                        if (transcriptImpact.transcript().equals(nonCanonicalDriver.transcript())) {
+                            reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
+                                    .transcript(nonCanonicalDriver.transcript())
+                                    .isCanonical(false)
+                                    .otherImpactClinical(null)
+                                    .canonicalHgvsCodingImpact(transcriptImpact.hgvsCodingImpact())
+                                    .canonicalHgvsProteinImpact(transcriptImpact.hgvsProteinImpact())
+                                    .canonicalEffect(EventGenerator.concat(transcriptImpact.effects()))
+                                    .canonicalCodingEffect(transcriptImpact.codingEffect())
+                                    .build());
+                        }
+                    }
                 }
             }
-
         }
         return reportableVariants;
     }
@@ -133,14 +140,9 @@ public final class ReportableVariantFactory {
             @NotNull PurpleVariant variant) {
         assert variant.reported();
 
-        if (variant.otherImpacts().isEmpty()) {
-            return null;
-        }
-
-        String nonCanonicalTranscript = variant.otherImpacts().iterator().next().transcript();
         for (PurpleDriver driver : entries.values()) {
-            if (variant.gene().equals(driver.gene()) && driver.transcript().equals(nonCanonicalTranscript)) {
-                return entries.get(DriverKey.create(variant.gene(), nonCanonicalTranscript));
+            if (MUTATION_DRIVER_TYPES.contains(driver.driver()) && !driver.isCanonical()) {
+                return entries.get(DriverKey.create(variant.gene(), driver.transcript()));
             }
         }
 
@@ -209,7 +211,6 @@ public final class ReportableVariantFactory {
                 .affectedExon(variant.canonicalImpact().affectedExon())
                 .ref(variant.ref())
                 .alt(variant.alt())
-                .otherReportedEffects(AltTranscriptReportableInfoFactory.serialize(variant.otherImpacts()))
                 .canonicalTranscript(variant.canonicalImpact().transcript())
                 .canonicalEffect(concatEffects(variant.canonicalImpact().effects()))
                 .canonicalCodingEffect(variant.canonicalImpact().codingEffect())

@@ -20,8 +20,9 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setSurname("Jong");
         patientInformationData.setBirthSurname("Jong-Oud");
 
-        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " ("
-                + patientInformationData.getGender() + ")";
+        String result =
+                patientInformationData.getInitials() + " " + patientInformationData.getSurname() + " (" + patientInformationData.getGender()
+                        + ")";
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 
@@ -35,7 +36,7 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setSurname("Jong");
         patientInformationData.setBirthSurname("Jong-Oud");
 
-        String result = patientInformationData.getInitials() + " " + patientInformationData.getBirthSurname() + " ";
+        String result = patientInformationData.getInitials() + " " + patientInformationData.getSurname() + " ";
         assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 

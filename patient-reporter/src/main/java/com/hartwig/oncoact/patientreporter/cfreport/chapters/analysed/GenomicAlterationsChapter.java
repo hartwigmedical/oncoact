@@ -214,7 +214,6 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
             contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.geneDisplayString(variant,
                     notifyGermlineStatusPerVariant.get(variant),
-                    variant.localPhaseSet(),
                     variant.canonicalEffect()), annotationSize));
             contentTable.addCell(tableUtil.createContentCellRowSpan(variant.gDNA(), annotationSize));
             contentTable.addCell(tableUtil.createContentCellRowSpan(annotationCell, annotationSize));
@@ -239,6 +238,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
                     .setTextAlignment(TextAlignment.CENTER);
         }
+
+        contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                .add(new Paragraph("\nVariant annotation is by default based on the canonical transcript. In case another"
+                        + " transcript is more commonly used in routine practice, this annotation is provided in addition.").addStyle(
+                        reportResources.subTextStyle())));
 
         if (SomaticVariants.hasNotifiableGermlineVariant(notifyGermlineStatusPerVariant)) {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())

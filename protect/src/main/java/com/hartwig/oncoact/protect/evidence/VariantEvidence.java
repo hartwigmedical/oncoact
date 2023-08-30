@@ -12,7 +12,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.variant.AltTranscriptReportableInfoFunctions;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -186,12 +185,12 @@ public class VariantEvidence {
         PurpleCodingEffect effect;
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
-            effect = reportable.isCanonical()
-                    ? reportable.canonicalCodingEffect()
-                    : AltTranscriptReportableInfoFunctions.firstOtherCodingEffect(reportable.otherReportedEffects());
-        } else {
+            effect = reportable.canonicalCodingEffect();
+        } else if (variant instanceof PurpleVariant) {
             PurpleVariant purple = (PurpleVariant) variant;
             effect = purple.canonicalImpact().codingEffect();
+        } else {
+            throw new IllegalArgumentException("Variant is defined in a wrong variant other than ReportableVariant and PurpleVariant");
         }
 
         switch (applicableMutationType) {

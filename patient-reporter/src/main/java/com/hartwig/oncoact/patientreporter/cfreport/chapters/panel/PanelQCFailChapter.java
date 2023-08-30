@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PanelQCFailChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "OncoAct tumor NGS report - Result Report Failed";
+    private static final String TITLE_REPORT = "OncoAct tumor NGS report \n- Result Report Failed";
 
     @NotNull
     private final PanelFailReport report;
@@ -53,8 +53,9 @@ public class PanelQCFailChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) {
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
-        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + " is based on information received from the originating hospital.").addStyle(reportResources.subTextSmallStyle()));
+        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location' \n"
+                + "is based on information received from the originating hospital.").setMarginTop(10)
+                .addStyle(reportResources.subTextSmallStyle()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
         reportDocument.add(createFailReasonDiv());
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
@@ -67,9 +68,10 @@ public class PanelQCFailChapter implements ReportChapter {
         div.setKeepTogether(true);
 
         div.add(new Paragraph(report.failExplanation().reportReason()).addStyle(reportResources.dataHighlightStyle()));
-        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(reportResources.bodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
+        div.add(new Paragraph(report.failExplanation().reportExplanation()).addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         if (report.failExplanation().sampleFailReasonComment() != null) {
-            div.add(new Paragraph(report.failExplanation().sampleFailReasonComment() ).addStyle(reportResources.subTextBoldStyle())
+            div.add(new Paragraph(report.failExplanation().sampleFailReasonComment()).addStyle(reportResources.subTextBoldStyle())
                     .setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
 

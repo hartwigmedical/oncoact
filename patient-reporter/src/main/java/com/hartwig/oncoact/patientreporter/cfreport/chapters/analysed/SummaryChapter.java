@@ -66,13 +66,13 @@ public class SummaryChapter implements ReportChapter {
     public String pdfTitle() {
         if (patientReport.isCorrectedReport()) {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report - Low Sensitivity (Corrected)";
+                return "OncoAct tumor WGS report \n- Low Sensitivity (Corrected)";
             } else {
                 return "OncoAct tumor WGS report (Corrected)";
             }
         } else {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report - Low Sensitivity";
+                return "OncoAct tumor WGS report \n- Low Sensitivity";
             } else {
                 return "OncoAct tumor WGS report";
             }
@@ -104,8 +104,9 @@ public class SummaryChapter implements ReportChapter {
 
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),
                 contentWidth()));
-        reportDocument.add(new Paragraph("\nThe information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + "  \nis based on information received from the originating hospital.").addStyle(reportResources.subTextStyle()));
+        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
+                + "  \nis based on information received from the originating hospital.").setMarginTop(10)
+                .addStyle(reportResources.subTextStyle()));
 
         renderClinicalConclusionText(reportDocument);
         renderSpecialRemarkText(reportDocument);
@@ -207,7 +208,7 @@ public class SummaryChapter implements ReportChapter {
 
         Style dataStyle = hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
-        String eligible = analysis().tumorMutationalBurdenStatus().name();
+        String eligible = analysis().tumorMutationalBurdenStatus().display();
         String mutationalBurdenString = hasReliablePurity
                 ? eligible + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalBurden()) + ")"
                 : Formats.NA_STRING;
@@ -216,7 +217,7 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Tumor mutational burden").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalBurdenString).addStyle(dataStyle)));
 
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().name() + " ("
+        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().display() + " ("
                 + DOUBLE_DECIMAL_FORMAT.format(analysis().microsatelliteIndelsPerMb()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite (in)stability").addStyle(reportResources.bodyTextStyle())));
@@ -227,7 +228,7 @@ public class SummaryChapter implements ReportChapter {
 
         if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
                 || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus().name() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
+            hrdString = analysis().hrdStatus().display() + " (" + DOUBLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
             hrdStyle = reportResources.dataHighlightStyle();
         } else {
             hrdString = Formats.NA_STRING;
@@ -239,7 +240,7 @@ public class SummaryChapter implements ReportChapter {
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
-                .add(new Paragraph("Virus (high driver").addStyle(reportResources.bodyTextStyle())));
+                .add(new Paragraph("Virus").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
 
         div.add(table);
@@ -336,8 +337,9 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderGermline(@NotNull Document reportDocument) {
-        int width = 200;
+        int width = 180;
         int leftPosition = 400;
+        int bottomPosition = 70;
 
         Div div = new Div();
 
@@ -346,7 +348,7 @@ public class SummaryChapter implements ReportChapter {
         div.add(renderHla());
         div.add(renderGermlineText());
 
-        reportDocument.add(div.setFixedPosition(leftPosition, 30, width));
+        reportDocument.add(div.setFixedPosition(leftPosition, bottomPosition, width));
 
     }
 

@@ -10,28 +10,57 @@ import org.jetbrains.annotations.Nullable;
 
 public enum QCFailReason {
 
-    HARTWIG_PROCESSING_ISSUE("hartwig_processing_issue", QCFailType.TECHNICAL_FAILURE, false, QsFormNumber.FOR_102,
-            "Processing failure", "Whole Genome Sequencing could not be successfully performed on the received biomaterial(s) due " +
-            "to a processing issue."),
-    ISOLATION_FAIL("isolation_fail", QCFailType.LOW_QUALITY_BIOPSY, true, QsFormNumber.FOR_083,
-            "Insufficient quality of received biomaterial(s)", "Whole Genome Sequencing could not be successfully performed on the " +
-            "received biomaterial(s) because not enough DNA was present after DNA isolation. This is likely due to poor quality of the received biomaterial(s)."),
-    TCP_SHALLOW_FAIL("tcp_shallow_fail", QCFailType.LOW_QUALITY_BIOPSY, false, QsFormNumber.FOR_100,
-            "Insufficient quality of received biomaterial(s)","Whole Genome Sequencing could not be successfully performed on the " +
-            "received biomaterial(s) because shallow sequencing analysis showed the tumor cell percentage was too low."),
-    PREPARATION_FAIL("preparation_fail", QCFailType.LOW_QUALITY_BIOPSY, true, QsFormNumber.FOR_100,
-            "Insufficient quality of received biomaterial(s)", "Whole Genome Sequencing could not be successfully performed on " +
-            "the received biomaterial(s) because not enough DNA was present after sample preparation. This is likely due to poor quality of the received " +
-            "biomaterial(s)."),
-    HARTWIG_TUMOR_PROCESSING_ISSUE("hartwig_tumor_processing_issue", QCFailType.LOW_QUALITY_BIOPSY, false, QsFormNumber.FOR_082,
-            "Processing failure of tumor analysis", "Whole Genome Sequencing could not be successfully performed on the received " +
-            "tumor biomaterial due to a processing issue."),
-    PIPELINE_FAIL("pipeline_fail", QCFailType.LOW_QUALITY_BIOPSY, false, QsFormNumber.FOR_082,
-            "Insufficient quality of received biomaterial(s)", "Whole Genome Sequencing could not be successfully performed on the " +
-            "received biomaterial(s), this is likely due to poor quality of the received biomaterial(s)."),
-    TCP_WGS_FAIL("tcp_wgs_fail",  QCFailType.LOW_QUALITY_BIOPSY, false, QsFormNumber.FOR_082,
-            "Insufficient quality of received biomaterial(s)", "Whole Genome Sequencing could not be successfully performed on the " +
-            "received biomaterial(s) because sequencing analysis showed the tumor cell percentage was too low.");
+    WGS_PROCESSING_ISSUE("wgs_processing_issue",
+            QCFailType.TECHNICAL_FAILURE,
+            false,
+            QsFormNumber.FOR_082,
+            "Processing failure",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s) due to a lab technical issue."),
+    WGS_ISOLATION_FAIL("wgs_isolation_fail",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            false,
+            QsFormNumber.FOR_082,
+            "Insufficient quality of received biomaterial(s)",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s) because the DNA yield was insufficient after DNA isolation. \n"
+                    + "This is likely due to poor quality or too small amounts of the received biomaterial(s).  "),
+    WGS_TCP_SHALLOW_FAIL("wgs_tcp_shallow_fail",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            false,
+            QsFormNumber.FOR_082,
+            "Insufficient quality of received biomaterial(s)",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s) because shallow sequencing analysis showed the tumor cell \n percentage was too low."),
+    WGS_PREPARATION_FAIL("wgs_preparation_fail",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            false,
+            QsFormNumber.FOR_082,
+            "Insufficient quality of received biomaterial(s)",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s) because the quality control of the sample preparation failed. \n"
+                    + "This is likely due to poor quality of the received biomaterial(s)."),
+    WGS_TUMOR_PROCESSING_ISSUE("wgs_tumor_processing_issue",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            true,
+            QsFormNumber.FOR_083,
+            "Processing failure of tumor analysis",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received tumor biomaterial due to a data processing issue."),
+    WGS_PIPELINE_FAIL("wgs_pipeline_fail",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            false,
+            QsFormNumber.FOR_082,
+            "Insufficient quality of received biomaterial(s)",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s), this is likely due to poor quality of the received biomaterial(s)."),
+    WGS_TCP_FAIL("wgs_tcp_fail",
+            QCFailType.LOW_QUALITY_BIOPSY,
+            true,
+            QsFormNumber.FOR_083,
+            "Insufficient quality of received biomaterial(s)",
+            "Whole Genome Sequencing could not be successfully performed on the \n"
+                    + "received biomaterial(s) because sequencing analysis showed the tumor cell \n percentage was too low.");
 
     @NotNull
     private final String identifier;
@@ -46,7 +75,7 @@ public enum QCFailReason {
     private final String reportExplanation;
 
     QCFailReason(@NotNull final String identifier, @NotNull final QCFailType type, final boolean deepWGSDataAvailable,
-                 @NotNull QsFormNumber qsFormNumber, @NotNull final String reportReason, @NotNull final String reportExplanation) {
+            @NotNull QsFormNumber qsFormNumber, @NotNull final String reportReason, @NotNull final String reportExplanation) {
         this.identifier = identifier;
         this.type = type;
         this.deepWGSDataAvailable = deepWGSDataAvailable;

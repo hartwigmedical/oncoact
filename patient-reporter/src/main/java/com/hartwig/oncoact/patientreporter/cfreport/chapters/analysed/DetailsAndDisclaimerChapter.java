@@ -64,7 +64,9 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(new Paragraph("Sample details").addStyle(reportResources.smallBodyHeadingStyle()));
 
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
-        div.add(createContentParagraph("The samples have been analyzed by Next Generation Sequencing using Whole Genome Sequencing"));
+        div.add(createContentParagraph("NovaSeq 6000 (Illumina) WGS analysis, processed using Hartwig Medical"
+                + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are performed "
+                + "under ISO17025 accreditation (RVA, L633)"));
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 

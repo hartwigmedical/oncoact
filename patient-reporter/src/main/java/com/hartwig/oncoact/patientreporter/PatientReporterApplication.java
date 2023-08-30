@@ -85,10 +85,16 @@ public class PatientReporterApplication {
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
 
+            String technique = "Technique: WGS";
+            String platform = "Platform: NovaSeq 6000 (Illumina) WGS analysis, processed using Hartwig MedicalOncoAct® software and "
+                    + "reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are performed under ISO17025 "
+                    + "accreditation (RVA, L633).";
             report = ImmutableAnalysedPatientReport.builder()
                     .from(report)
-                    .clinicalSummary(report.clinicalSummary() + "The underlying data of these WGS results"
-                            + " can be requested at Hartwig Medical Foundation" + " (diagnosticsupport@hartwigmedicalfoundation.nl).")
+                    .clinicalSummary(
+                            technique + "\n" + platform + "\n\n" + report.clinicalSummary() + "The underlying data of these WGS results"
+                                    + " can be requested at Hartwig Medical Foundation"
+                                    + " (diagnosticsupport@hartwigmedicalfoundation.nl).")
                     .build();
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
 

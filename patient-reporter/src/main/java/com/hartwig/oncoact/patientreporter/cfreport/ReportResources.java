@@ -1,5 +1,10 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+
 import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
 import com.itextpdf.io.font.FontProgram;
 import com.itextpdf.io.font.FontProgramFactory;
@@ -8,12 +13,8 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.layout.Style;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import org.jetbrains.annotations.NotNull;
 
 public final class ReportResources {
 
@@ -31,16 +32,22 @@ public final class ReportResources {
     static final String METADATA_TITLE = "HMF Sequencing Report v" + PatientReporterApplication.VERSION;
     static final String METADATA_AUTHOR = HARTWIG_NAME;
 
-    static final float PAGE_MARGIN_TOP = 150; // Top margin also excludes the chapter title, which is rendered in the header
+    static final float PAGE_MARGIN_TOP = 150;
+    // Top margin also excludes the chapter title, which is rendered in the header
     public static final float PAGE_MARGIN_LEFT = 55.5f;
     static final float PAGE_MARGIN_RIGHT = 29;
     static final float PAGE_MARGIN_BOTTOM = 62;
 
-    public static final float CONTENT_WIDTH_NARROW = 330; // Width of the content on a narrow page (page with full side panel)
-    public static final float CONTENT_WIDTH_WIDE = 510; // Width of the content on a narrow page (page without full side panel)
-    public static final float CONTENT_WIDTH_WIDE_SMALL = 240; // Width of the content on a narrow page (page with full side panel)
-    public static final float CONTENT_WIDTH_WIDE_SUMMARY_LEFT = 320; // Width of the content on a narrow page (page without full side panel)
-    public static final float CONTENT_WIDTH_WIDE_SUMMARY_RIGHT = 185; // Width of the content on a narrow page (page without full side panel)
+    public static final float CONTENT_WIDTH_NARROW = 330;
+    // Width of the content on a narrow page (page with full side panel)
+    public static final float CONTENT_WIDTH_WIDE = 510;
+    // Width of the content on a narrow page (page without full side panel)
+    public static final float CONTENT_WIDTH_WIDE_SMALL = 240;
+    // Width of the content on a narrow page (page with full side panel)
+    public static final float CONTENT_WIDTH_WIDE_SUMMARY_LEFT = 320;
+    // Width of the content on a narrow page (page without full side panel)
+    public static final float CONTENT_WIDTH_WIDE_SUMMARY_RIGHT = 170;
+    // Width of the content on a narrow page (page without full side panel)
 
     public static final DeviceRgb PALETTE_WHITE = new DeviceRgb(255, 255, 255);
     public static final DeviceRgb PALETTE_BLACK = new DeviceRgb(0, 0, 0);
@@ -78,7 +85,7 @@ public final class ReportResources {
     }
 
     public static float maxPointSizeForWidth(@NotNull PdfFont font, float initialFontSize, float minFontSize, @NotNull String text,
-                                             float maxWidth) {
+            float maxWidth) {
         float fontIncrement = 0.1f;
 
         float fontSize = initialFontSize;
@@ -114,7 +121,6 @@ public final class ReportResources {
         // Cannot be created statically as every PDF needs their own private font objects.
         return fontIcon;
     }
-
 
     public Style responseStyle() {
         return new Style().setFont(fontBold()).setFontSize(8).setFontColor(ReportResources.PALETTE_BLUE);

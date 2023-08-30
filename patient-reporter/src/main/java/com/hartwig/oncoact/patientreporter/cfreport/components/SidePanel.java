@@ -4,6 +4,7 @@ import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
@@ -37,7 +38,9 @@ public final class SidePanel {
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                fullHeight);
+                fullHeight,
+                !patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) && !patientReport.qsFormNumber()
+                        .equals(QsFormNumber.FOR_080.display()));
     }
 
     public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
@@ -45,16 +48,21 @@ public final class SidePanel {
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
-                fullHeight);
+                fullHeight,
+                !patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) && !patientReport.qsFormNumber()
+                        .equals(QsFormNumber.FOR_080.display()));
 
     }
 
     public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData,
-            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight) {
+            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight,
+            boolean isFailure) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
-        renderBackgroundRect(fullHeight, canvas, pageSize);
-        BaseMarker.renderMarkerGrid(5, (fullHeight ? 13 : 3), CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
+
+        int height = fullHeight ? (isFailure ? 120 : 12) : 3;
+        BaseMarker.renderMarkerGrid(5, height, CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
@@ -80,7 +88,7 @@ public final class SidePanel {
                 }
 
                 if (patientInformationData.getBirthdate() != null) {
-                    cv.add(createSidePanelDiv(++sideTextIndex, "Birth date", patientInformationData.getBirthdate()));
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", patientInformationData.getBirthdate()));
                 }
             }
 
@@ -88,41 +96,40 @@ public final class SidePanel {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
 
             }
-            if (lamaPatientData.getRequesterEmail() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Email", lamaPatientData.getRequesterEmail()));
-
-            }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
             BiopsySite biopsySite = lamaPatientData.getBiopsySite();
-            String biopsyLocation = Strings.EMPTY;
-            String biopsySubLocation = Strings.EMPTY;
-            BiopsySite.LateralisationEnum biopsyLateralisation = BiopsySite.LateralisationEnum.UNKNOWN;
-            Boolean isPrimaryTumor = null;
+            String biopsyLocation = "-";
+            String biopsySubLocation = "-";
+            String biopsyLateralisation = "-";
+            String isPrimaryTumor = "-";
             if (biopsySite != null) {
                 biopsyLocation = biopsySite.getLocation();
                 biopsySubLocation = biopsySite.getSubLocation();
                 biopsyLateralisation =
-                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation() : BiopsySite.LateralisationEnum.UNKNOWN;
-                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? biopsySite.getIsPrimaryTumor() : null;
+                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().toString() : biopsyLateralisation;
+                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? String.valueOf(biopsySite.getIsPrimaryTumor()) : "-";
             }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
-            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation.getValue()));
-
-            if (isPrimaryTumor != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy is primaryTumor", String.valueOf(isPrimaryTumor)));
-            }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy lateralisation", biopsyLateralisation));
+            cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy from primary tumor", isPrimaryTumor));
         }
-
         canvas.release();
-
     }
 
-    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize) {
-        float size = -pageSize.getHeight() / 2;
-        canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 120 : -RECTANGLE_HEIGHT_SHORT);
+    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize,
+            boolean isFailure) {
+        if (isFailure) {
+            canvas.rectangle(pageSize.getWidth(),
+                    pageSize.getHeight(),
+                    -RECTANGLE_WIDTH,
+                    fullHeight ? -pageSize.getHeight() : -RECTANGLE_HEIGHT_SHORT);
+        } else {
+            float size = -pageSize.getHeight() / 2;
+            canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 70 : -RECTANGLE_HEIGHT_SHORT);
+        }
         canvas.setFillColor(ReportResources.PALETTE_BLUE);
         canvas.fill();
     }
