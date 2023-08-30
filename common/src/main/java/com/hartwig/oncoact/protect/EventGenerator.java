@@ -21,24 +21,6 @@ public final class EventGenerator {
     }
 
     @NotNull
-    public static StringBuilder determineVariantAnnotations(@NotNull String hgvsCoding, @NotNull String hgvsProtein,
-            @Nullable PurpleTranscriptImpact purpleTranscriptImpact, @NotNull PurpleCodingEffect canonicalCodingEffect,
-            @NotNull String canonicalEffect) {
-        StringBuilder annotation = new StringBuilder();
-        if (purpleTranscriptImpact != null) {
-            if (!hgvsProtein.equals(purpleTranscriptImpact.hgvsProteinImpact())
-                    && !hgvsCoding.equals(purpleTranscriptImpact.hgvsCodingImpact())) {
-                annotation.append(determineVariantAnnotation(hgvsCoding, hgvsProtein, canonicalEffect, canonicalCodingEffect));
-            } else {
-                annotation.append(determineVariantAnnotation(hgvsCoding, hgvsProtein, canonicalEffect, canonicalCodingEffect));
-            }
-        } else {
-            annotation.append(determineVariantAnnotation(hgvsCoding, hgvsProtein, canonicalEffect, canonicalCodingEffect));
-        }
-        return annotation;
-    }
-
-    @NotNull
     public static String determineVariantAnnotation(@Nullable String hgvsCoding, @Nullable String hgvsProtein, @NotNull String effect,
             @NotNull PurpleCodingEffect codingEffect) {
         if (hgvsProtein != null && !hgvsProtein.isEmpty() && !hgvsProtein.equals("p.?")) {
@@ -69,17 +51,13 @@ public final class EventGenerator {
     public static String variantEvent(@NotNull Variant variant) {
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportableVariant = (ReportableVariant) variant;
-            String variantEvent = determineVariantAnnotations(reportableVariant.canonicalHgvsCodingImpact(),
-                    reportableVariant.canonicalHgvsProteinImpact(),
-                    reportableVariant.otherImpactClinical(),
-                    reportableVariant.canonicalCodingEffect(),
-                    reportableVariant.canonicalEffect()).toString();
+            String variantEvent = canonicalVariantEvent(reportableVariant);
             String clinical = determineVariantAnnotationClinical(reportableVariant.otherImpactClinical());
             if (clinical == null || variantEvent.equals(clinical)) {
                 return variantEvent;
             }
             return variantEvent + " (" + clinical + ")";
-            
+
         } else {
             return canonicalVariantEvent(variant);
         }

@@ -186,9 +186,11 @@ public class VariantEvidence {
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
             effect = reportable.canonicalCodingEffect();
-        } else {
+        } else if (variant instanceof PurpleVariant) {
             PurpleVariant purple = (PurpleVariant) variant;
             effect = purple.canonicalImpact().codingEffect();
+        } else {
+            throw new IllegalArgumentException("Variant is defined in a wrong variant other than ReportableVariant and PurpleVariant");
         }
 
         switch (applicableMutationType) {

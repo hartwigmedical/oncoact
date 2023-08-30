@@ -80,22 +80,17 @@ public class ReportingDb {
         boolean hasReliablePurity = analysis.hasReliablePurity();
 
         String reportType;
-        if (report.clinicalSummary().isEmpty()) {
+        String clinicalSummary = report.clinicalSummary();
+        if (clinicalSummary == null || clinicalSummary.isEmpty()) {
             LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.lamaPatientData().getReportingId());
             reportType = "report_without_conclusion";
         } else {
-            if (hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF) {
-                reportType = "wgs_analysis";
-            } else {
-                reportType = "wgs_analysis_low_purity";
-            }
+            reportType = hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF
+                    ? "wgs_analysis"
+                    : "wgs_analysis_low_purity";
 
             if (report.isCorrectedReport()) {
-                if (report.isCorrectedReportExtern()) {
-                    reportType = reportType + "_corrected_external";
-                } else {
-                    reportType = reportType + "_corrected_internal";
-                }
+                reportType = report.isCorrectedReportExtern() ? reportType + "_corrected_external" : reportType + "_corrected_internal";
             }
         }
         writeApiUpdateJson(outputDirectory,
