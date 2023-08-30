@@ -6,7 +6,6 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
@@ -22,11 +21,11 @@ public final class ConsentFilterFunctions {
     }
 
     @NotNull
-    public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis,
-                                         boolean germlineReportingLevel) {
+    public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis, boolean flagGermlineOnReport,
+            boolean reportGermlineOnReport) {
         List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(genomicAnalysis.reportableVariants(),
                 genomicAnalysis.notifyGermlineStatusPerVariant(),
-                germlineReportingLevel);
+                reportGermlineOnReport);
 
         List<ReportableVariant> filteredVariants = Lists.newArrayList();
         Map<ReportableVariant, Boolean> notifyPerVariant = Maps.newHashMap();
@@ -36,13 +35,13 @@ public final class ConsentFilterFunctions {
         }
 
         List<ProtectEvidence> filteredTumorSpecificEvidence =
-                filterEvidenceForGermlineConsent(genomicAnalysis.tumorSpecificEvidence(), germlineReportingLevel);
+                filterEvidenceForGermlineConsent(genomicAnalysis.tumorSpecificEvidence(), flagGermlineOnReport);
 
         List<ProtectEvidence> filteredClinicalTrials =
-                filterEvidenceForGermlineConsent(genomicAnalysis.clinicalTrials(), germlineReportingLevel);
+                filterEvidenceForGermlineConsent(genomicAnalysis.clinicalTrials(), flagGermlineOnReport);
 
         List<ProtectEvidence> filteredOffLabelEvidence =
-                filterEvidenceForGermlineConsent(genomicAnalysis.offLabelEvidence(), germlineReportingLevel);
+                filterEvidenceForGermlineConsent(genomicAnalysis.offLabelEvidence(), flagGermlineOnReport);
 
         return ImmutableGenomicAnalysis.builder()
                 .from(genomicAnalysis)
@@ -57,12 +56,10 @@ public final class ConsentFilterFunctions {
     @NotNull
     @$VisibleForTesting
     static List<ReportableVariantWithNotify> filterVariants(@NotNull List<ReportableVariant> variants,
-                                                            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
-                                                            boolean germlineReportingLevel) {
+            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean reportGermlineOnReport) {
         List<ReportableVariantWithNotify> filteredVariants = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
-            if (!(variant.source() == ReportableVariantSource.GERMLINE
-                    && !germlineReportingLevel)) {
+            if (!(variant.source() == ReportableVariantSource.GERMLINE && !reportGermlineOnReport)) {
                 if (variant.source() == ReportableVariantSource.GERMLINE && !notifyGermlineStatusPerVariant.get(variant)) {
                     filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
                             .variant(ImmutableReportableVariant.builder().from(variant).source(ReportableVariantSource.SOMATIC).build())
@@ -81,11 +78,10 @@ public final class ConsentFilterFunctions {
 
     @NotNull
     @VisibleForTesting
-    static List<ProtectEvidence> filterEvidenceForGermlineConsent(@NotNull List<ProtectEvidence> evidences,
-                                                                  boolean germlineReportingLevel) {
+    static List<ProtectEvidence> filterEvidenceForGermlineConsent(@NotNull List<ProtectEvidence> evidences, boolean flagGermlineOnReport) {
         List<ProtectEvidence> filtered = Lists.newArrayList();
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.germline() && !germlineReportingLevel) {
+            if (evidence.germline() && !flagGermlineOnReport) {
                 // We always overwrite to somatic in evidence since we are not sure that we notify about the actual variant.
                 filtered.add(ImmutableProtectEvidence.builder().from(evidence).germline(false).build());
             } else if (!evidence.germline()) {

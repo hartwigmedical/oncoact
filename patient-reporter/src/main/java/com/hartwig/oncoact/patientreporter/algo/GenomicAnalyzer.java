@@ -55,7 +55,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-            boolean germlineReportingLevel) {
+            boolean flagGermlineOnReport) {
 
         // variants
         Set<ReportableVariant> reportableGermlineVariants =
@@ -65,7 +65,7 @@ public class GenomicAnalyzer {
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
-                determineNotify(reportableVariants, germlineReportingModel, germlineReportingLevel);
+                determineNotify(reportableVariants, germlineReportingModel, flagGermlineOnReport);
 
         // gains & losses
         List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
@@ -145,7 +145,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull GermlineReportingModel germlineReportingModel, boolean germlineReportingLevel) {
+            @NotNull GermlineReportingModel germlineReportingModel, boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -159,7 +159,7 @@ public class GenomicAnalyzer {
         for (ReportableVariant variant : reportableVariants) {
             boolean notify = false;
             if (variant.source() == ReportableVariantSource.GERMLINE) {
-                notify = germlineReportingModel.notifyGermlineVariant(variant, germlineReportingLevel, germlineGenesWithIndependentHits);
+                notify = germlineReportingModel.notifyGermlineVariant(variant, flagGermlineOnReport, germlineGenesWithIndependentHits);
             }
             notifyGermlineStatusPerVariant.put(variant, notify);
         }

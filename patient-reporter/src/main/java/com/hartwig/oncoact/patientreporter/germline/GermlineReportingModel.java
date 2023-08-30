@@ -24,11 +24,11 @@ public class GermlineReportingModel {
         this.entries = entries;
     }
 
-    public boolean notifyGermlineVariant(@NotNull ReportableVariant germlineVariant,
-                                         boolean germlineReportingLevel, @NotNull Set<String> germlineGenesWithIndependentHits) {
+    public boolean notifyGermlineVariant(@NotNull ReportableVariant germlineVariant, boolean flagGermlineOnReport,
+            @NotNull Set<String> germlineGenesWithIndependentHits) {
         assert germlineVariant.source() == ReportableVariantSource.GERMLINE;
 
-        if (!germlineReportingLevel) {
+        if (!flagGermlineOnReport) {
             return false;
         }
 
