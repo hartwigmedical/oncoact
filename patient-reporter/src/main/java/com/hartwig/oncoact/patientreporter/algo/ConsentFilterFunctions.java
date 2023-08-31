@@ -59,18 +59,19 @@ public final class ConsentFilterFunctions {
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean reportGermlineOnReport) {
         List<ReportableVariantWithNotify> filteredVariants = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
-            if (!(variant.source() == ReportableVariantSource.GERMLINE && !reportGermlineOnReport)) {
-                if (variant.source() == ReportableVariantSource.GERMLINE && !notifyGermlineStatusPerVariant.get(variant)) {
-                    filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
-                            .variant(ImmutableReportableVariant.builder().from(variant).source(ReportableVariantSource.SOMATIC).build())
-                            .notifyVariant(false)
-                            .build());
-                } else {
-                    filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
-                            .variant(variant)
-                            .notifyVariant(notifyGermlineStatusPerVariant.get(variant))
-                            .build());
-                }
+            if (variant.source() == ReportableVariantSource.GERMLINE && !reportGermlineOnReport) {
+                continue;
+            }
+            if (variant.source() == ReportableVariantSource.GERMLINE && !notifyGermlineStatusPerVariant.get(variant)) {
+                filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
+                        .variant(ImmutableReportableVariant.builder().from(variant).source(ReportableVariantSource.SOMATIC).build())
+                        .notifyVariant(false)
+                        .build());
+            } else {
+                filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
+                        .variant(variant)
+                        .notifyVariant(notifyGermlineStatusPerVariant.get(variant))
+                        .build());
             }
         }
         return filteredVariants;
