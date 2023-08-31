@@ -78,8 +78,10 @@ public class AnalysedPatientReporter {
         List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
 
         boolean flagGermlineOnReport = reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
+        boolean reportGermlineOnReport = reportData.lamaPatientData().getReportSettings().getReportGermline();
+
         GenomicAnalysis genomicAnalysis = genomicAnalyzer.run(orange, reportableEvidence, flagGermlineOnReport);
-        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, flagGermlineOnReport);
+        GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, flagGermlineOnReport, reportGermlineOnReport);
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
 
