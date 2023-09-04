@@ -100,11 +100,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
-        reportDocument.add(createCharacteristicDiv("HR-Deficiency score",
+        reportDocument.add(createCharacteristicDiv("HR-Deficiency status",
                 hrDeficiencyLabel,
-                "The HR-deficiency score is determined by CHORD, a WGS signature-based classifier comparing "
-                        + "the signature of this sample with signatures found across samples with known BRCA1/BRCA2 inactivation. \n"
-                        + "Tumors with a score greater or equal than 0.5 are considered HR deficient by complete BRCA inactivation.",
+                "The homologous recombination (HR) deficiency score is determined by a WGS signature-based classifier for "
+                        + "comparing the observed profile with signatures found across HR deficient (HRD) samples. Tumors with a score > 0.5"
+                        + "are considered HRD, tumor with a score < 0.5 are considered HR proficient.",
                 hrChart,
                 hrdUnreliableFootnote,
                 displayFootNote));
@@ -135,10 +135,10 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 "Microsatellite \ninstability (" + DOUBLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
         reportDocument.add(createCharacteristicDiv("Microsatellite status",
                 microSatelliteStabilityString,
-                "The microsatellite stability score represents the number of somatic inserts and deletes in "
-                        + "(short) repeat sections across the whole genome of the tumor per Mb. This metric can be "
-                        + "considered as a good marker for instability in microsatellite repeat regions. Tumors with a "
-                        + "score greater than 4.0 are considered microsatellite unstable (MSI).",
+                "The microsatellite stability score represents the number of somatic inserts and deletes in (short) repeat "
+                        + "sections across the whole genome of the tumor per Mb and is a good marker for instability in "
+                        + "microsatellite repeat regions. Tumors with a score < 4.0 are considered microsatellite stable (MSS) "
+                        + "and > 4.0 are considered microsatellite instable (MSI).",
                 satelliteChart,
                 Strings.EMPTY,
                 false));
