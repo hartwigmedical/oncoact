@@ -22,6 +22,7 @@ import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
@@ -45,7 +46,7 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = false;
+    private static final boolean WRITE_TO_PDF = true;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -86,7 +87,12 @@ public class CFReportWriterTest {
     @Test
     @Ignore
     public void canGeneratePatientReportForStudySample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study").build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study")
+                .impliedTumorPurity(0.18)
+                .qcForNumber(QsFormNumber.FOR_209)
+                .comments("a")
+                .isCorrectionReport(true)
+                .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();

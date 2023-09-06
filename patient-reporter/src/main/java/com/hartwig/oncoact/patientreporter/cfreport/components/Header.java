@@ -44,7 +44,7 @@ public class Header {
     }
 
     public void renderHeader(@NotNull String chapterTitle, @NotNull String pdfTitle, boolean firstPageOfChapter, @NotNull PdfPage page,
-                             boolean isWgsReport) {
+            boolean isWgsReport) {
         PdfCanvas pdfCanvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Canvas cv = new Canvas(pdfCanvas, page.getDocument(), page.getPageSize());
 
@@ -56,9 +56,7 @@ public class Header {
                         .setFontSize(11)
                         .setFontColor(ReportResources.PALETTE_BLUE))
                 .add(new Text(" Onco").setFont(reportResources.fontRegular()).setFontSize(11).setFontColor(ReportResources.PALETTE_BLUE))
-                .add(new Text("Act").setFont(reportResources.fontRegular())
-                        .setFontSize(11)
-                        .setFontColor(ReportResources.PALETTE_RED))
+                .add(new Text("Act").setFont(reportResources.fontRegular()).setFontSize(11).setFontColor(ReportResources.PALETTE_RED))
                 .setFixedPosition(230, 791, 300));
 
         if (firstPageOfChapter) {
@@ -69,7 +67,7 @@ public class Header {
         if (pdfTitle.isEmpty()) {
             chapterTitleTemplate = new PdfFormXObject(new Rectangle(0, 0, 500, 30));
         } else {
-            chapterTitleTemplate = new PdfFormXObject(new Rectangle(0, 0, 500, 60));
+            chapterTitleTemplate = new PdfFormXObject(new Rectangle(0, -45, 550, 110));
         }
 
         pdfCanvas.addXObject(chapterTitleTemplate, ReportResources.PAGE_MARGIN_LEFT, 710);
