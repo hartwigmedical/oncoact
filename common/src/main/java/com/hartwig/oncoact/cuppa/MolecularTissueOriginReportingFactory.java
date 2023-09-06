@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MolecularTissueOriginReportingFactory {
 
-    private static final String RESULTS_INCONCLUSIVE = "results inconclusive";
+    private static final String RESULTS_INCONCLUSIVE = "Results inconclusive";
 
     private MolecularTissueOriginReportingFactory() {
     }
