@@ -105,8 +105,10 @@ public final class SidePanel {
             } else {
                 if (lamaPatientData.getRequesterName() != null) {
                     cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+                } else if (lamaPatientData.getStudyPI() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
                 } else {
-                    LOGGER.warn("Missing study PI");
+                    LOGGER.warn("Missing requester name");
                 }
             }
 

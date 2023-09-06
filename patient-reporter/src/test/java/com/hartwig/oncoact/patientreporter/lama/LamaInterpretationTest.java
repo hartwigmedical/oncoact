@@ -1,12 +1,13 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
-import com.hartwig.lama.client.model.PatientReporterData;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.assertEquals;
+import com.hartwig.lama.client.model.PatientReporterData;
+
+import org.junit.Test;
 
 public class LamaInterpretationTest {
 
@@ -29,6 +30,7 @@ public class LamaInterpretationTest {
     @Test
     public void extractHospitalDataStudy() {
         PatientReporterData patientReporterData = new PatientReporterData();
+        patientReporterData.setIsStudy(true);
         patientReporterData.setStudyPI("studyPI");
         patientReporterData.setRequesterName(null);
         patientReporterData.setHospitalName("test center");
@@ -37,15 +39,16 @@ public class LamaInterpretationTest {
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress("test 1");
 
-        String result = patientReporterData.getStudyPI() + ", " + patientReporterData.getHospitalName() + ", " +
-                patientReporterData.getHospitalAddress() + ", " + patientReporterData.getHospitalPostalCode() + " " +
-                patientReporterData.getHospitalCity();
+        String result = patientReporterData.getStudyPI() + ", " + patientReporterData.getHospitalName() + ", "
+                + patientReporterData.getHospitalAddress() + ", " + patientReporterData.getHospitalPostalCode() + " "
+                + patientReporterData.getHospitalCity();
         assertEquals(result, LamaInterpretation.hospitalContactReport(patientReporterData));
     }
 
     @Test
     public void extractHospitalDataDiagnostic() {
         PatientReporterData patientReporterData = new PatientReporterData();
+        patientReporterData.setIsStudy(false);
         patientReporterData.setStudyPI(null);
         patientReporterData.setRequesterName("requester");
         patientReporterData.setHospitalName("test center");
@@ -54,14 +57,15 @@ public class LamaInterpretationTest {
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress(null);
 
-        String result = patientReporterData.getRequesterName() + ", " + patientReporterData.getHospitalName() + ", " +
-                patientReporterData.getHospitalPostalCode() + " " + patientReporterData.getHospitalCity();
+        String result = patientReporterData.getRequesterName() + ", " + patientReporterData.getHospitalName() + ", "
+                + patientReporterData.getHospitalPostalCode() + " " + patientReporterData.getHospitalCity();
         assertEquals(result, LamaInterpretation.hospitalContactReport(patientReporterData));
     }
 
     @Test
     public void extractHospitalDataMissingNameOnReport() {
         PatientReporterData patientReporterData = new PatientReporterData();
+        patientReporterData.setIsStudy(false);
         patientReporterData.setStudyPI(null);
         patientReporterData.setRequesterName(null);
         patientReporterData.setHospitalName("test center");
@@ -70,8 +74,8 @@ public class LamaInterpretationTest {
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress(null);
 
-        String result = ", " + patientReporterData.getHospitalName() + ", " +
-                patientReporterData.getHospitalPostalCode() + " " + patientReporterData.getHospitalCity();
+        String result = ", " + patientReporterData.getHospitalName() + ", " + patientReporterData.getHospitalPostalCode() + " "
+                + patientReporterData.getHospitalCity();
         assertEquals(result, LamaInterpretation.hospitalContactReport(patientReporterData));
     }
 }

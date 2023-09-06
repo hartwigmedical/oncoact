@@ -1,14 +1,15 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
+import java.time.LocalDate;
+
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.util.Formats;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDate;
 
 public final class LamaInterpretation {
 
@@ -36,12 +37,23 @@ public final class LamaInterpretation {
         String address = lamaPatientData.getHospitalAddress();
 
         String requesterNameReport = Strings.EMPTY;
-        if (studyPI != null) {
-            requesterNameReport = studyPI;
-        } else if (requester != null) {
-            requesterNameReport = requester;
+
+        if (lamaPatientData.getIsStudy()) {
+            if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            }
         } else {
-            LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            LOGGER.info(requester);
+            LOGGER.info(studyPI);
+            if (requester != null) {
+                requesterNameReport = requester;
+            } else if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            }
         }
 
         if (hospital.equals(Strings.EMPTY)) {
