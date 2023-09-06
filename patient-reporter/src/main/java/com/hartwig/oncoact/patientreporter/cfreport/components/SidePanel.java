@@ -92,10 +92,7 @@ public final class SidePanel {
                 }
             }
 
-            if (lamaPatientData.getRequesterName() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
-
-            }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
             BiopsySite biopsySite = lamaPatientData.getBiopsySite();
