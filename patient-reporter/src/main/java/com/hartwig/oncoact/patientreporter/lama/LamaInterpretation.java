@@ -39,35 +39,31 @@ public final class LamaInterpretation {
         String requesterNameReport = Strings.EMPTY;
 
         if (lamaPatientData.getIsStudy()) {
-            try {
-                if (studyPI != null) {
-                    requesterNameReport = studyPI;
-                }
-            } catch (NullPointerException exception) {
-                LOGGER.warn("None study PI name of report is known. Solve before reporting!");
+            if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None study PI name of report is known. Solve before reporting!");
             }
         } else {
-            try {
-                if (requester != null) {
-                    requesterNameReport = requester;
-                } else if (studyPI != null) {
-                    requesterNameReport = studyPI;
-                }
-            } catch (NullPointerException exception) {
-                LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            if (requester != null) {
+                requesterNameReport = requester;
+            } else if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None requester name of report is known. Solve before reporting!");
             }
         }
 
         if (hospital.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown hospital name is known");
+            throw new IllegalArgumentException("Unknown hospital name is known");
         }
 
         if (postalCode.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown postal code of hospital known");
+            throw new IllegalArgumentException("Unknown postal code of hospital known");
         }
 
         if (city.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown city of hospital known");
+            throw new IllegalArgumentException("Unknown city of hospital known");
         }
 
         String hospitalAddress = hospital + ", " + postalCode + " " + city;
