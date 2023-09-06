@@ -116,10 +116,6 @@ public class XMLFactory {
                         hasReliablePurity ? NO_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad()) : Formats.NA_STRING))
                 .build());
         xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]tumulosta")
-                .valuePath(Map.of("value", report.genomicAnalysis().tumorMutationalBurdenStatus().name()))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
                 .keyPath("importwgs.wgsms.line[1]tutmb")
                 .valuePath(Map.of("value",
                         hasReliablePurity

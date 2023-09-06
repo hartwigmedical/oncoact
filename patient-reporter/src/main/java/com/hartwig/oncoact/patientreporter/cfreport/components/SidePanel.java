@@ -15,6 +15,8 @@ import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +30,8 @@ public final class SidePanel {
 
     @NotNull
     private final ReportResources reportResources;
+
+    private static final Logger LOGGER = LogManager.getLogger(SidePanel.class);
 
     public SidePanel(@NotNull ReportResources reportResources) {
         this.reportResources = reportResources;
@@ -92,7 +96,19 @@ public final class SidePanel {
                 }
             }
 
-            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+            if (lamaPatientData.getIsStudy()) {
+                if (lamaPatientData.getStudyPI() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
+                } else {
+                    LOGGER.warn("Missing study PI");
+                }
+            } else {
+                if (lamaPatientData.getRequesterName() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+                } else {
+                    LOGGER.warn("Missing study PI");
+                }
+            }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
             BiopsySite biopsySite = lamaPatientData.getBiopsySite();

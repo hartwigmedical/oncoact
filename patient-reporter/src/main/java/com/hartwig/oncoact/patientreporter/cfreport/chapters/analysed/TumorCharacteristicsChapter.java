@@ -40,7 +40,6 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
     private static final DecimalFormat NO_DECIMAL_FORMAT = ReportResources.decimalFormat("#");
     private static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
-    private static final DecimalFormat DOUBLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.##");
 
     @NotNull
     private final AnalysedPatientReport patientReport;
@@ -80,10 +79,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         String hrDeficiencyLabel =
-                hasReliablePurity ? chordStatusString(hrdStatus) + " " + DOUBLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
+                hasReliablePurity ? chordStatusString(hrdStatus) + " " + SINGLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
 
-        String hrdUnreliableFootnote = "* HRD score can not be determined reliably when a tumor is microsatellite unstable "
-                + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
+        String hrdUnreliableFootnote =
+                "* Homologous recombination score can not be determined reliably when a tumor is microsatellite unstable "
+                        + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
         boolean displayFootNote = false;
         boolean isHrdReliable =
                 genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
@@ -98,13 +98,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
-        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + DOUBLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
+        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + SINGLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
-        reportDocument.add(createCharacteristicDiv("HR-Deficiency status",
+        reportDocument.add(createCharacteristicDiv("HR status",
                 hrDeficiencyLabel,
                 "The homologous recombination (HR) deficiency score is determined by a WGS signature-based classifier for "
                         + "comparing the observed profile with signatures found across HR deficient (HRD) samples. Tumors with a score > 0.5"
-                        + "are considered HRD, tumor with a score < 0.5 are considered HR proficient.",
+                        + "are considered HRD, tumors with a score < 0.5 are considered HR proficient.",
                 hrChart,
                 hrdUnreliableFootnote,
                 displayFootNote));
@@ -115,7 +115,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
         double microSatelliteStability = genomicAnalysis.microsatelliteIndelsPerMb();
         String microSatelliteStabilityString =
-                hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + DOUBLE_DECIMAL_FORMAT.format(
+                hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + SINGLE_DECIMAL_FORMAT.format(
                         genomicAnalysis.microsatelliteIndelsPerMb()) : Formats.NA_STRING;
 
         BarChart satelliteChart = new BarChart(microSatelliteStability,
@@ -128,11 +128,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
         satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
-                DOUBLE_DECIMAL_FORMAT);
+                SINGLE_DECIMAL_FORMAT);
         satelliteChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         satelliteChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(satelliteChart.max()));
         satelliteChart.setIndicator(MicrosatelliteStatus.THRESHOLD,
-                "Microsatellite \ninstability (" + DOUBLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
+                "Microsatellite \ninstability (" + SINGLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
         reportDocument.add(createCharacteristicDiv("Microsatellite status",
                 microSatelliteStabilityString,
                 "The microsatellite stability score represents the number of somatic inserts and deletes in (short) repeat "
@@ -187,7 +187,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
-                DOUBLE_DECIMAL_FORMAT);
+                SINGLE_DECIMAL_FORMAT);
         mutationalBurdenChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalBurdenChart.enableOvershoot(">" + SINGLE_DECIMAL_FORMAT.format(mutationalBurdenChart.max()));
         mutationalBurdenChart.setIndicator(MutationalBurden.THRESHOLD,

@@ -399,7 +399,8 @@ public final class ConclusionAlgo {
             ActionabilityKey keyHomozygousDisruption =
                     ImmutableActionabilityKey.builder().match(homozygousDisruption.gene()).type(TypeAlteration.INACTIVATION).build();
             ActionabilityEntry entry = actionabilityMap.get(keyHomozygousDisruption);
-            if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
+            if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE
+                    || entry.condition() == Condition.ONLY_HIGH)) {
                 conclusion.add("- " + homozygousDisruption.gene() + " " + entry.conclusion());
                 actionable.add("homozygousDisruption");
             }
@@ -429,7 +430,7 @@ public final class ConclusionAlgo {
                         continue;
                     }
                     oncogenic.add("HLA | virus");
-                    conclusion.add("- " + hlaAlleleString + " " + virus.interpretation() + " " + entry.conclusion());
+                    conclusion.add("- " + key.match() + " " + entry.conclusion());
                 } else {
                     ActionabilityKey key = ImmutableActionabilityKey.builder()
                             .match(virus.interpretation().toString())
@@ -449,7 +450,7 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(key);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
                 oncogenic.add("hla");
-                conclusion.add("- " + hlaAlleleString + " " + entry.conclusion());
+                conclusion.add("- " + key.match() + " " + entry.conclusion());
             }
         }
     }

@@ -29,14 +29,14 @@ public class DiagnosticSiloJsonInterpretation {
         }
 
         if (patientInformationData.getGender() != null) {
-            String gender = Strings.EMPTY;
+            String gender = null;
             if (patientInformationData.getGender().equalsIgnoreCase("female")) {
                 gender = "F";
             } else if (patientInformationData.getGender().equalsIgnoreCase("male")) {
                 gender = "M";
             }
 
-            if (!gender.equals(Strings.EMPTY)) {
+            if (gender != null) {
                 return String.format("%s%s(%s)", initials, surname, patientInformationData.getGender());
             } else {
                 return String.format("%s%s", initials, surname);
