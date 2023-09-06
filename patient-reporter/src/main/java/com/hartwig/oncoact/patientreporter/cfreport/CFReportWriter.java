@@ -19,8 +19,7 @@ import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.CircosChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOffLabelChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceOnLabelChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ClinicalEvidenceChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.DetailsAndDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ExplanationChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.GenomicAlterationsChapter;
@@ -70,11 +69,11 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException {
         ReportResources reportResources = ReportResources.create();
-        ReportChapter[] chapters = new ReportChapter[] { new SummaryChapter(report, reportResources),
-                new ClinicalEvidenceOnLabelChapter(report, reportResources), new ClinicalEvidenceOffLabelChapter(report, reportResources),
-                new GenomicAlterationsChapter(report, reportResources), new TumorCharacteristicsChapter(report, reportResources),
-                new CircosChapter(report, reportResources), new ExplanationChapter(reportResources),
-                new DetailsAndDisclaimerChapter(report, reportResources) };
+        ReportChapter[] chapters =
+                new ReportChapter[] { new SummaryChapter(report, reportResources), new ClinicalEvidenceChapter(report, reportResources),
+                        new GenomicAlterationsChapter(report, reportResources), new TumorCharacteristicsChapter(report, reportResources),
+                        new CircosChapter(report, reportResources), new ExplanationChapter(reportResources),
+                        new DetailsAndDisclaimerChapter(report, reportResources) };
 
         writeReport(reportResources, report, chapters, outputFilePath);
     }
