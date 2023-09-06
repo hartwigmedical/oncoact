@@ -119,7 +119,7 @@ public class SummaryChapter implements ReportChapter {
     private void renderClinicalConclusionText(@NotNull Document reportDocument) {
         String text = patientReport.clinicalSummary();
         String clinicalConclusion = Strings.EMPTY;
-        String sentence = "An overview of all detected oncogenic DNA aberrations can be found in the report.";
+        String sentence = "An overview of all detected cancer associated DNA aberrations can be found in the report";
 
         if (text == null) {
             if (!analysis().hasReliablePurity()) {
