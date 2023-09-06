@@ -62,8 +62,8 @@ public class LamaInterpretationTest {
         assertEquals(result, LamaInterpretation.hospitalContactReport(patientReporterData));
     }
 
-    @Test
-    public void extractHospitalDataMissingNameOnReport() {
+    @Test(expected = IllegalArgumentException.class)
+    public void extractHospitalDataMissingNameOnReport() throws IllegalArgumentException {
         PatientReporterData patientReporterData = new PatientReporterData();
         patientReporterData.setIsStudy(false);
         patientReporterData.setStudyPI(null);
@@ -73,9 +73,7 @@ public class LamaInterpretationTest {
         patientReporterData.setHospitalPostalCode("123");
         patientReporterData.setHospitalCity("Amsterdam");
         patientReporterData.setHospitalAddress(null);
-
-        String result = ", " + patientReporterData.getHospitalName() + ", " + patientReporterData.getHospitalPostalCode() + " "
-                + patientReporterData.getHospitalCity();
-        assertEquals(result, LamaInterpretation.hospitalContactReport(patientReporterData));
+        
+        LamaInterpretation.hospitalContactReport(patientReporterData);
     }
 }
