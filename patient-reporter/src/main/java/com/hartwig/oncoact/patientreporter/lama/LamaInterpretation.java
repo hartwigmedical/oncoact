@@ -39,19 +39,21 @@ public final class LamaInterpretation {
         String requesterNameReport = Strings.EMPTY;
 
         if (lamaPatientData.getIsStudy()) {
-            if (studyPI != null) {
-                requesterNameReport = studyPI;
-            } else {
-                LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            try {
+                if (studyPI != null) {
+                    requesterNameReport = studyPI;
+                }
+            } catch (NullPointerException exception) {
+                LOGGER.warn("None study PI name of report is known. Solve before reporting!");
             }
         } else {
-            LOGGER.info(requester);
-            LOGGER.info(studyPI);
-            if (requester != null) {
-                requesterNameReport = requester;
-            } else if (studyPI != null) {
-                requesterNameReport = studyPI;
-            } else {
+            try {
+                if (requester != null) {
+                    requesterNameReport = requester;
+                } else if (studyPI != null) {
+                    requesterNameReport = studyPI;
+                }
+            } catch (NullPointerException exception) {
                 LOGGER.warn("None requester name of report is known. Solve before reporting!");
             }
         }
