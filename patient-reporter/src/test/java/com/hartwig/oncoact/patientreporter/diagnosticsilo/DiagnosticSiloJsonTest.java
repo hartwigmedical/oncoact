@@ -25,9 +25,9 @@ public class DiagnosticSiloJsonTest {
         assertEquals(diagnosticSiloPatientData.getHospitalName(), "hospitalName");
         assertEquals(diagnosticSiloPatientData.getReportingId(), "reportingId");
         assertEquals(diagnosticSiloPatientData.getInitials(), "initials");
-        assertEquals(diagnosticSiloPatientData.getGender(), "gender");
+        assertEquals(diagnosticSiloPatientData.getGender(), "female");
         assertEquals(diagnosticSiloPatientData.getSurname(), "surname");
-        assertEquals(diagnosticSiloPatientData.getBirthdate(), "birthdate");
+        assertEquals(diagnosticSiloPatientData.getBirthdate(), "2023-08-04");
         assertEquals(diagnosticSiloPatientData.getBirthSurname(), "birthSurname");
         assertEquals(diagnosticSiloPatientData.getPostalCode(), "postalCode");
     }

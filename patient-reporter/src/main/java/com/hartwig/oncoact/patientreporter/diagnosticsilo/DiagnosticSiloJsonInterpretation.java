@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.diagnosticsilo;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +14,21 @@ public class DiagnosticSiloJsonInterpretation {
 
     private DiagnosticSiloJsonInterpretation() {
 
+    }
+
+    @Nullable
+    @VisibleForTesting
+    public static String determineGenderDisplay(@NotNull PatientInformationResponse patientInformationData) {
+        String genderInterpret = null;
+        String gender = patientInformationData.getGender();
+        if (gender != null) {
+            if (gender.equalsIgnoreCase("female")) {
+                genderInterpret = "F";
+            } else if (gender.equalsIgnoreCase("male")) {
+                genderInterpret = "M";
+            }
+        }
+        return genderInterpret;
     }
 
     @NotNull
@@ -29,12 +45,7 @@ public class DiagnosticSiloJsonInterpretation {
         }
 
         if (patientInformationData.getGender() != null) {
-            String gender = null;
-            if (patientInformationData.getGender().equalsIgnoreCase("female")) {
-                gender = "F";
-            } else if (patientInformationData.getGender().equalsIgnoreCase("male")) {
-                gender = "M";
-            }
+            String gender = determineGenderDisplay(patientInformationData);
 
             if (gender != null) {
                 return String.format("%s%s(%s)", initials, surname, gender);
