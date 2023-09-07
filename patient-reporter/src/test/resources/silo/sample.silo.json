@@ -2,9 +2,9 @@
   "hospitalName": "hospitalName",
   "reportingId": "reportingId",
   "initials": "initials",
-  "gender": "gender",
+  "gender": "female",
   "surname": "surname",
-  "birthdate": "birthdate",
+  "birthdate": "2023-08-04",
   "birthSurname": "birthSurname",
   "postalCode": "postalCode"
 }
