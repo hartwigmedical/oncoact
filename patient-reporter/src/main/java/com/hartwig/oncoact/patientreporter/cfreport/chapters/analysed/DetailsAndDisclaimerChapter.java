@@ -95,10 +95,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraph("This report is addressed to: ",
                 LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData())));
 
-        div.add(createContentParagraph("The hospital patient ID is: ", patientReport.lamaPatientData().getReportingId()));
-
-        div.add(createContentParagraph("The project name of sample is: ", patientReport.lamaPatientData().getContractCode()));
-
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
 
         return div;
@@ -165,7 +161,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         if (patientReport.lamaPatientData().getIsStudy()) {
             interpretId = "The study ID is: ";
         } else {
-            interpretId = "The patient ID is: ";
+            interpretId = "The hospital patient ID is: ";
         }
 
         if (pathologyId != null) {

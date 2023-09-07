@@ -22,6 +22,7 @@ import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
@@ -86,7 +87,12 @@ public class CFReportWriterTest {
     @Test
     @Ignore
     public void canGeneratePatientReportForStudySample() throws IOException {
-        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study").build();
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Study")
+                .impliedTumorPurity(0.18)
+                .qcForNumber(QsFormNumber.FOR_209)
+                .comments("a")
+                .isCorrectionReport(true)
+                .build();
         AnalysedPatientReport patientReport = ExampleAnalysisTestFactory.createAnalysisWithAllTablesFilledIn(config, PurpleQCStatus.PASS);
 
         CFReportWriter writer = testCFReportWriter();

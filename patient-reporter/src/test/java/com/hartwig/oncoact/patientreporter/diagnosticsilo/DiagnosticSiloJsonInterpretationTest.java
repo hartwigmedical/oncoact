@@ -15,7 +15,7 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setHospitalName("hospital");
         patientInformationData.setReportingId("123");
         patientInformationData.setInitials("A.B");
-        patientInformationData.setGender("V");
+        patientInformationData.setGender("Female");
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setSurname("Jong");
         patientInformationData.setBirthSurname("Jong-Oud");
@@ -46,7 +46,7 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setHospitalName("hospital");
         patientInformationData.setReportingId("123");
         patientInformationData.setInitials("A.B");
-        patientInformationData.setGender("V");
+        patientInformationData.setGender("Male");
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setSurname("Jong");
 
@@ -62,7 +62,7 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setHospitalName("hospital");
         patientInformationData.setReportingId("123");
         patientInformationData.setInitials("A.B");
-        patientInformationData.setGender("V");
+        patientInformationData.setGender("Female");
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setBirthSurname("Jong-Oud");
 
@@ -77,7 +77,7 @@ public class DiagnosticSiloJsonInterpretationTest {
         patientInformationData.setHospitalName("hospital");
         patientInformationData.setReportingId("123");
         patientInformationData.setInitials("A.B");
-        patientInformationData.setGender("V");
+        patientInformationData.setGender("Female");
         patientInformationData.setBirthdate("2023-11-02");
 
         String result = patientInformationData.getInitials() + " (" + patientInformationData.getGender() + ")";
@@ -89,12 +89,12 @@ public class DiagnosticSiloJsonInterpretationTest {
         PatientInformationResponse patientInformationData = new PatientInformationResponse();
         patientInformationData.setHospitalName("hospital");
         patientInformationData.setReportingId("123");
-        patientInformationData.setGender("V");
+        patientInformationData.setGender("Unknown");
         patientInformationData.setBirthdate("2023-11-02");
         patientInformationData.setSurname("Jong");
 
-        String result = patientInformationData.getSurname() + " (" + patientInformationData.getGender() + ")";
-        assertEquals(result, DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
+        String result = patientInformationData.getSurname();
+        assertEquals(result + " ", DiagnosticSiloJsonInterpretation.determineName(patientInformationData));
     }
 
     @Test

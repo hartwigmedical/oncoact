@@ -77,19 +77,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
+        div.add(generateHMFAndPathologySampleIDParagraph(failReport));
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
         div.add(resultsAreObtainedBetweenDates());
-
-        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
-        if (pathologyId != null) {
-            div.add(createContentParagraph("The pathology tissue ID is: ", pathologyId));
-        }
-        div.add(reportHospitalPatientID());
-
-        div.add(reportCohortCode());
 
         if (failReport.reason().type() == QCFailType.LOW_QUALITY_BIOPSY) {
             div.add(sampleHasMolecularTumorPercentage());
@@ -120,14 +113,22 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph reportHospitalPatientID() {
-        return createContentParagraph("The hospital patient ID is ", failReport.lamaPatientData().getPatientId());
+    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull QCFailReport failReport) {
+        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
+        String reportingId = failReport.lamaPatientData().getReportingId();
 
-    }
+        String interpretId;
+        if (failReport.lamaPatientData().getIsStudy()) {
+            interpretId = "The study ID is: ";
+        } else {
+            interpretId = "The hospital patient ID is: ";
+        }
 
-    @NotNull
-    private Paragraph reportCohortCode() {
-        return createContentParagraph("The contract code is  ", failReport.lamaPatientData().getContractCode());
+        if (pathologyId != null) {
+            return createContentParagraphTwice(interpretId, reportingId, " and the pathology tissue ID is: ", pathologyId);
+        } else {
+            return createContentParagraph(interpretId, reportingId);
+        }
     }
 
     @NotNull
@@ -193,10 +194,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph samplesAreEvaluatedAtHMFAndWithSampleID() {
-        return createContentParagraphTwice("The biomaterials are evaluated at ",
-                ReportResources.HARTWIG_ADDRESS,
-                " and are known as hospital ID  ",
-                failReport.lamaPatientData().getReportingId());
+        return createContentParagraph("The biomaterials are evaluated at ", ReportResources.HARTWIG_ADDRESS);
     }
 
     @NotNull

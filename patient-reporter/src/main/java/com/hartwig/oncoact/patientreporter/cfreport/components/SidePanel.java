@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
@@ -15,6 +19,8 @@ import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +34,8 @@ public final class SidePanel {
 
     @NotNull
     private final ReportResources reportResources;
+
+    private static final Logger LOGGER = LogManager.getLogger(SidePanel.class);
 
     public SidePanel(@NotNull ReportResources reportResources) {
         this.reportResources = reportResources;
@@ -88,13 +96,27 @@ public final class SidePanel {
                 }
 
                 if (patientInformationData.getBirthdate() != null) {
-                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", patientInformationData.getBirthdate()));
+                    LocalDate date = LocalDate.parse(patientInformationData.getBirthdate());
+                    DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
+                    String outputDateString = date.format(outputFormatter);
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", outputDateString));
                 }
             }
 
-            if (lamaPatientData.getRequesterName() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
-
+            if (lamaPatientData.getIsStudy()) {
+                if (lamaPatientData.getStudyPI() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
+                } else {
+                    LOGGER.warn("Missing study PI");
+                }
+            } else {
+                if (lamaPatientData.getRequesterName() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
+                } else if (lamaPatientData.getStudyPI() != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
+                } else {
+                    LOGGER.warn("Missing requester name");
+                }
             }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
@@ -108,7 +130,7 @@ public final class SidePanel {
                 biopsySubLocation = biopsySite.getSubLocation();
                 biopsyLateralisation =
                         biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().toString() : biopsyLateralisation;
-                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? String.valueOf(biopsySite.getIsPrimaryTumor()) : "-";
+                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? (biopsySite.getIsPrimaryTumor() ? "yes" : "no") : "-";
             }
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));

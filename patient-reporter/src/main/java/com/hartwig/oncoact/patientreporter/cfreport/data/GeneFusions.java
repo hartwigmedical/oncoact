@@ -5,8 +5,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -18,7 +18,7 @@ import com.itextpdf.layout.element.Paragraph;
 import org.jetbrains.annotations.NotNull;
 
 public final class GeneFusions {
-    
+
     private final TableUtil tableUtil;
     @NotNull
     private final ReportResources reportResources;
@@ -47,9 +47,7 @@ public final class GeneFusions {
     public static Set<String> uniqueGeneFusions(@NotNull Iterable<LinxFusion> fusions) {
         Set<String> genes = Sets.newTreeSet();
         for (LinxFusion fusion : fusions) {
-            if (fusion.likelihood() == FusionLikelihoodType.HIGH) {
-                genes.add(name(fusion));
-            }
+            genes.add(name(fusion));
         }
         return genes;
     }

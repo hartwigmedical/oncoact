@@ -247,12 +247,12 @@ public class ConclusionAlgoTest {
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("HLA-A*02", TypeAlteration.POSITIVE, "HLA-A*02", Condition.ALWAYS, "HLA-A*02");
+                create("HLA-A*02", TypeAlteration.POSITIVE, "HLA-A*02", Condition.ALWAYS, "HLA-A*02 conclusion");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertTrue(conclusion.contains("- A*02:01 HLA-A*02"));
+        assertTrue(conclusion.contains("- HLA-A*02 HLA-A*02 conclusion"));
     }
 
     @Test
@@ -261,12 +261,12 @@ public class ConclusionAlgoTest {
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02", Condition.ALWAYS, "HPV-16 | HLA-A*02");
+                create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02", Condition.ALWAYS, "HPV HLA conclusion");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertTrue(conclusion.contains("- A*02:01 HPV HPV-16 | HLA-A*02"));
+        assertTrue(conclusion.contains("- HPV-16 | HLA-A*02 HPV HLA conclusion"));
     }
 
     @Test

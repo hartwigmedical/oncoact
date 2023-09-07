@@ -1,14 +1,15 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
+import java.time.LocalDate;
+
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.util.Formats;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDate;
 
 public final class LamaInterpretation {
 
@@ -36,24 +37,33 @@ public final class LamaInterpretation {
         String address = lamaPatientData.getHospitalAddress();
 
         String requesterNameReport = Strings.EMPTY;
-        if (studyPI != null) {
-            requesterNameReport = studyPI;
-        } else if (requester != null) {
-            requesterNameReport = requester;
+
+        if (lamaPatientData.getIsStudy()) {
+            if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None study PI name of report is known. Solve before reporting!");
+            }
         } else {
-            LOGGER.warn("None requester name of report is known. Solve before reporting!");
+            if (requester != null) {
+                requesterNameReport = requester;
+            } else if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None requester name of report is known. Solve before reporting!");
+            }
         }
 
         if (hospital.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown hospital name is known");
+            throw new IllegalArgumentException("Unknown hospital name is known");
         }
 
         if (postalCode.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown postal code of hospital known");
+            throw new IllegalArgumentException("Unknown postal code of hospital known");
         }
 
         if (city.equals(Strings.EMPTY)) {
-            LOGGER.warn("Unknown city of hospital known");
+            throw new IllegalArgumentException("Unknown city of hospital known");
         }
 
         String hospitalAddress = hospital + ", " + postalCode + " " + city;

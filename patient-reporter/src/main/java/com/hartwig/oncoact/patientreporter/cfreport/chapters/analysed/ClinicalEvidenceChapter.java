@@ -14,7 +14,7 @@ import com.itextpdf.layout.Document;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
-public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
+public class ClinicalEvidenceChapter implements ReportChapter {
 
     private final ClinicalEvidenceFunctions clinicalEvidenceFunctions;
 
@@ -33,7 +33,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
     @NotNull
     private final AnalysedPatientReport report;
 
-    public ClinicalEvidenceOnLabelChapter(@NotNull final AnalysedPatientReport report, @NotNull final ReportResources reportResources) {
+    public ClinicalEvidenceChapter(@NotNull final AnalysedPatientReport report, @NotNull final ReportResources reportResources) {
         this.report = report;
         clinicalEvidenceFunctions = new ClinicalEvidenceFunctions(reportResources);
     }
@@ -68,9 +68,7 @@ public class ClinicalEvidenceOnLabelChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
-        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level therapy approaches",
-                onLabelTreatments,
-                contentWidth()));
+        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level evidences", onLabelTreatments, contentWidth()));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
