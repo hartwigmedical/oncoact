@@ -177,7 +177,7 @@ public class ConclusionAlgoTest {
         actionabilityMap = append(actionabilityMap, "CDKN2A", TypeAlteration.LOSS, "CDKN2A", Condition.ALWAYS, "CDKN2A");
         actionabilityMap = append(actionabilityMap, "EGFR", TypeAlteration.LOSS, "EGFR", Condition.ALWAYS, "EGFR");
 
-        ConclusionAlgo.generateCNVConclusion(conclusion, gainLoss, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateCNVConclusion(conclusion, gainLoss, actionabilityMap, Sets.newHashSet(), Sets.newHashSet(), true);
 
         assertEquals(4, conclusion.size());
         assertTrue(conclusion.contains("- BRAF (copies: 4) BRAF"));

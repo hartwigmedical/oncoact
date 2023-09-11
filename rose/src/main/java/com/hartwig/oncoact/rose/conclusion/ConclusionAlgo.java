@@ -115,7 +115,7 @@ public final class ConclusionAlgo {
                 actionable,
                 HRD,
                 rose.orange().chord());
-        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable);
+        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, purple.fit().containsTumorCells());
         generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
         generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
         generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
@@ -294,10 +294,15 @@ public final class ConclusionAlgo {
         }
     }
 
+    @NotNull
+    public static String roundCopyNumber(Double copyNumber, boolean hasReliablePurity) {
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+    }
+
     @VisibleForTesting
     static void generateCNVConclusion(@NotNull List<String> conclusion, @NotNull Collection<PurpleGainLoss> reportableGainLosses,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-            @NotNull Set<String> actionable) {
+            @NotNull Set<String> actionable, boolean hasReliablePurity) {
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
             oncogenic.add("CNV");
 
@@ -308,7 +313,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(keyLoss);
 
                 if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
-                    String copies = " (copies: " + (int) gainLoss.minCopies() + ")";
+                    String copies = " (copies: " + roundCopyNumber(gainLoss.minCopies(), hasReliablePurity) + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
                 }
