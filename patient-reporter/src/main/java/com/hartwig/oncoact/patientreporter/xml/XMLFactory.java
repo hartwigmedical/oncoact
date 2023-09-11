@@ -119,7 +119,7 @@ public class XMLFactory {
                 .keyPath("importwgs.wgsms.line[1]tutmb")
                 .valuePath(Map.of("value",
                         hasReliablePurity
-                                ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad())
+                                ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalBurden())
                                 : Formats.NA_STRING))
                 .build());
         xml.add(ImmutableKeyXML.builder()
