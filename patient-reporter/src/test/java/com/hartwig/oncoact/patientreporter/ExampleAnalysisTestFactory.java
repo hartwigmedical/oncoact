@@ -1507,7 +1507,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static HlaAllelesReportingData createTestHlaData() {
+    public static HlaAllelesReportingData createTestHlaData() {
         Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
 
         alleles.put("HLA-A",

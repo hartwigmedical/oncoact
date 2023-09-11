@@ -45,11 +45,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @Override
-    public boolean isFullWidth() {
-        return false;
-    }
-
-    @Override
     public void render(@NotNull Document reportDocument) {
         reportDocument.add(createContentBody());
         ReportSignature reportSignature = ReportSignature.create(reportResources);

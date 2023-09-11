@@ -11,11 +11,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllele;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
@@ -38,7 +33,6 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Ignore;
@@ -315,7 +309,7 @@ public class CFReportWriterTest {
                 .logoCompanyPath(testReportData.logoCompanyPath())
                 .udiDi(UDI_DI)
                 .pharmacogeneticsGenotypes(createTestPharmacogeneticsGenotypes())
-                .hlaAllelesReportingData(createTestHlaData())
+                .hlaAllelesReportingData(ExampleAnalysisTestFactory.createTestHlaData())
                 .purpleQC(Sets.newHashSet(purpleQCStatus))
                 .reportDate(Formats.formatDate(LocalDate.now()))
                 .isWGSReport(true)
@@ -326,50 +320,6 @@ public class CFReportWriterTest {
         CFReportWriter writer = testCFReportWriter();
         writer.writeQCFailReport(patientReport, filename);
         // writer.writeJsonFailedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @NotNull
-    private static ImmutableHlaReporting.Builder createHlaReporting() {
-        return ImmutableHlaReporting.builder()
-                .hlaAllele(ImmutableHlaAllele.builder().gene(Strings.EMPTY).germlineAllele(Strings.EMPTY).build())
-                .germlineCopies(0)
-                .tumorCopies(0)
-                .somaticMutations(Strings.EMPTY)
-                .interpretation(Strings.EMPTY);
-    }
-
-    @NotNull
-    private static HlaAllelesReportingData createTestHlaData() {
-        Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
-
-        alleles.put("HLA-A",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                        .gene("HLA-A")
-                        .germlineAllele("A*01:01")
-                        .build()).germlineCopies(2.0).tumorCopies(3.83).somaticMutations("None").interpretation("Yes").build()));
-        alleles.put("HLA-B",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                                .gene("HLA-B")
-                                .germlineAllele("B*40:02")
-                                .build()).germlineCopies(1.0).tumorCopies(2.0).somaticMutations("None").interpretation("Yes").build(),
-                        createHlaReporting().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-B").germlineAllele("B*08:01").build())
-                                .germlineCopies(1.0)
-                                .tumorCopies(1.83)
-                                .somaticMutations("None")
-                                .interpretation("Yes")
-                                .build()));
-        alleles.put("HLA-C",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                                .gene("HLA-C")
-                                .germlineAllele("C*07:01")
-                                .build()).germlineCopies(1.0).tumorCopies(1.83).somaticMutations("None").interpretation("yes").build(),
-                        createHlaReporting().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-C").germlineAllele("C*03:04").build())
-                                .germlineCopies(1.0)
-                                .tumorCopies(2.0)
-                                .somaticMutations("None")
-                                .interpretation("Yes")
-                                .build()));
-        return ImmutableHlaAllelesReportingData.builder().hlaQC("PASS").hlaAllelesReporting(alleles).build();
     }
 
     @NotNull
