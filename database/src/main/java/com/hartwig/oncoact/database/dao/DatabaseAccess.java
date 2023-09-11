@@ -29,7 +29,7 @@ public class DatabaseAccess implements AutoCloseable {
     private static final String DEV_CATALOG = "oncoact_test";
 
     public static final String DB_USER = "db_user";
-    public static final String DB_PASS_ENV_VARIABLE = "db_pass_env_variable";
+    public static final String DB_PASS_ENV_VARIABLE = "db_pass";
     public static final String DB_URL = "db_url";
 
     public static final String DB_DEFAULT_ARGS = "?serverTimezone=UTC&useSSL=false";
@@ -43,9 +43,7 @@ public class DatabaseAccess implements AutoCloseable {
             throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
-        String password = System.getenv().get(passwordEnvVariable);
-
-        this.connection = DriverManager.getConnection(url, userName, password);
+        this.connection = DriverManager.getConnection(url, userName, passwordEnvVariable);
         String catalog = connection.getCatalog();
         LOGGER.debug("Connecting to database '{}'", catalog);
         DSLContext context = DSL.using(connection, SQLDialect.MYSQL, settings(catalog));
@@ -74,7 +72,6 @@ public class DatabaseAccess implements AutoCloseable {
         if (applyDefaultArgs && !jdbcUrl.contains("serverTimezone") && !jdbcUrl.contains("useSSL")) {
             jdbcUrl += DB_DEFAULT_ARGS;
         }
-
         return new DatabaseAccess(userName, passwordEnvVariable, jdbcUrl);
     }
 
@@ -93,9 +90,8 @@ public class DatabaseAccess implements AutoCloseable {
             return null;
         }
 
-        return new Settings()
-                .withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG).withOutput(catalog)))
-                .withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
+        return new Settings().withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG)
+                .withOutput(catalog))).withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
     }
 
     public void writeProtectEvidence(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
