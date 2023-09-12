@@ -27,8 +27,7 @@ public class CircosChapter implements ReportChapter {
     @NotNull
     private final ReportResources reportResources;
 
-    public CircosChapter(@NotNull final AnalysedPatientReport patientReport,
-                         @NotNull final ReportResources reportResources) {
+    public CircosChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
         this.reportResources = reportResources;
     }
@@ -63,8 +62,8 @@ public class CircosChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Div().add(createContentParagraph("The outer first circle",
-                        " shows the chromosomes. The darker shaded areas represent large gaps in the human reference genome: "
-                                + "i.e. regions of centromeres, heterochromatin & missing short arms."))
+                                " shows the chromosomes. The darker shaded areas represent large gaps in the human reference genome: "
+                                        + "i.e. regions of centromeres, heterochromatin & missing short arms."))
                         .add(createContentParagraph("The second circle ",
                                 "shows all tumor specific variants (incl. exon, intron and intergenic regions) and "
                                         + "are divided into an outer ring of single nucleotide polymorphism (SNP) allele "

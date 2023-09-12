@@ -63,10 +63,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(new Paragraph("Sample details").addStyle(reportResources.smallBodyHeadingStyle()));
 
-        div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS));
-        div.add(createContentParagraph("NovaSeq 6000 (Illumina) WGS analysis, processed using Hartwig Medical"
-                + " OncoAct® software and reporting (https://www.oncoact.nl/specsheetOncoActWGS). All activities are performed "
-                + "under ISO17025 accreditation (RVA, L633)"));
+        div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS, "."));
 
         div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
 
@@ -76,28 +73,41 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
-                patientReport.reportDate()));
+                patientReport.reportDate(),
+                "."));
 
         div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
-                patientReport.lamaPatientData().getTumorSampleBarcode()));
-        div.add(createContentParagraphTwice("This experiment is performed on the blood sample as arrived on ",
+                patientReport.lamaPatientData().getTumorSampleBarcode(),
+                "."));
+        div.add(createContentParagraphTwice("This experiment is performed on the reference sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode())));
-        div.add(createContentParagraph("The results stated in this report are based on the tested tumor and blood sample."));
+                Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode()),
+                "."));
+        div.add(createContentParagraph("The results stated in this report are based on the tested tumor and reference sample."));
         div.add(createContentParagraph("This experiment is performed according to lab procedures: ",
                 patientReport.lamaPatientData().getSopString()));
-        String whoVerified = "This report was generated " + patientReport.user();
 
-        div.add(createContentParagraph(whoVerified));
         div.add(createContentParagraph("This report is addressed to: ",
-                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData())));
+                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData()),
+                "."));
 
-        patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
+        patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments, ".")));
 
         return div;
+    }
+
+    @NotNull
+    private Paragraph createParaGraphWithLinkTwo(@NotNull String string1, @NotNull String string2, @NotNull String link,
+            @NotNull String string3) {
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string3))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
@@ -105,26 +115,37 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         String pipelineVersion = patientReport.pipelineVersion() == null ? "No pipeline version is known" : patientReport.pipelineVersion();
         Div div = new Div();
 
-        div.add(new Paragraph("Disclaimer").addStyle(reportResources.smallBodyHeadingStyle()));
+        div.add(new Paragraph("Disclaimers").addStyle(reportResources.smallBodyHeadingStyle()));
+
+        div.add(createParaGraphWithLinkTwo(
+                "This report is created using NovaSeq 6000 (Illumina) WGS analysis, which data is processed using Hartwig Medical"
+                        + "OncoAct® software and reporting (",
+                "https://www.oncoact.nl/specsheetOncoActWGS",
+                "https://www.oncoact.nl/specsheetOncoActWGS",
+                "). All activities are performed under ISO17025 accreditation (RVA, L633)."));
 
         div.add(createContentParagraph("The data on which this report is based is generated "
                 + "from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation and have passed all internal quality controls."));
-        div.add(createContentParagraphTwice("This report is generated by patient reporter ",
-                ReportResources.VERSION_REPORT,
-                " based on ",
-                patientReport.qsFormNumber() + "."));
+        div.add(createContentParagraphTwice("This report is generated using the molecular pipeline version ",
+                pipelineVersion,
+                "and OncoAct reporting pipeline version ",
+                "1.0."));
         div.add(createContentParagraph("(basic) UDI-DI: ", patientReport.udiDi() + "."));
-        div.add(createContentDivWithLink("The OncoAct user manual can be found at ",
-                ReportResources.MANUAL + ".",
-                ReportResources.MANUAL + "."));
-        div.add(createContentParagraph("This report is based on pipeline version ", pipelineVersion + "."));
+
+        String whoVerified = "This report was generated " + patientReport.user();
+        div.add(createContentParagraph(whoVerified, "."));
+
+        div.add(createContentDivWithLink("The OncoAct user manual can be found at ", ReportResources.MANUAL + ".", ReportResources.MANUAL));
+
         div.add(createContentParagraph("The ‘primary tumor location’ and ‘primary tumor type’ have influence on the "
                 + "clinical evidence/study matching. No check is performed to verify the received information."));
-        div.add(createContentParagraph("The conclusion of this report is based solely on the results of the DNA sequencing of the tumor "
-                + "and the received tumor type. Final interpretation of the clinical consequence of this report should therefore "
-                + "always be performed by the treating physician."));
-        div.add(createContentParagraph("Based on a tumor purity of at least 20%, the test has a sensitivity of >95% for detection of "
-                + "somatic variants and >95% for detection of translocations and gene copy number changes."));
+        div.add(createContentParagraph("The conclusion of this report is based solely on the results of the whole genome sequencing "
+                + "of the received biomaterials, and the additional primay tumor location and type information received from the "
+                + "hospital. Further interpretation of these results within the patient’s clinical context is required by a clinician "
+                + "with support of a molecular tumor board."));
+        div.add(createContentParagraph("Based on a implied tumor purity of at least 20%, the test has a sensitivity of >95% for "
+                + "detection of tumor specific variants, tumor specific gains and losses, tumor specific gene fusions and tumor specific "
+                + "gene/homozygous disruptions."));
         div.add(createContentParagraph("Based on the Dutch Act on Exceptional Medical Treatments (in Dutch: ‘Wet op de bijzondere"
                 + " medische verrichten’) Stichting Hartwig Medical Foundation is not allowed to provide genetic counseling and"
                 + " therefore will not share specific germline information, unless otherwise instructed and on explicit request "
@@ -165,15 +186,18 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         }
 
         if (pathologyId != null) {
-            return createContentParagraphTwice(interpretId, reportingId, " and the pathology tissue ID is: ", pathologyId);
+            return createContentParagraphTwice(interpretId, reportingId, " and the pathology tissue ID is: ", pathologyId, ".");
         } else {
-            return createContentParagraph(interpretId, reportingId);
+            return createContentParagraph(interpretId, reportingId, ".");
         }
     }
 
     @NotNull
-    private Paragraph createContentParagraphRed(@NotNull String text) {
-        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyleRed()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    private Paragraph createContentParagraphRed(@NotNull String text, @NotNull String text1) {
+        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyleRed())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(text1)
+                .addStyle(reportResources.smallBodyTextStyle());
     }
 
     @NotNull
@@ -188,11 +212,29 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
+    private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart1) {
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(regularPart1)
+                .addStyle(reportResources.smallBodyTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    }
+
+    @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
             @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+    }
+
+    @NotNull
+    private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
+            @NotNull String boldPart2, @NotNull String regularPar3) {
+        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(regularPart2)
+                .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text(regularPar3).addStyle(reportResources.smallBodyTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 

@@ -71,9 +71,8 @@ public class QCFailChapter implements ReportChapter {
     public void render(@NotNull Document reportDocument) {
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(),
                 contentWidth()));
-        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + "  \nis based on information received from the originating hospital.").setMarginTop(10)
-                .addStyle(reportResources.subTextStyle()));
+        reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
+
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
         reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),

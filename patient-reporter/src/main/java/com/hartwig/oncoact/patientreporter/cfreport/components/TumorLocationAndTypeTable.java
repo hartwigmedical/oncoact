@@ -32,9 +32,15 @@ public final class TumorLocationAndTypeTable {
 
         String type = Optional.ofNullable(tumorType).map(TumorType::getType).orElse("");
         String extra = Optional.ofNullable(tumorType).map(TumorType::getExtra).orElse("");
-        String combined = extra.isEmpty() ? type : type + " | " + extra;
+        String combined = extra.isEmpty() ? type : type + " \n " + extra;
         table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, combined)));
 
         return table;
+    }
+
+    @NotNull
+    public Paragraph disclaimerTextTumorLocationBiopsyLocation() {
+        return new Paragraph("The information regarding the primary tumor location and type, and the information related \n "
+                + "to the biopsy, is based on information received from the originating hospital.").setMarginTop(10);
     }
 }

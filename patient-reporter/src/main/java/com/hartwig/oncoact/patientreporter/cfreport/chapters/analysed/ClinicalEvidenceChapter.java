@@ -21,7 +21,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "WGS based therapy approaches";
+        return "Genomic based therapy approaches";
     }
 
     @NotNull
@@ -53,13 +53,12 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         addTreatmentSection(document, allEvidences);
         addTrialSection(document, reportedStudies);
 
-        document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore "
-                + "certain tumor types may not be eligible for the DRUP.\n"));
-        document.add(clinicalEvidenceFunctions.note("The iClusion knowledgebase is used to annotate DNA aberrations for potential "
-                + "clinical study eligibility. Please note clinical study eligibility depends on multiple patient and tumor "
-                + "characteristics of which only the DNA aberrations are considered in this report. \n"));
+        document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore"
+                + " patients with certain tumor types may not be eligible for the DRUP study.\n"));
+        document.add(clinicalEvidenceFunctions.note("The iClusion database is used to annotate genomic events for potential clinical"
+                + " study eligibility. Please note that clinical study eligibility depends on multiple patient and tumor "
+                + "characteristics of which only the genomic events are considered in this report.\n"));
         document.add(clinicalEvidenceFunctions.noteEvidence());
-        document.add(clinicalEvidenceFunctions.noteGlossaryTerms());
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
@@ -68,7 +67,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
-        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level evidences", onLabelTreatments, contentWidth()));
+        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level evidence", onLabelTreatments, contentWidth()));
     }
 
     private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {

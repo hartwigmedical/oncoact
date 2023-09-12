@@ -103,9 +103,7 @@ public class SummaryChapter implements ReportChapter {
 
         reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),
                 contentWidth()));
-        reportDocument.add(new Paragraph("The information regarding 'primary tumor location', 'primary tumor type' and 'biopsy location'"
-                + "  \nis based on information received from the originating hospital.").setMarginTop(10)
-                .addStyle(reportResources.subTextStyle()));
+        reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
 
         renderClinicalConclusionText(reportDocument);
         renderSpecialRemarkText(reportDocument);
