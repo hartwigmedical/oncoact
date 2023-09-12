@@ -1446,7 +1446,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
+    public static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()

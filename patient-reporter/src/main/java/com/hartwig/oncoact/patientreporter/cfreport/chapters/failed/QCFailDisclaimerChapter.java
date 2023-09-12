@@ -182,7 +182,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
             shallowPurity = Integer.toString(purity);
         }
 
-        String effectivePurity = failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity;
+        String effectivePurity = failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity + "%";
         if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
