@@ -334,7 +334,7 @@ public class ConclusionAlgoTest {
         ConclusionAlgo.generateTMBConclusion(conclusion, 17, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- TMB (17.0) TMB");
+        assertEquals(conclusion.get(0), "- TMB (17) TMB");
     }
 
     @Test
