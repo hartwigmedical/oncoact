@@ -65,7 +65,7 @@ public final class ConclusionAlgo {
     private static final Set<String> HRD_GENES = Sets.newHashSet("BRCA1", "BRCA2", "PALB2", "RAD51B", "RAD51C");
 
     private static final DecimalFormat DOUBLE_DECIMAL_FORMAT = decimalFormat("#.##");
-    private static final double TMB_CUTOFF = 10;
+    private static final double TMB_CUTOFF = 16;
     private static final double PURITY_CUTOFF = 0.195;
 
     private ConclusionAlgo() {
