@@ -1,17 +1,18 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
-import com.google.common.io.Resources;
-import com.hartwig.lama.client.model.BiopsySite;
-import com.hartwig.lama.client.model.PatientReporterData;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.google.common.io.Resources;
+import com.hartwig.lama.client.model.BiopsySite;
+import com.hartwig.lama.client.model.PatientReporterData;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 public class LamaJsonTest {
     private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();

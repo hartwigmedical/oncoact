@@ -27,7 +27,7 @@ public interface PanelReport {
             case "lieke":
             case "liekeschoenmaker":
             case "lschoenmaker":
-                userName = "Lieke Schoenmaker";
+                userName = "LS";
                 combinedUserName = userName + trainedEmployee;
                 break;
             case "sandra":
@@ -35,14 +35,11 @@ public interface PanelReport {
             case "sandravdbroek":
             case "s_vandenbroek":
             case "svandenbroek":
-                userName = "Sandra van den Broek";
+                userName = "SvdB";
                 combinedUserName = userName + trainedEmployee;
                 break;
-            case "daphne":
-            case "d_vanbeek":
-            case "daphnevanbeek":
-            case "dvanbeek":
-                userName = "Daphne van Beek";
+            case "ybijl":
+                userName = "YB";
                 combinedUserName = userName + trainedEmployee;
                 break;
             case "root":

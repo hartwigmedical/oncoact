@@ -532,7 +532,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                     .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical "
                             + "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
-                            .setTextAlignment(TextAlignment.CENTER))));
+                            .setTextAlignment(TextAlignment.LEFT))));
 
             return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         }

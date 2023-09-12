@@ -34,14 +34,13 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = true;
+    private static final boolean WRITE_TO_PDF = false;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
-    private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829. Where is referred to CKB, "
-            + "VICC evidence is listed due to licensing restrictions.";
+    private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829";
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
-    private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
+    private static final String UDI_DI = "(01)8720299486058(8012)v5.33-1.0";
 
     @NotNull
     public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
@@ -69,7 +68,7 @@ public class CFReportWriterTest {
         colo829Report = generateAnalysedPatientReport(colo829Report);
 
         writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
-        //        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
     @Test

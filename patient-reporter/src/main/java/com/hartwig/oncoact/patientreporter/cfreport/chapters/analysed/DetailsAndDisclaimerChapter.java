@@ -117,35 +117,30 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(new Paragraph("Disclaimers").addStyle(reportResources.smallBodyHeadingStyle()));
 
-        div.add(createParaGraphWithLinkTwo(
-                "This report is created using NovaSeq 6000 (Illumina) WGS analysis, which data is processed using Hartwig Medical"
-                        + "OncoAct® software and reporting (",
-                "https://www.oncoact.nl/specsheetOncoActWGS",
-                "https://www.oncoact.nl/specsheetOncoActWGS",
-                "). All activities are performed under ISO17025 accreditation (RVA, L633)."));
-
         div.add(createContentParagraph("The data on which this report is based is generated "
                 + "from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation and have passed all internal quality controls."));
         div.add(createContentParagraphTwice("This report is generated using the molecular pipeline version ",
                 pipelineVersion,
-                "and OncoAct reporting pipeline version ",
+                " and OncoAct reporting pipeline version ",
                 "1.0."));
         div.add(createContentParagraph("(basic) UDI-DI: ", patientReport.udiDi() + "."));
 
         String whoVerified = "This report was generated " + patientReport.user();
         div.add(createContentParagraph(whoVerified, "."));
 
-        div.add(createContentDivWithLink("The OncoAct user manual can be found at ", ReportResources.MANUAL + ".", ReportResources.MANUAL));
-
         div.add(createContentParagraph("The ‘primary tumor location’ and ‘primary tumor type’ have influence on the "
                 + "clinical evidence/study matching. No check is performed to verify the received information."));
         div.add(createContentParagraph("The conclusion of this report is based solely on the results of the whole genome sequencing "
-                + "of the received biomaterials, and the additional primay tumor location and type information received from the "
+                + "of the received biomaterials, and the additional primary tumor location and type information received from the "
                 + "hospital. Further interpretation of these results within the patient’s clinical context is required by a clinician "
                 + "with support of a molecular tumor board."));
         div.add(createContentParagraph("Based on a implied tumor purity of at least 20%, the test has a sensitivity of >95% for "
                 + "detection of tumor specific variants, tumor specific gains and losses, tumor specific gene fusions and tumor specific "
                 + "gene/homozygous disruptions."));
+        div.add(createContentParagraph("Hartwig Medical Foundation is not responsible for the content of all external data sources "
+                + "used to do the analyses and generate this report. Hartwig Medical Foundation is not liable and cannot be held "
+                + "accountable for any incorrectness, incompleteness or error of any other kind in these data sources, or the external "
+                + "software used to harmonize and curate these data sources."));
         div.add(createContentParagraph("Based on the Dutch Act on Exceptional Medical Treatments (in Dutch: ‘Wet op de bijzondere"
                 + " medische verrichten’) Stichting Hartwig Medical Foundation is not allowed to provide genetic counseling and"
                 + " therefore will not share specific germline information, unless otherwise instructed and on explicit request "
@@ -155,22 +150,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 ReportResources.CONTACT_EMAIL_GENERAL + "."));
 
         return div;
-    }
-
-    @NotNull
-    private Div createContentDivWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
-        Div div = new Div();
-
-        div.add(createParaGraphWithLink(string1, string2, link));
-        return div;
-    }
-
-    @NotNull
-    private Paragraph createParaGraphWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull

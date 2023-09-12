@@ -215,7 +215,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv(""));
         reportDocument.add(createCharacteristicDiv(""));
 
-        reportDocument.add(createCharacteristicDiv("Tumor molecular tissue of origin prediction"));
+        reportDocument.add(createCharacteristicDiv("Molecular tissue of origin prediction"));
         Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
         table.setWidth(contentWidth());
         if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
