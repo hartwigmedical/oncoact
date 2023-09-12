@@ -455,6 +455,7 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(key);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
                 oncogenic.add("hla");
+                actionable.add("hla");
                 conclusion.add("- " + key.match() + " " + entry.conclusion());
             }
         }
