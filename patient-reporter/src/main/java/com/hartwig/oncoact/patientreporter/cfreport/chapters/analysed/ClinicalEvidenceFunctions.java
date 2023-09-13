@@ -338,46 +338,40 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Paragraph noteGlossaryTerms() {
-        return new Paragraph("The symbol ( ").add(new Text(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle()))
-                .add(" ) means that the evidence is responsive. The symbol ( ")
+    public Paragraph noteEvidence() {
+        return new Paragraph().setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add("The Clinical Knowledgebase (CKB) is used to annotate genomic events with clinical evidence. Only evidence of level ")
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_A))
+                .add(" (FDA approved therapy and/or guidelines), level ")
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_B))
+                .add(" (late clinical trials), and/or level ")
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_C))
+                .add(" (early clinical trials) are reported. Evidence items of level ")
+                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_D))
+                .add(" (case reports and preclinical evidence) are not reported. The response symbol ")
+                .add(new Text(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle()))
+                .add(" means that the evidence is responsive. The resistent symbol ")
                 .add(new Text(RESISTANT_SYMBOL).addStyle(reportResources.resistantStyle()))
-                .add(" ) means that the evidence is resistant. The abbreviation ( ")
+                .add(" means that the evidence is resistant. The abbreviation ")
                 .add(new Text(PREDICTED_SYMBOL).addStyle(reportResources.predictedStyle()))
-                .add(" mentioned after the level of evidence) indicates the evidence is predicted "
-                        + "responsive/resistent. More details about CKB can be found in their")
-                .addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(" (mentioned after the response symbol) indicates the evidence is predicted responsive/resistent "
+                        + "(meaning, the evidence data are limited but a potenial response/resistence is suggested). "
+                        + "More details about CKB can be found in their ")
                 .add(new Text(" Glossary Of Terms").addStyle(reportResources.urlStyle())
                         .setAction(PdfAction.createURI("https://ckbhome.jax.org/about/glossaryOfTerms")))
                 .add(".")
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-    }
-
-    @NotNull
-    public Paragraph noteEvidence() {
-        return new Paragraph().setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add("The Clinical Knowledgebase (CKB) is used to annotate variants of all types with clinical evidence. "
-                        + "Only treatment associated evidence with evidence levels ( \n( ")
-                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_A))
-                .add(" FDA approved therapy and/or guidelines; ")
-                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_B))
-                .add(" late clinical trials; ")
-                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_C))
-                .add(" early clinical trials) can be reported. Potential evidence items with evidence level  \n( ")
-                .add(Icon.createIcon(reportResources, Icon.IconType.LEVEL_D))
-                .add(" case reports and preclinical evidence) are not reported.")
                 .addStyle(reportResources.subTextStyle());
+
     }
 
     @NotNull
     public Paragraph noteEvidenceMatching() {
         return new Paragraph().setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add("If the evidence matched is based on a mutation, but this is not a hotspot, evidence should be interpreted with "
-                        + "extra caution. \n")
+                .add(" If the evidence matching is based on a mutation, but this is not a hotspot (see table Tumor specific variants under "
+                        + "Genomic events), evidence should be interpreted with extra caution.\n")
                 .addStyle(reportResources.subTextStyle())
-                .add("If a genomic event that results in an amplification is found, evidence that corresponds with ‘overexpression’"
-                        + " of the gene is also matched. The same rule applies for deletions and underexpression.\n")
+                .add("If the evidence matching is based on an amplification, evidence that corresponds with ‘overexpression’ of that gene "
+                        + "is also matched. The same rule applies for deletions and 'underexpression'.\n")
                 .addStyle(reportResources.subTextStyle());
     }
 

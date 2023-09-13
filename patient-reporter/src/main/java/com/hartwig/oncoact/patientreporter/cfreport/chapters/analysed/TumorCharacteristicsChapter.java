@@ -60,7 +60,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "Tumor characteristics";
+        return "Tumor genomic profiles";
     }
 
     @Override
@@ -100,11 +100,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + SINGLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
-        reportDocument.add(createCharacteristicDiv("HR status",
+        reportDocument.add(createCharacteristicDiv("Homologous recombination status",
                 hrDeficiencyLabel,
-                "The homologous recombination (HR) deficiency score is determined by a WGS signature-based classifier for "
-                        + "comparing the observed profile with signatures found across HR deficient (HRD) samples. Tumors with a score > 0.5"
-                        + "are considered HRD, tumors with a score < 0.5 are considered HR proficient.",
+                "The homologous recombination (HR) deficiency score is determined by a WGS signature-based classifier "
+                        + "for comparing the observed profile with signatures found across HR deficient (HRD) samples. "
+                        + "Tumors with a score < 0.5 are considered HR proficient, tumors with a score ≥ 0.5 are considered HRD.",
                 hrChart,
                 hrdUnreliableFootnote,
                 displayFootNote));
@@ -132,13 +132,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         satelliteChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         satelliteChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(satelliteChart.max()));
         satelliteChart.setIndicator(MicrosatelliteStatus.THRESHOLD,
-                "Microsatellite \ninstability (" + SINGLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
+                "Microsatellite \ninstable (" + SINGLE_DECIMAL_FORMAT.format(MicrosatelliteStatus.THRESHOLD) + ")");
         reportDocument.add(createCharacteristicDiv("Microsatellite status",
                 microSatelliteStabilityString,
-                "The microsatellite stability score represents the number of somatic inserts and deletes in (short) repeat "
-                        + "sections across the whole genome of the tumor per Mb and is a good marker for instability in "
-                        + "microsatellite repeat regions. Tumors with a score < 4.0 are considered microsatellite stable (MSS) "
-                        + "and > 4.0 are considered microsatellite instable (MSI).",
+                "The microsatellite stability score represents the number of somatic insertions and deletions in (short) "
+                        + "repeat sections across the whole genome of the tumor per Mb and is a good marker for instability in"
+                        + " microsatellite repeat regions. Tumors with a score < 4.0 are considered microsatellite stable (MSS),"
+                        + " tumors with a score ≥ 4.0 are considered microsatellite instable (MSI).",
                 satelliteChart,
                 Strings.EMPTY,
                 false));
@@ -195,9 +195,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         reportDocument.add(createCharacteristicDiv("Tumor mutational burden",
                 mutationalBurdenString,
-                "The tumor mutational burden score represents the number of all somatic variants across the "
-                        + "whole genome of the tumor per Mb. Patients with a mutational burden over 16 could be "
-                        + "eligible for immunotherapy studies.",
+                "The tumor mutational burden score represents the number of all somatic variants across the whole genome of the "
+                        + "tumor per Mb. Patients with a mutational burden over 16 could be eligible for immunotherapy studies.",
                 mutationalBurdenChart,
                 Strings.EMPTY,
                 false));

@@ -5,6 +5,5 @@
   "gender": "female",
   "surname": "surname",
   "birthdate": "2023-08-04",
-  "birthSurname": "birthSurname",
-  "postalCode": "postalCode"
+  "birthSurname": "birthSurname"
 }

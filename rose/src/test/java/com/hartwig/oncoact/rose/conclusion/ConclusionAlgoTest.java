@@ -177,7 +177,7 @@ public class ConclusionAlgoTest {
         actionabilityMap = append(actionabilityMap, "CDKN2A", TypeAlteration.LOSS, "CDKN2A", Condition.ALWAYS, "CDKN2A");
         actionabilityMap = append(actionabilityMap, "EGFR", TypeAlteration.LOSS, "EGFR", Condition.ALWAYS, "EGFR");
 
-        ConclusionAlgo.generateCNVConclusion(conclusion, gainLoss, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateCNVConclusion(conclusion, gainLoss, actionabilityMap, Sets.newHashSet(), Sets.newHashSet(), true);
 
         assertEquals(4, conclusion.size());
         assertTrue(conclusion.contains("- BRAF (copies: 4) BRAF"));
@@ -331,10 +331,10 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, 15, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion, 17, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
-        assertEquals(conclusion.get(0), "- TMB (15.0) TMB");
+        assertEquals(conclusion.get(0), "- TMB (17) TMB");
     }
 
     @Test
@@ -343,7 +343,7 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, 9, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion, 13, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
         assertEquals(0, conclusion.size());
     }
 

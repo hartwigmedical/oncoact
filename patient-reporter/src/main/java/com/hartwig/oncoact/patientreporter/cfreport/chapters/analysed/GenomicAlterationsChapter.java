@@ -79,7 +79,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @Override
     @NotNull
     public String name() {
-        return "Genomic alteration details";
+        return "Genomic events";
     }
 
     @Override
@@ -240,9 +240,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
         }
 
         contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
-                .add(new Paragraph("\nVariant annotation is by default based on the canonical transcript. In case another"
-                        + " transcript is more commonly used in routine practice, this annotation is provided in addition.").addStyle(
-                        reportResources.subTextStyle())));
+                .add(new Paragraph("\nVariant annotation is by default based on the canonical transcript. In case another transcript "
+                        + "is more commonly used in routine practice, this annotation is also provided.").addStyle(reportResources.subTextStyle()
+                        .setTextAlignment(TextAlignment.LEFT))));
 
         if (SomaticVariants.hasNotifiableGermlineVariant(notifyGermlineStatusPerVariant)) {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
@@ -455,8 +455,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
         }
 
         table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
-                .add(new Paragraph("\n *When phasing is unclear the mutation will be counted in both alleles as 0.5. Copy number of"
-                        + " detected mutations can be found in the somatic variant table.").addStyle(reportResources.subTextStyle()
+                .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
+                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
                         .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
@@ -532,7 +532,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                     .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical "
                             + "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
-                            .setTextAlignment(TextAlignment.CENTER))));
+                            .setTextAlignment(TextAlignment.LEFT))));
 
             return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         }

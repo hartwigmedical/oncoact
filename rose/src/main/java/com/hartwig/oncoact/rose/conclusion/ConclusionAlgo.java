@@ -64,8 +64,8 @@ public final class ConclusionAlgo {
             LinxFusionType.IG_PROMISCUOUS);
     private static final Set<String> HRD_GENES = Sets.newHashSet("BRCA1", "BRCA2", "PALB2", "RAD51B", "RAD51C");
 
-    private static final DecimalFormat DOUBLE_DECIMAL_FORMAT = decimalFormat("#.##");
-    private static final double TMB_CUTOFF = 10;
+    private static final DecimalFormat SINGLE_DECIMAL_FORMAT = decimalFormat("#.#");
+    private static final double TMB_CUTOFF = 16;
     private static final double PURITY_CUTOFF = 0.195;
 
     private ConclusionAlgo() {
@@ -115,7 +115,7 @@ public final class ConclusionAlgo {
                 actionable,
                 HRD,
                 rose.orange().chord());
-        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable);
+        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, purple.fit().containsTumorCells());
         generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
         generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
         generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
@@ -294,10 +294,15 @@ public final class ConclusionAlgo {
         }
     }
 
+    @NotNull
+    public static String roundCopyNumber(Double copyNumber, boolean hasReliablePurity) {
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+    }
+
     @VisibleForTesting
     static void generateCNVConclusion(@NotNull List<String> conclusion, @NotNull Collection<PurpleGainLoss> reportableGainLosses,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
-            @NotNull Set<String> actionable) {
+            @NotNull Set<String> actionable, boolean hasReliablePurity) {
         for (PurpleGainLoss gainLoss : reportableGainLosses) {
             oncogenic.add("CNV");
 
@@ -308,7 +313,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(keyLoss);
 
                 if (entry != null && (entry.condition() == Condition.ALWAYS || entry.condition() == Condition.HIGH_NO_ACTIONABLE)) {
-                    String copies = " (copies: " + (int) gainLoss.minCopies() + ")";
+                    String copies = " (copies: " + roundCopyNumber(gainLoss.minCopies(), hasReliablePurity) + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
                 }
@@ -450,6 +455,7 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(key);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
                 oncogenic.add("hla");
+                actionable.add("hla");
                 conclusion.add("- " + key.match() + " " + entry.conclusion());
             }
         }
@@ -471,7 +477,7 @@ public final class ConclusionAlgo {
                         conclusion.add("- " + "HRD (" + chord.hrdValue() + ") " + entry.conclusion() + entryNoHRd.conclusion());
                     }
                 }
-                conclusion.add("- " + "HRD (" + DOUBLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
+                conclusion.add("- " + "HRD (" + SINGLE_DECIMAL_FORMAT.format(chord.hrdValue()) + ") " + entry.conclusion());
 
                 actionable.add("HRD");
                 oncogenic.add("HRD");
@@ -487,7 +493,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyMSI = ImmutableActionabilityKey.builder().match("MSI").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyMSI);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add("- " + "MSI (" + DOUBLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
+                conclusion.add("- " + "MSI (" + SINGLE_DECIMAL_FORMAT.format(microsatelliteMb) + ") " + entry.conclusion());
                 actionable.add("MSI");
                 oncogenic.add("MSI");
             }
@@ -502,7 +508,7 @@ public final class ConclusionAlgo {
             ActionabilityKey keyTMB = ImmutableActionabilityKey.builder().match("High-TMB").type(TypeAlteration.POSITIVE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyTMB);
             if (entry != null && entry.condition() == Condition.ALWAYS) {
-                conclusion.add("- " + "TMB (" + tumorMutationalBurden + ") " + entry.conclusion());
+                conclusion.add("- " + "TMB (" + SINGLE_DECIMAL_FORMAT.format(tumorMutationalBurden) + ") " + entry.conclusion());
                 actionable.add("TMB");
                 oncogenic.add("TMB");
             }

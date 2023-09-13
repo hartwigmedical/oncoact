@@ -1,9 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +27,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
@@ -77,12 +76,10 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ExampleAnalysisTestFactory {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
-
     private static final String CIRCOS_PLOT_PATH = Resources.getResource("test_run/orange/plot/sample.circos.png").getPath();
     private static final String CUPPA_PLOT_PATH = Resources.getResource("test_run/cuppa/sample.cuppa.chart.png").getPath();
 
-    private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
+    private static final String UDI_DI = "(01)8720299486058(8012)v5.33/1.0";
 
     private ExampleAnalysisTestFactory() {
     }
@@ -90,11 +87,11 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
             boolean withUnreliablePurityOverrule) {
-        String pipelineVersion = "5.31";
+        String pipelineVersion = "5.33";
         double averageTumorPloidy = 3.1;
-        int tumorMutationalLoad = 186;
-        double tumorMutationalBurden = 13.7394;
-        double microsatelliteIndelsPerMb = 0.1221;
+        int tumorMutationalLoad = 183;
+        double tumorMutationalBurden = 13.737;
+        double microsatelliteIndelsPerMb = 0.1256;
         PurpleTumorMutationalStatus tumorMutationalBurdenStatus = PurpleTumorMutationalStatus.LOW;
         PurpleMicrosatelliteStatus microsatelliteStatus = PurpleMicrosatelliteStatus.MSS;
         double hrdValue = 0D;
@@ -116,33 +113,25 @@ public final class ExampleAnalysisTestFactory {
         List<AnnotatedVirus> viruses = Lists.newArrayList();
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
         HlaAllelesReportingData hlaData = createTestHlaData();
-        List<InterpretPurpleGeneCopyNumbers> LOHGenes = createLOHGenes();
+        List<InterpretPurpleGeneCopyNumbers> LOHGenes = Lists.newArrayList();
 
-        String summaryWithoutGermline =
-                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+        String summaryWithoutGermline = "- Molecular tissue of origin prediction: Melanoma (likelihood: 99.6%).\n "
+                + "- TERT (c.-125_-124delCCinsTT) promoter mutation.\n " + "- CDKN2A (p.Gly83fs) inactivation.\n "
+                + "- BRAF (p.Val600Glu) activating mutation, possible indication for BRAF and/or MEK inhibitors (clinical trial).\n "
+                + "- PTEN (copies: 0) loss, possible indication for PI3K inhibitors (clinical trial).\n";
 
-        String summaryWithoutGermlineLowPurity =
-                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. \n"
-                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n"
-                        + "Due to the lower tumor purity (" + Formats.formatPercentage(impliedPurityPercentage) + ") potential (subclonal) "
-                        + "DNA aberrations might not have been detected using this test. This result should therefore be considered with caution.";
+        String summaryWithoutGermlineLowPurity = "Due to the lower tumor purity" + Formats.formatPercentage(impliedPurityPercentage)
+                + " potential (subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
+                + "considered with caution. \n \n " + "- Molecular tissue of origin prediction: Melanoma (likelihood: 99.6%).\n "
+                + "- TERT (c.-125_-124delCCinsTT) promoter mutation.\n " + "- CDKN2A (p.Gly83fs) inactivation.\n "
+                + "- BRAF (p.Val600Glu) activating mutation, possible indication for BRAF and/or MEK inhibitors (clinical trial).\n "
+                + "- PTEN (copies: 0) loss, possible indication for PI3K inhibitors (clinical trial).\n";
 
-        String summaryWithGermline =
-                "Melanoma sample showing:\n" + " - Molecular Tissue of Origin classifier: Melanoma (likelihood: 99.6%).\n"
-                        + " - CDKN2A (p.Gly83fs,p.Ala68fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n"
-                        + " - BRAF (p.Val600Glu) activating mutation, potential benefit from BRAF and/or MEK inhibitors. \n"
-                        + " - PTEN (copies: 0) loss, potential benefit from PI3K inhibitors (clinical trial). \n"
-                        + " - TML (186) positive, potential benefit from checkpoint inhibitors (clinical trial). \n"
-                        + " - An overview of all detected oncogenic DNA aberrations can be found in the report. \n";
+        String summaryWithGermline = "- Molecular tissue of origin prediction: Melanoma (likelihood: 99.6%).\n"
+                + "- TERT (c.-125_-124delCCinsTT) promoter mutation.\n "
+                + "- CDKN2A (p.Gly83fs) inactivation. The observed CDKN2A mutation is also present in the germline of the patient. Referral to a genetic specialist should be considered. \n "
+                + "- BRAF (p.Val600Glu) activating mutation, possible indication for BRAF and/or MEK inhibitors (clinical trial).\n "
+                + "- PTEN (copies: 0) loss, possible indication for PI3K inhibitors (clinical trial).\n";
 
         String clinicalSummary;
         if (config.includeSummary() && !config.reportGermline()) {
@@ -226,11 +215,6 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<InterpretPurpleGeneCopyNumbers> createLOHGenes() {
-        return Lists.newArrayList();
-    }
-
-    @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
             @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
@@ -268,11 +252,11 @@ public final class ExampleAnalysisTestFactory {
     public static List<CnPerChromosomeArmData> extractCnPerChromosome() {
         List<CnPerChromosomeArmData> cnPerChromosomeArm = Lists.newArrayList();
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("1"), ChromosomeArm.P_ARM, 2.577279278488992));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("1"), ChromosomeArm.Q_ARM, 3.918799177307402));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("1"), ChromosomeArm.Q_ARM, 3.924434911196542));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("2"), ChromosomeArm.P_ARM, 3.017299967841595));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("2"), ChromosomeArm.Q_ARM, 3.02120002022585));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.P_ARM, 3.591216277753128));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.Q_ARM, 4.000838339114639));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.P_ARM, 3.591262261849793));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("3"), ChromosomeArm.Q_ARM, 4.000879324279213));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("4"), ChromosomeArm.P_ARM, 2.0210999604946176));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("4"), ChromosomeArm.Q_ARM, 3.845384394611778));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("5"), ChromosomeArm.P_ARM, 2.0000481443928493));
@@ -280,23 +264,23 @@ public final class ExampleAnalysisTestFactory {
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("6"), ChromosomeArm.P_ARM, 3.8480004115155264));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("6"), ChromosomeArm.Q_ARM, 2.913192227059896));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("7"), ChromosomeArm.P_ARM, 4.0246200936217384));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("7"), ChromosomeArm.Q_ARM, 4.172730489125538));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("7"), ChromosomeArm.Q_ARM, 4.172738954802649));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("8"), ChromosomeArm.P_ARM, 3.3325999264957695));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("8"), ChromosomeArm.Q_ARM, 3.3429530048942766));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("9"), ChromosomeArm.P_ARM, 2.7291755500808623));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("9"), ChromosomeArm.Q_ARM, 3.6992000400581495));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("10"), ChromosomeArm.P_ARM, 2.500979668565291));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("10"), ChromosomeArm.P_ARM, 2.5009796653656786));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("10"), ChromosomeArm.Q_ARM, 2.0071487599595574));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("11"), ChromosomeArm.P_ARM, 3.1786999401872698));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("11"), ChromosomeArm.P_ARM, 3.166143699669606));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("11"), ChromosomeArm.Q_ARM, 2.9098638260285616));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("12"), ChromosomeArm.P_ARM, 3.0115999171651855));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("12"), ChromosomeArm.Q_ARM, 3.0031553296330964));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("12"), ChromosomeArm.Q_ARM, 3.0031553295325786));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("13"), ChromosomeArm.P_ARM, 3.1564998196285714));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("13"), ChromosomeArm.Q_ARM, 3.146714774779385));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("14"), ChromosomeArm.P_ARM, 3.014099827765714));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("14"), ChromosomeArm.Q_ARM, 3.0139836642446918));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("14"), ChromosomeArm.Q_ARM, 3.0138727282866444));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("15"), ChromosomeArm.P_ARM, 3.7023997998702702));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("15"), ChromosomeArm.Q_ARM, 2.54659518784599));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("15"), ChromosomeArm.Q_ARM, 2.546595184525802));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("16"), ChromosomeArm.P_ARM, 3.1922446681639967));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("16"), ChromosomeArm.Q_ARM, 1.9895619634349344));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("17"), ChromosomeArm.P_ARM, 2.9938998740100473));
@@ -306,7 +290,7 @@ public final class ExampleAnalysisTestFactory {
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("19"), ChromosomeArm.P_ARM, 2.889021334953442));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("19"), ChromosomeArm.Q_ARM, 2.934100089054606));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("20"), ChromosomeArm.P_ARM, 4.0138808962887085));
-        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("20"), ChromosomeArm.Q_ARM, 4.0086125804931285));
+        cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("20"), ChromosomeArm.Q_ARM, 4.008612580584152));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("21"), ChromosomeArm.P_ARM, 2.991999766033014));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("21"), ChromosomeArm.Q_ARM, 2.9982181161009325));
         cnPerChromosomeArm.add(buildCnPerChromosomeArmData(Chromosome.fromString("22"), ChromosomeArm.P_ARM, 3.9915997247172412));
@@ -344,32 +328,71 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Cobimetinib + Vemurafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Atezolizumab + Cobimetinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)",
+                                "MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                        "BRAF:V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                        EvidenceType.CODON_MUTATION,
+                        600,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/32534646",
+                                "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=761034"))))
 
                 .build());
 
-        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Binimetinib + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600X",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.CODON_MUTATION,
+                                600,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
+                                        "https://www.esmo.org/Guidelines",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/30959471")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/30219628",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=210496",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=210498",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/29573941"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .event("p.Val600Glu")
@@ -378,27 +401,37 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Cobimetinib + Vemurafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)",
+                                "MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
-                .onLabel(false)
+                .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                        "PTEN:V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.ACTIVATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/253995511",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995512",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995513",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995514",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995515",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995516",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995517",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995518",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/253995519",
-                                "http://www.ncbi.nlm.nih.gov/pubmed/25399551610"))))
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600X",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.CODON_MUTATION,
+                                600,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
+                                        "https://www.esmo.org/Guidelines",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet(
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=206192",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/27480103"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -410,18 +443,31 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Immuno", "Target"))
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                        "BRAF:V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("https://www.google.com/#q=FDA"))))
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202806",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/22735384")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600X",
+                                Sets.newHashSet("hhttps://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.CODON_MUTATION,
+                                600,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -433,24 +479,71 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Trametinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Target", "Combi"))
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .reported(true)
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600X",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.CODON_MUTATION,
+                                600,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
+                                        "https://www.esmo.org/Guidelines",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202806")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/32818466",
+                                        "https://ascopubs.org/doi/abs/10.1200/JCO.2020.38.15_suppl.10506",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/34838156",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=204114",
+                                        "https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.3002",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202806"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Trametinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.A)
-                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                                "BRAF V600E",
-                                Sets.newHashSet(),
-                                EvidenceType.HOTSPOT_MUTATION,
-                                null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551")),
-                        createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "BRAF:V600E",
-                                Sets.newHashSet(),
-                                EvidenceType.HOTSPOT_MUTATION,
-                                null,
-                                Sets.newHashSet("https://www.google.com/#q=FDA"))))
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22663011",
+                                "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=204114"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -462,24 +555,32 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Vemurafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
-                .reported(true)
+                .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "BRAF:V600E",
-                                Sets.newHashSet(),
-                                EvidenceType.HOTSPOT_MUTATION,
-                                null,
-                                Sets.newHashSet("https://www.google.com/#q=FDA")),
-                        createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
                                 "BRAF V600E",
-                                Sets.newHashSet(),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808"))))
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202429",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/28961848")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600X",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.CODON_MUTATION,
+                                600,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
@@ -490,19 +591,332 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("RO4987655")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Binimetinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600",
-                        Sets.newHashSet(),
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
                         600,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24947927"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23414587"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Binimetinib + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        600,
+                        Sets.newHashSet("https://www.annalsofoncology.org/article/S0923-7534(21)03282-8/fulltext"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib + Nivolumab + Trametinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                        EvidenceType.CODON_MUTATION,
+                        600,
+                        Sets.newHashSet("https://ascopubs.org/doi/abs/10.1200/JCO.2021.39.15_suppl.9520"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib + Pembrolizumab + Trametinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        600,
+                        Sets.newHashSet("https://meetinglibrary.asco.org/record/186980/abstract"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib + Spartalizumab + Trametinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                        EvidenceType.CODON_MUTATION,
+                        600,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/33020648"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Selumetinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22048237"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Atezolizumab + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                        EvidenceType.CODON_MUTATION,
+                        600,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/31171876"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Binimetinib + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF act mut",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=696"),
+                        EvidenceType.ACTIVATION,
+                        null,
+                        Sets.newHashSet(
+
+                        ))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22608338"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib + KRT-232 + Trametinib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF 600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                        EvidenceType.CODON_MUTATION,
+                        null,
+                        Sets.newHashSet("http://abstracts.asco.org/199/AbstView_199_181299.html"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/28611198"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Encorafenib + Ribociclib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/28351928"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Tovorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/37219686"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Vemurafenib + Voruciclib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://meetinglibrary.asco.org/content/153239-156"))))
                 .build());
 
         evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
@@ -513,20 +927,68 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Buparlisib + Carboplatin + Paclitaxel")
+                        .name("Temsirolimus")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN inact mut",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2095"),
+                        EvidenceType.INACTIVATION,
+                        null,
+                        Sets.newHashSet(
+                                "https://aacrjournals.org/cancerres/article/83/8_Supplement/CT231/725279/Abstract-CT231-Temsirolimus-T-in-patients-pts-with"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("partial loss")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("GSK2636771")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "PTEN LOSS",
-                        Sets.newHashSet(),
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN dec exp",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=13314"),
+                        EvidenceType.UNDER_EXPRESSION,
+                        null,
+                        Sets.newHashSet("http://meetinglibrary.asco.org/content/131727-144"))))
+                .build());
+
+        evidenceItemsOnLabel.add(onLabelBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("partial loss")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Onatasertib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN del",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2408"),
                         EvidenceType.DELETION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25672916"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/26177599"))))
                 .build());
+
         return evidenceItemsOnLabel;
     }
 
@@ -534,98 +996,6 @@ public final class ExampleAnalysisTestFactory {
     private static List<ProtectEvidence> createCOLO829ClinicalTrials() {
         List<ProtectEvidence> trialsOnLabel = Lists.newArrayList();
         ImmutableProtectEvidence.Builder trialBuilder = TestProtectFactory.builder().onLabel(true).reported(true);
-
-        trialsOnLabel.add(trialBuilder.gene(null)
-                .transcript(null)
-                .isCanonical(null)
-                .event("High tumor mutational load")
-                .eventIsHighDriver(null)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("BASKET OF BASKETS (VHIO17002)")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
-                        "TumMutLoad_HIGH",
-                        Sets.newHashSet("https://trial-eye.com/hmf/11087"),
-                        EvidenceType.SIGNATURE,
-                        null,
-                        Sets.newHashSet())))
-                .build());
-
-        trialsOnLabel.add(trialBuilder.gene(null)
-                .transcript(null)
-                .isCanonical(null)
-                .event("High tumor mutational load")
-                .eventIsHighDriver(null)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("CheckMate 848")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
-                        "TumMutLoad_HIGH",
-                        Sets.newHashSet("https://trial-eye.com/hmf/10560"),
-                        EvidenceType.SIGNATURE,
-                        null,
-                        Sets.newHashSet())))
-                .build());
-
-        trialsOnLabel.add(trialBuilder.gene(null)
-                .transcript(null)
-                .isCanonical(null)
-                .event("High tumor mutational load")
-                .eventIsHighDriver(null)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("DRUP")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
-                        "TumMutLoad_HIGH",
-                        Sets.newHashSet("https://trial-eye.com/hmf/10299"),
-                        EvidenceType.SIGNATURE,
-                        null,
-                        Sets.newHashSet())))
-                .build());
-
-        trialsOnLabel.add(trialBuilder.gene(null)
-                .transcript(null)
-                .isCanonical(null)
-                .event("High tumor mutational load")
-                .eventIsHighDriver(null)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("KEYNOTE-158")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(true)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
-                        "TumMutLoad_HIGH",
-                        Sets.newHashSet("https://trial-eye.com/hmf/4866"),
-                        EvidenceType.SIGNATURE,
-                        null,
-                        Sets.newHashSet())))
-                .build());
 
         trialsOnLabel.add(trialBuilder.gene("BRAF")
                 .transcript("ENST00000288602")
@@ -710,6 +1080,35 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
+                        .name("KN-8701")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                                "BRAF ACTIVATING MUTATION",
+                                Sets.newHashSet("https://www.trial-eye.com/hmf/15876"),
+                                EvidenceType.ACTIVATION,
+                                null,
+                                Sets.newHashSet()),
+                        createTestProtectSource(Knowledgebase.ICLUSION,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://www.trial-eye.com/hmf/15876"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet())))
+                .build());
+
+        trialsOnLabel.add(trialBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
                         .name("NASAM")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
@@ -719,7 +1118,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
                         "BRAF V600E",
-                        Sets.newHashSet("https://trial-eye.com/hmf/14995"),
+                        Sets.newHashSet("https://www.trial-eye.com/hmf/14995"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
                         Sets.newHashSet())))
@@ -770,76 +1169,25 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Bevacizumab")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024", "http://www.ncbi.nlm.nih.gov/pubmed/19571295"))))
-                .build());
-
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("CI-1040")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
-                .build());
-
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
                         .name("Cetuximab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
-                .level(EvidenceLevel.B)
+                .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "BRAF:V600E",
-                                Sets.newHashSet(),
-                                EvidenceType.HOTSPOT_MUTATION,
-                                null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
-                        createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
                                 "BRAF V600E",
-                                Sets.newHashSet(),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19884556",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/19001320",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/25666295",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739"))))
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/36307056", "https://www.esmo.org/Guidelines"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -850,19 +1198,28 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Cetuximab + Irinotecan + Vemurafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Cetuximab + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
-                .level(EvidenceLevel.B)
+                .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/27729313"))))
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/36307056",
+                                        "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=210496",
+                                        "http://www.ncbi.nlm.nih.gov/pubmed/31566309",
+                                        "https://www.esmo.org/Guidelines"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -873,65 +1230,19 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Fluorouracil")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Encorafenib + Panitumumab")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .level(EvidenceLevel.A)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
                         "BRAF V600E",
-                        Sets.newHashSet(),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
-                .build());
-
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("Irinotecan")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
-                .build());
-
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
-                .transcript("ENST00000288602")
-                .isCanonical(true)
-                .event("p.Val600Glu")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("Oxaliplatin")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600E",
-                        Sets.newHashSet(),
-                        EvidenceType.HOTSPOT_MUTATION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19603024"))))
+                        Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -947,28 +1258,20 @@ public final class ExampleAnalysisTestFactory {
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
-                .level(EvidenceLevel.B)
+                .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "BRAF:V600E",
-                                Sets.newHashSet(),
-                                EvidenceType.HOTSPOT_MUTATION,
-                                null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/23325582",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/20619739")),
-                        createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                                "BRAF V600",
-                                Sets.newHashSet(),
-                                EvidenceType.CODON_MUTATION,
-                                600,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23325582")),
-                        createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
                                 "BRAF V600E",
-                                Sets.newHashSet(),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/19001320"))))
+                                Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "BRAF V600E",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                                EvidenceType.HOTSPOT_MUTATION,
+                                null,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/36307056", "https://www.esmo.org/Guidelines"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -980,18 +1283,18 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("Selumetinib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
-                .level(EvidenceLevel.B)
+                .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
                         "BRAF V600E",
-                        Sets.newHashSet(),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/22492957"))))
+                        Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -1002,8 +1305,11 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Sorafenib")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("inimetinib + Cetuximab + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
+                                "MEK inhibitor (Pan)",
+                                "MEK1 Inhibitor",
+                                "BRAF Inhibitor"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
@@ -1011,10 +1317,10 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
                         "BRAF V600E",
-                        Sets.newHashSet(),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/18682506", "http://www.ncbi.nlm.nih.gov/pubmed/21882184"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/31566309", "http://www.ncbi.nlm.nih.gov/pubmed/36763936"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
@@ -1025,49 +1331,274 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Vemurafenib")
+                        .name("RAF Inhibitor (Pan)")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
                 .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "BRAF V600",
-                        Sets.newHashSet(),
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/33356422"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Cetuximab + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600X",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
                         600,
                         Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/26287849"))))
                 .build());
 
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
-                .transcript("ENST00000371953")
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
                 .isCanonical(true)
-                .event("partial loss")
+                .event("p.Val600Glu")
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Anti-EGFR monoclonal antibody")
+                        .name("Ruxolitinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/33979489"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Tovorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("https://ascopubs.org/doi/10.1200/JCO.2023.41.16_suppl.10004"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Alpelisib + Cetuximab + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://meetinglibrary.asco.org/content/166237-176",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/28363909"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Cetuximab + Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/28363909"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Dabrafenib + Panitumumab")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://meetinglibrary.asco.org/content/131642-144",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/29431699"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Encorafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet())))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Erlotinib + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/36638198"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("BRAF")
+                .transcript("ENST00000288602")
+                .isCanonical(true)
+                .event("p.Val600Glu")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Panitumumab + Vemurafenib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "BRAF V600E",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
+                        EvidenceType.HOTSPOT_MUTATION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25589621"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("CDKN2A (p16)")
+                .transcript("ENST00000498124")
+                .isCanonical(true)
+                .event("p.Ala68fs")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Palbociclib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
                 .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "PTEN oncogenic mutation",
-                                Sets.newHashSet(),
-                                EvidenceType.ANY_MUTATION,
-                                null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703", "http://www.ncbi.nlm.nih.gov/pubmed/19398573")),
-                        createTestProtectSource(Knowledgebase.VICC_CGI,
-                                "PTEN deletion",
-                                Sets.newHashSet(),
-                                EvidenceType.DELETION,
-                                null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703",
-                                        "http://www.ncbi.nlm.nih.gov/pubmed/19398573"))))
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "CDKN2A mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=4974"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.9041"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("CDKN2A (p14ARF)")
+                .transcript("ENST00000579755")
+                .isCanonical(false)
+                .event("p.Gly83fs")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Palbociclib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "CDKN2A mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=4974"),
+                        EvidenceType.ANY_MUTATION,
+                        null,
+                        Sets.newHashSet("https://ascopubs.org/doi/abs/10.1200/JCO.2019.37.15_suppl.9041"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
@@ -1078,19 +1609,21 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Cetuximab")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Abiraterone + Ipatasertib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
                 .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "PTEN LOSS",
-                        Sets.newHashSet(),
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN loss",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                         EvidenceType.DELETION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21163703"))))
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/30037818",
+                                "http://www.ncbi.nlm.nih.gov/pubmed/34246347",
+                                "https://academic.oup.com/annonc/article/27/suppl_6/718O/2799456/PTEN-loss-as-a-predictive-biomarker-for-the-Akt"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
@@ -1101,19 +1634,19 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Everolimus")
+                        .name("Apitolisib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
                 .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "PTEN LOSS",
-                        Sets.newHashSet(),
-                        EvidenceType.DELETION,
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN mutant",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1213"),
+                        EvidenceType.ANY_MUTATION,
                         null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/23989949"))))
+                        Sets.newHashSet("http://meetinglibrary.asco.org/content/132500-144"))))
                 .build());
 
         evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
@@ -1124,48 +1657,94 @@ public final class ExampleAnalysisTestFactory {
                 .germline(false)
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
-                        .name("Lapatinib + Trastuzumab")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .name("Capivasertib + Paclitaxel")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(false)
                 .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                        "PTEN LOSS",
-                        Sets.newHashSet(),
-                        EvidenceType.DELETION,
-                        null,
-                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25300346"))))
-                .build());
-
-        evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
-                .transcript("ENST00000371953")
-                .isCanonical(true)
-                .event("partial loss")
-                .eventIsHighDriver(true)
-                .germline(false)
-                .reported(true)
-                .treatment(ImmutableTreatment.builder()
-                        .name("Trastuzumab")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
-                        .build())
-                .onLabel(false)
-                .level(EvidenceLevel.B)
-                .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                                "PTEN LOSS",
-                                Sets.newHashSet(),
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                                "PTEN loss",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                                 EvidenceType.DELETION,
                                 null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/24387334")),
-                        createTestProtectSource(Knowledgebase.VICC_CIVIC,
-                                "PTEN LOSS",
-                                Sets.newHashSet(),
-                                EvidenceType.DELETION,
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/31841354")),
+                        createTestProtectSource(Knowledgebase.CKB,
+                                "PTEN inact mut",
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2095"),
+                                EvidenceType.INACTIVATION,
                                 null,
-                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/20813970"))))
+                                Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/31841354"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("partial loss")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Ipatasertib + Paclitaxel")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN dec exp",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=13314"),
+                        EvidenceType.UNDER_EXPRESSION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/28800861"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("partial loss")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("AZD8186 + Vistusertib")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("PIK3CB inhibitor"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN loss",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
+                        EvidenceType.DELETION,
+                        null,
+                        Sets.newHashSet("https://ascopubs.org/doi/10.1200/JCO.2017.35.15_suppl.2570"))))
+                .build());
+
+        evidenceItemsOffLabel.add(offLabelBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("partial loss")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .treatment(ImmutableTreatment.builder()
+                        .name("Gemcitabine + LY2780301")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(false)
+                .level(EvidenceLevel.C)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                        "PTEN loss",
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
+                        EvidenceType.DELETION,
+                        null,
+                        Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/28750271"))))
                 .build());
         return evidenceItemsOffLabel;
     }
@@ -1175,21 +1754,30 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant1 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("BRAF")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000288602", "c.179T>A", "p.Val601Glu"))
+                .otherImpactClinical(purpleTranscriptImpactClinical("NM_004333",
+                        "c.1799T>A",
+                        "p.Val600Glu",
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(PurpleVariantEffect.MISSENSE),
+                        PurpleCodingEffect.MISSENSE))
                 .transcript("ENST00000288602")
                 .isCanonical(true)
                 .chromosome("7")
                 .position(140453136)
                 .ref("A")
                 .alt("T")
+                .affectedCodon(600)
+                .affectedExon(15)
                 .canonicalTranscript("ENST00000288602")
-                .canonicalEffect("missense_variant")
+                .canonicalEffect("missense")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .canonicalHgvsCodingImpact("c.1799T>A")
                 .canonicalHgvsProteinImpact("p.Val600Glu")
                 .alleleReadCount(150)
                 .totalReadCount(221)
-                .alleleCopyNumber(4.09962)
+                .alleleCopyNumber(4.1)
                 .totalCopyNumber(6.02)
                 .minorAlleleCopyNumber(2.01)
                 .hotspot(Hotspot.HOTSPOT)
@@ -1202,23 +1790,32 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         ReportableVariant variant2 = TestReportableVariantFactory.builder()
-                .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
+                .source(ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p16)")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000498124", "c.203_204delCG", "p.Ala68fs"))
+                .otherImpactClinical(purpleTranscriptImpactClinical("NM_000077",
+                        "c.203_204delCG",
+                        "p.Ala68fs",
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(PurpleVariantEffect.FRAMESHIFT),
+                        PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT))
                 .transcript("ENST00000498124")
                 .isCanonical(true)
                 .chromosome("9")
                 .position(21971153)
                 .ref("CCG")
                 .alt("C")
+                .affectedExon(2)
+                .affectedCodon(69)
                 .canonicalTranscript("ENST00000498124")
-                .canonicalEffect("frameshift_variant")
+                .canonicalEffect("frameshift")
                 .canonicalCodingEffect(PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT)
                 .canonicalHgvsCodingImpact("c.203_204delCG")
                 .canonicalHgvsProteinImpact("p.Ala68fs")
                 .alleleReadCount(99)
                 .totalReadCount(99)
-                .alleleCopyNumber(2.0)
+                .alleleCopyNumber(2.02)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
                 .hotspot(Hotspot.NEAR_HOTSPOT)
@@ -1231,23 +1828,25 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
-                .source(forceCDKN2AVariantToBeGermline ? ReportableVariantSource.GERMLINE : ReportableVariantSource.SOMATIC)
+                .source(ReportableVariantSource.SOMATIC)
                 .gene("CDKN2A (p14ARF)")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000579755", "c.246_247delCG", "p.Gly83fs"))
+                .otherImpactClinical(null)
                 .transcript("ENST00000579755")
                 .isCanonical(false)
                 .chromosome("9")
                 .position(21971153)
                 .ref("CCG")
                 .alt("C")
+                .affectedCodon(69)
+                .affectedExon(2)
                 .canonicalTranscript("ENST00000498124")
-                .canonicalEffect("frameshift_variant")
+                .canonicalEffect("frameshift")
                 .canonicalCodingEffect(PurpleCodingEffect.NONSENSE_OR_FRAMESHIFT)
                 .canonicalHgvsCodingImpact("c.246_247delCG")
                 .canonicalHgvsProteinImpact("p.Gly83fs")
                 .alleleReadCount(99)
                 .totalReadCount(99)
-                .alleleCopyNumber(2.0)
+                .alleleCopyNumber(2.02)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
                 .hotspot(Hotspot.NEAR_HOTSPOT)
@@ -1262,21 +1861,30 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TERT")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000310581", "c.-125_-124delCCinsTT", Strings.EMPTY))
+                .otherImpactClinical(purpleTranscriptImpactClinical("NM_198253",
+                        "c.-125_-124delCCinsTT",
+                        Strings.EMPTY,
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(PurpleVariantEffect.UPSTREAM_GENE),
+                        PurpleCodingEffect.MISSENSE))
                 .transcript("ENST00000310581")
                 .isCanonical(true)
                 .chromosome("5")
                 .position(1295228)
                 .ref("GG")
                 .alt("AA")
+                .affectedCodon(null)
+                .affectedExon(null)
                 .canonicalTranscript("ENST00000310581")
-                .canonicalEffect("upstream_gene_variant")
+                .canonicalEffect("upstream_gene")
                 .canonicalCodingEffect(PurpleCodingEffect.NONE)
                 .canonicalHgvsCodingImpact("c.-125_-124delCCinsTT")
                 .canonicalHgvsProteinImpact(Strings.EMPTY)
                 .alleleReadCount(56)
                 .totalReadCount(65)
-                .alleleCopyNumber(1.7404)
+                .alleleCopyNumber(1.74)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
                 .hotspot(Hotspot.HOTSPOT)
@@ -1284,33 +1892,42 @@ public final class ExampleAnalysisTestFactory {
                 .driverLikelihood(1D)
                 .biallelic(true)
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
-                .localPhaseSet(4613)
+                .localPhaseSet(4621)
                 .type(PurpleVariantType.MNP)
                 .build();
 
         ReportableVariant variant5 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("SF3B1")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000335508", "c.2153C>T", "p.Pro718Leu"))
+                .otherImpactClinical(purpleTranscriptImpactClinical("NM_012433",
+                        "c.2153C>T",
+                        "p.Pro718Leu",
+                        null,
+                        null,
+                        false,
+                        Lists.newArrayList(PurpleVariantEffect.MISSENSE),
+                        PurpleCodingEffect.MISSENSE))
                 .transcript("ENST00000335508")
                 .isCanonical(true)
+                .affectedExon(null)
+                .affectedCodon(null)
                 .chromosome("2")
                 .position(198266779)
                 .ref("G")
                 .alt("A")
                 .canonicalTranscript("ENST00000335508")
-                .canonicalEffect("missense_variant")
+                .canonicalEffect("missense")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .canonicalHgvsCodingImpact("c.2153C>T")
                 .canonicalHgvsProteinImpact("p.Pro718Leu")
                 .alleleReadCount(74)
                 .totalReadCount(111)
-                .alleleCopyNumber(2.026722)
+                .alleleCopyNumber(2.03)
                 .minorAlleleCopyNumber(1.0)
                 .totalCopyNumber(3.02)
                 .hotspot(Hotspot.NON_HOTSPOT)
                 .clonalLikelihood(1D)
-                .driverLikelihood(0.1458)
+                .driverLikelihood(0.1459)
                 .biallelic(false)
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
@@ -1320,23 +1937,25 @@ public final class ExampleAnalysisTestFactory {
         ReportableVariant variant6 = TestReportableVariantFactory.builder()
                 .source(ReportableVariantSource.SOMATIC)
                 .gene("TP63")
-                .otherImpactClinical(purpleTranscriptImpactClinical("ENST00000264731", "c.1497G>T", "p.Met499Ile"))
+                .otherImpactClinical(null)
                 .transcript("ENST00000264731")
                 .isCanonical(true)
                 .chromosome("3")
                 .position(189604330)
                 .ref("G")
                 .alt("T")
+                .affectedExon(11)
+                .affectedCodon(499)
                 .canonicalTranscript("ENST00000264731")
-                .canonicalEffect("missense_variant")
+                .canonicalEffect("missense")
                 .canonicalCodingEffect(PurpleCodingEffect.MISSENSE)
                 .canonicalHgvsCodingImpact("c.1497G>T")
                 .canonicalHgvsProteinImpact("p.Met499Ile")
                 .alleleReadCount(47)
                 .totalReadCount(112)
-                .alleleCopyNumber(1.6829820000000002)
-                .minorAlleleCopyNumber(1.98)
-                .totalCopyNumber(3.99)
+                .alleleCopyNumber(1.68)
+                .minorAlleleCopyNumber(1.97)
+                .totalCopyNumber(3.98)
                 .hotspot(Hotspot.NON_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0)
@@ -1351,13 +1970,17 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static PurpleTranscriptImpact purpleTranscriptImpactClinical(@NotNull String transcript, @NotNull String hgvsCodingImpact,
-            @NotNull String hgvsProteinImpact) {
+            @NotNull String hgvsProteinImpact, Integer codon, Integer exon, boolean spliceRegion,
+            @NotNull List<PurpleVariantEffect> effects, @NotNull PurpleCodingEffect effect) {
         return ImmutablePurpleTranscriptImpact.builder()
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)
                 .hgvsProteinImpact(hgvsProteinImpact)
-                .spliceRegion(false)
-                .codingEffect(PurpleCodingEffect.UNDEFINED)
+                .affectedCodon(codon)
+                .affectedExon(exon)
+                .spliceRegion(spliceRegion)
+                .effects(effects)
+                .codingEffect(effect)
                 .build();
     }
 
@@ -1370,7 +1993,7 @@ public final class ExampleAnalysisTestFactory {
                 .transcript("ENST00000371953")
                 .isCanonical(true)
                 .minCopies(0)
-                .maxCopies(2)
+                .maxCopies(2.0136)
                 .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
 
@@ -1425,10 +2048,10 @@ public final class ExampleAnalysisTestFactory {
                 .isCanonical(true)
                 .range("Intron 5 -> Intron 6")
                 .type("DEL")
-                .junctionCopyNumber(2.005)
+                .junctionCopyNumber(2.0054)
                 .undisruptedCopyNumber(0.0)
                 .firstAffectedExon(5)
-                .clusterId(72)
+                .clusterId(68)
                 .build();
 
         return Lists.newArrayList(disruption1);
@@ -1446,68 +2069,36 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
+    public static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
         pharmacogeneticsMap.put("UGT1A1",
                 Lists.newArrayList(TestPeachFactory.builder()
-                                .gene("UGT1A1")
-                                .haplotype("*1_HOM")
-                                .function("Normal Function")
-                                .linkedDrugs("Irinotecan")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                                .panelVersion("peach_prod_v1.3")
-                                .repoVersion("1.7")
-                                .build(),
-                        TestPeachFactory.builder()
-                                .gene("UGT1A1")
-                                .haplotype("*2_HOM")
-                                .function("Reduced Function")
-                                .linkedDrugs("Irinotecan")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
-                                .panelVersion("peach_prod_v1.3")
-                                .repoVersion("1.7")
-                                .build()));
+                        .gene("UGT1A1")
+                        .haplotype("*1_HOM")
+                        .function("Normal Function")
+                        .linkedDrugs("Irinotecan")
+                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104951")
+                        .panelVersion("peach_prod_v1.3")
+                        .repoVersion("1.7")
+                        .build()));
 
         pharmacogeneticsMap.put("DPYD",
                 Lists.newArrayList(TestPeachFactory.builder()
-                                .gene("DPYD")
-                                .haplotype("*1_HOM")
-                                .function("Normal Function")
-                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                                .panelVersion("peach_prod_v1.3")
-                                .repoVersion("1.7")
-                                .build(),
-                        TestPeachFactory.builder()
-                                .gene("DPYD")
-                                .haplotype("*2_HOM")
-                                .function("Reduced Function")
-                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                                .panelVersion("peach_prod_v1.3")
-                                .repoVersion("1.7")
-                                .build(),
-                        TestPeachFactory.builder()
-                                .gene("DPYD")
-                                .haplotype("*2_HOM")
-                                .function("Toxicity Function")
-                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
-                                        + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
-                                .panelVersion("peach_prod_v1.3")
-                                .repoVersion("1.7")
-                                .build()));
-
+                        .gene("DPYD")
+                        .haplotype("*1_HOM")
+                        .function("Normal Function")
+                        .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
+                        .urlPrescriptionInfo("https://www.pharmgkb.org/guidelineAnnotation/PA166104939"
+                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104963"
+                                + "https://www.pharmgkb.org/guidelineAnnotation/PA166104944")
+                        .panelVersion("peach_prod_v1.3")
+                        .repoVersion("1.7")
+                        .build()));
         return pharmacogeneticsMap;
     }
 
     @NotNull
-    private static HlaAllelesReportingData createTestHlaData() {
+    public static HlaAllelesReportingData createTestHlaData() {
         Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
 
         alleles.put("HLA-A",

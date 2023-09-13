@@ -3,20 +3,9 @@ package com.hartwig.oncoact.patientreporter.cfreport;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllele;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
-import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
 import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
@@ -38,7 +27,6 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
 
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Ignore;
@@ -50,10 +38,9 @@ public class CFReportWriterTest {
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
-    private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829. Where is referred to CKB, "
-            + "VICC evidence is listed due to licensing restrictions.";
+    private static final String COLO_COMMENT_STRING = "This is a test report and is based on COLO829";
     private static final String COMMENT_STRING_QC_FAIL = "This is a test QC fail report";
-    private static final String UDI_DI = "(01)8720299486041(8012)v5.31";
+    private static final String UDI_DI = "(01)8720299486058(8012)v5.33-1.0";
 
     @NotNull
     public AnalysedPatientReport generateAnalysedPatientReport(@NotNull AnalysedPatientReport analysedPatientReport) {
@@ -314,8 +301,8 @@ public class CFReportWriterTest {
                 .logoRVAPath(testReportData.logoRVAPath())
                 .logoCompanyPath(testReportData.logoCompanyPath())
                 .udiDi(UDI_DI)
-                .pharmacogeneticsGenotypes(createTestPharmacogeneticsGenotypes())
-                .hlaAllelesReportingData(createTestHlaData())
+                .pharmacogeneticsGenotypes(ExampleAnalysisTestFactory.createTestPharmacogeneticsGenotypes())
+                .hlaAllelesReportingData(ExampleAnalysisTestFactory.createTestHlaData())
                 .purpleQC(Sets.newHashSet(purpleQCStatus))
                 .reportDate(Formats.formatDate(LocalDate.now()))
                 .isWGSReport(true)
@@ -325,80 +312,7 @@ public class CFReportWriterTest {
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeQCFailReport(patientReport, filename);
-        // writer.writeJsonFailedFile(patientReport, REPORT_BASE_DIR);
-    }
-
-    @NotNull
-    private static ImmutableHlaReporting.Builder createHlaReporting() {
-        return ImmutableHlaReporting.builder()
-                .hlaAllele(ImmutableHlaAllele.builder().gene(Strings.EMPTY).germlineAllele(Strings.EMPTY).build())
-                .germlineCopies(0)
-                .tumorCopies(0)
-                .somaticMutations(Strings.EMPTY)
-                .interpretation(Strings.EMPTY);
-    }
-
-    @NotNull
-    private static HlaAllelesReportingData createTestHlaData() {
-        Map<String, List<HlaReporting>> alleles = Maps.newHashMap();
-
-        alleles.put("HLA-A",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                        .gene("HLA-A")
-                        .germlineAllele("A*01:01")
-                        .build()).germlineCopies(2.0).tumorCopies(3.83).somaticMutations("None").interpretation("Yes").build()));
-        alleles.put("HLA-B",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                                .gene("HLA-B")
-                                .germlineAllele("B*40:02")
-                                .build()).germlineCopies(1.0).tumorCopies(2.0).somaticMutations("None").interpretation("Yes").build(),
-                        createHlaReporting().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-B").germlineAllele("B*08:01").build())
-                                .germlineCopies(1.0)
-                                .tumorCopies(1.83)
-                                .somaticMutations("None")
-                                .interpretation("Yes")
-                                .build()));
-        alleles.put("HLA-C",
-                Lists.newArrayList(createHlaReporting().hlaAllele(ImmutableHlaAllele.builder()
-                                .gene("HLA-C")
-                                .germlineAllele("C*07:01")
-                                .build()).germlineCopies(1.0).tumorCopies(1.83).somaticMutations("None").interpretation("yes").build(),
-                        createHlaReporting().hlaAllele(ImmutableHlaAllele.builder().gene("HLA-C").germlineAllele("C*03:04").build())
-                                .germlineCopies(1.0)
-                                .tumorCopies(2.0)
-                                .somaticMutations("None")
-                                .interpretation("Yes")
-                                .build()));
-        return ImmutableHlaAllelesReportingData.builder().hlaQC("PASS").hlaAllelesReporting(alleles).build();
-    }
-
-    @NotNull
-    private static Map<String, List<PeachGenotype>> createTestPharmacogeneticsGenotypes() {
-        Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
-        pharmacogeneticsMap.put("DPYD",
-                Lists.newArrayList(TestPeachFactory.builder()
-                                .gene("DPYD")
-                                .haplotype("*1_HOM")
-                                .function("Normal Function")
-                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/chemical/PA128406956/guidelineAnnotation/PA166104939"
-                                        + "https://www.pharmgkb.org/chemical/PA448771/guidelineAnnotation/PA166104963"
-                                        + "https://www.pharmgkb.org/chemical/PA452620/guidelineAnnotation/PA166104944")
-                                .panelVersion("PGx_min_DPYD_v1.2")
-                                .repoVersion("1.6")
-                                .build(),
-                        TestPeachFactory.builder()
-                                .gene("DPYD")
-                                .haplotype("*2_HOM")
-                                .function("Normal Function")
-                                .linkedDrugs("5-Fluorouracil;Capecitabine;Tegafur")
-                                .urlPrescriptionInfo("https://www.pharmgkb.org/chemical/PA128406956/guidelineAnnotation/PA166104939"
-                                        + "https://www.pharmgkb.org/chemical/PA448771/guidelineAnnotation/PA166104963"
-                                        + "https://www.pharmgkb.org/chemical/PA452620/guidelineAnnotation/PA166104944")
-                                .panelVersion("PGx_min_DPYD_v1.2")
-                                .repoVersion("1.6")
-                                .build()));
-        return pharmacogeneticsMap;
+        writer.writeJsonFailedFile(patientReport, REPORT_BASE_DIR);
     }
 
     @NotNull

@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
@@ -22,6 +22,7 @@ import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 
 import org.apache.logging.log4j.util.Strings;
@@ -59,36 +60,43 @@ public class QCFailPGXChapter implements ReportChapter {
         reportDocument.add(createPharmacogeneticsGenotypesTable(failReport.pharmacogeneticsGenotypes()));
         reportDocument.add(createHlaTable(failReport.hlaAllelesReportingData()));
 
-        Table table = new Table(UnitValue.createPercentArray(new float[]{1}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 1 }));
         table.setWidth(contentWidth());
 
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on reported pharmacogenetics")));
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDivWithLinkThree(
-                        "The details on the pharmacogenetics haplotypes and advice on related treatment adjustments can be downloaded from ",
+                        "The pharmacogenetic haplotypes are reported based on germline analysis. The details on the pharmacogenetic "
+                                + "haplotypes and advice on related treatment adjustments can be downloaded ",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
                         ".",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
                                 + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
                                 + "observed variants, then 'Unresolved Haplotype' is called.",
-                        "Wild type is assumed when no variants are observed."})));
+                        "Wild type is assumed when no variants are observed." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell(1, 1).setHeight(30));
 
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on reported HLA Alleles")));
-        table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[]{"HLA Class I types (HLA-A, HLA-B and HLA-C) are "
-                        + "reported based on blood analysis\n"})
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported HLA Alleles")));
 
-                        .add(createContentDivWithLinkThree("The IMGT/HLA database ",
-                                "https://www.ebi.ac.uk/ipd/imgt/hla/",
-                                " is used as a "
-                                        + "reference set of Human MHC class I alleles. HLA typing is done to 4-digits, which means it uniquely "
-                                        + "identifies a specific protein, but ignores synonymous variants (6 digits) and intronic differences "
-                                        + "(8 digits).",
-                                "https://www.ebi.ac.uk/ipd/imgt/hla/"))));
+        table.addCell(TableUtil.createLayoutCell()
+                .add(createContentDiv(new String[] {
+                        "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" })
+
+                        .add(createContentDiv(new String[] {
+                                "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis, "
+                                        + "but also  the tumor status of each of those alleles is indicated (somatic mutations, complete loss, and/or "
+                                        + "allelic imbalance).\n" })
+
+                                .add(createContentDivWithLinkThree("The IMGT/HLA database (",
+                                        "https://www.ebi.ac.uk/ipd/imgt/hla/",
+                                        ") is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
+                                                + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
+                                                + "(6 digits) and intronic differences (8 digits).",
+                                        "https://www.ebi.ac.uk/ipd/imgt/hla/")))));
+
         reportDocument.add(table);
     }
 
@@ -96,9 +104,9 @@ public class QCFailPGXChapter implements ReportChapter {
     private Table createHlaTable(@NotNull HlaAllelesReportingData lilac) {
 
         String title = "HLA Alleles";
-        Table table = TableUtil.createReportContentTable(new float[]{10, 10, 10},
-                new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
-                        tableUtil.createHeaderCell("Germline copies")},
+        Table table = TableUtil.createReportContentTable(new float[] { 10, 10, 10 },
+                new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
+                        tableUtil.createHeaderCell("Germline copies") },
                 ReportResources.CONTENT_WIDTH_WIDE_SMALL);
         if (!lilac.hlaQC().equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
@@ -114,8 +122,8 @@ public class QCFailPGXChapter implements ReportChapter {
                 List<HlaReporting> allele = lilac.hlaAllelesReporting().get(sortAllele);
                 table.addCell(tableUtil.createContentCell(sortAllele));
 
-                Table tableGermlineAllele = new Table(new float[]{1});
-                Table tableGermlineCopies = new Table(new float[]{1});
+                Table tableGermlineAllele = new Table(new float[] { 1 });
+                Table tableGermlineCopies = new Table(new float[] { 1 });
 
                 for (HlaReporting hlaAlleleReporting : HLAAllele.sort(allele)) {
                     tableGermlineAllele.addCell(tableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
@@ -126,6 +134,10 @@ public class QCFailPGXChapter implements ReportChapter {
                 table.addCell(tableUtil.createContentCell(tableGermlineCopies));
             }
         }
+        table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
+                .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
+                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
+                        .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
@@ -136,21 +148,23 @@ public class QCFailPGXChapter implements ReportChapter {
         if (pharmacogeneticsGenotypes.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[]{60, 60, 60, 100, 60},
-                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
+            Table contentTable = TableUtil.createReportContentTable(new float[] { 60, 60, 60, 100, 60 },
+                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
                             tableUtil.createHeaderCell("Function"), tableUtil.createHeaderCell("Linked drugs"),
-                            tableUtil.createHeaderCell("Source")},
+                            tableUtil.createHeaderCell("Source") },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
             Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsGenotypes.keySet());
             for (String sortPharmacogenetics : sortedPharmacogenetics) {
                 List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsGenotypes.get(sortPharmacogenetics);
-                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics));
+                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics.equals("UGT1A1")
+                        ? sortPharmacogenetics + "#"
+                        : sortPharmacogenetics));
 
-                Table tableGenotype = new Table(new float[]{1});
-                Table tableFunction = new Table(new float[]{1});
-                Table tableLinkedDrugs = new Table(new float[]{1});
-                Table tableSource = new Table(new float[]{1});
+                Table tableGenotype = new Table(new float[] { 1 });
+                Table tableFunction = new Table(new float[] { 1 });
+                Table tableLinkedDrugs = new Table(new float[] { 1 });
+                Table tableSource = new Table(new float[] { 1 });
 
                 for (PeachGenotype peachGenotype : pharmacogeneticsGenotypeList) {
                     tableGenotype.addCell(tableUtil.createTransparentCell(peachGenotype.haplotype()));
@@ -166,6 +180,10 @@ public class QCFailPGXChapter implements ReportChapter {
                 contentTable.addCell(tableUtil.createContentCell(tableLinkedDrugs));
                 contentTable.addCell(tableUtil.createContentCell(tableSource));
             }
+            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                    .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical "
+                            + "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
+                            .setTextAlignment(TextAlignment.LEFT))));
             return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         }
     }
@@ -186,7 +204,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-                                                          @NotNull String link) {
+            @NotNull String link) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
@@ -197,7 +215,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
     private Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-                                                     @NotNull String link) {
+            @NotNull String link) {
         Div div = new Div();
 
         div.add(createParaGraphWithLinkThree(string1, string2, string3, link));
