@@ -1,41 +1,11 @@
 steps:
-  - id: 'Populate Maven cache from bucket'
-    name: 'gcr.io/cloud-builders/gsutil'
-    args:
-      - '-m'
-      - 'rsync'
-      - '-r'
-      - 'gs://hmf-build-caches/oncoact/.m2'
-      - '/cache/.m2'
-    volumes:
-      - path: '/cache/.m2'
-        name: 'm2_cache'
-
-  - id: 'Build the jars'
-    name: 'maven:3.9.1-eclipse-temurin-11'
-    entrypoint: mvn
-    args: [ 'package', '--batch-mode' ]
-    volumes:
-      - path: '/cache/.m2'
-        name: 'm2_cache'
-    env:
-      - MAVEN_OPTS=-Dmaven.repo.local=/cache/.m2
-
-  - id: 'Refresh bucket from local Maven cache after build'
-    name: 'gcr.io/cloud-builders/gsutil'
-    args:
-      - '-m'
-      - 'rsync'
-      - '-r'
-      - '/cache/.m2'
-      - 'gs://hmf-build-caches/oncoact/.m2/'
-    volumes:
-      - path: '/cache/.m2'
-        name: 'm2_cache'
+  - id: 'Build the jars using maven-cache'
+    name: 'eu.gcr.io/hmf-build/maven-cache/alpine-java11'
+    args: [ 'package --batch-mode' ]
 
   - id: 'Build image with public resources'
     name: 'eu.gcr.io/hmf-build/docker-tag'
-    args: [ 'eu.gcr.io/hmf-build/oncoact', '$TAG_NAME', 'DockerfilePublic']
+    args: [ 'eu.gcr.io/hmf-build/oncoact', '$TAG_NAME', 'DockerfilePublic' ]
 
   - id: 'Build image with private resources'
     name: 'eu.gcr.io/hmf-build/docker-tag'
