@@ -118,28 +118,28 @@ public class VariantEvidence {
 
     @NotNull
     private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report,
-            @Nullable String range) {
+            @NotNull String range) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
         boolean isCanonical;
         Integer rangeRank;
-
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
-
             isGermline = reportable.source() == ReportableVariantSource.GERMLINE;
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
             rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
-        } else {
+        } else if (variant instanceof PurpleVariant) {
             PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;
             driverInterpretation = DriverInterpretation.LOW;
             transcript = purple.canonicalImpact().transcript();
             isCanonical = true;
             rangeRank = determineRangeRank(range, purple.canonicalImpact().affectedCodon(), purple.canonicalImpact().affectedExon());
+        } else {
+            throw new IllegalArgumentException(String.format("Variant of type '%s' not supported", variant.getClass().getName()));
         }
 
         return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
@@ -153,15 +153,17 @@ public class VariantEvidence {
                 .build();
     }
 
-    private static Integer determineRangeRank(@Nullable String range, @Nullable Integer affectedCodon, @Nullable Integer affectedExon) {
-        if (Objects.equals(range, "codon")) {
-            return affectedCodon;
-        } else if (Objects.equals(range, "exon")) {
-            return affectedExon;
-        } else if (Objects.equals(range, "hotspot") || Objects.equals(range, "gene")) {
-            return null;
-        } else {
-            throw new IllegalStateException("Unknown range string detected: " + range);
+    private static Integer determineRangeRank(@NotNull String range, @Nullable Integer affectedCodon, @Nullable Integer affectedExon) {
+        switch (range) {
+            case "codon":
+                return affectedCodon;
+            case "exon":
+                return affectedExon;
+            case "hotspot":
+            case "gene":
+                return null;
+            default:
+                throw new IllegalStateException("Unknown range string detected: " + range);
         }
     }
 
