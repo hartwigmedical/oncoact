@@ -118,7 +118,7 @@ public class VariantEvidence {
 
     @NotNull
     private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report,
-            @Nullable String range) {
+            @NotNull String range) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
@@ -153,15 +153,17 @@ public class VariantEvidence {
                 .build();
     }
 
-    private static Integer determineRangeRank(@Nullable String range, @Nullable Integer affectedCodon, @Nullable Integer affectedExon) {
-        if (Objects.equals(range, "codon")) {
-            return affectedCodon;
-        } else if (Objects.equals(range, "exon")) {
-            return affectedExon;
-        } else if (Objects.equals(range, "hotspot") || Objects.equals(range, "gene")) {
-            return null;
-        } else {
-            throw new IllegalStateException("Unknown range string detected: " + range);
+    private static Integer determineRangeRank(@NotNull String range, @Nullable Integer affectedCodon, @Nullable Integer affectedExon) {
+        switch (range) {
+            case "codon":
+                return affectedCodon;
+            case "exon":
+                return affectedExon;
+            case "hotspot":
+            case "gene":
+                return null;
+            default:
+                throw new IllegalStateException("Unknown range string detected: " + range);
         }
     }
 
