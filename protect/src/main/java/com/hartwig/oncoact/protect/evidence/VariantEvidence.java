@@ -124,22 +124,22 @@ public class VariantEvidence {
         String transcript;
         boolean isCanonical;
         Integer rangeRank;
-
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
-
             isGermline = reportable.source() == ReportableVariantSource.GERMLINE;
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();
             rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
-        } else {
+        } else if (variant instanceof PurpleVariant) {
             PurpleVariant purple = (PurpleVariant) variant;
             isGermline = false;
             driverInterpretation = DriverInterpretation.LOW;
             transcript = purple.canonicalImpact().transcript();
             isCanonical = true;
             rangeRank = determineRangeRank(range, purple.canonicalImpact().affectedCodon(), purple.canonicalImpact().affectedExon());
+        } else {
+            throw new IllegalArgumentException(String.format("Variant of type '%s' not supported", variant.getClass().getName()));
         }
 
         return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
