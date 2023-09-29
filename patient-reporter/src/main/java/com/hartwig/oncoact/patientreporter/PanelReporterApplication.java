@@ -3,13 +3,14 @@ package com.hartwig.oncoact.patientreporter;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
-import com.hartwig.oncoact.patientreporter.panel.ImmutableQCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
@@ -75,9 +76,7 @@ public class PanelReporterApplication {
 
     private void generatePanelAnalysedReport() throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(config.comments(),
-                config.isCorrectedReport(),
-                config.isCorrectedReportExtern(),
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(
                 config.expectedPipelineVersion(),
                 config.overridePipelineVersion(),
                 config.pipelineVersionFile(),
@@ -98,11 +97,7 @@ public class PanelReporterApplication {
 
     private void generatePanelQCFail() throws IOException {
         PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config), reportDate);
-        PanelFailReport report = reporter.run(config.comments(),
-                config.isCorrectedReport(),
-                config.isCorrectedReportExtern(),
-                config.panelQcFailReason(),
-                config.sampleFailReasonComment());
+        PanelFailReport report = reporter.run(config.panelQcFailReason(), config.sampleFailReasonComment());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
@@ -127,12 +122,17 @@ public class PanelReporterApplication {
 
         PatientReporterData lamaPatientData = LamaJson.read(config.lamaJson());
         PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
+        var correctionJson = config.correctionJson();
+        var correction = correctionJson != null ? Correction.read(correctionJson) : null;
 
-        return ImmutableQCFailPanelReportData.builder()
+        return QCFailPanelReportData.builder()
                 .lamaPatientData(lamaPatientData)
                 .diagnosticSiloPatientData(diagnosticPatientData)
                 .signaturePath(config.signature())
                 .logoCompanyPath(config.companyLogo())
+                .comments(Optional.ofNullable(correction).map(Correction::comments))
+                .correctedReport(Optional.ofNullable(correction).map(Correction::isCorrectedReport).orElse(false))
+                .correctedReportExtern(Optional.ofNullable(correction).map(Correction::isCorrectedReportExtern).orElse(false))
                 .build();
     }
 }

@@ -22,8 +22,7 @@ public class PanelFailReporter {
     }
 
     @NotNull
-    public PanelFailReport run(@Nullable String comments, boolean correctedReport, boolean correctedReportExtern,
-            @Nullable PanelFailReason reason, @Nullable String sampleFailReasonComment) throws IOException {
+    public PanelFailReport run(@Nullable PanelFailReason reason, @Nullable String sampleFailReasonComment) throws IOException {
         assert reason != null;
 
         FailedReason failedDatabase = ImmutableFailedReason.builder()
@@ -34,9 +33,9 @@ public class PanelFailReporter {
 
         return ImmutablePanelFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
-                .comments(Optional.ofNullable(comments))
-                .isCorrectedReport(correctedReport)
-                .isCorrectedReportExtern(correctedReportExtern)
+                .comments(reportData.comments())
+                .isCorrectedReport(reportData.correctedReport())
+                .isCorrectedReportExtern(reportData.correctedReportExtern())
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .reportDate(reportDate)
