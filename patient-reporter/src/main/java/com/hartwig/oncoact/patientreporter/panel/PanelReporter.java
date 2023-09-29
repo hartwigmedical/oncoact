@@ -42,6 +42,7 @@ public class PanelReporter {
                 .isCorrectedReportExtern(reportData.correctedReportExtern())
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
+                .lamaPatientData(reportData.lamaPatientData())
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .build();

@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
+import static com.hartwig.oncoact.patientreporter.ReporterApplication.PANEL;
+
 import java.io.File;
 import java.nio.file.Files;
 
@@ -56,6 +58,7 @@ public interface PanelReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
+        options.addOption(PANEL, false, "Flag to go into panel mode");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 

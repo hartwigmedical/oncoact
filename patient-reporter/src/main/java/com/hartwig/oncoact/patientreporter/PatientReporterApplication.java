@@ -16,7 +16,6 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.oncoact.util.Formats;
 
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -30,8 +29,6 @@ public class PatientReporterApplication {
 
     public static final String VERSION = PatientReporterApplication.class.getPackage().getImplementationVersion();
 
-    static final String PANEL = "panel";
-
     // Uncomment this line when generating an example report using CFReportWriterTest
     //  public static final String VERSION = "8.0";
 
@@ -40,23 +37,17 @@ public class PatientReporterApplication {
 
         Options options = PatientReporterConfig.createOptions();
 
+        PatientReporterConfig config;
         try {
-            var cmd = new CliAndPropertyParser().parse(options, args);
-            boolean isPanel = cmd.hasOption(PANEL);
-            if (isPanel) {
-                var config = PanelReporterConfig.createConfig(cmd);
-                LOGGER.info("Panel reporter config is: {}", config);
-                new PanelReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
-            } else {
-                var config = PatientReporterConfig.createConfig(cmd);
-                LOGGER.info("Patient reporter config is: {}", config);
-                new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
-            }
+            config = PatientReporterConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PatientReporter", options);
             throw new IllegalArgumentException("Unexpected error, check inputs");
         }
+
+        LOGGER.info("Patient reporter config is: {}", config);
+        new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
     }
 
     @NotNull
