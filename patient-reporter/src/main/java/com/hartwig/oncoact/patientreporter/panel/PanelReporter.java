@@ -23,9 +23,8 @@ public class PanelReporter {
     }
 
     @NotNull
-    public PanelReport run(@Nullable String comments, boolean correctedReport,
-            boolean correctedReportExtern, @NotNull String expectedPipelineVersion, boolean overridePipelineVersion,
-            @Nullable String pipelineVersionFile, boolean requirePipelineVersionFile, @NotNull String panelVCFname) throws IOException {
+    public PanelReport run(@NotNull String expectedPipelineVersion, boolean overridePipelineVersion, @Nullable String pipelineVersionFile,
+            boolean requirePipelineVersionFile, @NotNull String panelVCFname) throws IOException {
 
         String pipelineVersion = null;
         if (requirePipelineVersionFile) {
@@ -38,11 +37,12 @@ public class PanelReporter {
                 .qsFormNumber(QsFormNumber.FOR_344.display())
                 .pipelineVersion(pipelineVersion)
                 .VCFFilename(panelVCFname)
-                .comments(Optional.ofNullable(comments))
-                .isCorrectedReport(correctedReport)
-                .isCorrectedReportExtern(correctedReportExtern)
+                .comments(reportData.comments())
+                .isCorrectedReport(reportData.correctedReport())
+                .isCorrectedReportExtern(reportData.correctedReportExtern())
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
+                .lamaPatientData(reportData.lamaPatientData())
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .build();

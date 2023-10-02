@@ -9,5 +9,7 @@ import org.jetbrains.annotations.Nullable;
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class QCFailPanelReportData implements PanelData {
-
+    public static ImmutableQCFailPanelReportData.Builder builder() {
+        return ImmutableQCFailPanelReportData.builder();
+    }
 }

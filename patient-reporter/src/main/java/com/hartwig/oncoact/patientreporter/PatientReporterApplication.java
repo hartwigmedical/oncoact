@@ -37,13 +37,13 @@ public class PatientReporterApplication {
 
         Options options = PatientReporterConfig.createOptions();
 
-        PatientReporterConfig config = null;
+        PatientReporterConfig config;
         try {
             config = PatientReporterConfig.createConfig(new CliAndPropertyParser().parse(options, args));
         } catch (ParseException exception) {
             LOGGER.warn(exception);
             new HelpFormatter().printHelp("PatientReporter", options);
-            System.exit(1);
+            throw new IllegalArgumentException("Unexpected error, check inputs");
         }
 
         LOGGER.info("Patient reporter config is: {}", config);

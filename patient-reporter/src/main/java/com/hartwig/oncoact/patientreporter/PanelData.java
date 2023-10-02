@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.util.Optional;
+
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
@@ -19,4 +21,11 @@ public interface PanelData {
 
     @NotNull
     String logoCompanyPath();
+
+    @NotNull
+    Optional<String> comments();
+
+    boolean correctedReport();
+
+    boolean correctedReportExtern();
 }

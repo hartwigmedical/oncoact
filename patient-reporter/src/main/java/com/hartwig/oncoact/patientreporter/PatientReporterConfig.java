@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
+import static com.hartwig.oncoact.patientreporter.ReporterApplication.PANEL;
+
 import java.io.File;
 import java.nio.file.Files;
 
@@ -69,6 +71,7 @@ public interface PatientReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
+        options.addOption(PANEL, false, "Flag to go into panel mode");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
@@ -182,6 +185,10 @@ public interface PatientReporterConfig {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
             LOGGER.debug("Switched root level logging to DEBUG");
+        }
+
+        if (cmd.hasOption(PANEL)) {
+            throw new IllegalStateException("Unexpected argument to run panel in patient reporter mode");
         }
 
         boolean isQCFail = cmd.hasOption(QC_FAIL);

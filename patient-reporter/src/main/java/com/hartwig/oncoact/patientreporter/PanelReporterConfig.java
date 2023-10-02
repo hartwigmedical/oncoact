@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
+import static com.hartwig.oncoact.patientreporter.ReporterApplication.PANEL;
+
 import java.io.File;
 import java.nio.file.Files;
 
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
 public interface PanelReporterConfig {
 
     Logger LOGGER = LogManager.getLogger(PanelReporterConfig.class);
@@ -41,9 +43,8 @@ public interface PanelReporterConfig {
     String IS_DIAGNOSTIC = "is_diagnostic";
 
     // Some additional optional params and flags
-    String COMMENTS = "comments";
-    String CORRECTED_REPORT = "corrected_report";
-    String CORRECTED_REPORT_EXTERN = "corrected_report_extern";
+    String HAS_CORRECTIONS = "has_corrections";
+    String CORRECTION_JSON = "correction_json";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
 
@@ -57,6 +58,7 @@ public interface PanelReporterConfig {
     static Options createOptions() {
         Options options = new Options();
 
+        options.addOption(PANEL, false, "Flag to go into panel mode");
         options.addOption(OUTPUT_DIRECTORY_REPORT, true, "Path to where the PDF report will be written to.");
         options.addOption(OUTPUT_DIRECTORY_DATA, true, "Path to where the data of the report will be written to.");
 
@@ -75,9 +77,8 @@ public interface PanelReporterConfig {
         options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
         options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
 
-        options.addOption(COMMENTS, true, "Additional comments to be added to the report (optional).");
-        options.addOption(CORRECTED_REPORT, false, "If provided, generate a corrected report with corrected name");
-        options.addOption(CORRECTED_REPORT_EXTERN, false, "If provided, generate a corrected report with intern/extern correction");
+        options.addOption(HAS_CORRECTIONS, false, "If provided, expect a correction json.");
+        options.addOption(CORRECTION_JSON, true, "If provided, the path towards a correction json.");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
@@ -120,11 +121,7 @@ public interface PanelReporterConfig {
     PanelFailReason panelQcFailReason();
 
     @Nullable
-    String comments();
-
-    boolean isCorrectedReport();
-
-    boolean isCorrectedReportExtern();
+    String correctionJson();
 
     boolean onlyCreatePDF();
 
@@ -167,6 +164,11 @@ public interface PanelReporterConfig {
             panelVCFFile = nonOptionalValue(cmd, PANEL_VCF_NAME);
         }
 
+        String correctionJson = null;
+        if (cmd.hasOption(HAS_CORRECTIONS)) {
+            correctionJson = nonOptionalFile(cmd, CORRECTION_JSON);
+        }
+
         return ImmutablePanelReporterConfig.builder()
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
@@ -178,9 +180,7 @@ public interface PanelReporterConfig {
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
                 .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
-                .comments(cmd.getOptionValue(COMMENTS))
-                .isCorrectedReport(cmd.hasOption(CORRECTED_REPORT))
-                .isCorrectedReportExtern(cmd.hasOption(CORRECTED_REPORT_EXTERN))
+                .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .requirePipelineVersionFile(requirePipelineVersion)
                 .pipelineVersionFile(pipelineVersion)

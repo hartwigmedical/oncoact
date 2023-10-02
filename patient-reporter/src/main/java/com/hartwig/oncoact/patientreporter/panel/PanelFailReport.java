@@ -13,6 +13,10 @@ import org.jetbrains.annotations.Nullable;
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class PanelFailReport implements PanelReport {
 
+    static ImmutablePanelFailReport.Builder builder() {
+        return ImmutablePanelFailReport.builder();
+    }
+
     @Override
     @NotNull
     public abstract String qsFormNumber();
