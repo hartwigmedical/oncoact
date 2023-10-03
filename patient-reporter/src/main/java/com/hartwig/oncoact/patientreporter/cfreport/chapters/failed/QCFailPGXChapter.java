@@ -67,11 +67,12 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Div().add(new Paragraph()
-                        .add(new Text("The pharmacogenetic haplotypes are reported based on germline analysis. The ").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("The pharmacogenetic haplotypes are reported based on germline analysis. The "))
                         .add(new Text("PharmGKB database ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
-                        .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the ").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the "))
                         .add(new Text("resources").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
-                        .add(new Text(".").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("."))
+                        .addStyle(reportResources.subTextStyle())
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
                 .add(createContentDiv(new String[] {
                 "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
@@ -88,7 +89,7 @@ public class QCFailPGXChapter implements ReportChapter {
                         new Text("HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.").addStyle(reportResources.subTextStyle()))
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
                 .add(new Div().add(new Paragraph()
-                        .add(new Text("The IMGT/HLA ").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("The IMGT/HLA "))
                         .add(new Text("database ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.ebi.ac.uk/ipd/imgt/hla")))
                         .add(new Text("is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, which means it uniquely identifies a specific protein, but ignores synonymous variants (6 digits) and intronic differences (8 digits)."))
                         .addStyle(reportResources.subTextStyle())
