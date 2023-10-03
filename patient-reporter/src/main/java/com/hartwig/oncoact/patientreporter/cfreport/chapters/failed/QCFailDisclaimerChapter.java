@@ -137,11 +137,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
         // @formatter:off
         return new Paragraph()
-                .add(new Text("This analysis is performed on the tumor sample as arrived on "))
+                .add(new Text("This analysis is performed on the tumor sample as arrived on ")).addStyle(reportResources.subTextStyle())
                 .add(new Text(Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("with barcode "))
+                .add(new Text("with barcode ")).addStyle(reportResources.subTextStyle())
                 .add(new Text(failReport.lamaPatientData().getTumorSampleBarcode())).addStyle(reportResources.smallBodyBoldTextStyle())
-                .add(new Text("."))
+                .add(new Text(".")).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
         // @formatter:on
     }
@@ -150,11 +150,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
         // @formatter:off
         return new Paragraph()
-                .add(new Text("This analysis is performed on the reference sample as arrived on "))
+                .add(new Text("This analysis is performed on the reference sample as arrived on ")).addStyle(reportResources.subTextStyle())
                 .add(new Text(Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("with barcode "))
+                .add(new Text("with barcode ")).addStyle(reportResources.subTextStyle())
                 .add(new Text(failReport.lamaPatientData().getReferenceSampleBarcode())).addStyle(reportResources.smallBodyBoldTextStyle())
-                .add(new Text("."))
+                .add(new Text(".")).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
         // @formatter:on
     }
