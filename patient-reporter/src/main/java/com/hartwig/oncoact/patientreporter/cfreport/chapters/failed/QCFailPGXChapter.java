@@ -66,9 +66,10 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDivWithLinkThree(
-                        "The pharmacogenetic haplotypes are reported based on germline analysis. The details on the pharmacogenetic "
-                                + "haplotypes and advice on related treatment adjustments can be downloaded ",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        "The pharmacogenetic haplotypes are reported based on germline analysis. "
+                                + "The PharmGKB database[https://www.pharmgkb.org/] is used to annotate the observed haplotypes. "
+                                + "Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the resources ",
+                        "[https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip]",
                         ".",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
                 .add(createContentDiv(new String[] {
