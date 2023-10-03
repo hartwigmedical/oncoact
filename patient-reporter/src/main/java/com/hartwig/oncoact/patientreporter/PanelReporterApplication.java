@@ -76,12 +76,7 @@ public class PanelReporterApplication {
 
     private void generatePanelAnalysedReport() throws IOException {
         PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(
-                config.expectedPipelineVersion(),
-                config.overridePipelineVersion(),
-                config.pipelineVersionFile(),
-                config.requirePipelineVersionFile(),
-                config.panelVCFname());
+        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(config.panelVCFname());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);

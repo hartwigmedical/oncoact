@@ -210,7 +210,6 @@ public final class ExampleAnalysisTestFactory {
                 .pharmacogeneticsGenotypes(pharmacogeneticsGenotypes)
                 .hlaAllelesReportingData(hlaData)
                 .reportDate(reportDate)
-                .isWGSReport(true)
                 .build();
     }
 

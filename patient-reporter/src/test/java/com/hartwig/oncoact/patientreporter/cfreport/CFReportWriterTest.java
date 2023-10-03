@@ -305,7 +305,6 @@ public class CFReportWriterTest {
                 .hlaAllelesReportingData(ExampleAnalysisTestFactory.createTestHlaData())
                 .purpleQC(Sets.newHashSet(purpleQCStatus))
                 .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSReport(true)
                 .build();
 
         String filename = testReportFilePath(patientReport);

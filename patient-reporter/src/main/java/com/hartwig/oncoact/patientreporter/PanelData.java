@@ -28,4 +28,7 @@ public interface PanelData {
     boolean correctedReport();
 
     boolean correctedReportExtern();
+
+    @NotNull
+    String pipelineVersion();
 }

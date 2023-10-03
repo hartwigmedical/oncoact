@@ -47,12 +47,7 @@ public interface PanelReporterConfig {
     String CORRECTION_JSON = "correction_json";
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
-
-    // parameters for pipeline version
-    String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
-    String PIPELINE_VERSION_FILE = "pipeline_version_file";
-    String EXPECTED_PIPELINE_VERSION = "expected_pipeline_version";
-    String OVERRIDE_PIPELINE_VERSION = "override_pipeline_version";
+    String PIPELINE_VERSION = "pipeline_version";
 
     @NotNull
     static Options createOptions() {
@@ -82,11 +77,7 @@ public interface PanelReporterConfig {
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
-
-        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
-        options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
-        options.addOption(EXPECTED_PIPELINE_VERSION, true, "String of the expected pipeline version");
-        options.addOption(OVERRIDE_PIPELINE_VERSION, false, "if set, the check for pipeline version is overridden");
+        options.addOption(PIPELINE_VERSION, true, "String of the pipeline version");
 
         return options;
     }
@@ -125,15 +116,8 @@ public interface PanelReporterConfig {
 
     boolean onlyCreatePDF();
 
-    boolean requirePipelineVersionFile();
-
-    @Nullable
-    String pipelineVersionFile();
-
     @NotNull
-    String expectedPipelineVersion();
-
-    boolean overridePipelineVersion();
+    String pipelineVersion();
 
     @NotNull
     static PanelReporterConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
@@ -141,8 +125,6 @@ public interface PanelReporterConfig {
             Configurator.setRootLevel(Level.DEBUG);
             LOGGER.debug("Switched root level logging to DEBUG");
         }
-
-        boolean requirePipelineVersion = cmd.hasOption(REQUIRE_PIPELINE_VERSION_FILE);
 
         String panelVCFFile = Strings.EMPTY;
         String pipelineVersion = null;
@@ -157,10 +139,6 @@ public interface PanelReporterConfig {
                 throw new ParseException("Did not recognize QC Fail reason: " + qcFailReasonString);
             }
         } else {
-            if (requirePipelineVersion) {
-                pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
-            }
-
             panelVCFFile = nonOptionalValue(cmd, PANEL_VCF_NAME);
         }
 
@@ -182,10 +160,7 @@ public interface PanelReporterConfig {
                 .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
-                .requirePipelineVersionFile(requirePipelineVersion)
-                .pipelineVersionFile(pipelineVersion)
-                .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))
-                .overridePipelineVersion(cmd.hasOption(OVERRIDE_PIPELINE_VERSION))
+                .pipelineVersion(nonOptionalValue(cmd, PIPELINE_VERSION))
                 .build();
     }
 

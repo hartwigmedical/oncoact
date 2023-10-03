@@ -64,10 +64,7 @@ public final class PatientReporterTestFactory {
                 .clinicalTranscriptsTsv(CLINICAL_TRANSCRIPT_TSV)
                 .correctionJson(CORRECTION_JSON)
                 .onlyCreatePDF(false)
-                .requirePipelineVersionFile(true)
-                .pipelineVersionFile(PIPELINE_VERSION_FILE)
-                .expectedPipelineVersion("5.31")
-                .overridePipelineVersion(false)
+                .pipelineVersion("5.31")
                 .build();
     }
 

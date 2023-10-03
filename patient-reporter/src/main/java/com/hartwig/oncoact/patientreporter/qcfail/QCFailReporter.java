@@ -20,8 +20,6 @@ import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
-import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
-import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,18 +49,6 @@ public class QCFailReporter {
                 .reportExplanation(reason.reportExplanation())
                 .sampleFailReasonComment(config.sampleFailReasonComment())
                 .build();
-
-        Set<QCFailReason> qcFailReasons =
-                Sets.newHashSet(QCFailReason.WGS_TUMOR_PROCESSING_ISSUE, QCFailReason.WGS_PIPELINE_FAIL, QCFailReason.WGS_TCP_FAIL);
-
-        if (qcFailReasons.contains(reason)) {
-            if (config.requirePipelineVersionFile()) {
-                String pipelineVersionFile = config.pipelineVersionFile();
-                assert pipelineVersionFile != null;
-                String pipelineVersion = PipelineVersionFile.majorDotMinorVersion(pipelineVersionFile);
-                PipelineVersion.checkPipelineVersion(pipelineVersion, config.expectedPipelineVersion(), config.overridePipelineVersion());
-            }
-        }
 
         String wgsPurityString = null;
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();

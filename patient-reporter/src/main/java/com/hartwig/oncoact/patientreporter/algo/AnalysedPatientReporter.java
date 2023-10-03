@@ -30,8 +30,6 @@ import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
-import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
@@ -64,13 +62,7 @@ public class AnalysedPatientReporter {
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String pipelineVersion = null;
-        if (config.requirePipelineVersionFile()) {
-            String pipelineVersionFile = config.pipelineVersionFile();
-            assert pipelineVersionFile != null;
-            pipelineVersion = PipelineVersionFile.majorDotMinorVersion(pipelineVersionFile);
-            PipelineVersion.checkPipelineVersion(pipelineVersion, config.expectedPipelineVersion(), config.overridePipelineVersion());
-        }
+        String pipelineVersion = config.pipelineVersion();
 
         GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel(), reportData.clinicalTranscriptsModel());
 

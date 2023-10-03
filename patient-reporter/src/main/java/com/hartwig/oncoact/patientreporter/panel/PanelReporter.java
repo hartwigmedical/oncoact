@@ -1,11 +1,9 @@
 package com.hartwig.oncoact.patientreporter.panel;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
-import com.hartwig.oncoact.pipeline.PipelineVersionFile;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,19 +21,11 @@ public class PanelReporter {
     }
 
     @NotNull
-    public PanelReport run(@NotNull String expectedPipelineVersion, boolean overridePipelineVersion, @Nullable String pipelineVersionFile,
-            boolean requirePipelineVersionFile, @NotNull String panelVCFname) throws IOException {
-
-        String pipelineVersion = null;
-        if (requirePipelineVersionFile) {
-            assert pipelineVersionFile != null;
-            pipelineVersion = PipelineVersionFile.majorDotMinorVersion(pipelineVersionFile);
-            PipelineVersion.checkPipelineVersion(pipelineVersion, expectedPipelineVersion, overridePipelineVersion);
-        }
+    public PanelReport run(@NotNull String panelVCFname) throws IOException {
 
         return ImmutablePanelReport.builder()
                 .qsFormNumber(QsFormNumber.FOR_344.display())
-                .pipelineVersion(pipelineVersion)
+                .pipelineVersion(reportData.pipelineVersion())
                 .VCFFilename(panelVCFname)
                 .comments(reportData.comments())
                 .isCorrectedReport(reportData.correctedReport())
