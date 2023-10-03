@@ -44,7 +44,7 @@ public class QCFailReporter {
         QCFailReason reason = config.qcFailReason();
         assert reason != null;
 
-        FailedReason failedDatabase = ImmutableFailedReason.builder()
+        FailedReason failedDatabase = FailedReason.builder()
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
                 .sampleFailReasonComment(config.sampleFailReasonComment())

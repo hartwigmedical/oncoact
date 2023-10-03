@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class FailedReason {
+    public static ImmutableFailedReason.Builder builder() {
+        return ImmutableFailedReason.builder();
+    }
 
     @NotNull
     public abstract String reportReason();
