@@ -76,12 +76,12 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 patientReport.reportDate(),
                 "."));
 
-        div.add(createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
+        div.add(createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 patientReport.lamaPatientData().getTumorSampleBarcode(),
                 "."));
-        div.add(createContentParagraphTwice("This experiment is performed on the reference sample as arrived on ",
+        div.add(createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
                 Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode()),
@@ -97,17 +97,6 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments, ".")));
 
         return div;
-    }
-
-    @NotNull
-    private Paragraph createParaGraphWithLinkTwo(@NotNull String string1, @NotNull String string2, @NotNull String link,
-            @NotNull String string3) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
@@ -134,7 +123,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 + "of the received biomaterials, and the additional primary tumor location and type information received from the "
                 + "hospital. Further interpretation of these results within the patient’s clinical context is required by a clinician "
                 + "with support of a molecular tumor board."));
-        div.add(createContentParagraph("Based on a implied tumor purity of at least 20%, the test has a sensitivity of >95% for "
+        div.add(createContentParagraph("Based on a implied tumor purity of at least 20%, the test has a sensitivity of > 95% for "
                 + "detection of tumor specific variants, tumor specific gains and losses, tumor specific gene fusions and tumor specific "
                 + "gene/homozygous disruptions."));
         div.add(createContentParagraph("Hartwig Medical Foundation is not responsible for the content of all external data sources "

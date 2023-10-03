@@ -64,7 +64,7 @@ public class AnalysedPatientReporter {
         String roseTsvFile = config.roseTsv();
         String clinicalSummary = roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
 
-        String pipelineVersion = Strings.EMPTY;
+        String pipelineVersion = null;
         if (config.requirePipelineVersionFile()) {
             String pipelineVersionFile = config.pipelineVersionFile();
             assert pipelineVersionFile != null;
@@ -135,7 +135,6 @@ public class AnalysedPatientReporter {
                 .pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap)
                 .hlaAllelesReportingData(hlaReportingData)
                 .reportDate(reportDate)
-                .isWGSReport(true)
                 .build();
 
         printReportState(report);

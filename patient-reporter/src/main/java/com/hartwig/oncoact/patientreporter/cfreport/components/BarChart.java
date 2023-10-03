@@ -26,8 +26,8 @@ public class BarChart extends InlineBarChart {
 
     private static final float HEIGHT = 45;
 
-    private final String lowLabel;
-    private final String highLabel;
+    private static final String LOW_LABEL = "Low";
+    private static final String HIGH_LABEL = "High";
     private final boolean forceMarkerInRoundedRectangle;
     private final ReportResources reportResources;
     private boolean underShootEnabled = false;
@@ -39,12 +39,9 @@ public class BarChart extends InlineBarChart {
     private Indicator[] tickMarks = {};
     private Indicator threshold = null;
 
-    public BarChart(double value, double min, double max, @NotNull String lowLabel, @NotNull String highLabel,
-            boolean forceMarkerInRoundedRectangle, @NotNull ReportResources reportResources) {
+    public BarChart(double value, double min, double max, boolean forceMarkerInRoundedRectangle, @NotNull ReportResources reportResources) {
         super(value, min, max);
         super.setHeight(HEIGHT);
-        this.lowLabel = lowLabel;
-        this.highLabel = highLabel;
         this.forceMarkerInRoundedRectangle = forceMarkerInRoundedRectangle;
         this.reportResources = reportResources;
     }
@@ -130,11 +127,11 @@ public class BarChart extends InlineBarChart {
             Color outlineColor = isEnabled() ? ReportResources.PALETTE_MID_BLUE : ReportResources.PALETTE_LIGHT_GREY;
             Color labelColor = isEnabled() ? ReportResources.PALETTE_BLACK : ReportResources.PALETTE_LIGHT_GREY;
 
-            cv.showTextAligned(new Paragraph(lowLabel).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
+            cv.showTextAligned(new Paragraph(LOW_LABEL).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
                     boundingBox.getLeft(),
                     boundingBox.getTop() - 25,
                     TextAlignment.LEFT);
-            cv.showTextAligned(new Paragraph(highLabel).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
+            cv.showTextAligned(new Paragraph(HIGH_LABEL).addStyle(reportResources.smallBodyHeadingStyle().setFontColor(labelColor)),
                     boundingBox.getRight(),
                     boundingBox.getTop() - 25,
                     TextAlignment.RIGHT);

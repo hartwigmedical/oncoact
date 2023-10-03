@@ -118,7 +118,6 @@ public class QCFailReporter {
                 .hlaAllelesReportingData(hlaReportingData)
                 .purpleQC(purpleQc)
                 .reportDate(reportDate)
-                .isWGSReport(true)
                 .build();
     }
 }

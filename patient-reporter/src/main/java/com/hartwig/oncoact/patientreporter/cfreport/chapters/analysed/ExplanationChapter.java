@@ -47,30 +47,31 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the tumor specific variants")));
 
         table.addCell(TableUtil.createLayoutCell()
-                .add(createParaGraphWithLinkTwo(
-                        "This report is created using NovaSeq 6000 (Illumina) WGS analysis, which data is processed using Hartwig Medical"
-                                + "OncoAct® software and reporting (",
+                .add(new Div().add(createParaGraphWithLinkTwo(
+                        "This report is created using NovaSeq 6000 (Illumina) WGS analysis, which data is processed using Hartwig "
+                                + "MedicalOncoAct® software and reporting.  The OncoAct WGS specification sheet can be downloaded here:",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
-                        "). All activities are performed under ISO17025 accreditation (RVA, L633).\n"))
-                .add(createContentDivWithLink("The OncoAct user manual can be found at ",
-                        ReportResources.MANUAL + ".",
-                        ReportResources.MANUAL))
-                .add(createParaGraphWithLinkTwo(
-                        "\nThe analyses are performed using reference genome " + "version GRCh37 (made available by the ",
+                        ". All activities are performed under ISO17025 accreditation (RVA, L633).")))
+                .add(new Div().add(createParaGraphWithLinkTwo("The OncoAct WGS user manual can be downloaded here: ",
+                        ReportResources.MANUAL,
+                        ReportResources.MANUAL,
+                        ".")))
+                .add(new Div().add(createParaGraphWithLinkTwo(
+                        "The analyses are performed using reference genome version GRCh37 (made available by the ",
                         "Genome Reference Consortium",
                         "https://www.ncbi.nlm.nih.gov/grc/human",
-                        ").\n"))
-                .add(createParaGraphWithLinkThree("\nThe genes and related gene transcripts used for reporting can be downloaded from the ",
+                        ").")))
+                .add(new Div().add(createParaGraphWithLinkTwo(
+                        "The genes and related gene transcripts used for reporting can be downloaded from the ",
                         "resources",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
                         ". In general the canonical transcripts as defined by ",
-                        "http://www.ensembl.org/info/about/legal/disclaimer.html",
-                        "Ensembl",
-                        " are used.\n"))
+                        "https://www.ensembl.org/info/about/index.html",
+                        "Ensembl are used.")))
                 .add(createContentDiv(new String[] {
-                        "Genomic event detection in samples with lower tumor purity is less sensitive. The likelihood of failing to "
-                                + "detect potential events increases in case of a low tumor purity (below 20%).",
+                        "Genomic event detection in samples with lower tumor purity is less sensitive. The likelihood of failing to detect "
+                                + "potential events increases in case of a low (implied) tumor purity (< 20%).",
                         "The implied tumor purity is the percentage of tumor cells in the tumor material based on analysis of whole "
                                 + "genome data." })));
         table.addCell(TableUtil.createLayoutCell());
@@ -100,12 +101,8 @@ public class ExplanationChapter implements ReportChapter {
                 .add(createContentDiv(new String[] {
                         "The 'Biallelic' field indicates whether the variant is present across all alleles in the tumor "
                                 + "(and is including variants with loss-of-heterozygosity)." }))
-                .add(createContentDiv(new String[] { "The 'Driver' field indicates the driver probability on gene level and is calculated "
-                        + "using data in the Hartwig Medical Database. A variant in a gene with high driver likelihood is likely to be "
-                        + "positively selected during the oncogenic process." }))
-                .add(createParaGraphHotspot("he 'Hotspot' field indicates whether a variant is part of the most "
-                                + "sensitive calling tier used in the analyses. The tiers are determined based on different knowledge databases "
-                                + "including ",
+                .add(createParaGraphHotspot("The 'Hotspot' field indicates whether a variant is part of the most sensitive calling "
+                                + "tier used in the analyses. The tiers are determined based on different knowledge databases including ",
                         "CIViC,",
                         "https://civic.readthedocs.io/en/latest/about.html",
                         "DoCM,",
@@ -113,6 +110,9 @@ public class ExplanationChapter implements ReportChapter {
                         "and",
                         " CGI.",
                         "https://www.cancergenomeinterpreter.org/about"))
+                .add(createContentDiv(new String[] { "The 'Driver' field indicates the driver probability on gene level and is calculated "
+                        + "using data in the Hartwig Medical Database. A variant in a gene with high driver likelihood is likely to be "
+                        + "positively selected during the oncogenic process." }))
                 .add(createParaGraphClinvar("The external ",
                         "ClinVar database",
                         "https://www.ncbi.nlm.nih.gov/clinvar/intro/",
@@ -141,21 +141,20 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
                         "The canonical, or otherwise longest transcript that is validly fused, is reported. " }))
-                .add(createContentDivWithLinkThree("Reporting of fusions is restricted to a selection of known fusions and a "
+                .add(new Div().add(createParaGraphWithLinkTwo("Reporting of fusions is restricted to a selection of known fusions and a "
                                 + "selection of pre-defined fusions where one partner is promiscuous in either the 5' or 3' position. "
                                 + "The full list of fusions can be downloaded from the ",
                         "resources",
-                        ".",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
+                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        ".")))
                 .add(createContentDiv(new String[] {
-                        "We additionally select fusions where one partner is promiscuous in either 5' or 3' position.",
                         "The 'Driver' field is set to high in case the fusion is a known fusion, or a fusion where the promiscuous partner "
-                                + "is fused in an exon range that is typically observed in literature.\n"
-                                + "All other fusions get assigned a low driver likelihood." })));
+                                + "is fused in an exon range that is typically observed in literature.",
+                        "All other fusions get assigned a low driver likelihood." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
-                        "Genes are reported as being disrupted if their canonical transcript has been disrupted.",
+                        "Genes are reported as being disrupted when their canonical transcript has been disrupted.",
                         "The range of the disruption is indicated by the intron/exon/promoter region of the break point "
                                 + "and the direction the disruption faces.",
                         "The type of disruption can be INV (inversion), DEL (deletion), DUP (duplication), INS "
@@ -174,24 +173,24 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported HLA Alleles")));
 
         table.addCell(TableUtil.createLayoutCell()
-                .add(createParaGraphVirus("The ",
+                .add(new Div().add(createParaGraphWithLinkTwo("The ",
                         "NCBI viral reference database",
                         "https://www.ncbi.nlm.nih.gov/home/about/",
                         " is used in the analyses to annotate and classify viral insertions. Reporting of viral "
                                 + "insertions is restricted to a selection of clinically relevant viruses (HPV, MCV, HBV, EBV and HHV-8). "
                                 + "Viral insertions are only reported when genomic integration of the virus in the tumor is detected or when "
                                 + "the percentage of the viral genome that is covered is > 90% and the coverage of the virus genome is "
-                                + "higher than the expected mean coverage of the tumor. For reporting of EBV both of the conditions should be met. ")));
+                                + "higher than the expected mean coverage of the tumor. For reporting of EBV both of the conditions should be met. "))));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createParaGraphPGX("The pharmacogenetic haplotypes are reported based on germline analysis. The ",
+                .add(new Div().add(createParaGraphPGX("The pharmacogenetic haplotypes are reported based on germline analysis. The ",
                         "PharmGKB database",
                         "https://www.pharmgkb.org/",
                         " is used to annotate the observed haplotypes. "
                                 + "Details on the pharmacogenetic haplotypes and links to related treatment adjustments can be downloaded "
                                 + "from the ",
                         "resources.",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
+                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
                 .add(createContentDiv(new String[] {
                         "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
                                 + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
@@ -203,12 +202,12 @@ public class ExplanationChapter implements ReportChapter {
                         + "but also  the tumor status of each of those alleles is indicated (somatic mutations, complete loss, and/or "
                         + "allelic imbalance).\n" })
 
-                        .add(createContentDivWithLinkThree("The",
+                        .add(new Div().add(createParaGraphWithLinkTwo("The",
                                 " IMGT/HLA database ",
+                                "https://www.ebi.ac.uk/ipd/imgt/hla/",
                                 "is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
                                         + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
-                                        + "(6 digits) and intronic differences (8 digits).",
-                                "https://www.ebi.ac.uk/ipd/imgt/hla/"))));
+                                        + "(6 digits) and intronic differences (8 digits).")))));
 
         reportDocument.add(table);
     }
@@ -216,17 +215,6 @@ public class ExplanationChapter implements ReportChapter {
     @NotNull
     private Paragraph createSectionTitle(@NotNull String sectionTitle) {
         return new Paragraph(sectionTitle).addStyle(reportResources.smallBodyHeadingStyle());
-    }
-
-    @NotNull
-    private Paragraph createParaGraphVirus(@NotNull String string1, @NotNull String string2, @NotNull String link,
-            @NotNull String string3) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
@@ -249,30 +237,6 @@ public class ExplanationChapter implements ReportChapter {
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string3))
                 .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-    }
-
-    @NotNull
-    private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String link,
-            @NotNull String string3, @NotNull String link1, @NotNull String string4, @NotNull String link2) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3))
-                .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
-                .add(new Text(link2))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-    }
-
-    @NotNull
-    private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-            @NotNull String link) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string3).addStyle(reportResources.subTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
@@ -316,36 +280,11 @@ public class ExplanationChapter implements ReportChapter {
     }
 
     @NotNull
-    private Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-            @NotNull String link) {
-        Div div = new Div();
-
-        div.add(createParaGraphWithLinkThree(string1, string2, string3, link));
-        return div;
-    }
-
-    @NotNull
     private Div createContentDiv(@NotNull String[] contentParagraphs) {
         Div div = new Div();
         for (String s : contentParagraphs) {
             div.add(new Paragraph(s).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING));
         }
         return div;
-    }
-
-    @NotNull
-    private Div createContentDivWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
-        Div div = new Div();
-
-        div.add(createParaGraphWithLink(string1, string2, link));
-        return div;
-    }
-
-    @NotNull
-    private Paragraph createParaGraphWithLink(@NotNull String string1, @NotNull String string2, @NotNull String link) {
-        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
-                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 }
