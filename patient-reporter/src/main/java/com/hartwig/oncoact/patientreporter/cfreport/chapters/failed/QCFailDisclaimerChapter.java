@@ -74,10 +74,10 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(generateHMFAndPathologySampleIDParagraph(failReport));
         div.add(reportIsBasedOnTumorSampleArrivedAt());
+        div.add(resultsAreObtainedBetweenDates());
         if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
-        div.add(resultsAreObtainedBetweenDates());
 
         if (failReport.reason().type() == QCFailType.LOW_QUALITY_BIOPSY) {
             div.add(sampleHasMolecularTumorPercentage());
