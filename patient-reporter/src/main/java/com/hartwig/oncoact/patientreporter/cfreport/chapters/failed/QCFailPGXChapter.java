@@ -66,11 +66,10 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Div().add(new Paragraph().add(
-                                "The pharmacogenetic haplotypes are reported based on germline analysis. The PharmGKB database ")
-                        .addStyle(reportResources.subTextStyle())
-                        .add(new Text("[https://www.pharmgkb.org] ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
-                        .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the resources ").addStyle(reportResources.subTextStyle()))
-                        .add(new Text("[https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip] ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
+                                "The pharmacogenetic haplotypes are reported based on germline analysis. The ").addStyle(reportResources.subTextStyle())
+                        .add(new Text("PharmGKB database ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
+                        .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the ").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("resources ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
                         .add(new Text(".").addStyle(reportResources.subTextStyle()))
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
                 .add(createContentDiv(new String[] {
