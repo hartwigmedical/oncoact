@@ -65,17 +65,19 @@ public class QCFailPGXChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDivWithLinkThree("The pharmacogenetic haplotypes are reported based on germline analysis. "
-                                + "The PharmGKB database[https://www.pharmgkb.org/] is used to annotate the observed haplotypes. "
-                                + "Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the resources ",
-                        "[https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip]",
-                        ".",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
+                .add(new Div().add(new Paragraph().add(
+                                "The pharmacogenetic haplotypes are reported based on germline analysis. The PharmGKB database ")
+                        .addStyle(reportResources.subTextStyle())
+                        .add(new Text("[https://www.pharmgkb.org] ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
+                        .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the resources ").addStyle(reportResources.subTextStyle()))
+                        .add(new Text("[https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip] ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
+                        .add(new Text(".").addStyle(reportResources.subTextStyle()))
+                        .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
                 .add(createContentDiv(new String[] {
-                        "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
-                                + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
-                                + "observed variants, then 'Unresolved Haplotype' is called.",
-                        "Wild type is assumed when no variants are observed." })));
+                "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
+                        + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
+                        + "observed variants, then 'Unresolved Haplotype' is called.",
+                "Wild type is assumed when no variants are observed." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell(1, 1).setHeight(30));
 
@@ -83,8 +85,8 @@ public class QCFailPGXChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
-                        "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" })
-                        .add(createContentDivWithLinkThree("The IMGT/HLA database [",
+                        "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" }).add(
+                        createContentDivWithLinkThree("The IMGT/HLA database [",
                                 "https://www.ebi.ac.uk/ipd/imgt/hla/",
                                 "] is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
                                         + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
