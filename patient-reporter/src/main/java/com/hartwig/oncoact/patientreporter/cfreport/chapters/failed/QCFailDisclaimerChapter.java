@@ -178,8 +178,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsVerifiedByAndAddressedTo() {
-        return createContentParagraph("This report was generated " + failReport.user() + " and is addressed to ",
-                failReport.lamaPatientData().getHospitalAddress() + ".");
+        return createContentParagraph("This report was generated " + failReport.user());
     }
 
     @NotNull
