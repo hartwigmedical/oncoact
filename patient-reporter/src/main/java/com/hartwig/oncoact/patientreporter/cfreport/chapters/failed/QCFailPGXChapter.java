@@ -63,10 +63,11 @@ public class QCFailPGXChapter implements ReportChapter {
         Table table = new Table(UnitValue.createPercentArray(new float[] { 1 }));
         table.setWidth(contentWidth());
 
+        // @formatter:off
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
-                .add(new Div().add(new Paragraph().add(
-                                "The pharmacogenetic haplotypes are reported based on germline analysis. The ").addStyle(reportResources.subTextStyle())
+                .add(new Div().add(new Paragraph()
+                        .add(new Text("The pharmacogenetic haplotypes are reported based on germline analysis. The ").addStyle(reportResources.subTextStyle()))
                         .add(new Text("PharmGKB database ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
                         .add(new Text("is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the ").addStyle(reportResources.subTextStyle()))
                         .add(new Text("resources ").addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI("https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
@@ -93,6 +94,7 @@ public class QCFailPGXChapter implements ReportChapter {
                                 "https://www.ebi.ac.uk/ipd/imgt/hla/"))));
 
         reportDocument.add(table);
+        // @formatter:on
     }
 
     @NotNull
