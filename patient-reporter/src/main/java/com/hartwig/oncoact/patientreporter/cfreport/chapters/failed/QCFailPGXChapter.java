@@ -84,9 +84,9 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
                         "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" })
-                        .add(createContentDivWithLinkThree("The IMGT/HLA database (",
+                        .add(createContentDivWithLinkThree("The IMGT/HLA database [",
                                 "https://www.ebi.ac.uk/ipd/imgt/hla/",
-                                ") is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
+                                "] is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
                                         + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
                                         + "(6 digits) and intronic differences (8 digits).",
                                 "https://www.ebi.ac.uk/ipd/imgt/hla/"))));
