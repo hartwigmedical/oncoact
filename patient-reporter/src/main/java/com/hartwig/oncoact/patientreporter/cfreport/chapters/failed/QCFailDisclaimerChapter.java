@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -169,16 +168,20 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-        // formatter:off
-        return new Paragraph()
-                .add(new Text("This report is generated using the OncoAct reporting pipeline version "))
-                .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("and OncoAct reporting line version "))
-                .add(new Text("1.0").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("."))
-                .addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        // formatter:on
+        var paragraph = new Paragraph();
+        if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
+            paragraph.add(new Text("This report is generated using the molecular pipeline version "))
+                    .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
+                    .add(new Text("and OncoAct reporting pipeline version "))
+                    .add(new Text("1.0").addStyle(reportResources.smallBodyBoldTextStyle()))
+                    .add(new Text("."));
+        } else {
+            paragraph.add(new Text("This report is generated using OncoAct reporting pipeline version "))
+                    .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
+                    .add(new Text("."));
+        }
+        paragraph.addStyle(reportResources.subTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        return paragraph;
     }
 
     @NotNull
@@ -244,29 +247,23 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        //formatter: off
-        return new Paragraph()
-                .add(new Text(regularPart))
+        return new Paragraph().add(new Text(regularPart))
                 .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text("."))
                 .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        //formatter: on
     }
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
             @NotNull String boldPart2) {
-        //formatter: off
-        return new Paragraph()
-                .add(new Text(regularPart))
+        return new Paragraph().add(new Text(regularPart))
                 .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text(regularPart2))
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text("."))
                 .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        //formatter: on
     }
 
 }
