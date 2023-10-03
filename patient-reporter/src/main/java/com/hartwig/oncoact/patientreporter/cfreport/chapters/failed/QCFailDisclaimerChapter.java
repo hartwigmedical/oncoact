@@ -147,7 +147,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the reference sample as arrived on ",
+        return createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
                 " with barcode ",
                 Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
