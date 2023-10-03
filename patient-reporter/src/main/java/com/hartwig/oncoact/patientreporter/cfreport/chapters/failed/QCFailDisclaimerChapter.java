@@ -79,9 +79,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
 
-        if (failReport.reason().type() == QCFailType.LOW_QUALITY_BIOPSY) {
-            div.add(sampleHasMolecularTumorPercentage());
-        }
         div.add(reportIsBasedOnBloodAndTumorSamples());
 
         return div;
@@ -172,22 +169,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph forComplaintsPleaseContactHMF() {
         return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl.");
-    }
-
-    @NotNull
-    private Paragraph sampleHasMolecularTumorPercentage() {
-        String shallowPurity = "N/A";
-        Integer purity = failReport.lamaPatientData().getShallowPurity();
-        if (purity != null) {
-            shallowPurity = Integer.toString(purity);
-        }
-
-        String effectivePurity = failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity + "%";
-        if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
-            return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
-        } else {
-            return createContentParagraph("The tumor percentage based on molecular estimation is ", effectivePurity);
-        }
     }
 
     @NotNull
