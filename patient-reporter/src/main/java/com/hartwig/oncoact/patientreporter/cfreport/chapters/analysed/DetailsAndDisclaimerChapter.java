@@ -8,7 +8,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
-import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
@@ -45,20 +44,21 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
-        table.setWidth(contentWidth());
-        table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsDiv(patientReport)));
-        table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createDisclaimerDiv(patientReport)));
-        reportDocument.add(table);
-
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        reportDocument.add(reportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath()));
-        reportDocument.add(reportSignature.createEndOfReportIndication());
+        var signatureDiv = reportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath());
+        var endOfReportIndication = reportSignature.createEndOfReportIndication();
+        var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
+                .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()))
+                .addCell(TableUtil.createLayoutCell().add(signatureDiv))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(endOfReportIndication));
+        reportDocument.add(chapterTable);
     }
 
     @NotNull
-    private Div createSampleDetailsDiv(@NotNull AnalysedPatientReport patientReport) {
+    private Div createSampleDetailsColumn() {
         Div div = new Div();
 
         div.add(new Paragraph("Sample details").addStyle(reportResources.smallBodyHeadingStyle()));
@@ -100,7 +100,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Div createDisclaimerDiv(@NotNull AnalysedPatientReport patientReport) {
+    private Div createDisclaimerColumn() {
         String pipelineVersion = patientReport.pipelineVersion() == null ? "No pipeline version is known" : patientReport.pipelineVersion();
         Div div = new Div();
 
