@@ -10,7 +10,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailType;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -136,18 +135,28 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        return createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
-                Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
-                " with barcode ",
-                failReport.lamaPatientData().getTumorSampleBarcode());
+        // @formatter:off
+        return new Paragraph()
+                .add(new Text("This analysis is performed on the tumor sample as arrived on "))
+                .add(new Text(Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("with barcode "))
+                .add(new Text(failReport.lamaPatientData().getTumorSampleBarcode())).addStyle(reportResources.smallBodyBoldTextStyle())
+                .add(new Text("."))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        // @formatter:on
     }
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        return createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
-                Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
-                " with barcode ",
-                Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
+        // @formatter:off
+        return new Paragraph()
+                .add(new Text("This analysis is performed on the reference sample as arrived on "))
+                .add(new Text(Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("with barcode "))
+                .add(new Text(failReport.lamaPatientData().getReferenceSampleBarcode())).addStyle(reportResources.smallBodyBoldTextStyle())
+                .add(new Text("."))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        // @formatter:on
     }
 
     @NotNull
@@ -157,8 +166,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-       return new Paragraph("This report is generated using the OncoAct reporting pipeline version ").addStyle(reportResources.smallBodyTextStyle())
-            .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
+        return new Paragraph("This report is generated using the OncoAct reporting pipeline version ").addStyle(reportResources.smallBodyTextStyle())
+                .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text("and OncoAct reporting line version ").addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text("1.0.").addStyle(reportResources.smallBodyBoldTextStyle()))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
