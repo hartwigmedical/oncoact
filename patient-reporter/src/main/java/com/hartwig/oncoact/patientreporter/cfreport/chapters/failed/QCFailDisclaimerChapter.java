@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -163,7 +164,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnBloodAndTumorSamples() {
-        return createContentParagraph("The results stated in this report are based on the tested tumor and reference sample.");
+        return createContentParagraph("The results stated in this report are based on the tested tumor and reference sample");
     }
 
     @NotNull
@@ -188,7 +189,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph forComplaintsPleaseContactHMF() {
-        return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl.");
+        return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl");
     }
 
     @NotNull
@@ -204,17 +205,17 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph testsArePerformedByAccreditedLab() {
         return createContentParagraph(
-                "The data on which this report is based is generated from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation.");
+                "The data on which this report is based is generated from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation");
     }
 
     @NotNull
     private Paragraph testsArePerformedUnderUNI() {
-        return createContentParagraph("UDI-DI: ", failReport.udiDi() + ".");
+        return createContentParagraph("UDI-DI: ", failReport.udiDi());
     }
 
     @NotNull
     private Paragraph testsManual() {
-        return createContentParagraph("The OncoAct user manual can be found at ", ReportResources.MANUAL + ".");
+        return createContentParagraph("The OncoAct user manual can be found at ", ReportResources.MANUAL);
     }
 
     @NotNull
@@ -238,31 +239,34 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraph(@NotNull String text) {
-        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        return new Paragraph(text + ".").addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
     private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+        //formatter: off
+        return new Paragraph()
+                .add(new Text(regularPart))
+                .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("."))
+                .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        //formatter: on
     }
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
             @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(regularPart2)
+        //formatter: off
+        return new Paragraph()
+                .add(new Text(regularPart))
+                .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text(regularPart2))
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("."))
+                .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-    }
-
-    @NotNull
-    private Paragraph createContentParagraphTwiceWithOneBold(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(regularPart2)
-                .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        //formatter: on
     }
 
 }
