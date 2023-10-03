@@ -166,7 +166,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph forQuestionsPleaseContactHMF() {
-        return createContentParagraph("For questions regarding the results described in this report, please contact ",
+        return createContentParagraph("For questions about the contents of this report, please contact ",
                 ReportResources.CONTACT_EMAIL_GENERAL);
     }
 
