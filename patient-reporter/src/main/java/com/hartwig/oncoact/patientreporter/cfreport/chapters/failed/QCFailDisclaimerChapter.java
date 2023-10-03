@@ -135,30 +135,30 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        // @formatter:off
-        return new Paragraph()
-                .add(new Text("This analysis is performed on the tumor sample as arrived on "))
-                .add(new Text(Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("with barcode "))
-                .add(new Text(failReport.lamaPatientData().getTumorSampleBarcode()).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("."))
-                .addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        // @formatter:on
+        var dateString = Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate());
+        var tumorSampleBarcode = failReport.lamaPatientData().getTumorSampleBarcode();
+
+        return createContentParagraphTwice(
+                "This analysis is performed on the tumor sample as arrived on ",
+                dateString + " ",
+                "with barcode ",
+                tumorSampleBarcode);
     }
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        // @formatter:off
-        return new Paragraph()
-                .add(new Text("This analysis is performed on the reference sample as arrived on "))
-                .add(new Text(Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()) + " ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("with barcode "))
-                .add(new Text(failReport.lamaPatientData().getReferenceSampleBarcode()).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("."))
-                .addStyle(reportResources.subTextStyle())
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        // @formatter:on
+        var dateString = Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate());
+        var referenceSampleBarcode = failReport.lamaPatientData().getReferenceSampleBarcode();
+
+        if (referenceSampleBarcode == null) {
+            return createContentParagraph("This analysis is performed on the reference sample as arrived on ", dateString);
+        } else {
+            return createContentParagraphTwice(
+                    "This analysis is performed on the reference sample as arrived on ",
+                    dateString + " ",
+                    "with barcode ",
+                    referenceSampleBarcode);
+        }
     }
 
     @NotNull
@@ -171,7 +171,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         var paragraph = new Paragraph();
         if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
             paragraph.add(new Text("This report is generated using the molecular pipeline version "))
-                    .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
+                    .add(new Text("33.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
                     .add(new Text("and OncoAct reporting pipeline version "))
                     .add(new Text("1.0").addStyle(reportResources.smallBodyBoldTextStyle()))
                     .add(new Text("."));
