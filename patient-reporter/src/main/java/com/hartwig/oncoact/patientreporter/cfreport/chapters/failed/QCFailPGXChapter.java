@@ -65,8 +65,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDivWithLinkThree(
-                        "The pharmacogenetic haplotypes are reported based on germline analysis. "
+                .add(createContentDivWithLinkThree("The pharmacogenetic haplotypes are reported based on germline analysis. "
                                 + "The PharmGKB database[https://www.pharmgkb.org/] is used to annotate the observed haplotypes. "
                                 + "Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the resources ",
                         "[https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip]",
@@ -85,18 +84,12 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
                         "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" })
-
-                        .add(createContentDiv(new String[] {
-                                "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis, "
-                                        + "but also  the tumor status of each of those alleles is indicated (somatic mutations, complete loss, and/or "
-                                        + "allelic imbalance).\n" })
-
-                                .add(createContentDivWithLinkThree("The IMGT/HLA database (",
-                                        "https://www.ebi.ac.uk/ipd/imgt/hla/",
-                                        ") is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
-                                                + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
-                                                + "(6 digits) and intronic differences (8 digits).",
-                                        "https://www.ebi.ac.uk/ipd/imgt/hla/")))));
+                        .add(createContentDivWithLinkThree("The IMGT/HLA database (",
+                                "https://www.ebi.ac.uk/ipd/imgt/hla/",
+                                ") is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
+                                        + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
+                                        + "(6 digits) and intronic differences (8 digits).",
+                                "https://www.ebi.ac.uk/ipd/imgt/hla/"))));
 
         reportDocument.add(table);
     }
