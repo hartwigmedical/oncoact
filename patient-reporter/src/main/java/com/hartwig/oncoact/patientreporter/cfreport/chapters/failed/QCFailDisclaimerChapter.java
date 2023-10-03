@@ -94,8 +94,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsGeneratedByPatientReporterVersion());
         failReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
         div.add(resubmitSample());
-        div.add(forQuestionsPleaseContactHMF());
         div.add(forComplaintsPleaseContactHMF());
+        div.add(forQuestionsPleaseContactHMF());
         return div;
     }
 
