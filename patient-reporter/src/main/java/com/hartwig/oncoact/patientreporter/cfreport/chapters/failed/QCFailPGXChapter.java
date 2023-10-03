@@ -134,10 +134,6 @@ public class QCFailPGXChapter implements ReportChapter {
                 table.addCell(tableUtil.createContentCell(tableGermlineCopies));
             }
         }
-        table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
-                .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
-                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
-                        .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
