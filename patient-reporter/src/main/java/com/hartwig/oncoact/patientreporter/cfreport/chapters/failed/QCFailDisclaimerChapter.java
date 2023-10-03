@@ -136,7 +136,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
+        return createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
                 Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
                 " with barcode ",
                 failReport.lamaPatientData().getTumorSampleBarcode());
