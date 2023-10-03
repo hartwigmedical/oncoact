@@ -168,11 +168,16 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-        return new Paragraph("This report is generated using the OncoAct reporting pipeline version ").addStyle(reportResources.smallBodyTextStyle())
+        // formatter:off
+        return new Paragraph()
+                .add(new Text("This report is generated using the OncoAct reporting pipeline version "))
                 .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("and OncoAct reporting line version ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(new Text("1.0.").addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("and OncoAct reporting line version "))
+                .add(new Text("1.0").addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("."))
+                .addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        // formatter:on
     }
 
     @NotNull
