@@ -72,8 +72,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(generateHMFAndPathologySampleIDParagraph(failReport));
-        div.add(reportIsBasedOnTumorSampleArrivedAt());
         div.add(resultsAreObtainedBetweenDates());
+        div.add(reportIsBasedOnTumorSampleArrivedAt());
         if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
