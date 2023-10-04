@@ -166,9 +166,10 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
+        var pipelineVersion = failReport.pipelineVersion() == null ? "No pipeline version is known" : failReport.pipelineVersion();
         if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
             return createContentParagraphTwice("This report is generated using the molecular pipeline version ",
-                    "33.0",
+                    pipelineVersion + " ",
                     "and OncoAct reporting pipeline version ",
                     "1.0");
         } else {

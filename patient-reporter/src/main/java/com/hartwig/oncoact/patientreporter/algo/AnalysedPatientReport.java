@@ -35,9 +35,6 @@ public abstract class AnalysedPatientReport implements PatientReport {
     @NotNull
     public abstract String specialRemark();
 
-    @Nullable
-    public abstract String pipelineVersion();
-
     @NotNull
     public abstract GenomicAnalysis genomicAnalysis();
 

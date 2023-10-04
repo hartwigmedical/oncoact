@@ -104,6 +104,7 @@ public class QCFailReporter {
                 .hlaAllelesReportingData(hlaReportingData)
                 .purpleQC(purpleQc)
                 .reportDate(reportDate)
+                .pipelineVersion(config.pipelineVersion())
                 .build();
     }
 }

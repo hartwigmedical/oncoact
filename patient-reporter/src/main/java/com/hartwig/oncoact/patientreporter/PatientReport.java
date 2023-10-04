@@ -20,6 +20,9 @@ public interface PatientReport {
     @Nullable
     PatientInformationResponse diagnosticSiloPatientData();
 
+    @Nullable
+    String pipelineVersion();
+
     @NotNull
     default String user() {
         String systemUser = System.getProperty("user.name");
@@ -93,4 +96,6 @@ public interface PatientReport {
 
     @NotNull
     String reportDate();
+
+
 }
