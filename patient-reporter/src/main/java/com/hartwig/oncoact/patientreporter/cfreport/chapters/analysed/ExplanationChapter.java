@@ -49,7 +49,7 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Div().add(createParaGraphWithLinkTwo(
                         "This report is created using NovaSeq 6000 (Illumina) WGS analysis, which data is processed using Hartwig "
-                                + "MedicalOncoAct® software and reporting.  The OncoAct WGS specification sheet can be downloaded here:",
+                                + "MedicalOncoAct® software and reporting. The OncoAct WGS specification sheet can be downloaded here:",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
                         ". All activities are performed under ISO17025 accreditation (RVA, L633).")))

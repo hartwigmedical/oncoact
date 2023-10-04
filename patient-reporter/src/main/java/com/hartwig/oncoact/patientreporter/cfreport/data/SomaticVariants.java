@@ -215,7 +215,7 @@ public final class SomaticVariants {
         } else if (clonalLikelihood > 0.05) {
             return "5-10%";
         } else {
-            return "<5%";
+            return "< 5%";
         }
     }
 
