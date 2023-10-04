@@ -93,6 +93,4 @@ public interface PatientReport {
 
     @NotNull
     String reportDate();
-
-    boolean isWGSReport();
 }

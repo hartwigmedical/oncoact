@@ -60,12 +60,7 @@ public interface PatientReporterConfig {
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
     String IS_DIAGNOSTIC = "is_diagnostic";
-
-    // parameters for pipeline version
-    String REQUIRE_PIPELINE_VERSION_FILE = "require_pipeline_version_file";
-    String PIPELINE_VERSION_FILE = "pipeline_version_file";
-    String EXPECTED_PIPELINE_VERSION = "expected_pipeline_version";
-    String OVERRIDE_PIPELINE_VERSION = "override_pipeline_version";
+    String PIPELINE_VERSION = "pipeline_version";
 
     @NotNull
     static Options createOptions() {
@@ -104,10 +99,7 @@ public interface PatientReporterConfig {
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
 
-        options.addOption(REQUIRE_PIPELINE_VERSION_FILE, false, "Boolean for determine pipeline version file is required");
-        options.addOption(PIPELINE_VERSION_FILE, true, "Path towards the pipeline version (optional)");
-        options.addOption(EXPECTED_PIPELINE_VERSION, true, "String of the expected pipeline version");
-        options.addOption(OVERRIDE_PIPELINE_VERSION, false, "if set, the check for pipeline version is overridden");
+        options.addOption(PIPELINE_VERSION, true, "String of the pipeline version");
 
         return options;
     }
@@ -170,15 +162,8 @@ public interface PatientReporterConfig {
 
     boolean onlyCreatePDF();
 
-    boolean requirePipelineVersionFile();
-
-    @Nullable
-    String pipelineVersionFile();
-
     @NotNull
-    String expectedPipelineVersion();
-
-    boolean overridePipelineVersion();
+    String pipelineVersion();
 
     @NotNull
     static PatientReporterConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
@@ -192,7 +177,6 @@ public interface PatientReporterConfig {
         }
 
         boolean isQCFail = cmd.hasOption(QC_FAIL);
-        boolean requirePipelineVersion = cmd.hasOption(REQUIRE_PIPELINE_VERSION_FILE);
         QCFailReason qcFailReason = null;
         if (isQCFail) {
             String qcFailReasonString = nonOptionalValue(cmd, QC_FAIL_REASON);
@@ -202,27 +186,18 @@ public interface PatientReporterConfig {
             }
         }
 
-        String pipelineVersion = null;
         String orangeJson = Strings.EMPTY;
         String cuppaPlot = Strings.EMPTY;
         String purpleCircosPlot = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
-        boolean addRose = false;
         String roseTsv = null;
 
         String germlineReportingTsv = Strings.EMPTY;
         String clinicalTranscriptsTsv = Strings.EMPTY;
 
         if (isQCFail && qcFailReason.isDeepWGSDataAvailable()) {
-            if (requirePipelineVersion) {
-                pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
-            }
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
         } else if (!isQCFail) {
-            if (requirePipelineVersion) {
-                pipelineVersion = nonOptionalFile(cmd, PIPELINE_VERSION_FILE);
-            }
-
             orangeJson = nonOptionalFile(cmd, ORANGE_JSON);
             cuppaPlot = nonOptionalFile(cmd, CUPPA_PLOT);
             purpleCircosPlot = nonOptionalFile(cmd, PURPLE_CIRCOS_PLOT);
@@ -259,10 +234,7 @@ public interface PatientReporterConfig {
                 .clinicalTranscriptsTsv(clinicalTranscriptsTsv)
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
-                .requirePipelineVersionFile(requirePipelineVersion)
-                .pipelineVersionFile(pipelineVersion)
-                .expectedPipelineVersion(cmd.getOptionValue(EXPECTED_PIPELINE_VERSION))
-                .overridePipelineVersion(cmd.hasOption(OVERRIDE_PIPELINE_VERSION))
+                .pipelineVersion(nonOptionalValue(cmd, PIPELINE_VERSION))
                 .build();
     }
 

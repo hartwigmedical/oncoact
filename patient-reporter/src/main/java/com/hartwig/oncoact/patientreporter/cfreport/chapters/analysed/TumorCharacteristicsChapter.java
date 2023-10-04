@@ -94,11 +94,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
         BarChart hrChart =
-                new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, "Low", "High", false, reportResources);
+                new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, false, reportResources);
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
-        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HRD status (" + SINGLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
+        hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HR Deficient (" + SINGLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("Homologous recombination status",
                 hrDeficiencyLabel,
@@ -120,10 +120,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         BarChart satelliteChart = new BarChart(microSatelliteStability,
                 MicrosatelliteStatus.RANGE_MIN,
-                MicrosatelliteStatus.RANGE_MAX,
-                "MSS",
-                "MSI",
-                false,
+                MicrosatelliteStatus.RANGE_MAX, false,
                 reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
@@ -152,7 +149,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         String mutationalLoadString = hasReliablePurity ? NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
-                new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, "Low", "High", false, reportResources);
+                new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, false, reportResources);
         mutationalLoadChart.enabled(hasReliablePurity);
         mutationalLoadChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
@@ -179,10 +176,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 hasReliablePurity ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) : Formats.NA_STRING;
         BarChart mutationalBurdenChart = new BarChart(mutationalBurden,
                 MutationalBurden.RANGE_MIN,
-                MutationalBurden.RANGE_MAX,
-                "Low",
-                "High",
-                false,
+                MutationalBurden.RANGE_MAX, false,
                 reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
@@ -248,7 +242,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
             table.addCell(TableUtil.createLayoutCell()
                     .add(new Div().add(createContentParagraph("The title",
                             " shows the conclusion of the prediction of the molecular"
-                                    + " tissue of origin. If none of the similarity predictions has a likelihood ≥80%, no reliable conclusion"
+                                    + " tissue of origin. If none of the similarity predictions has a likelihood ≥ 80%, no reliable conclusion"
                                     + " can be drawn (‘results inconclusive’)."))));
 
             table.addCell(TableUtil.createLayoutCell());
@@ -257,17 +251,17 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 table.addCell(TableUtil.createLayoutCell()
                         .add(new Div().add(createContentParagraph("The left plot",
                                 " shows the likelihoods (similarity) for all the origin "
-                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥80% "
-                                        + "(a peak in the green outer band of the plot), a reliable prediction (with >75% accuracy) can be drawn. "
-                                        + "Lower likelihoods (<80%) suggest there is similarity with that tissue of origin, but this is less strong "
+                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
+                                        + "(a peak in the green outer band of the plot), a reliable prediction (with > 75% accuracy) can be drawn. "
+                                        + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
                                         + "and there is lower confidence."))));
             } else {
                 table.addCell(TableUtil.createLayoutCell()
                         .add(new Div().add(createContentParagraph("The left plot",
                                 " shows the likelihoods (similarity) for all the origin "
-                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥80% "
-                                        + "(a peak in the green outer band of the plot), a reliable prediction (with >90% accuracy) can be drawn. "
-                                        + "Lower likelihoods (<80%) suggest there is similarity with that tissue of origin, but this is less strong "
+                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
+                                        + "(a peak in the green outer band of the plot), a reliable prediction (with > 90% accuracy) can be drawn. "
+                                        + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
                                         + "and there is lower confidence."))));
             }
 

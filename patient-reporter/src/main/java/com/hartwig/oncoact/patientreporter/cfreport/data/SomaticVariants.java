@@ -193,7 +193,7 @@ public final class SomaticVariants {
     @NotNull
     public static String clonalString(double clonalLikelihood) {
         if (clonalLikelihood > 0.95) {
-            return ">95%";
+            return "> 95%";
         } else if (clonalLikelihood > 0.9) {
             return "90-95%";
         } else if (clonalLikelihood > 0.8) {
@@ -215,7 +215,7 @@ public final class SomaticVariants {
         } else if (clonalLikelihood > 0.05) {
             return "5-10%";
         } else {
-            return "<5%";
+            return "< 5%";
         }
     }
 

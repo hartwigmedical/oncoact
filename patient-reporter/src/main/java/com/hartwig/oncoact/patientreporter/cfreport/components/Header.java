@@ -43,8 +43,7 @@ public class Header {
         this.reportResources = reportResources;
     }
 
-    public void renderHeader(@NotNull String chapterTitle, @NotNull String pdfTitle, boolean firstPageOfChapter, @NotNull PdfPage page,
-            boolean isWgsReport) {
+    public void renderHeader(@NotNull String chapterTitle, @NotNull String pdfTitle, boolean firstPageOfChapter, @NotNull PdfPage page) {
         PdfCanvas pdfCanvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Canvas cv = new Canvas(pdfCanvas, page.getDocument(), page.getPageSize());
 
@@ -110,7 +109,7 @@ public class Header {
                 Canvas canvas = new Canvas(tpl, document);
 
                 if (!pdfTitle.isEmpty()) {
-                    canvas.add(new Paragraph(pdfTitle).addStyle(reportResources.chapterTitleStyle()));
+                    canvas.add(new Paragraph(pdfTitle).addStyle(reportResources.reportTitleStyle()));
                 }
 
                 canvas.add(new Paragraph(text).addStyle(reportResources.chapterTitleStyle()));

@@ -24,7 +24,7 @@ public class PanelFailReporter {
     public PanelFailReport run(@Nullable PanelFailReason reason, @Nullable String sampleFailReasonComment) throws IOException {
         assert reason != null;
 
-        FailedReason failedDatabase = ImmutableFailedReason.builder()
+        FailedReason failedDatabase = FailedReason.builder()
                 .reportReason(reason.reportReason())
                 .reportExplanation(reason.reportExplanation())
                 .sampleFailReasonComment(sampleFailReasonComment)
