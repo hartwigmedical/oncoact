@@ -45,10 +45,19 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(createContentBody());
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        reportDocument.add(reportSignature.createSignatureDiv(failReport.logoRVAPath(), failReport.signaturePath()).setMarginTop(15));
-        reportDocument.add(reportSignature.createEndOfReportIndication());
+        var signatureDiv = reportSignature.createSignatureDiv(failReport.logoRVAPath(), failReport.signaturePath());
+
+        var endOfReportIndication = reportSignature.createEndOfReportIndication();
+        var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
+                .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()))
+                .addCell(TableUtil.createLayoutCell().add(signatureDiv))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(endOfReportIndication));
+
+        reportDocument.add(chapterTable);
     }
 
     @NotNull
