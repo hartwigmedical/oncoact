@@ -10,7 +10,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailType;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -46,10 +45,19 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(createContentBody());
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        reportDocument.add(reportSignature.createSignatureDiv(failReport.logoRVAPath(), failReport.signaturePath()).setMarginTop(15));
-        reportDocument.add(reportSignature.createEndOfReportIndication());
+        var signatureDiv = reportSignature.createSignatureDiv(failReport.logoRVAPath(), failReport.signaturePath());
+
+        var endOfReportIndication = reportSignature.createEndOfReportIndication();
+        var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
+                .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()))
+                .addCell(TableUtil.createLayoutCell().add(signatureDiv))
+                .addCell(TableUtil.createLayoutCell())
+                .addCell(TableUtil.createLayoutCell().add(endOfReportIndication));
+
+        reportDocument.add(chapterTable);
     }
 
     @NotNull
@@ -73,15 +81,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
         div.add(generateHMFAndPathologySampleIDParagraph(failReport));
+        div.add(resultsAreObtainedBetweenDates());
         div.add(reportIsBasedOnTumorSampleArrivedAt());
         if (qcFailReasons.contains(failReport.reason())) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
-        div.add(resultsAreObtainedBetweenDates());
 
-        if (failReport.reason().type() == QCFailType.LOW_QUALITY_BIOPSY) {
-            div.add(sampleHasMolecularTumorPercentage());
-        }
         div.add(reportIsBasedOnBloodAndTumorSamples());
 
         return div;
@@ -97,8 +102,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         div.add(reportIsGeneratedByPatientReporterVersion());
         failReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments)));
         div.add(resubmitSample());
-        div.add(forQuestionsPleaseContactHMF());
         div.add(forComplaintsPleaseContactHMF());
+        div.add(forQuestionsPleaseContactHMF());
         return div;
     }
 
@@ -139,55 +144,57 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the tumor sample as arrived on ",
-                Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate()),
-                " with barcode ",
-                failReport.lamaPatientData().getTumorSampleBarcode());
+        var dateString = Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate());
+        var tumorSampleBarcode = failReport.lamaPatientData().getTumorSampleBarcode();
+
+        return createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
+                dateString + " ",
+                "with barcode ",
+                tumorSampleBarcode);
     }
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        return createContentParagraphTwice("This experiment is performed on the reference sample as arrived on ",
-                Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate()),
-                " with barcode ",
-                Formats.formatNullableString(failReport.lamaPatientData().getReferenceSampleBarcode()));
+        var dateString = Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate());
+        var referenceSampleBarcode = failReport.lamaPatientData().getReferenceSampleBarcode();
+
+        if (referenceSampleBarcode == null) {
+            return createContentParagraph("This analysis is performed on the reference sample as arrived on ", dateString);
+        } else {
+            return createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
+                    dateString + " ",
+                    "with barcode ",
+                    referenceSampleBarcode);
+        }
     }
 
     @NotNull
     private Paragraph reportIsBasedOnBloodAndTumorSamples() {
-        return createContentParagraph("The results stated in this report are based on the tested tumor and reference sample.");
+        return createContentParagraph("The results stated in this report are based on the tested tumor and reference sample");
     }
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-        return createContentParagraph("This report is generated using the OncoAct reporting pipeline version ", "1.0.");
+        var pipelineVersion = failReport.pipelineVersion() == null ? "No pipeline version is known" : failReport.pipelineVersion();
+        if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
+            return createContentParagraphTwice("This report is generated using the molecular pipeline version ",
+                    pipelineVersion + " ",
+                    "and OncoAct reporting pipeline version ",
+                    "1.0");
+        } else {
+            return createContentParagraph("This report is generated using OncoAct reporting pipeline version ", "1.0");
+        }
     }
 
     @NotNull
     private Paragraph forQuestionsPleaseContactHMF() {
-        return createContentParagraph("For questions regarding the results described in this report, please contact ",
+        return createContentParagraph("For questions about the contents of this report, please contact ",
                 ReportResources.CONTACT_EMAIL_GENERAL);
     }
 
     @NotNull
     private Paragraph forComplaintsPleaseContactHMF() {
-        return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl.");
-    }
-
-    @NotNull
-    private Paragraph sampleHasMolecularTumorPercentage() {
-        String shallowPurity = "N/A";
-        Integer purity = failReport.lamaPatientData().getShallowPurity();
-        if (purity != null) {
-            shallowPurity = Integer.toString(purity);
-        }
-
-        String effectivePurity = failReport.wgsPurityString() != null ? failReport.wgsPurityString() : shallowPurity + "%";
-        if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
-            return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
-        } else {
-            return createContentParagraph("The tumor percentage based on molecular estimation is ", effectivePurity);
-        }
+        return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl");
     }
 
     @NotNull
@@ -197,24 +204,23 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsVerifiedByAndAddressedTo() {
-        return createContentParagraph("This report was generated " + failReport.user() + " and is addressed to ",
-                failReport.lamaPatientData().getHospitalAddress() + ".");
+        return createContentParagraph("This report was generated " + failReport.user());
     }
 
     @NotNull
     private Paragraph testsArePerformedByAccreditedLab() {
         return createContentParagraph(
-                "The results on this report are based on tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation.");
+                "The data on which this report is based is generated from tests that are performed under NEN-EN-ISO/IEC-17025:2017 TESTING L633 accreditation");
     }
 
     @NotNull
     private Paragraph testsArePerformedUnderUNI() {
-        return createContentParagraph("UDI-DI: ", failReport.udiDi() + ".");
+        return createContentParagraph("UDI-DI: ", failReport.udiDi());
     }
 
     @NotNull
     private Paragraph testsManual() {
-        return createContentParagraph("The OncoAct user manual can be found at ", ReportResources.MANUAL + ".");
+        return createContentParagraph("The OncoAct user manual can be found at ", ReportResources.MANUAL);
     }
 
     @NotNull
@@ -238,30 +244,27 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraph(@NotNull String text) {
-        return new Paragraph(text).addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+        return new Paragraph(text + ".").addStyle(reportResources.smallBodyTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
     private Paragraph createContentParagraph(@NotNull String regularPart, @NotNull String boldPart) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+        return new Paragraph().add(new Text(regularPart))
+                .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("."))
+                .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
             @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(regularPart2)
+        return new Paragraph().add(new Text(regularPart))
+                .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text(regularPart2))
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-    }
-
-    @NotNull
-    private Paragraph createContentParagraphTwiceWithOneBold(@NotNull String regularPart, @NotNull String boldPart,
-            @NotNull String regularPart2, @NotNull String boldPart2) {
-        return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
-                .add(regularPart2)
-                .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
+                .add(new Text("."))
+                .addStyle(reportResources.smallBodyTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
     }
 

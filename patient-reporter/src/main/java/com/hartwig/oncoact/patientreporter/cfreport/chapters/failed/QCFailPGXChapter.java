@@ -65,12 +65,18 @@ public class QCFailPGXChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDivWithLinkThree(
-                        "The pharmacogenetic haplotypes are reported based on germline analysis. The details on the pharmacogenetic "
-                                + "haplotypes and advice on related treatment adjustments can be downloaded ",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
-                        ".",
-                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip"))
+                .add(new Div().add(new Paragraph().add(new Text(
+                                "The pharmacogenetic haplotypes are reported based on germline analysis. The "))
+                        .add(new Text("PharmGKB database ").addStyle(reportResources.urlStyle())
+                                .setAction(PdfAction.createURI("https://www.pharmgkb.org/")))
+                        .add(new Text(
+                                "is used to annotate the observed haplotypes. Details on the pharmacogenetic haplotypes and advice on related treatment adjustments can be downloaded from the "))
+                        .add(new Text("resources").addStyle(reportResources.urlStyle())
+                                .setAction(PdfAction.createURI(
+                                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
+                        .add(new Text("."))
+                        .addStyle(reportResources.subTextStyle())
+                        .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
                 .add(createContentDiv(new String[] {
                         "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
                                 + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
@@ -82,21 +88,11 @@ public class QCFailPGXChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported HLA Alleles")));
 
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[] {
-                        "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis.\n" })
-
-                        .add(createContentDiv(new String[] {
-                                "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis, "
-                                        + "but also  the tumor status of each of those alleles is indicated (somatic mutations, complete loss, and/or "
-                                        + "allelic imbalance).\n" })
-
-                                .add(createContentDivWithLinkThree("The IMGT/HLA database (",
-                                        "https://www.ebi.ac.uk/ipd/imgt/hla/",
-                                        ") is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, "
-                                                + "which means it uniquely identifies a specific protein, but ignores synonymous variants "
-                                                + "(6 digits) and intronic differences (8 digits).",
-                                        "https://www.ebi.ac.uk/ipd/imgt/hla/")))));
-
+                .add(createContentDiv(new String[] {"HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis."}))
+                .add(createContentDivWithLinkThree("The IMGT/HLA ",
+                        "database ",
+                        "is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, which means it uniquely identifies a specific protein, but ignores synonymous variants (6 digits) and intronic differences (8 digits).",
+                        "https://www.ebi.ac.uk/ipd/imgt/hla")));
         reportDocument.add(table);
     }
 
@@ -134,10 +130,6 @@ public class QCFailPGXChapter implements ReportChapter {
                 table.addCell(tableUtil.createContentCell(tableGermlineCopies));
             }
         }
-        table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
-                .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
-                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
-                        .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
