@@ -138,8 +138,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         var dateString = Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate());
         var tumorSampleBarcode = failReport.lamaPatientData().getTumorSampleBarcode();
 
-        return createContentParagraphTwice(
-                "This analysis is performed on the tumor sample as arrived on ",
+        return createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
                 dateString + " ",
                 "with barcode ",
                 tumorSampleBarcode);
@@ -153,8 +152,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         if (referenceSampleBarcode == null) {
             return createContentParagraph("This analysis is performed on the reference sample as arrived on ", dateString);
         } else {
-            return createContentParagraphTwice(
-                    "This analysis is performed on the reference sample as arrived on ",
+            return createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
                     dateString + " ",
                     "with barcode ",
                     referenceSampleBarcode);
@@ -168,20 +166,14 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-        var paragraph = new Paragraph();
         if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
-            paragraph.add(new Text("This report is generated using the molecular pipeline version "))
-                    .add(new Text("33.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                    .add(new Text("and OncoAct reporting pipeline version "))
-                    .add(new Text("1.0").addStyle(reportResources.smallBodyBoldTextStyle()))
-                    .add(new Text("."));
+            return createContentParagraphTwice("This report is generated using the molecular pipeline version ",
+                    "33.0",
+                    "and OncoAct reporting pipeline version ",
+                    "1.0");
         } else {
-            paragraph.add(new Text("This report is generated using OncoAct reporting pipeline version "))
-                    .add(new Text("1.0 ").addStyle(reportResources.smallBodyBoldTextStyle()))
-                    .add(new Text("."));
+            return createContentParagraph("This report is generated using OncoAct reporting pipeline version ", "1.0");
         }
-        paragraph.addStyle(reportResources.subTextStyle()).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-        return paragraph;
     }
 
     @NotNull
