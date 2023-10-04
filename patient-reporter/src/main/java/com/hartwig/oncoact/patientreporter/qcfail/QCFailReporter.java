@@ -50,6 +50,11 @@ public class QCFailReporter {
                 .sampleFailReasonComment(config.sampleFailReasonComment())
                 .build();
 
+        String pipelineVersion = null;
+        if (config.qcFailReason() != null && config.qcFailReason().isDeepWGSDataAvailable()) {
+            pipelineVersion = config.pipelineVersion();
+        }
+
         String wgsPurityString = null;
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
         boolean hasReliablePurity = false;
@@ -104,7 +109,7 @@ public class QCFailReporter {
                 .hlaAllelesReportingData(hlaReportingData)
                 .purpleQC(purpleQc)
                 .reportDate(reportDate)
-                .pipelineVersion(config.pipelineVersion())
+                .pipelineVersion(pipelineVersion)
                 .build();
     }
 }
