@@ -110,8 +110,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
         reportDocument.add(createVirusTable(genomicAnalysis.reportableViruses()));
-        reportDocument.add(createHlaTable(patientReport.hlaAllelesReportingData(), hasReliablePurity));
         reportDocument.add(createPharmacogeneticsGenotypesTable(patientReport.pharmacogeneticsGenotypes()));
+        reportDocument.add(createHlaTable(patientReport.hlaAllelesReportingData(), hasReliablePurity));
     }
 
     @NotNull
