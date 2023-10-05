@@ -33,6 +33,7 @@ public class PanelReporter {
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .build();
