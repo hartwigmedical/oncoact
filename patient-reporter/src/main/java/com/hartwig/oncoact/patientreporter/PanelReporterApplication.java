@@ -128,6 +128,7 @@ public class PanelReporterApplication {
                 .comments(Optional.ofNullable(correction).map(Correction::comments))
                 .correctedReport(Optional.ofNullable(correction).map(Correction::isCorrectedReport).orElse(false))
                 .correctedReportExtern(Optional.ofNullable(correction).map(Correction::isCorrectedReportExtern).orElse(false))
+                .pipelineVersion(config.pipelineVersion())
                 .build();
     }
 }

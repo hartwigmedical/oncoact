@@ -127,7 +127,6 @@ public interface PanelReporterConfig {
         }
 
         String panelVCFFile = Strings.EMPTY;
-        String pipelineVersion = null;
 
         boolean isPanelQCFail = cmd.hasOption(PANEL_QC_FAIL);
         PanelFailReason panelQcFailReason = null;
