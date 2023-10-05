@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PanelQCFailChapter implements ReportChapter {
 
-    private static final String TITLE_REPORT = "OncoAct tumor NGS report \n- Result Report Failed";
+    private static final String TITLE_REPORT = "OncoAct tumor NGS panel \n- Result report failed";
 
     @NotNull
     private final PanelFailReport report;
