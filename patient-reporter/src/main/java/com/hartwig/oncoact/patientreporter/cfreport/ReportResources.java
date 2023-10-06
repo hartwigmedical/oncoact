@@ -135,7 +135,7 @@ public final class ReportResources {
     }
 
     public Style reportTitleStyle() {
-        return new Style().setFont(fontBold()).setFontSize(20).setFontColor(ReportResources.PALETTE_BLUE).setMarginTop(0);
+        return new Style().setFont(fontBold()).setFontSize(17).setFontColor(ReportResources.PALETTE_BLUE).setMarginTop(0);
     }
 
     public Style chapterTitleStyle() {

@@ -127,7 +127,6 @@ public interface PanelReporterConfig {
         }
 
         String panelVCFFile = Strings.EMPTY;
-        String pipelineVersion = null;
 
         boolean isPanelQCFail = cmd.hasOption(PANEL_QC_FAIL);
         PanelFailReason panelQcFailReason = null;
@@ -147,6 +146,11 @@ public interface PanelReporterConfig {
             correctionJson = nonOptionalFile(cmd, CORRECTION_JSON);
         }
 
+        String diagnosticSiloJson = null;
+        if (cmd.hasOption(IS_DIAGNOSTIC)) {
+            diagnosticSiloJson = nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON);
+        }
+
         return ImmutablePanelReporterConfig.builder()
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
@@ -157,7 +161,7 @@ public interface PanelReporterConfig {
                 .panelQcFailReason(panelQcFailReason)
                 .panelVCFname(panelVCFFile)
                 .lamaJson(nonOptionalFile(cmd, LAMA_JSON))
-                .diagnosticSiloJson(nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON))
+                .diagnosticSiloJson(diagnosticSiloJson)
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .pipelineVersion(nonOptionalValue(cmd, PIPELINE_VERSION))

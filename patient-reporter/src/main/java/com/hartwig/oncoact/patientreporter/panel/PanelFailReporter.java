@@ -41,6 +41,8 @@ public class PanelFailReporter {
                 .isWGSReport(false)
                 .panelFailReason(reason)
                 .failExplanation(failedDatabase)
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
+                .lamaPatientData(reportData.lamaPatientData())
                 .build();
     }
 }

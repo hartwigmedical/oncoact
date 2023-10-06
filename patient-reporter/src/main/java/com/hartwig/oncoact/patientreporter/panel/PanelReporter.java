@@ -3,10 +3,8 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.pipeline.PipelineVersion;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PanelReporter {
 
@@ -33,6 +31,7 @@ public class PanelReporter {
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .lamaPatientData(reportData.lamaPatientData())
+                .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .reportDate(reportDate)
                 .isWGSReport(false)
                 .build();
