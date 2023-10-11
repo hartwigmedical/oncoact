@@ -326,7 +326,7 @@ public final class ConclusionAlgo {
                 ActionabilityEntry entry = actionabilityMap.get(keyGain);
 
                 if (entry != null && entry.condition() == Condition.ALWAYS) {
-                    String copies = " (copies: " + (int) gainLoss.maxCopies() + ")";
+                    String copies = " (copies: " + roundCopyNumber(gainLoss.maxCopies(), hasReliablePurity) + ")";
                     String conclusionSentence = "- " + gainLoss.gene() + copies + " " + entry.conclusion();
                     addSentenceToCNVConclusion(conclusionSentence, gainLoss.gene(), conclusion, actionable);
                 }
