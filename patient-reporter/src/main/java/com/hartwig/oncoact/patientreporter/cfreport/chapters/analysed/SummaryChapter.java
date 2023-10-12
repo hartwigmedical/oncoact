@@ -65,13 +65,13 @@ public class SummaryChapter implements ReportChapter {
     public String pdfTitle() {
         if (patientReport.isCorrectedReport()) {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report \n- Low Sensitivity (Corrected)";
+                return "OncoAct tumor WGS report \n- low purity analysis (Corrected)";
             } else {
                 return "OncoAct tumor WGS report (Corrected)";
             }
         } else {
             if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report \n- Low Sensitivity";
+                return "OncoAct tumor WGS report \n- low purity analysis";
             } else {
                 return "OncoAct tumor WGS report";
             }
