@@ -23,7 +23,7 @@ public interface ReportCreated {
     @Nullable
     Boolean hasReliablePurity();
 
-    String outputFileName();
+    String reportDate();
 
     static ImmutableReportCreated.Builder builder() {
         return ImmutableReportCreated.builder();
