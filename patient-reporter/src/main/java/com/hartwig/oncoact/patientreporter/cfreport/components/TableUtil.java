@@ -10,7 +10,6 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,8 +54,8 @@ public final class TableUtil {
 
     @NotNull
     public Table createNoConsentReportTable(@NotNull String tableTitle, @NotNull String peachUnreliable, float tableBottomMargin,
-            float contentWide) {
-        Table table = TableUtil.createReportContentTable(new float[] { 1 }, new Cell[] {}, contentWide);
+                                            float contentWide) {
+        Table table = TableUtil.createReportContentTable(new float[]{1}, new Cell[]{}, contentWide);
         table.setKeepTogether(true);
         table.setMarginBottom(tableBottomMargin);
         table.addCell(createContentCell(new Paragraph(peachUnreliable)));
@@ -65,7 +64,7 @@ public final class TableUtil {
 
     @NotNull
     public Table createNoneReportTable(@NotNull String tableTitle, @Nullable String subTableTitle, float tableBottomMargin,
-            float contentWide) {
+                                       float contentWide) {
         Cell headerCell;
         if (subTableTitle == null) {
             headerCell = new Cell().setBorder(Border.NO_BORDER)
@@ -79,7 +78,7 @@ public final class TableUtil {
                             .setFontColor(ReportResources.PALETTE_LIGHT_GREY)));
         }
 
-        Table table = createReportContentTable(new float[] { 1 }, new Cell[] { headerCell }, contentWide);
+        Table table = createReportContentTable(new float[]{1}, new Cell[]{headerCell}, contentWide);
         table.setKeepTogether(true);
         table.setMarginBottom(tableBottomMargin);
         table.addCell(createDisabledContentCell(new Paragraph(Formats.NONE_STRING)));
@@ -89,7 +88,7 @@ public final class TableUtil {
 
     @NotNull
     public Table createWrappingReportTable(@NotNull String tableTitle, @Nullable String subtitle, @NotNull Table contentTable,
-            float tableBottomMargin) {
+                                           float tableBottomMargin) {
         contentTable.addFooterCell(new Cell(1, contentTable.getNumberOfColumns()).setBorder(Border.NO_BORDER)
                         .setPaddingTop(0)
                         .add(new Paragraph("The table continues on the next page" .toUpperCase()).addStyle(reportResources.subTextStyle())))
