@@ -26,26 +26,28 @@ following format:
 
 The field condition could contain the following values:
 
-| Field                | Description                                                                               |
-|----------------------|-------------------------------------------------------------------------------------------|
-| ONLY_HIGH            | Only display summary sentence for actionable event when it is a high diver event          |
-| ALWAYS               | Always display summary sentence for actionable event independent of the driver likelihood |
-| ALWAYS_NO_ACTIONABLE | Display summary sentence for non-acionable event (independant of driver likelihood)       |
-| OTHER                | Other general summary sentences that should be displayed                                  |
+| Field              | Description                                                                               |
+|--------------------|-------------------------------------------------------------------------------------------|
+| ONLY_HIGH          | Only display summary sentence for actionable event when it is a high diver event          |
+| ALWAYS             | Always display summary sentence for actionable event independent of the driver likelihood |
+| HIGH_NO_ACTIONABLE | Display summary sentence for non-acionable event when it is a high diver event            |
+| OTHER              | Other general summary sentences that should be displayed                                  |
 
 The field type alteration could contain the following values which are specific for genomic alterations/alterations:
 
 | Field                              | Description                                                                                                                    |
 |------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | AMPLIFICATION                      | Actionable when the gene is amplified                                                                                          |
-| EXTRACELLULAR_DOMAIN_MUTATION      | Actionable when a mutation is in the extracellular domain domain                                                               |
+| EXTRACELLULAR_DOMAIN_MUTATION      | Actionable when a mutation is in the extracellular domain                                                                      |
 | FUSION                             | Actionable when the fusion is KNOWN_PAIR, PROMISCUOUS_3, PROMISCUOUS_5, IG_KNOWN_PAIR or IG_PROMISCUOUS as annotated by PURPLE |
 | INACTIVATION                       | Actionable when gene is inactivated                                                                                            |
 | INTERNAL_DELETION                  | Actionable when there is a EXON_DEL_DUP fusion of that gene                                                                    |
-| KINASE_DOMAIN_DUPLICATION          | Actionable when the genomic event determined a kinase domain duplication                                                       |
+| KINASE_DOMAIN_DUPLICATION          | Actionable when the event is a kinase domain duplication                                                                       |
 | LOSS                               | Actionable when the gene is deleted                                                                                            |
 | POSITIVE                           | Actionable when there is a positive call for a specific signature e.g. HRD deficient                                           |
 | RESISTANCE_MUTATION                | Actionable when it is related to a resistence mutation                                                                         |
+| ACTIVATING_MUTATION                | Actionable when gene is activated                                                                                              |
+| ACTIVATING_MUTATION_KRAS_G12C      | Actionable when the mutation is a KRAS G12C mutation                                                                           |
 | ACTIVATING_MUTATION_BRAF_CLASS_I   | Actionable when the mutation is a class I mutation                                                                             |
 | ACTIVATING_MUTATION_BRAF_CLASS_II  | Actionable when the mutation is a class II mutation                                                                            |
 | ACTIVATING_MUTATION_BRAF_CLASS_III | Actionable when the mutation is a class III mutation                                                                           |
@@ -54,19 +56,19 @@ The field type alteration could contain the following values which are specific 
 The field type alteration could also contain the following values which are related to disclaimers or general information which are
 important to know for interpretation of the clinical relevance:
 
-| Field              | Description                                                                                                      |
-|--------------------|------------------------------------------------------------------------------------------------------------------|
-| PURITY             | Disclaimer sentence when there is a lower tumor purity (below the 20%)                                           |
-| PURITY_UNRELIABLE  | Disclaimer sentence when the tumor purity could not be determined reliable                                       |
-| FINDINGS           | A general sentence for what can be detected in the report                                                        |
-| GERMLINE           | A sentence if the small variant is detected in the germline of the patient but also called in the tumor          |
-| CUPPA              | The molecular tissue of origin classifier prediction with a likelihood >= 80%                                    |
-| CUPPA_INCONCLUSIVE | The molecular tissue of origin classifier prediction could not be determined with a likelihood >= 80%            |
-| NO_ONCOGENIC       | The WGS analyse could not detect any oncogenic genomic event/signature                                           |
-| NO_ACTIONABLE      | The WGS analyse could not detect any oncogenic genomic event/signature wich is actionable                        |
-| NO_HRD_CAUSE       | The WGS analyse detected an HRD mutational profile but no genomic event has been found to support this signature |
-| NOT_BIALLELIC      | The WGS analyse called a TSG small variant but the variant itself is not biallelic                               |
-| VUS_REMARK         | A sentence that the detected variant is a VUS                                                                    |
+| Field              | Description                                                                                                     |
+|--------------------|-----------------------------------------------------------------------------------------------------------------|
+| PURITY             | Disclaimer sentence when there is a lower tumor purity (below the 20%)                                          |
+| PURITY_UNRELIABLE  | Disclaimer sentence when the tumor purity could not be determined reliable                                      |
+| FINDINGS           | A general sentence for what can be detected in the report                                                       |
+| GERMLINE           | A sentence if the small variant is detected in the germline of the patient but also called in the tumor         |
+| CUPPA              | The molecular tissue of origin classifier prediction with a likelihood >= 80%                                   |
+| CUPPA_INCONCLUSIVE | The molecular tissue of origin classifier prediction could not be determined with a likelihood >= 80%           |
+| NO_ONCOGENIC       | The WGS analyse could not detect any oncogenic genomic event/signature                                          |
+| NO_ACTIONABLE      | The WGS analyse could not detect any oncogenic genomic event/signature which is actionable                      |
+| NO_HRD_CAUSE       | The WGS analyse detected a HRD mutational profile but no genomic event has been found to support this signature |
+| NOT_BIALLELIC      | The WGS analyse called a TSG small variant but the variant itself is not biallelic                              |
+| VUS_REMARK         | A sentence that the detected variant is a VUS                                                                   |
 
 ## Matching of actionability based on genomic events and signatures
 
@@ -84,9 +86,8 @@ For the small variants, the variants should be meets with the following conditio
 - For variants which are present in TSG genes:
     - The type alteration will be annotated with INACTIVATION
     - Actionability is match when the variant is a high driver variant and condition is annotated with ONLY HIGH. Also, for some of called
-      variants the precense is relevant for clinical interpretation but without actionability, the condition is annotated
-      ALWAYS_NO_ACTIONABLE
-      and will be added into the conclusion unless the driver likelihood.
+      variants the presence is relevant for clinical interpretation but without actionability, the condition is annotated
+      HIGH_NO_ACTIONABLE and will be added into the conclusion unless the driver likelihood.
     - Checking the presence if the variant is bi-allelic. When an intact allele is still present, we notify this for interpretation
 
 Next to this there are some other logics:
@@ -111,8 +112,7 @@ When the CNV is present in the actionability db the gene copy numbers of that ge
 #### Homozygous disruptions
 
 When a gene has been homozygously disrupted according to [LINX](https://github.com/hartwigmedical/hmftools/tree/master/linx/README.md), the
-actionability will always match with the
-type alteration INACTIVATION.
+actionability will always match with the type alteration INACTIVATION.
 
 #### Fusions
 
@@ -152,31 +152,26 @@ When a tumor has the signature microsatellite instability, which means a value >
 
 ###### TMB
 
-When a tumor has the signature tumor mutational burden, which means a value >= 16, according to
-[PURPLE](https://github.com/hartwigmedical/hmftools/tree/master/purple/README.md) the signature is match for actionability.
+When a tumor has the signature tumor mutational burden, which means a value >= 16 the signature is match for actionability.
 
 #### Other matchings for the clinical conclusion
-
-###### Tumor location of the patient
-
-At the start of the clinical conclusion, the patient tumor location is mentioned.
 
 ###### Molecular Tissue of Origin classifier
 
 The molecular tissue of origin classifier predicts the primary tumor location of the patient based on the WGS data by
 [CUPPA](https://github.com/hartwigmedical/hmftools/tree/master/cuppa/README.md). When this classify a tumor location with a likelihood above
-the 80% the primary tumor location is added with
-their likelihood.
+or equals to the 80% the primary tumor location is added with their likelihood.
 However, it is also possible that the likelihood is below the 80% and then the tumor prediction is 'inconclusive'. When 'inconclusive'
-is predicted but with a likelihood above 50% the classification is also added with highest likelihood. When the likleihood is below 50% then
+is predicted but with a likelihood above 50% the classification is also added with highest likelihood. When the likelihood is below 50% then
 only 'inconclusive' is shown in the conclusion.
 
 ###### Disclaimer of tumor purity
 
-For every sample which we have analysed the tumor purity will be determined. For this, there are two flavours:
+For every sample which a WGS analyse has performed, the tumor purity will be determined. For this, there are two flavours:
 
-- when the tumor purity couldn't be reliable determined, this will be mentioned
-- when the tumor purity is below the 20% a disclaimer is added that the result should be interpret with caution
+- when the tumor purity couldn't be reliable determined, this will be mentioned at the beginning of the conclusion
+- when the tumor purity is below the 20% a disclaimer is added at the beginning of the conclusion that the result should be interpret with
+  caution
 
 ###### General information
 
@@ -188,7 +183,7 @@ we could append some extra information:
 
 ## ROSE output
 
-ROSE produces a tsv with the clinical eligibility of that sample
+ROSE produces a txt with the clinical eligibility of that sample
 
 | Field      | Description                           | Example                                                                                                                               |
 |------------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -204,8 +199,7 @@ The following field type alteration didn't interpret currently but present in th
 | RESISTANCE_MUTATION                |
 | ACTIVATING_MUTATION_BRAF_CLASS_I   |
 | ACTIVATING_MUTATION_BRAF_CLASS_II  |
-| ACTIVATING_MUTATION_BRAF_CLASS_III |
-| PROMOTER_MUTATION                  |
+| ACTIVATING_MUTATION_BRAF_CLASS_III | |
 | GERMLINE                           |
 | VUS_REMARK                         |
 
@@ -238,6 +232,12 @@ eu.gcr.io/hmf-build/oncoact/rose:{{semver-version}}
 
 ## Version History and Download Links
 
+- [2.0.0](https://github.com/hartwigmedical/oncoact/releases/tag/rose-2.0.0)
+    - Major changes to datamodel in general (different packages, different classes etc)
+    - Update and support new actionability database
+    - Improve some matching rules based on the resource (eg. TERT promoter region)
+    - Move purity disclaimer add the beginning of the conclusion instead of the end of the conclusion
+    - Remove the duplicate CNV sentence
 - [1.3](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.3)
     - Solve the bug of purity percentage
 - [1.2](https://github.com/hartwigmedical/hmftools/releases/tag/rose-v1.2)
