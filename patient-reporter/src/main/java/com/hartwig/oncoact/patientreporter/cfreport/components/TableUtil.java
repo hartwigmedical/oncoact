@@ -92,12 +92,12 @@ public final class TableUtil {
             float tableBottomMargin) {
         contentTable.addFooterCell(new Cell(1, contentTable.getNumberOfColumns()).setBorder(Border.NO_BORDER)
                         .setPaddingTop(0)
-                        .add(new Paragraph("The table continues on the next page" .toUpperCase()).addStyle(reportResources.subTextStyle())))
+                        .add(new Paragraph("The table continues on the next page".toUpperCase()).addStyle(reportResources.subTextStyle())))
                 .setSkipLastFooter(true);
 
         Table continuedWrapTable = new Table(1).setMinWidth(contentTable.getWidth())
                 .addHeaderCell(new Cell().setBorder(Border.NO_BORDER)
-                        .add(new Paragraph("Continued from the previous page" .toUpperCase()).addStyle(reportResources.subTextStyle())))
+                        .add(new Paragraph("Continued from the previous page".toUpperCase()).addStyle(reportResources.subTextStyle())))
                 .setSkipFirstHeader(true)
                 .addCell(new Cell().add(contentTable).setPadding(0).setBorder(Border.NO_BORDER));
 
