@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TableUtil {
 
-    public static final float TABLE_BOTTOM_MARGIN = 20;
+    public static final float TABLE_BOTTOM_MARGIN = 30;
     public static final float TABLE_BOTTOM_MARGIN_SUMMARY = 0;
     @NotNull
     private final ReportResources reportResources;
@@ -91,7 +91,8 @@ public final class TableUtil {
     public Table createWrappingReportTable(@NotNull String tableTitle, @Nullable String subtitle, @NotNull Table contentTable,
             float tableBottomMargin) {
         contentTable.addFooterCell(new Cell(1, contentTable.getNumberOfColumns()).setBorder(Border.NO_BORDER)
-                        .setPaddingTop(0)
+                        .setPaddingTop(5)
+                        .setPaddingBottom(5)
                         .add(new Paragraph("The table continues on the next page".toUpperCase()).addStyle(reportResources.subTextStyle())))
                 .setSkipLastFooter(true);
 
