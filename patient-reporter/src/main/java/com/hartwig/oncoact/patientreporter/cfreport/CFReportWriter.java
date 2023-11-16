@@ -28,7 +28,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.TumorChara
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailPGXChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelExplanationChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelQCFailChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapter;
@@ -110,9 +109,16 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writePanelAnalysedReport(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException {
         ReportResources reportResources = ReportResources.create();
+        //        ReportChapter[] chapters =
+        //                new ReportChapter[] { new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.ClinicalEvidenceChapter(),
+        //                        new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.GenomicAnalyzerChapter(),
+        //                        new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.TumorCharacteristicsChapter(),
+        //                        new PanelExplanationChapter(reportResources), new SampleAndDisclaimerChapter(report, reportResources) };
+        //
+
         ReportChapter[] chapters =
-                new ReportChapter[] { new PanelChapter(report, reportResources), new PanelExplanationChapter(reportResources),
-                        new SampleAndDisclaimerChapter(report, reportResources) };
+                new ReportChapter[] { new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SummaryChapter(reportResources),
+                        new PanelExplanationChapter(reportResources), new SampleAndDisclaimerChapter(report, reportResources) };
         writePanel(reportResources, report, chapters, outputFilePath);
     }
 

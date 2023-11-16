@@ -19,12 +19,12 @@ public class PanelReporter {
     }
 
     @NotNull
-    public PanelReport run(@NotNull String panelVCFname) throws IOException {
+    public PanelReport run() throws IOException {
 
         return ImmutablePanelReport.builder()
                 .qsFormNumber(QsFormNumber.FOR_344.display())
                 .pipelineVersion(reportData.pipelineVersion())
-                .VCFFilename(panelVCFname)
+                .VCFFilename("")
                 .comments(reportData.comments())
                 .isCorrectedReport(reportData.correctedReport())
                 .isCorrectedReportExtern(reportData.correctedReportExtern())
