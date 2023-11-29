@@ -17,9 +17,6 @@ public abstract class PanelReport implements com.hartwig.oncoact.patientreporter
     @Nullable
     public abstract String pipelineVersion();
 
-    @NotNull
-    public abstract String VCFFilename();
-
     @Override
     @NotNull
     public abstract Optional<String> comments();

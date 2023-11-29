@@ -24,7 +24,6 @@ public class PanelReporter {
         return ImmutablePanelReport.builder()
                 .qsFormNumber(QsFormNumber.FOR_344.display())
                 .pipelineVersion(reportData.pipelineVersion())
-                .VCFFilename("")
                 .comments(reportData.comments())
                 .isCorrectedReport(reportData.correctedReport())
                 .isCorrectedReportExtern(reportData.correctedReportExtern())

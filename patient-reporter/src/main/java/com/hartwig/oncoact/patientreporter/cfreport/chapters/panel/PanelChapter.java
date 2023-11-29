@@ -68,7 +68,6 @@ public class PanelChapter implements ReportChapter {
         div.setKeepTogether(true);
 
         div.add(new Paragraph("Data result file information").addStyle(reportResources.dataHighlightStyle()));
-        div.add(createContentParagraph("VCF file name: ", report.VCFFilename()));
 
         return div;
     }

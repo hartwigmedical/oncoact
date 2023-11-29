@@ -231,7 +231,6 @@ public class CFReportWriterTest {
                 .lamaPatientData(testReportData.lamaPatientData())
                 .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
                 .qsFormNumber("form")
-                .VCFFilename("test.vcf")
                 .isCorrectedReport(false)
                 .isCorrectedReportExtern(false)
                 .signaturePath(testReportData.signaturePath())
