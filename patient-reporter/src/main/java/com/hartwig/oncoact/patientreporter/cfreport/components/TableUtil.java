@@ -91,7 +91,7 @@ public final class TableUtil {
     public Table createWrappingReportTable(@NotNull String tableTitle, @Nullable String subtitle, @NotNull Table contentTable,
             float tableBottomMargin) {
         contentTable.addFooterCell(new Cell(1, contentTable.getNumberOfColumns()).setBorder(Border.NO_BORDER)
-                        .setPaddingTop(5)
+                        .setPaddingTop(15)
                         .setPaddingBottom(5)
                         .add(new Paragraph("The table continues on the next page".toUpperCase()).addStyle(reportResources.subTextStyle())))
                 .setSkipLastFooter(true);
