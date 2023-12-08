@@ -23,10 +23,6 @@
             <artifactId>orange-datamodel</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.hartwig.lama.client</groupId>
-            <artifactId>client</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.hartwig.silo.diagnostic.client</groupId>
             <artifactId>diagnostic-silo-client</artifactId>
         </dependency>
