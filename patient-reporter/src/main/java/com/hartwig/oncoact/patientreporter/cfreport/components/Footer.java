@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.PatientReporterApplication;
@@ -20,13 +21,17 @@ public class Footer {
 
     private final ReportResources reportResources;
 
-    public Footer(ReportResources reportResources) {
+    @NotNull
+    private final BaseMarker baseMarker;
+
+    public Footer(ReportResources reportResources, Random random) {
         this.reportResources = reportResources;
+        this.baseMarker = new BaseMarker(random);
     }
 
     private final List<PageNumberTemplate> pageNumberTemplates = Lists.newArrayList();
 
-    public void renderFooter(@NotNull PdfPage page, @NotNull String qsFormNumber, boolean fullWidth) {
+    public void renderFooter(@NotNull PdfPage page, @NotNull String qsFormNumber) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
 
         int pageNumber = page.getDocument().getPageNumber(page);
@@ -37,7 +42,7 @@ public class Footer {
         canvas.addXObject(pageNumberTemplate, 58, 20);
         pageNumberTemplates.add(new PageNumberTemplate(pageNumber, version, pageNumberTemplate, reportResources));
 
-        BaseMarker.renderMarkerGrid(5, 1, 156, 87, 22, 0, .2f, 0, canvas);
+        baseMarker.renderMarkerGrid(5, 1, 156, 87, 22, 0, .2f, 0, canvas);
 
         canvas.release();
     }

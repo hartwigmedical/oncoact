@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.components;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Random;
 
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
@@ -36,10 +37,14 @@ public final class SidePanel {
     @NotNull
     private final ReportResources reportResources;
 
+    @NotNull
+    private final BaseMarker baseMarker;
+
     private static final Logger LOGGER = LogManager.getLogger(SidePanel.class);
 
-    public SidePanel(@NotNull ReportResources reportResources) {
+    public SidePanel(@NotNull final ReportResources reportResources, @NotNull final Random random) {
         this.reportResources = reportResources;
+        this.baseMarker = new BaseMarker(random);
     }
 
     public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
@@ -72,7 +77,7 @@ public final class SidePanel {
 
         int yCount = fullHeight ? (isFailure ? 120 : 13) : 3;
         var gridYStart = Y_START + 18;
-        BaseMarker.renderMarkerGrid(5, yCount, CONTENT_X_START, 35, gridYStart, -ROW_SPACING, .05f, .15f, canvas);
+        baseMarker.renderMarkerGrid(5, yCount, CONTENT_X_START, 35, gridYStart, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
