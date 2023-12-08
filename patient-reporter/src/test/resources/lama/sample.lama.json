@@ -26,6 +26,7 @@
   "tumorArrivalDate": "2023-04-17",
   "tumorSamplingDate": "2023-04-17",
   "pathologyNumber": "pathologyNumber",
+  "hospitalSampleLabel": "label",
   "primaryTumorType": {
     "_id": "_id",
     "location": "location",

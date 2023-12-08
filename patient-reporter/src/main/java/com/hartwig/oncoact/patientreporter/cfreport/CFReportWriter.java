@@ -276,9 +276,8 @@ public class CFReportWriter implements ReportWriter {
     private static Document initializeReport(@NotNull String outputFilePath, boolean writeToFile) throws IOException {
         PdfWriter writer;
         if (writeToFile) {
-            if (Files.exists(new File(outputFilePath).toPath())) {
-                throw new IOException("Could not write " + outputFilePath + " as it already exists.");
-            }
+            var path = new File(outputFilePath).toPath();
+            Files.deleteIfExists(path);
 
             writer = new PdfWriter(outputFilePath);
         } else {
