@@ -53,6 +53,7 @@ public interface PanelReporterConfig {
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
     String PIPELINE_VERSION = "pipeline_version";
+    String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
 
     @NotNull
     static Options createOptions() {
@@ -84,6 +85,7 @@ public interface PanelReporterConfig {
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
         options.addOption(PIPELINE_VERSION, true, "String of the pipeline version");
+        options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         return options;
     }
@@ -112,7 +114,7 @@ public interface PanelReporterConfig {
     @NotNull
     String protectEvidenceTsv();
 
-    @Nullable
+    @NotNull
     String roseTsv();
 
     boolean panelQcFail();
@@ -132,6 +134,9 @@ public interface PanelReporterConfig {
     String pipelineVersion();
 
     @NotNull
+    String clinicalTranscriptsTsv();
+
+    @NotNull
     static PanelReporterConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -140,7 +145,7 @@ public interface PanelReporterConfig {
 
         String orangeJson = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
-        String roseTsv = null;
+        String roseTsv = Strings.EMPTY;
 
         String correctionJson = null;
         if (cmd.hasOption(HAS_CORRECTIONS)) {
@@ -154,8 +159,10 @@ public interface PanelReporterConfig {
 
         boolean isPanelQCFail = cmd.hasOption(PANEL_QC_FAIL);
         PanelFailReason panelQcFailReason = null;
+        String clinicalTranscriptsTsv = Strings.EMPTY;
 
         if (isPanelQCFail) {
+            clinicalTranscriptsTsv = nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV);
             String qcFailReasonString = nonOptionalValue(cmd, PANEL_QC_FAIL_REASON);
             panelQcFailReason = PanelFailReason.fromIdentifier(qcFailReasonString);
             if (panelQcFailReason == null) {
@@ -179,6 +186,7 @@ public interface PanelReporterConfig {
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .pipelineVersion(nonOptionalValue(cmd, PIPELINE_VERSION))
+                .clinicalTranscriptsTsv(clinicalTranscriptsTsv)
                 .build();
     }
 

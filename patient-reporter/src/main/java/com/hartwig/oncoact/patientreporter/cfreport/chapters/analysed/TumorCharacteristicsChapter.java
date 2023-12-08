@@ -8,6 +8,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -91,13 +92,15 @@ public class TumorCharacteristicsChapter implements ReportChapter {
             displayFootNote = true;
             hrDeficiencyLabel = Formats.NA_STRING + "*";
         }
+        if (patientReport.experimentType().equals(ExperimentType.TARGETED)) {
+            displayFootNote = false;
+            hrDeficiencyLabel = "Not validated";
+        }
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
-        BarChart hrChart =
-                new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, false, reportResources);
-        hrChart.enabled(hasReliablePurity && isHrdReliable);
+        BarChart hrChart = new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, false, reportResources);
+        hrChart.enabled(hasReliablePurity && isHrdReliable && patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME));
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
-
         hrChart.setIndicator(HrDeficiency.HRD_THRESHOLD, "HR Deficient (" + SINGLE_DECIMAL_FORMAT.format(HrDeficiency.HRD_THRESHOLD) + ")");
 
         reportDocument.add(createCharacteristicDiv("Homologous recombination status",
@@ -120,7 +123,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         BarChart satelliteChart = new BarChart(microSatelliteStability,
                 MicrosatelliteStatus.RANGE_MIN,
-                MicrosatelliteStatus.RANGE_MAX, false,
+                MicrosatelliteStatus.RANGE_MAX,
+                false,
                 reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
@@ -148,9 +152,14 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
 
         String mutationalLoadString = hasReliablePurity ? NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
+
+        if (patientReport.experimentType().equals(ExperimentType.TARGETED)) {
+            mutationalLoadString = "Not validated";
+        }
+
         BarChart mutationalLoadChart =
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, false, reportResources);
-        mutationalLoadChart.enabled(hasReliablePurity);
+        mutationalLoadChart.enabled(hasReliablePurity && patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME));
         mutationalLoadChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
         mutationalLoadChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
@@ -174,10 +183,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         String mutationalBurdenString =
                 hasReliablePurity ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) : Formats.NA_STRING;
-        BarChart mutationalBurdenChart = new BarChart(mutationalBurden,
-                MutationalBurden.RANGE_MIN,
-                MutationalBurden.RANGE_MAX, false,
-                reportResources);
+        BarChart mutationalBurdenChart =
+                new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, false, reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
@@ -210,76 +217,79 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv(""));
 
         reportDocument.add(createCharacteristicDiv("Molecular tissue of origin prediction"));
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
-        table.setWidth(contentWidth());
-        if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
+            table.setWidth(contentWidth());
+            if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
 
-            String cuppaPlot = patientReport.molecularTissueOriginPlotPath();
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) || patientReport.qsFormNumber()
-                    .equals(QsFormNumber.FOR_080.display())) {
+                String cuppaPlot = patientReport.molecularTissueOriginPlotPath();
+                if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) || patientReport.qsFormNumber()
+                        .equals(QsFormNumber.FOR_080.display())) {
+                    if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
+                        reportDocument.add(createCharacteristicDisclaimerDiv(
+                                "Due to the low tumor purity, the molecular tissue of origin prediction should be interpreted with caution."));
+                    }
+
+                    try {
+                        reportDocument.add(createCharacteristicDiv("")); // For better display plot
+                        Image circosImage = new Image(ImageDataFactory.create(cuppaPlot));
+                        circosImage.setMaxHeight(250);
+                        circosImage.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                        circosImage.setMarginBottom(8);
+                        reportDocument.add(circosImage);
+                    } catch (MalformedURLException e) {
+                        throw new IOException("Failed to read molecular tissue origin plot image at " + cuppaPlot);
+                    }
+                }
+
+                reportDocument.add(createCharacteristicDiv(""));
+                reportDocument.add(createCharacteristicDiv(""));
+                reportDocument.add(createCharacteristicDiv(""));
+                reportDocument.add(createCharacteristicDiv(""));
+
+                table.addCell(TableUtil.createLayoutCell()
+                        .add(new Div().add(createContentParagraph("The title",
+                                " shows the conclusion of the prediction of the molecular"
+                                        + " tissue of origin. If none of the similarity predictions has a likelihood ≥ 80%, no reliable conclusion"
+                                        + " can be drawn (‘results inconclusive’)."))));
+
+                table.addCell(TableUtil.createLayoutCell());
+
                 if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
-                    reportDocument.add(createCharacteristicDisclaimerDiv(
-                            "Due to the low tumor purity, the molecular tissue of origin prediction should be interpreted with caution."));
+                    table.addCell(TableUtil.createLayoutCell()
+                            .add(new Div().add(createContentParagraph("The left plot",
+                                    " shows the likelihoods (similarity) for all the origin "
+                                            + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
+                                            + "(a peak in the green outer band of the plot), a reliable prediction (with > 75% accuracy) can be drawn. "
+                                            + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
+                                            + "and there is lower confidence."))));
+                } else {
+                    table.addCell(TableUtil.createLayoutCell()
+                            .add(new Div().add(createContentParagraph("The left plot",
+                                    " shows the likelihoods (similarity) for all the origin "
+                                            + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
+                                            + "(a peak in the green outer band of the plot), a reliable prediction (with > 90% accuracy) can be drawn. "
+                                            + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
+                                            + "and there is lower confidence."))));
                 }
 
-                try {
-                    reportDocument.add(createCharacteristicDiv("")); // For better display plot
-                    Image circosImage = new Image(ImageDataFactory.create(cuppaPlot));
-                    circosImage.setMaxHeight(250);
-                    circosImage.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    circosImage.setMarginBottom(8);
-                    reportDocument.add(circosImage);
-                } catch (MalformedURLException e) {
-                    throw new IOException("Failed to read molecular tissue origin plot image at " + cuppaPlot);
-                }
-            }
+                table.addCell(TableUtil.createLayoutCell());
 
-            reportDocument.add(createCharacteristicDiv(""));
-            reportDocument.add(createCharacteristicDiv(""));
-            reportDocument.add(createCharacteristicDiv(""));
-            reportDocument.add(createCharacteristicDiv(""));
-
-            table.addCell(TableUtil.createLayoutCell()
-                    .add(new Div().add(createContentParagraph("The title",
-                            " shows the conclusion of the prediction of the molecular"
-                                    + " tissue of origin. If none of the similarity predictions has a likelihood ≥ 80%, no reliable conclusion"
-                                    + " can be drawn (‘results inconclusive’)."))));
-
-            table.addCell(TableUtil.createLayoutCell());
-
-            if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
                 table.addCell(TableUtil.createLayoutCell()
-                        .add(new Div().add(createContentParagraph("The left plot",
-                                " shows the likelihoods (similarity) for all the origin "
-                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
-                                        + "(a peak in the green outer band of the plot), a reliable prediction (with > 75% accuracy) can be drawn. "
-                                        + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
-                                        + "and there is lower confidence."))));
+                        .add(new Div().add(createContentParagraph("The right plot(s)",
+                                " shows the breakdown of the strongest predicted "
+                                        + "likelihood(s) into the contribution of the 1) SNV types (related to those used in Cosmic signatures), 2) "
+                                        + "driver landscape and passenger characteristics (e.g. tumor-type specific drivers), and 3) somatic mutation "
+                                        + "pattern (mutation distribution across the genome)."))));
+                reportDocument.add(table);
             } else {
-                table.addCell(TableUtil.createLayoutCell()
-                        .add(new Div().add(createContentParagraph("The left plot",
-                                " shows the likelihoods (similarity) for all the origin "
-                                        + "types analyzed by the molecular tissue of origin prediction tool. Only when the likelihood is ≥ 80% "
-                                        + "(a peak in the green outer band of the plot), a reliable prediction (with > 90% accuracy) can be drawn. "
-                                        + "Lower likelihoods (< 80%) suggest there is similarity with that tissue of origin, but this is less strong "
-                                        + "and there is lower confidence."))));
+                reportDocument.add(new Paragraph(
+                        "The molecular tissue of origin prediction is unreliable due to the unreliable tumor purity and "
+                                + "therefore the results are not available.").addStyle(reportResources.subTextStyle()));
             }
-
-            table.addCell(TableUtil.createLayoutCell());
-
-            table.addCell(TableUtil.createLayoutCell()
-                    .add(new Div().add(createContentParagraph("The right plot(s)",
-                            " shows the breakdown of the strongest predicted "
-                                    + "likelihood(s) into the contribution of the 1) SNV types (related to those used in Cosmic signatures), 2) "
-                                    + "driver landscape and passenger characteristics (e.g. tumor-type specific drivers), and 3) somatic mutation "
-                                    + "pattern (mutation distribution across the genome)."))));
         } else {
-            reportDocument.add(new Paragraph(
-                    "The molecular tissue of origin prediction is unreliable due to the unreliable tumor purity and "
-                            + "therefore the results are not available.").addStyle(reportResources.subTextStyle()));
+            reportDocument.add(new Paragraph("Not available for tumor-only panel data").addStyle(reportResources.subTextStyle()));
         }
-
-        reportDocument.add(table);
     }
 
     @NotNull

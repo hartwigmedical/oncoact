@@ -8,6 +8,7 @@ import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
@@ -75,7 +76,13 @@ public class PatientReporterApplication {
         AnalysedReportData reportData = AnalysedReportData.buildFromConfig(config);
         AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData, reportDate);
 
-        AnalysedPatientReport report = reporter.run(config);
+        AnalysedPatientReport report = reporter.run(config.roseTsv(),
+                config.pipelineVersion(),
+                config.orangeJson(),
+                config.protectEvidenceTsv(),
+                config.cuppaPlot(),
+                config.purpleCircosPlot(),
+                ExperimentType.WHOLE_GENOME);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
@@ -105,7 +112,7 @@ public class PatientReporterApplication {
     }
 
     private void generateQCFail() throws IOException {
-        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfig(config), reportDate);
+        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfigWGS(config), reportDate);
         QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();

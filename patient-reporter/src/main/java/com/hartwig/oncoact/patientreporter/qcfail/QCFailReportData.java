@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.qcfail;
 
 import java.io.IOException;
 
+import com.hartwig.oncoact.patientreporter.PanelReporterConfig;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
@@ -20,7 +21,7 @@ public interface QCFailReportData extends ReportData {
     }
 
     @NotNull
-    static QCFailReportData buildFromConfig(@NotNull PatientReporterConfig config) throws IOException {
+    static QCFailReportData buildFromConfigWGS(@NotNull PatientReporterConfig config) throws IOException {
         var lamaPatientData = LamaJson.read(config.lamaJson());
         var diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
         var correctionJson = config.correctionJson();
@@ -35,4 +36,22 @@ public interface QCFailReportData extends ReportData {
                 .udiDi(config.udiDi())
                 .build();
     }
+
+    @NotNull
+    static QCFailReportData buildFromConfigPanel(@NotNull PanelReporterConfig config) throws IOException {
+        var lamaPatientData = LamaJson.read(config.lamaJson());
+        var diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
+        var correctionJson = config.correctionJson();
+        var correction = correctionJson != null ? Correction.read(correctionJson) : null;
+
+        return builder().diagnosticSiloPatientData(diagnosticPatientData)
+                .lamaPatientData(lamaPatientData)
+                .correction(correction)
+                .signaturePath(config.signature())
+                .logoRVAPath(null)
+                .logoCompanyPath(config.companyLogo())
+                .udiDi(null)
+                .build();
+    }
+
 }

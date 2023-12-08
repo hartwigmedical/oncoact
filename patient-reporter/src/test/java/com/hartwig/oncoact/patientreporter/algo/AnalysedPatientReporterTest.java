@@ -23,7 +23,13 @@ public class AnalysedPatientReporterTest {
                 new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData(), REPORT_DATE);
         PatientReporterConfig config = PatientReporterTestFactory.createTestReporterConfig();
 
-        assertNotNull(reporter.run(config));
+        assertNotNull(reporter.run(config.roseTsv(),
+                config.pipelineVersion(),
+                config.orangeJson(),
+                config.protectEvidenceTsv(),
+                config.cuppaPlot(),
+                config.purpleCircosPlot(),
+                ExperimentType.WHOLE_GENOME));
     }
 
     @Test

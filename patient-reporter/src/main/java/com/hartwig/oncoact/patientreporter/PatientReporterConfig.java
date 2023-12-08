@@ -148,7 +148,7 @@ public interface PatientReporterConfig {
     @NotNull
     String protectEvidenceTsv();
 
-    @Nullable
+    @NotNull
     String roseTsv();
 
     @NotNull
@@ -190,7 +190,7 @@ public interface PatientReporterConfig {
         String cuppaPlot = Strings.EMPTY;
         String purpleCircosPlot = Strings.EMPTY;
         String protectEvidenceTsv = Strings.EMPTY;
-        String roseTsv = null;
+        String roseTsv = Strings.EMPTY;
 
         String germlineReportingTsv = Strings.EMPTY;
         String clinicalTranscriptsTsv = Strings.EMPTY;

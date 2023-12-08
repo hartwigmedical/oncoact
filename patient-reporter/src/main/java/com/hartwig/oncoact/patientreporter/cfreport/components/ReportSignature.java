@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.components;
 
 import java.net.MalformedURLException;
 
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -31,17 +32,20 @@ public final class ReportSignature {
     }
 
     @NotNull
-    public Div createSignatureDiv(@NotNull String rvaLogoPath, @NotNull String signaturePath) throws IOException {
+    public Div createSignatureDiv(@NotNull String rvaLogoPath, @NotNull String signaturePath, @NotNull ExperimentType experimentType)
+            throws IOException {
         Div div = new Div();
         div.setKeepTogether(true);
         div.setMarginTop(40);
 
-        try {
-            Image rvaLogo = new Image(ImageDataFactory.create(rvaLogoPath));
-            rvaLogo.setMaxHeight(58);
-            div.add(rvaLogo);
-        } catch (MalformedURLException e) {
-            throw new IOException("Failed to read RVA logo image at " + rvaLogoPath);
+        if (experimentType.equals(ExperimentType.WHOLE_GENOME)) {
+            try {
+                Image rvaLogo = new Image(ImageDataFactory.create(rvaLogoPath));
+                rvaLogo.setMaxHeight(58);
+                div.add(rvaLogo);
+            } catch (MalformedURLException e) {
+                throw new IOException("Failed to read RVA logo image at " + rvaLogoPath);
+            }
         }
 
         Paragraph signatureText =

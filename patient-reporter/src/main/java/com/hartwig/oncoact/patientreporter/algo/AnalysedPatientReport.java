@@ -23,6 +23,10 @@ public abstract class AnalysedPatientReport implements PatientReport {
 
     @Override
     @NotNull
+    public abstract ExperimentType experimentType();
+
+    @Override
+    @NotNull
     public abstract PatientReporterData lamaPatientData();
 
     @NotNull
@@ -44,7 +48,7 @@ public abstract class AnalysedPatientReport implements PatientReport {
     @Nullable
     public abstract String molecularTissueOriginPlotPath();
 
-    @NotNull
+    @Nullable
     public abstract String circosPlotPath();
 
     @NotNull

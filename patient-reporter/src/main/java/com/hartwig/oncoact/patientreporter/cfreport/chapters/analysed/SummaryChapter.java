@@ -12,6 +12,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -63,18 +64,22 @@ public class SummaryChapter implements ReportChapter {
     @NotNull
     @Override
     public String pdfTitle() {
-        if (patientReport.isCorrectedReport()) {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report \n- low purity analysis (Corrected)";
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            if (patientReport.isCorrectedReport()) {
+                if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+                    return "OncoAct tumor WGS report \n- low purity analysis (Corrected)";
+                } else {
+                    return "OncoAct tumor WGS report (Corrected)";
+                }
             } else {
-                return "OncoAct tumor WGS report (Corrected)";
+                if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+                    return "OncoAct tumor WGS report \n- low purity analysis";
+                } else {
+                    return "OncoAct tumor WGS report";
+                }
             }
         } else {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
-                return "OncoAct tumor WGS report \n- low purity analysis";
-            } else {
-                return "OncoAct tumor WGS report";
-            }
+            return "OncoAct tumor NGS panel report";
         }
     }
 
@@ -174,34 +179,40 @@ public class SummaryChapter implements ReportChapter {
                         .addStyle(reportResources.sectionTitleStyle())));
         table.addCell(TableUtil.createLayoutCell(1, 3).setHeight(TABLE_SPACER_HEIGHT));
 
-        double impliedPurity = analysis().impliedPurity();
-        double impliedPurityPercentage = MathUtil.mapPercentage(impliedPurity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
-        renderTumorPurity(hasReliablePurity,
-                Formats.formatPercentage(impliedPurityPercentage),
-                impliedPurity,
-                TumorPurity.RANGE_MIN,
-                TumorPurity.RANGE_MAX,
-                table);
-
-        String cuppaPrediction = Strings.EMPTY;
-        if (patientReport.molecularTissueOriginReporting() == null) {
-            cuppaPrediction = Formats.NA_STRING;
-        } else if (patientReport.molecularTissueOriginReporting() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
-            if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
-                cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
-            } else {
-                cuppaPrediction =
-                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + Formats.formatPercentageDigit(
-                                patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
-            }
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            double impliedPurity = analysis().impliedPurity();
+            double impliedPurityPercentage = MathUtil.mapPercentage(impliedPurity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
+            renderTumorPurity(hasReliablePurity,
+                    Formats.formatPercentage(impliedPurityPercentage),
+                    impliedPurity,
+                    TumorPurity.RANGE_MIN,
+                    TumorPurity.RANGE_MAX,
+                    table);
         }
-
-        Style dataStyleMolecularTissuePrediction =
-                hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Molecular tissue of origin prediction").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(cuppaPrediction).addStyle(dataStyleMolecularTissuePrediction)));
+        Style dataStyleMolecularTissuePrediction =
+                hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            String cuppaPrediction = Strings.EMPTY;
+            if (patientReport.molecularTissueOriginReporting() == null) {
+                cuppaPrediction = Formats.NA_STRING;
+            } else if (patientReport.molecularTissueOriginReporting() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
+                if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
+                    cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
+                } else {
+                    cuppaPrediction =
+                            patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + Formats.formatPercentageDigit(
+                                    patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
+                }
+            }
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(cuppaPrediction).addStyle(
+                    dataStyleMolecularTissuePrediction)));
+        } else {
+            String cuppaPrediction = Formats.NA_STRING;
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(cuppaPrediction).addStyle(reportResources.dataHighlightNaStyle())));
+        }
 
         Style dataStyle = hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
@@ -222,23 +233,32 @@ public class SummaryChapter implements ReportChapter {
 
         String hrdString;
         Style hrdStyle;
-
-        if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
-                || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus().display() + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
-            hrdStyle = reportResources.dataHighlightStyle();
+        table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
+                .add(new Paragraph("HR Status").addStyle(reportResources.bodyTextStyle())));
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
+                    || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
+                hrdString = analysis().hrdStatus().display() + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
+                hrdStyle = reportResources.dataHighlightStyle();
+            } else {
+                hrdString = Formats.NA_STRING;
+                hrdStyle = reportResources.dataHighlightNaStyle();
+            }
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
         } else {
-            hrdString = Formats.NA_STRING;
+            hrdString = "Not validated";
             hrdStyle = reportResources.dataHighlightNaStyle();
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
         }
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
-                .add(new Paragraph("HR Status").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
-
-        table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Virus").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
+
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
+        } else {
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(Formats.NA_STRING).addStyle(hrdStyle)));
+        }
 
         div.add(table);
 
@@ -298,15 +318,24 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Deleted gene(s)").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createGeneSetCell(copyLossGenes));
 
-        Set<String> disruptedGenes = HomozygousDisruptions.disruptedGenes(analysis().homozygousDisruptions());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Homozygously disrupted genes").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(disruptedGenes));
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            Set<String> disruptedGenes = HomozygousDisruptions.disruptedGenes(analysis().homozygousDisruptions());
+            table.addCell(createGeneSetCell(disruptedGenes));
+        } else {
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(Formats.NA_STRING).addStyle(reportResources.dataHighlightNaStyle())));
+        }
 
-        Set<String> fusionGenes = GeneFusions.uniqueGeneFusions(analysis().geneFusions());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Gene fusions").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(fusionGenes));
+
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            Set<String> fusionGenes = GeneFusions.uniqueGeneFusions(analysis().geneFusions());
+            table.addCell(createGeneSetCell(fusionGenes));
+        } else {
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph("Not validated").addStyle(reportResources.dataHighlightNaStyle())));
+        }
 
         PurpleMicrosatelliteStatus microSatelliteStabilityString =
                 analysis().hasReliablePurity() ? analysis().microsatelliteStatus() : PurpleMicrosatelliteStatus.UNKNOWN;
@@ -334,19 +363,29 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderGermline(@NotNull Document reportDocument) {
-        int width = 180;
-        int leftPosition = 400;
-        int bottomPosition = 70;
-
         Div div = new Div();
 
-        div.add(renderPharmacogenetics());
-        div.add(new Paragraph(Strings.EMPTY)).setFontSize(2);
-        div.add(renderHla());
-        div.add(renderGermlineText());
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            int width = 180;
+            int leftPosition = 400;
+            int bottomPosition = 70;
+            div.add(renderPharmacogenetics());
+            div.add(new Paragraph(Strings.EMPTY)).setFontSize(2);
+            div.add(renderHla());
+            div.add(renderGermlineText());
+            reportDocument.add(div.setFixedPosition(leftPosition, bottomPosition, width));
 
-        reportDocument.add(div.setFixedPosition(leftPosition, bottomPosition, width));
+        } else {
+            int width = 180;
+            int leftPosition = 400;
+            int bottomPosition = 150;
+            div.add(renderPharmacogeneticsText());
+            div.add(new Paragraph(Strings.EMPTY)).setFontSize(2);
+            div.add(renderHlaText());
+            div.add(renderGermlineText());
+            reportDocument.add(div.setFixedPosition(leftPosition, bottomPosition, width));
 
+        }
     }
 
     private Table renderPharmacogenetics() {
@@ -414,11 +453,42 @@ public class SummaryChapter implements ReportChapter {
         }
     }
 
-    private Div renderGermlineText() {
-        String text = "Data concerning cancer predisposition genes may be requested by a clinical geneticist after the patient has "
-                + "given informed consent.";
+    private Div renderPharmacogeneticsText() {
+        String text = "Not available for tumor-only panel data";
 
-        Div div = createSectionStartDivWithoutLineDivider(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        div.add(new Paragraph("Pharmacogenetics").addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    private Div renderHlaText() {
+        String text = "Not validated for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+        div.add(new Paragraph("HLA Alleles").addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    private Div renderGermlineText() {
+        String text;
+        Div div;
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            text = "Data concerning cancer predisposition genes may be requested by a clinical geneticist after the patient has "
+                    + "given informed consent.";
+            div = createSectionStartDivWithoutLineDivider(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+
+        } else {
+            text = "Not available for tumor-only panel data.";
+            div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
+
+        }
+
         div.add(new Paragraph("Germline results").addStyle(reportResources.sectionTitleStyle()));
 
         return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT)

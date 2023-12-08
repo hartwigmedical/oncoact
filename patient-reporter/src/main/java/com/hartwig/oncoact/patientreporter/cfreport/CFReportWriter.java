@@ -28,12 +28,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.TumorChara
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailPGXChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelExplanationChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelQCFailChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapterFail;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.xml.ReportXML;
 import com.hartwig.oncoact.patientreporter.xml.XMLFactory;
@@ -104,30 +98,6 @@ public class CFReportWriter implements ReportWriter {
                     outputFilePath);
         }
 
-    }
-
-    @Override
-    public void writePanelAnalysedReport(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException {
-        ReportResources reportResources = ReportResources.create();
-        //        ReportChapter[] chapters =
-        //                new ReportChapter[] { new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.ClinicalEvidenceChapter(),
-        //                        new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.GenomicAnalyzerChapter(),
-        //                        new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.TumorCharacteristicsChapter(),
-        //                        new PanelExplanationChapter(reportResources), new SampleAndDisclaimerChapter(report, reportResources) };
-        //
-
-        ReportChapter[] chapters =
-                new ReportChapter[] { new com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SummaryChapter(reportResources),
-                        new PanelExplanationChapter(reportResources), new SampleAndDisclaimerChapter(report, reportResources) };
-        writePanel(reportResources, report, chapters, outputFilePath);
-    }
-
-    @Override
-    public void writePanelQCFailReport(@NotNull PanelFailReport report, @NotNull String outputFilePath) throws IOException {
-        ReportResources reportResources = ReportResources.create();
-        ReportChapter[] chapters = new ReportChapter[] { new PanelQCFailChapter(report, reportResources),
-                new SampleAndDisclaimerChapterFail(report, reportResources) };
-        writePanel(reportResources, report, chapters, outputFilePath);
     }
 
     public void writeJsonFailedFile(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException {
@@ -210,25 +180,6 @@ public class CFReportWriter implements ReportWriter {
             LOGGER.info("Created patient report at {}", outputFilePath);
         } else {
             LOGGER.info("Successfully generated in-memory patient report");
-        }
-    }
-
-    public void writeJsonPanelFile(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException {
-        writeReportDataToJson(report, outputFilePath);
-    }
-
-    public void writeJsonPanelFailedFile(@NotNull PanelFailReport report, @NotNull String outputFilePath) throws IOException {
-        writeReportDataToJson(report, outputFilePath);
-    }
-
-    public void writeReportDataToJson(@NotNull com.hartwig.oncoact.patientreporter.PanelReport report, @NotNull String outputDirData)
-            throws IOException {
-        if (writeToFile) {
-            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".json";
-            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
-            writer.write(convertToJson(report));
-            writer.close();
-            LOGGER.info(" Created report data json file at {} ", outputFileData);
         }
     }
 

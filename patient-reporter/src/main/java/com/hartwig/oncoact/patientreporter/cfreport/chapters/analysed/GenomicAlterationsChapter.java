@@ -17,6 +17,7 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
@@ -40,6 +41,7 @@ import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
@@ -98,8 +100,13 @@ public class GenomicAlterationsChapter implements ReportChapter {
         reportDocument.add(createGainsAndLossesTable(genomicAnalysis.gainsAndLosses(),
                 hasReliablePurity,
                 genomicAnalysis.cnPerChromosome()));
-        reportDocument.add(createFusionsTable(genomicAnalysis.geneFusions(), hasReliablePurity));
-        reportDocument.add(createHomozygousDisruptionsTable(genomicAnalysis.homozygousDisruptions()));
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            reportDocument.add(createFusionsTable(genomicAnalysis.geneFusions(), hasReliablePurity));
+            reportDocument.add(createHomozygousDisruptionsTable(genomicAnalysis.homozygousDisruptions()));
+        } else {
+            reportDocument.add(createFusionsText());
+            reportDocument.add(createHomozygousDisruptionsText());
+        }
 
         if (genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT) {
             reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH(), "HRD"));
@@ -108,10 +115,22 @@ public class GenomicAlterationsChapter implements ReportChapter {
             reportDocument.add(createLOHTable(genomicAnalysis.suspectGeneCopyNumbersWithLOH(), "MSI"));
         }
 
-        reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
-        reportDocument.add(createVirusTable(genomicAnalysis.reportableViruses()));
-        reportDocument.add(createPharmacogeneticsGenotypesTable(patientReport.pharmacogeneticsGenotypes()));
-        reportDocument.add(createHlaTable(patientReport.hlaAllelesReportingData(), hasReliablePurity));
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            reportDocument.add(createDisruptionsTable(genomicAnalysis.geneDisruptions(), hasReliablePurity));
+
+        } else {
+            reportDocument.add(createDisruptionsText());
+        }
+        if (patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            reportDocument.add(createVirusTable(genomicAnalysis.reportableViruses()));
+            reportDocument.add(createPharmacogeneticsGenotypesTable(patientReport.pharmacogeneticsGenotypes()));
+            reportDocument.add(createHlaTable(patientReport.hlaAllelesReportingData(), hasReliablePurity));
+        } else {
+            reportDocument.add(createVirusText());
+            reportDocument.add(createPharmacogeneticsGenotypesText());
+            reportDocument.add(createHlaText());
+        }
+
     }
 
     @NotNull
@@ -138,6 +157,12 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         }
         contentTable.addCell(tableUtil.createContentCell(Strings.EMPTY));
+
+        if (patientReport.experimentType().equals(ExperimentType.TARGETED)) {
+            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                    .add(new Paragraph("\n* Due to the low tumor purity, the purity/ploidy prediction should be interpreted with caution.").addStyle(
+                            reportResources.subTextStyle())));
+        }
 
         return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
     }
@@ -182,7 +207,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
-                            tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
+                            tableUtil.createHeaderCell(patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)
+                                    ? "tVAF"
+                                    : "VAF*").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Biallelic").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Hotspot").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Clonal").setTextAlignment(TextAlignment.CENTER),
@@ -194,7 +221,9 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             tableUtil.createHeaderCell("Variant"),
                             tableUtil.createHeaderCell("Read depth").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Copies").setTextAlignment(TextAlignment.CENTER),
-                            tableUtil.createHeaderCell("tVAF").setTextAlignment(TextAlignment.CENTER),
+                            tableUtil.createHeaderCell(patientReport.experimentType().equals(ExperimentType.WHOLE_GENOME)
+                                    ? "tVAF"
+                                    : "VAF*").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Biallelic").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Hotspot").setTextAlignment(TextAlignment.CENTER),
                             tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
@@ -237,6 +266,12 @@ public class GenomicAlterationsChapter implements ReportChapter {
             }
             contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
                     .setTextAlignment(TextAlignment.CENTER);
+        }
+
+        if (patientReport.experimentType().equals(ExperimentType.TARGETED)) {
+            contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
+                    .add(new Paragraph("\n* please note: this is not a tumor corrected VAF").addStyle(reportResources.subTextStyle()
+                            .setTextAlignment(TextAlignment.LEFT))));
         }
 
         contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
@@ -341,6 +376,89 @@ public class GenomicAlterationsChapter implements ReportChapter {
         }
 
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
+    }
+
+    @NotNull
+    private static Div createSectionStartDiv(float width) {
+        return new Div().setKeepTogether(true).setWidth(width);
+    }
+
+    @NotNull
+    private Div createFusionsText() {
+        String title = "Tumor specific gene fusions";
+        String text = "Not validated for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    @NotNull
+    private Div createHomozygousDisruptionsText() {
+        String title = "Tumor specific homozygous disruptions";
+        String text = "Not available for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    @NotNull
+    private Div createVirusText() {
+        String title = "Tumor specific viral insertions";
+        String text = "Not available for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    @NotNull
+    private Div createPharmacogeneticsGenotypesText() {
+        String title = "Pharmacogenetics";
+        String text = "Not available for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    @NotNull
+    private Div createDisruptionsText() {
+        String title = "Tumor specific gene disruptions";
+        String text = "Not available for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
+    }
+
+    @NotNull
+    private Div createHlaText() {
+        String title = "HLA Alleles";
+        String text = "Not validated for tumor-only panel data";
+
+        Div div = createSectionStartDiv(ReportResources.CONTENT_WIDTH_WIDE);
+        div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
+
+        return div.add(new Paragraph(text).setWidth(ReportResources.CONTENT_WIDTH_WIDE)
+                .addStyle(reportResources.bodyTextStyle())
+                .setFixedLeading(11));
     }
 
     @NotNull

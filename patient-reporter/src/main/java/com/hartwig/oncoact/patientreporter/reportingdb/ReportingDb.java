@@ -13,7 +13,6 @@ import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +27,7 @@ public class ReportingDb {
     public ReportingDb() {
     }
 
-    public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
+    public void appendPanelReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
         String reportType = "panel_result_report";
 
         if (report.isCorrectedReport()) {

@@ -49,6 +49,7 @@ import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
@@ -86,7 +87,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
-            boolean withUnreliablePurityOverrule) {
+            boolean withUnreliablePurityOverrule, @NotNull ExperimentType experimentType) {
         String pipelineVersion = "5.33";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 183;
@@ -190,6 +191,7 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         return ImmutableAnalysedPatientReport.builder()
+                .experimentType(experimentType)
                 .lamaPatientData(reportData.lamaPatientData())
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(config.qcForNumber().display())
@@ -216,7 +218,7 @@ public final class ExampleAnalysisTestFactory {
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
             @NotNull PurpleQCStatus purpleQCStatus) {
-        AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
+        AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false, ExperimentType.WHOLE_GENOME);
 
         List<LinxFusion> fusions = createTestFusions();
         List<AnnotatedVirus> viruses = createTestAnnotatedViruses();

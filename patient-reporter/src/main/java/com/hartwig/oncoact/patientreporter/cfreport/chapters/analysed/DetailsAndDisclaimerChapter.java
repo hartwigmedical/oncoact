@@ -45,7 +45,9 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        var signatureDiv = reportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath());
+        var signatureDiv = reportSignature.createSignatureDiv(patientReport.logoRVAPath(),
+                patientReport.signaturePath(),
+                patientReport.experimentType());
         var endOfReportIndication = reportSignature.createEndOfReportIndication();
         var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
                 .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))

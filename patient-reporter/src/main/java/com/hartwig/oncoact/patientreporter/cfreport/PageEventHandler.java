@@ -49,7 +49,7 @@ class PageEventHandler implements IEventHandler {
 
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
-            sidePanel.renderSidePatientReport(page, patientReport, fullSidebar);
+            sidePanel.renderSidePatientReport(page, patientReport, fullSidebar, patientReport.experimentType());
             footer.renderFooter(page, patientReport.qsFormNumber(), !fullSidebar);
         }
     }

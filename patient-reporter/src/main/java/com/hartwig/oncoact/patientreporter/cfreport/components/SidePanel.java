@@ -9,6 +9,7 @@ import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
@@ -41,8 +42,10 @@ public final class SidePanel {
         this.reportResources = reportResources;
     }
 
-    public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
+    public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight,
+            @NotNull ExperimentType experimentType) {
         renderSidePanel(page,
+                experimentType,
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
@@ -53,6 +56,7 @@ public final class SidePanel {
 
     public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
+                ExperimentType.TARGETED,
                 patientReport.lamaPatientData(),
                 patientReport.diagnosticSiloPatientData(),
                 patientReport.reportDate(),
@@ -62,12 +66,12 @@ public final class SidePanel {
 
     }
 
-    public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData,
+    public void renderSidePanel(@NotNull PdfPage page, @NotNull ExperimentType experimentType, @NotNull PatientReporterData lamaPatientData,
             @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight,
             boolean isFailure) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
-        renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
+        renderBackgroundRect(fullHeight, canvas, pageSize, isFailure, experimentType);
 
         int height = fullHeight ? (isFailure ? 120 : 12) : 3;
         BaseMarker.renderMarkerGrid(5, height, CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
@@ -141,8 +145,8 @@ public final class SidePanel {
         canvas.release();
     }
 
-    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize,
-            boolean isFailure) {
+    private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize, boolean isFailure,
+            @NotNull ExperimentType experimentType) {
         if (isFailure) {
             canvas.rectangle(pageSize.getWidth(),
                     pageSize.getHeight(),
@@ -152,7 +156,12 @@ public final class SidePanel {
             float size = -pageSize.getHeight() / 2;
             canvas.rectangle(pageSize.getWidth(), pageSize.getHeight(), -RECTANGLE_WIDTH, fullHeight ? size - 70 : -RECTANGLE_HEIGHT_SHORT);
         }
-        canvas.setFillColor(ReportResources.PALETTE_BLUE);
+        if (experimentType.equals(ExperimentType.WHOLE_GENOME)) {
+            canvas.setFillColor(ReportResources.PALETTE_BLUE);
+        } else {
+            canvas.setFillColor(ReportResources.PALETTE_RED);
+        }
+
         canvas.fill();
     }
 

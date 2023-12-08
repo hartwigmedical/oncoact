@@ -7,12 +7,16 @@ import java.util.Optional;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface PatientReport {
+
+    @NotNull
+    ExperimentType experimentType();
 
     @NotNull
     PatientReporterData lamaPatientData();
@@ -96,6 +100,5 @@ public interface PatientReport {
 
     @NotNull
     String reportDate();
-
 
 }

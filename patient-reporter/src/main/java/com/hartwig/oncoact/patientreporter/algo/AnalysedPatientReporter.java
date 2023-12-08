@@ -26,7 +26,6 @@ import com.hartwig.oncoact.cuppa.MolecularTissueOriginReportingFactory;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
@@ -39,8 +38,8 @@ import com.hartwig.oncoact.variant.ReportableVariantSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AnalysedPatientReporter {
 
@@ -57,17 +56,16 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    public AnalysedPatientReport run(@NotNull PatientReporterConfig config) throws IOException {
+    public AnalysedPatientReport run(@NotNull String roseTsvFile, @NotNull String pipelineVersion, @NotNull String orangeJsonFile,
+            @NotNull String protectEvidenceTsv, @Nullable String cuppaPlot, @Nullable String purpleCircosPlot,
+            @NotNull ExperimentType experimentType) throws IOException {
 
-        String roseTsvFile = config.roseTsv();
-        String clinicalSummary = roseTsvFile != null ? RoseConclusionFile.read(roseTsvFile) : Strings.EMPTY;
-
-        String pipelineVersion = config.pipelineVersion();
+        String clinicalSummary = RoseConclusionFile.read(roseTsvFile);
 
         GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel(), reportData.clinicalTranscriptsModel());
 
-        OrangeRecord orange = OrangeJson.read(config.orangeJson());
-        List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(config.protectEvidenceTsv());
+        OrangeRecord orange = OrangeJson.read(orangeJsonFile);
+        List<ProtectEvidence> reportableEvidence = extractReportableEvidenceItems(protectEvidenceTsv);
 
         boolean flagGermlineOnReport = reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
         boolean reportGermlineOnReport = reportData.lamaPatientData().getReportSettings().getReportGermline();
@@ -102,6 +100,7 @@ public class AnalysedPatientReporter {
                 curatedAnalysis.purpleQCStatus());
 
         AnalysedPatientReport report = AnalysedPatientReport.builder()
+                .experimentType(experimentType)
                 .lamaPatientData(reportData.lamaPatientData())
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
                 .qsFormNumber(qcForm)
@@ -112,8 +111,8 @@ public class AnalysedPatientReporter {
                         curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) || !curatedAnalysis.hasReliablePurity()
                                 ? null
                                 : molecularTissueOriginReporting)
-                .molecularTissueOriginPlotPath(config.cuppaPlot())
-                .circosPlotPath(config.purpleCircosPlot())
+                .molecularTissueOriginPlotPath(experimentType.equals(ExperimentType.WHOLE_GENOME) ? cuppaPlot : null)
+                .circosPlotPath(experimentType.equals(ExperimentType.WHOLE_GENOME) ? purpleCircosPlot : null)
                 .specialRemark(Optional.ofNullable(reportData.correction()).map(Correction::specialRemark).orElse(""))
                 .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
                 .isCorrectedReport(Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false))

@@ -14,14 +14,10 @@ import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
@@ -34,7 +30,7 @@ import org.junit.Test;
 
 public class CFReportWriterTest {
 
-    private static final boolean WRITE_TO_PDF = false;
+    private static final boolean WRITE_TO_PDF = true;
     private static final boolean TIMESTAMP_FILES = false;
 
     private static final String REPORT_BASE_DIR = System.getProperty("user.home") + File.separator + "hmf" + File.separator + "tmp";
@@ -60,7 +56,8 @@ public class CFReportWriterTest {
     @Test
     public void canGeneratePatientReportForCOLO829() throws IOException {
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false);
+        AnalysedPatientReport colo829Report =
+                ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false, ExperimentType.WHOLE_GENOME);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
@@ -108,7 +105,8 @@ public class CFReportWriterTest {
     public void canGeneratePatientReportForDiagnosticSampleUnreliable() throws IOException {
         //FOR 209
         ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("Diagnostic").comments(COLO_COMMENT_STRING).build();
-        AnalysedPatientReport colo829Report = ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true);
+        AnalysedPatientReport colo829Report =
+                ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, true, ExperimentType.WHOLE_GENOME);
 
         CFReportWriter writer = testCFReportWriter();
         writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
@@ -225,56 +223,48 @@ public class CFReportWriterTest {
 
     @Test
     public void generatePanelReport() throws IOException {
-        ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
-
-        PanelReport patientReport = ImmutablePanelReport.builder()
-                .lamaPatientData(testReportData.lamaPatientData())
-                .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
-                .qsFormNumber("form")
-                .isCorrectedReport(false)
-                .isCorrectedReportExtern(false)
-                .signaturePath(testReportData.signaturePath())
-                .logoCompanyPath(testReportData.logoCompanyPath())
-                .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSReport(false)
-                .comments("This is a test report")
-                .build();
-
-        String filename = testReportFilePathPanel(patientReport);
+        ExampleAnalysisConfig config = new ExampleAnalysisConfig.Builder().sampleId("PNT00012345T").comments(COLO_COMMENT_STRING).build();
+        AnalysedPatientReport colo829Report =
+                ExampleAnalysisTestFactory.createWithCOLO829Data(config, PurpleQCStatus.PASS, false, ExperimentType.TARGETED);
 
         CFReportWriter writer = testCFReportWriter();
-        writer.writePanelAnalysedReport(patientReport, filename);
+        writer.writeAnalysedPatientReport(colo829Report, testReportFilePath(colo829Report));
+
+        colo829Report = generateAnalysedPatientReport(colo829Report);
+
+        writer.writeJsonAnalysedFile(colo829Report, REPORT_BASE_DIR);
+        writer.writeXMLAnalysedFile(colo829Report, REPORT_BASE_DIR);
     }
 
-    @Test
-    public void generateFailPanelReport() throws IOException {
-        ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
-
-        FailedReason failExplanation = ImmutableFailedReason.builder()
-                .reportReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportReason())
-                .reportExplanation(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportExplanation())
-                .build();
-
-        PanelFailReport patientReport = ImmutablePanelFailReport.builder()
-                .lamaPatientData(testReportData.lamaPatientData())
-                .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
-                .qsFormNumber("form")
-                .panelFailReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL)
-                .failExplanation(failExplanation)
-                .isCorrectedReport(false)
-                .isCorrectedReportExtern(false)
-                .signaturePath(testReportData.signaturePath())
-                .logoCompanyPath(testReportData.logoCompanyPath())
-                .reportDate(Formats.formatDate(LocalDate.now()))
-                .isWGSReport(false)
-                .comments("This is a test report")
-                .build();
-
-        String filename = testReportFilePathPanel(patientReport);
-
-        CFReportWriter writer = testCFReportWriter();
-        writer.writePanelQCFailReport(patientReport, filename);
-    }
+    //    @Test
+    //    public void generateFailPanelReport() throws IOException {
+    //        ReportData testReportData = PatientReporterTestFactory.loadTestReportDataPanel();
+    //
+    //        FailedReason failExplanation = ImmutableFailedReason.builder()
+    //                .reportReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportReason())
+    //                .reportExplanation(PanelFailReason.PANEL_RESULTS_REPORT_FAIL.reportExplanation())
+    //                .build();
+    //
+    //        PanelFailReport patientReport = ImmutablePanelFailReport.builder()
+    //                .lamaPatientData(testReportData.lamaPatientData())
+    //                .diagnosticSiloPatientData(testReportData.diagnosticSiloPatientData())
+    //                .qsFormNumber("form")
+    //                .panelFailReason(PanelFailReason.PANEL_RESULTS_REPORT_FAIL)
+    //                .failExplanation(failExplanation)
+    //                .isCorrectedReport(false)
+    //                .isCorrectedReportExtern(false)
+    //                .signaturePath(testReportData.signaturePath())
+    //                .logoCompanyPath(testReportData.logoCompanyPath())
+    //                .reportDate(Formats.formatDate(LocalDate.now()))
+    //                .isWGSReport(false)
+    //                .comments("This is a test report")
+    //                .build();
+    //
+    //        String filename = testReportFilePathPanel(patientReport);
+    //
+    //        CFReportWriter writer = testCFReportWriter();
+    //        writer.writeQCFailReport(patientReport, filename);
+    //    }
 
     private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString, @NotNull QCFailReason reason,
             boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus,
@@ -320,17 +310,6 @@ public class CFReportWriterTest {
 
     @NotNull
     private static String testReportFilePath(@NotNull PatientReport patientReport) {
-        String fileName = OutputFileUtil.generateOutputFileName(patientReport) + ".pdf";
-        String newFileName = fileName;
-        if (TIMESTAMP_FILES) {
-            int extensionStart = fileName.lastIndexOf('.');
-            newFileName = fileName.substring(0, extensionStart) + "_" + System.currentTimeMillis() + fileName.substring(extensionStart);
-        }
-        return REPORT_BASE_DIR + File.separator + newFileName;
-    }
-
-    @NotNull
-    private static String testReportFilePathPanel(@NotNull com.hartwig.oncoact.patientreporter.PanelReport patientReport) {
         String fileName = OutputFileUtil.generateOutputFileName(patientReport) + ".pdf";
         String newFileName = fileName;
         if (TIMESTAMP_FILES) {
