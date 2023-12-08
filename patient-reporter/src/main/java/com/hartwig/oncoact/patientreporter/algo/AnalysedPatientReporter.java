@@ -34,6 +34,7 @@ import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 
@@ -48,12 +49,9 @@ public class AnalysedPatientReporter {
 
     @NotNull
     private final AnalysedReportData reportData;
-    @NotNull
-    private final String reportDate;
 
-    public AnalysedPatientReporter(@NotNull final AnalysedReportData reportData, @NotNull final String reportDate) {
+    public AnalysedPatientReporter(@NotNull final AnalysedReportData reportData) {
         this.reportData = reportData;
-        this.reportDate = reportDate;
     }
 
     @NotNull
@@ -126,7 +124,7 @@ public class AnalysedPatientReporter {
                 .udiDi(reportData.udiDi())
                 .pharmacogeneticsGenotypes(pharmacogeneticsGenotypesMap)
                 .hlaAllelesReportingData(hlaReportingData)
-                .reportDate(reportDate)
+                .reportDate(Formats.formatDate(reportData.reportTime().toLocalDate()))
                 .build();
 
         printReportState(report);

@@ -19,7 +19,7 @@ import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,12 +31,9 @@ public class QCFailReporter {
 
     @NotNull
     private final QCFailReportData reportData;
-    @NotNull
-    private final String reportDate;
 
-    public QCFailReporter(@NotNull final QCFailReportData reportData, @NotNull final String reportDate) {
+    public QCFailReporter(@NotNull final QCFailReportData reportData) {
         this.reportData = reportData;
-        this.reportDate = reportDate;
     }
 
     @NotNull
@@ -51,13 +48,13 @@ public class QCFailReporter {
                 .build();
 
         String pipelineVersion = null;
-        if (config.qcFailReason() != null && config.qcFailReason().isDeepWGSDataAvailable()) {
+        if (reason.isDeepWGSDataAvailable()) {
             pipelineVersion = config.pipelineVersion();
         }
 
         String wgsPurityString = null;
         Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
-        boolean hasReliablePurity = false;
+        boolean hasReliablePurity;
         HlaAllelesReportingData hlaReportingData = null;
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
 
@@ -108,7 +105,7 @@ public class QCFailReporter {
                 .pharmacogeneticsGenotypes(pharmacogeneticsMap)
                 .hlaAllelesReportingData(hlaReportingData)
                 .purpleQC(purpleQc)
-                .reportDate(reportDate)
+                .reportDate(Formats.formatDate(reportData.reportTime().toLocalDate()))
                 .pipelineVersion(pipelineVersion)
                 .build();
     }

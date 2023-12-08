@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.time.LocalDateTime;
+
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
@@ -29,4 +31,7 @@ public interface ReportData {
 
     @NotNull
     String udiDi();
+
+    @NotNull
+    LocalDateTime reportTime();
 }

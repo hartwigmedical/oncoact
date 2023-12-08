@@ -4,6 +4,8 @@ import static com.hartwig.oncoact.patientreporter.ReporterApplication.PANEL;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
@@ -48,6 +50,7 @@ public interface PanelReporterConfig {
     String LOG_DEBUG = "log_debug";
     String ONLY_CREATE_PDF = "only_create_pdf";
     String PIPELINE_VERSION = "pipeline_version";
+    String REPORT_TIME = "report_time";
 
     @NotNull
     static Options createOptions() {
@@ -78,6 +81,7 @@ public interface PanelReporterConfig {
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
         options.addOption(PIPELINE_VERSION, true, "String of the pipeline version");
+        options.addOption(REPORT_TIME, true, "ISO-8601 with millisecond precision. If omitted, defaults to the current time");
 
         return options;
     }
@@ -120,6 +124,9 @@ public interface PanelReporterConfig {
     String pipelineVersion();
 
     @NotNull
+    LocalDateTime reportTime();
+
+    @NotNull
     static PanelReporterConfig createConfig(@NotNull CommandLine cmd) throws ParseException {
         if (cmd.hasOption(LOG_DEBUG)) {
             Configurator.setRootLevel(Level.DEBUG);
@@ -151,6 +158,11 @@ public interface PanelReporterConfig {
             diagnosticSiloJson = nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON);
         }
 
+        LocalDateTime reportTime = LocalDateTime.now();
+        if (cmd.hasOption(REPORT_TIME)) {
+            reportTime = LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(cmd.getOptionValue(REPORT_TIME)));
+        }
+
         return ImmutablePanelReporterConfig.builder()
                 .outputDirReport(nonOptionalDir(cmd, OUTPUT_DIRECTORY_REPORT))
                 .outputDirData(nonOptionalDir(cmd, OUTPUT_DIRECTORY_DATA))
@@ -165,6 +177,7 @@ public interface PanelReporterConfig {
                 .correctionJson(correctionJson)
                 .onlyCreatePDF(cmd.hasOption(ONLY_CREATE_PDF))
                 .pipelineVersion(nonOptionalValue(cmd, PIPELINE_VERSION))
+                .reportTime(reportTime)
                 .build();
     }
 

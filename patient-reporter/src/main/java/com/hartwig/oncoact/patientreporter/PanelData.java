@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.hartwig.lama.client.model.PatientReporterData;
@@ -31,4 +32,7 @@ public interface PanelData {
 
     @NotNull
     String pipelineVersion();
+
+    @NotNull
+    LocalDateTime reportTime();
 }

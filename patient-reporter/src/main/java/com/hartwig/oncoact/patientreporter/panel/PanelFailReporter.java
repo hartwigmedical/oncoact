@@ -3,7 +3,7 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,12 +12,9 @@ public class PanelFailReporter {
 
     @NotNull
     private final QCFailPanelReportData reportData;
-    @NotNull
-    private final String reportDate;
 
-    public PanelFailReporter(@NotNull final QCFailPanelReportData reportData, @NotNull final String reportDate) {
+    public PanelFailReporter(@NotNull final QCFailPanelReportData reportData) {
         this.reportData = reportData;
-        this.reportDate = reportDate;
     }
 
     @NotNull
@@ -37,7 +34,7 @@ public class PanelFailReporter {
                 .isCorrectedReportExtern(reportData.correctedReportExtern())
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
-                .reportDate(reportDate)
+                .reportDate(Formats.formatDate(reportData.reportTime().toLocalDate()))
                 .isWGSReport(false)
                 .panelFailReason(reason)
                 .failExplanation(failedDatabase)
