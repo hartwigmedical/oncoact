@@ -61,16 +61,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
-        table.setWidth(contentWidth());
-        table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
-        table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()));
-        return table;
-    }
-
-    @NotNull
     private Div createSampleDetailsColumn() {
         Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.WGS_PROCESSING_ISSUE,
                 QCFailReason.WGS_TCP_SHALLOW_FAIL,
@@ -87,6 +77,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
 
+        if (failReport.reason() == QCFailReason.WGS_TCP_FAIL || failReport.reason() == QCFailReason.WGS_TCP_SHALLOW_FAIL) {
+            div.add(sampleHasMolecularTumorPercentage());
+        }
         div.add(reportIsBasedOnBloodAndTumorSamples());
 
         return div;
@@ -195,6 +188,23 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph forComplaintsPleaseContactHMF() {
         return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl");
+    }
+
+    @NotNull
+    private Paragraph sampleHasMolecularTumorPercentage() {
+        String shallowPurity = "N/A";
+        Integer purity = failReport.lamaPatientData().getShallowPurity();
+        if (purity != null) {
+            shallowPurity = Integer.toString(purity);
+        }
+
+        var wgsPurityString = failReport.wgsPurityString();
+        String effectivePurity = wgsPurityString != null ? wgsPurityString : shallowPurity + "%";
+        if (effectivePurity.equals("N/A") || shallowPurity.equals("N/A")) {
+            return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
+        } else {
+            return createContentParagraph("The tumor percentage based on molecular estimation is ", effectivePurity);
+        }
     }
 
     @NotNull
