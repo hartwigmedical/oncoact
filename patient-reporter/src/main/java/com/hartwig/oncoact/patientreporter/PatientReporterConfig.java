@@ -103,7 +103,7 @@ public interface PatientReporterConfig {
         options.addOption(ONLY_CREATE_PDF, false, "If provided, just the PDF will be generated and no additional data will be updated.");
 
         options.addOption(PIPELINE_VERSION, true, "String of the pipeline version");
-        options.addOption(REPORT_TIME, true, "ISO-8601 with millisecond precision. If omitted, defaults to the current time");
+        options.addOption(REPORT_TIME, true, "ISO-8601 with millisecond precision (2023-01-01T00:00:00.001). If omitted, defaults to the current time");
 
         return options;
     }
