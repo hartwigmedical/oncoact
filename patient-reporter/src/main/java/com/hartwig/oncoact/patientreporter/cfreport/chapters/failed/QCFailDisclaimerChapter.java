@@ -1,9 +1,11 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -195,7 +197,8 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph sampleHasMolecularTumorPercentage() {
         Integer shallowPurity = failReport.lamaPatientData().getShallowPurity();
         String wgsPurity = failReport.wgsPurityString();
-        if (Objects.equals(wgsPurity, "N/A") || shallowPurity == null) {
+        var isFailedNoTumor = Objects.requireNonNullElse(failReport.purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
+        if (isFailedNoTumor || shallowPurity == null) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
             String effectivePurity = wgsPurity != null ? wgsPurity : shallowPurity + "%";

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class QCFailReporter {
         }
 
         String wgsPurityString = null;
-        Set<PurpleQCStatus> purpleQc = Sets.newHashSet();
+        Set<PurpleQCStatus> purpleQc = null;
         boolean hasReliablePurity;
         HlaAllelesReportingData hlaReportingData = null;
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
@@ -84,7 +85,7 @@ public class QCFailReporter {
             hlaReportingData = HlaAllelesReportingFactory.convertToReportData(orange.lilac(), hasReliablePurity, purpleQc);
         }
 
-        LOGGER.info("  QC status: {}", purpleQc.toString());
+        LOGGER.info("  QC status: {}", Objects.toString(purpleQc));
 
         return QCFailReport.builder()
                 .qsFormNumber(reason.qcFormNumber())
