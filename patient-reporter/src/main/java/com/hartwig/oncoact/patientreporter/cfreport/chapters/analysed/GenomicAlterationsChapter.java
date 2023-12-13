@@ -24,6 +24,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
+import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneDisruptions;
@@ -380,7 +381,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private static Div createSectionStartDiv(float width) {
-        return new Div().setKeepTogether(true).setWidth(width);
+        return new Div().setKeepTogether(true).setWidth(width).add(LineDivider.createLineDivider(width));
     }
 
     @NotNull
