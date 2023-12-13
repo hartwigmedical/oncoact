@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
 import com.hartwig.oncoact.doid.DiseaseOntology;
@@ -76,7 +77,9 @@ public class ProtectApplication {
                 driverGenes,
                 doidParentModel,
                 ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv()));
-        List<ProtectEvidence> evidences = algo.run(orange);
+
+        ExperimentType experimentType = ExperimentType.valueOf(config.experimentType());
+        List<ProtectEvidence> evidences = algo.run(orange, experimentType);
 
         String filename = config.outputDir() + File.separator + "protect.tsv";
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);

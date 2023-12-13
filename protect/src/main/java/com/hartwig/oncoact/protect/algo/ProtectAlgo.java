@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DoidParents;
@@ -104,7 +105,9 @@ public class ProtectAlgo {
     }
 
     @NotNull
-    public List<ProtectEvidence> run(@NotNull OrangeRecord orange) {
+    public List<ProtectEvidence> run(@NotNull OrangeRecord orange, @NotNull ExperimentType experimentType) {
+        List<ProtectEvidence> result = Lists.newArrayList();
+
         LOGGER.info("Evidence extraction started");
 
         Set<ReportableVariant> reportableGermlineVariants =
@@ -124,26 +127,35 @@ public class ProtectAlgo {
                 orange.purple().allGermlineFullLosses());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
-        List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),
-                orange.linx().germlineHomozygousDisruptions());
-        printExtraction("homozygous disruptions", disruptionEvidence);
-
-        List<ProtectEvidence> fusionEvidence =
-                fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions());
-        printExtraction("fusions", fusionEvidence);
-
         List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics());
         printExtraction("purple signatures", purpleSignatureEvidence);
 
-        List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter());
-        printExtraction("viruses", virusEvidence);
+        if (experimentType.equals(ExperimentType.WHOLE_GENOME)) {
+            List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),
+                    orange.linx().germlineHomozygousDisruptions());
+            printExtraction("homozygous disruptions", disruptionEvidence);
 
-        List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(orange.chord());
-        printExtraction("chord", chordEvidence);
+            List<ProtectEvidence> fusionEvidence =
+                    fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions());
+            printExtraction("fusions", fusionEvidence);
 
-        List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac());
-        printExtraction("hla", hlaEvidence);
+            List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter());
+            printExtraction("viruses", virusEvidence);
 
+            List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(orange.chord());
+            printExtraction("chord", chordEvidence);
+
+            List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac());
+            printExtraction("hla", hlaEvidence);
+
+            result.addAll(disruptionEvidence);
+            result.addAll(fusionEvidence);
+            result.addAll(virusEvidence);
+            result.addAll(chordEvidence);
+            result.addAll(hlaEvidence);
+        }
+
+        //TODO; Determine if we want to do this for panel
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().reportableSomaticGainsLosses(),
@@ -153,15 +165,9 @@ public class ProtectAlgo {
                 orange.purple().fit().qc().status());
         printExtraction("wild-type", wildTypeEvidence);
 
-        List<ProtectEvidence> result = Lists.newArrayList();
         result.addAll(variantEvidence);
         result.addAll(copyNumberEvidence);
-        result.addAll(disruptionEvidence);
-        result.addAll(fusionEvidence);
         result.addAll(purpleSignatureEvidence);
-        result.addAll(virusEvidence);
-        result.addAll(chordEvidence);
-        result.addAll(hlaEvidence);
         result.addAll(wildTypeEvidence);
 
         List<ProtectEvidence> consolidated = EvidenceConsolidation.consolidate(result);

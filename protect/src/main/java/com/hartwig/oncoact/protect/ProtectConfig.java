@@ -25,6 +25,8 @@ public interface ProtectConfig {
     // General params needed for every analysis
     String ORANGE_JSON = "orange_json";
     String PRIMARY_TUMOR_DOIDS = "primary_tumor_doids";
+    String EXPERIMENT_TYPE = "experiment_type";
+
     String OUTPUT_DIRECTORY = "output_dir";
 
     // Input files used by the algorithm
@@ -43,6 +45,7 @@ public interface ProtectConfig {
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(PRIMARY_TUMOR_DOIDS, true, "A semicolon-separated list of DOIDs representing the primary tumor of patient.");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the PROTECT output data will be written to.");
+        options.addOption(EXPERIMENT_TYPE, true, "String to which experiment is executed");
 
         options.addOption(SERVE_ACTIONABILITY_DIRECTORY, true, "Path towards the SERVE actionability directory.");
         options.addOption(DOID_JSON, true, "Path to JSON file containing the full DOID tree.");
@@ -62,6 +65,9 @@ public interface ProtectConfig {
 
     @NotNull
     String outputDir();
+
+    @NotNull
+    String experimentType();
 
     @NotNull
     String serveActionabilityDir();
@@ -85,6 +91,7 @@ public interface ProtectConfig {
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
                 .primaryTumorDoids(toStringSet(nonOptionalValue(cmd, PRIMARY_TUMOR_DOIDS), DOID_SEPARATOR))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
+                .experimentType(nonOptionalValue(cmd, EXPERIMENT_TYPE))
                 .serveActionabilityDir(nonOptionalDir(cmd, SERVE_ACTIONABILITY_DIRECTORY))
                 .doidJsonFile(nonOptionalFile(cmd, DOID_JSON))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
