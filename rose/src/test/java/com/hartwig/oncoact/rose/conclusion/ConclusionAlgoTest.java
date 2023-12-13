@@ -21,6 +21,7 @@ import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
@@ -62,6 +63,7 @@ public class ConclusionAlgoTest {
         ImmutableRoseData.Builder builder = ImmutableRoseData.builder();
         RoseData minimal = builder.orange(TestOrangeFactory.createMinimalTestOrangeRecord())
                 .clinicalTranscriptsModel(ClinicalTranscriptModelTestFactory.createEmpty())
+                .experimentType(ExperimentType.WHOLE_GENOME)
                 .build();
         assertNotNull(ConclusionAlgo.generateConclusion(minimal));
 

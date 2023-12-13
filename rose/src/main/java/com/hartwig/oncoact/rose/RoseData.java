@@ -2,6 +2,7 @@ package com.hartwig.oncoact.rose;
 
 import java.util.List;
 
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -16,6 +17,9 @@ import org.jetbrains.annotations.Nullable;
 public abstract class RoseData {
     @NotNull
     public abstract OrangeRecord orange();
+
+    @NotNull
+    public abstract ExperimentType experimentType();
 
     @NotNull
     public abstract List<ActionabilityEntry> actionabilityEntries();

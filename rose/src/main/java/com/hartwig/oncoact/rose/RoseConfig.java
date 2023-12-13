@@ -21,6 +21,7 @@ public interface RoseConfig {
     String ORANGE_JSON = "orange_json";
     String OUTPUT_DIRECTORY = "output_dir";
 
+    String EXPERIMENT_TYPE = "experiment_type";
     String ACTIONABILITY_DATABASE_TSV = "actionability_database_tsv";
     String DRIVER_GENE_TSV = "driver_gene_tsv";
     String CLINICAL_TRANSCRIPTS_TSV = "clinical_transcripts_tsv";
@@ -34,6 +35,7 @@ public interface RoseConfig {
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the data of the report will be written to.");
+        options.addOption(EXPERIMENT_TYPE, true, "String to which experiment is executed");
 
         options.addOption(ACTIONABILITY_DATABASE_TSV, true, "Path to where the data of the actionability database can be found.");
         options.addOption(DRIVER_GENE_TSV, true, "Path to driver gene TSV");
@@ -49,6 +51,9 @@ public interface RoseConfig {
 
     @NotNull
     String outputDir();
+
+    @NotNull
+    String experimentType();
 
     @NotNull
     String actionabilityDatabaseTsv();
@@ -68,6 +73,7 @@ public interface RoseConfig {
         return ImmutableRoseConfig.builder()
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
+                .experimentType(nonOptionalValue(cmd, EXPERIMENT_TYPE))
                 .actionabilityDatabaseTsv(nonOptionalFile(cmd, ACTIONABILITY_DATABASE_TSV))
                 .driverGeneTsv(nonOptionalFile(cmd, DRIVER_GENE_TSV))
                 .clinicalTranscriptsTsv(nonOptionalFile(cmd, CLINICAL_TRANSCRIPTS_TSV))

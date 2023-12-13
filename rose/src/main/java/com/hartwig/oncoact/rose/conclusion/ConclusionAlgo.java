@@ -24,6 +24,7 @@ import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
@@ -106,7 +107,10 @@ public final class ConclusionAlgo {
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
         generatePurityConclusion(conclusion, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
-        generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
+        if (rose.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
+        }
+
         generateVariantConclusion(conclusion,
                 reportableVariants,
                 actionabilityMap,
@@ -116,10 +120,14 @@ public final class ConclusionAlgo {
                 HRD,
                 rose.orange().chord());
         generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, purple.fit().containsTumorCells());
-        generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
-        generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
-        generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
-        generateHrdConclusion(conclusion, rose.orange().chord(), actionabilityMap, oncogenic, actionable, HRD);
+
+        if (rose.experimentType().equals(ExperimentType.WHOLE_GENOME)) {
+            generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
+            generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
+            generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
+            generateHrdConclusion(conclusion, rose.orange().chord(), actionabilityMap, oncogenic, actionable, HRD);
+        }
+
         generateMSIConclusion(conclusion,
                 purple.characteristics().microsatelliteStatus(),
                 purple.characteristics().microsatelliteIndelsPerMb(),
