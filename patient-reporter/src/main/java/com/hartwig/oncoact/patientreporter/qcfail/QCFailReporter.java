@@ -16,14 +16,15 @@ import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
-import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
+import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QCFailReporter {
 
@@ -40,19 +41,26 @@ public class QCFailReporter {
     }
 
     @NotNull
-    public QCFailReport run(@NotNull PatientReporterConfig config) throws IOException {
-        QCFailReason reason = config.qcFailReason();
-        assert reason != null;
+    public QCFailReport run(@Nullable QCFailReason reason, @Nullable PanelFailReason panelFailReason,
+            @Nullable String sampleFailReasonComment, @Nullable String pipelineVersion, @NotNull String orangeJson,
+            @NotNull ExperimentType experimentType) throws IOException {
+        FailedReason failedDatabase;
+        if (experimentType.equals(ExperimentType.WHOLE_GENOME)) {
+            assert reason != null;
 
-        FailedReason failedDatabase = FailedReason.builder()
-                .reportReason(reason.reportReason())
-                .reportExplanation(reason.reportExplanation())
-                .sampleFailReasonComment(config.sampleFailReasonComment())
-                .build();
+            failedDatabase = FailedReason.builder()
+                    .reportReason(reason.reportReason())
+                    .reportExplanation(reason.reportExplanation())
+                    .sampleFailReasonComment(sampleFailReasonComment)
+                    .build();
+        } else {
+            assert panelFailReason != null;
 
-        String pipelineVersion = null;
-        if (config.qcFailReason() != null && config.qcFailReason().isDeepWGSDataAvailable()) {
-            pipelineVersion = config.pipelineVersion();
+            failedDatabase = FailedReason.builder()
+                    .reportReason(panelFailReason.reportReason())
+                    .reportExplanation(panelFailReason.reportExplanation())
+                    .sampleFailReasonComment(sampleFailReasonComment)
+                    .build();
         }
 
         String wgsPurityString = null;
@@ -61,8 +69,8 @@ public class QCFailReporter {
         HlaAllelesReportingData hlaReportingData = null;
         Map<String, List<PeachGenotype>> pharmacogeneticsMap = Maps.newHashMap();
 
-        if (reason.isDeepWGSDataAvailable()) {
-            OrangeRecord orange = OrangeJson.read(config.orangeJson());
+        if (experimentType.equals(ExperimentType.WHOLE_GENOME) && reason.isDeepWGSDataAvailable()) {
+            OrangeRecord orange = OrangeJson.read(orangeJson);
 
             String formattedPurity = new DecimalFormat("#'%'").format(orange.purple().fit().purity() * 100);
             hasReliablePurity = orange.purple().fit().containsTumorCells();

@@ -1,9 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Footer;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Header;
 import com.hartwig.oncoact.patientreporter.cfreport.components.SidePanel;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.itextpdf.kernel.events.Event;
 import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 class PageEventHandlerPanel implements IEventHandler {
 
     @NotNull
-    private final PanelReport patientReport;
+    private final PanelFailReport patientReport;
 
     private final Footer footer;
     private final Header header;
@@ -29,7 +29,7 @@ class PageEventHandlerPanel implements IEventHandler {
 
     private PdfOutline outline = null;
 
-    PageEventHandlerPanel(@NotNull final PanelReport patientReport, @NotNull final ReportResources reportResources) {
+    PageEventHandlerPanel(@NotNull final PanelFailReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
         this.header = new Header(patientReport.logoCompanyPath(), reportResources);
         this.footer = new Footer(reportResources);

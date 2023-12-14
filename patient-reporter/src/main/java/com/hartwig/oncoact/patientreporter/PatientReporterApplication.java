@@ -113,7 +113,12 @@ public class PatientReporterApplication {
 
     private void generateQCFail() throws IOException {
         QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfigWGS(config), reportDate);
-        QCFailReport report = reporter.run(config);
+        QCFailReport report = reporter.run(config.qcFailReason(),
+                null,
+                config.sampleFailReasonComment(),
+                config.pipelineVersion(),
+                config.orangeJson(),
+                ExperimentType.WHOLE_GENOME);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);

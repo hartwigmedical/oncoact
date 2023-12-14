@@ -3,7 +3,6 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
-import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +37,6 @@ public class PanelFailReporter {
                 .signaturePath(reportData.signaturePath())
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .reportDate(reportDate)
-                .isWGSReport(false)
                 .panelFailReason(reason)
                 .failExplanation(failedDatabase)
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())

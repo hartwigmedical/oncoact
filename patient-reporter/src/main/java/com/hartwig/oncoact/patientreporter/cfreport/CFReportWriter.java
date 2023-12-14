@@ -28,6 +28,9 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.TumorChara
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailDisclaimerChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailPGXChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.PanelQCFailChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.SampleAndDisclaimerChapterFail;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.xml.ReportXML;
 import com.hartwig.oncoact.patientreporter.xml.XMLFactory;
@@ -194,9 +197,15 @@ public class CFReportWriter implements ReportWriter {
                 .toJson(report);
     }
 
-    private void writePanel(@NotNull ReportResources reportResources,
-            @NotNull com.hartwig.oncoact.patientreporter.PanelReport patientReport, @NotNull ReportChapter[] chapters,
-            @NotNull String outputFilePath) throws IOException {
+    public void writePanelQCFailReport(@NotNull PanelFailReport report, @NotNull String outputFilePath) throws IOException {
+        ReportResources reportResources = ReportResources.create();
+        ReportChapter[] chapters = new ReportChapter[] { new PanelQCFailChapter(report, reportResources),
+                new SampleAndDisclaimerChapterFail(report, reportResources) };
+        writePanel(reportResources, report, chapters, outputFilePath);
+    }
+
+    private void writePanel(@NotNull ReportResources reportResources, @NotNull PanelFailReport patientReport,
+            @NotNull ReportChapter[] chapters, @NotNull String outputFilePath) throws IOException {
         Document doc = initializeReport(outputFilePath, writeToFile);
         PdfDocument pdfDocument = doc.getPdfDocument();
 

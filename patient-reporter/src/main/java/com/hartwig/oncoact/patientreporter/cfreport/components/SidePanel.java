@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
-import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
@@ -54,7 +53,7 @@ public final class SidePanel {
                         .equals(QsFormNumber.FOR_080.display()));
     }
 
-    public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
+    public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
         renderSidePanel(page,
                 ExperimentType.TARGETED,
                 patientReport.lamaPatientData(),

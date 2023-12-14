@@ -10,6 +10,9 @@ import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReporter;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.ExperimentType;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.util.Formats;
 
 import org.apache.commons.cli.HelpFormatter;
@@ -85,32 +88,38 @@ public class PanelReporterApplication {
 
         reportWriter.writeAnalysedPatientReport(report, outputFilePath);
 
-        //        if (!config.onlyCreatePDF()) {
-        //            LOGGER.debug("Updating reporting db and writing report data");
-        //            reportWriter.writeJsonPanelFile(report, config.outputDirData());
-        //            new ReportingDb().appendPanelReport(report, config.outputDirData());
-        //        }
+        //                if (!config.onlyCreatePDF()) {
+        //                    LOGGER.debug("Updating reporting db and writing report data");
+        //                    reportWriter.writeJsonPanelFile(report, config.outputDirData());
+        //                    new ReportingDb().appendPanelReport(report, config.outputDirData());
+        //                }
     }
 
     private void generatePanelQCFail() throws IOException {
-        //        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfigPanel(config), reportDate);
-        //        QCFailReport report = reporter.run(config);
-        //
-        //        ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
-        //        String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
-        //
-        //        reportWriter.writeQCFailReport(report, outputFilePath);
-        //
+        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfigPanel(config), reportDate);
+        QCFailReport report = reporter.run(null,
+                config.panelQcFailReason(),
+                config.sampleFailReasonComment(),
+                config.pipelineVersion(),
+                config.orangeJson(),
+                ExperimentType.TARGETED);
+
+        ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
+        String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
+
+        reportWriter.writeQCFailReport(report, outputFilePath);
+
         //        if (!config.onlyCreatePDF()) {
         //            LOGGER.debug("Updating reporting db and writing report data");
-        //            reportWriter.writeJsonPanelFailedFile(report, config.outputDirData());
-        //            new ReportingDb().appendPanelFailReport(report, config.outputDirData());
+        //
+        //            reportWriter.writeJsonFailedFile(report, config.outputDirData());
+        //
+        //            new ReportingDb().appendQCFailReport(report, config.outputDirReport());
         //        }
     }
 
     @NotNull
-    private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-            @NotNull AnalysedPatientReport panelReport) {
+    private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport, @NotNull PatientReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName(panelReport) + ".pdf";
     }
 

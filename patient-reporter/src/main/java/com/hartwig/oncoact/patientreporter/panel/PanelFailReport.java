@@ -2,16 +2,16 @@ package com.hartwig.oncoact.patientreporter.panel;
 
 import java.util.Optional;
 
-import com.hartwig.oncoact.patientreporter.PanelReport;
-
+import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
+
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
-@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class PanelFailReport implements PanelReport {
+@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+public abstract class PanelFailReport implements PatientReport {
 
     static ImmutablePanelFailReport.Builder builder() {
         return ImmutablePanelFailReport.builder();
