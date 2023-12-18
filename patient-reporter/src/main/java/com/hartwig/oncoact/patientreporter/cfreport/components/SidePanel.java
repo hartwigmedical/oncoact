@@ -29,10 +29,10 @@ import org.jetbrains.annotations.Nullable;
 public final class SidePanel {
 
     public static final float Y_START = 810;
-    private static final float ROW_SPACING = 39;
+    private static final float ROW_SPACING = 36;
     private static final float CONTENT_X_START = 420;
     private static final float RECTANGLE_WIDTH = 200;
-    private static final float RECTANGLE_HEIGHT_SHORT = 120;
+    private static final float RECTANGLE_HEIGHT_SHORT = 100;
 
     @NotNull
     private final ReportResources reportResources;
@@ -75,8 +75,8 @@ public final class SidePanel {
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
 
-        int yCount = fullHeight ? (isFailure ? 120 : 13) : 3;
-        var gridYStart = Y_START + 18;
+        int yCount = fullHeight ? (isFailure ? 120 : 14) : 3;
+        var gridYStart = Y_START + 16;
         baseMarker.renderMarkerGrid(5, yCount, CONTENT_X_START, 35, gridYStart, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
@@ -94,6 +94,7 @@ public final class SidePanel {
             if (lamaPatientData.getHospitalSampleLabel() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital sample label", lamaPatientData.getHospitalSampleLabel()));
             }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Cohort", lamaPatientData.getCohort()));
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
