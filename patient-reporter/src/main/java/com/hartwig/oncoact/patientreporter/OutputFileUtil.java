@@ -15,7 +15,8 @@ public final class OutputFileUtil {
     public static String generateOutputFileName(@NotNull PanelReport report) {
         PatientReporterData lamaPatientData = report.lamaPatientData();
         var fileDate = Formats.convertToFileDate(report.reportDate());
-        String filePrefix = getFilePrefix(lamaPatientData.getHospitalName(), lamaPatientData.getReportingId(), fileDate);
+        String extendedReportId = getExtendedReportId(lamaPatientData);
+        String filePrefix = getFilePrefix(lamaPatientData.getHospitalName(), extendedReportId, fileDate);
         String fileSuffix = report.isCorrectedReport() ? "_corrected" : Strings.EMPTY;
         return filePrefix + "_oncoact_panel_result_report" + fileSuffix;
     }
@@ -24,9 +25,17 @@ public final class OutputFileUtil {
     public static String generateOutputFileName(@NotNull PatientReport report) {
         PatientReporterData lamaPatientData = report.lamaPatientData();
         var fileDate = Formats.convertToFileDate(report.reportDate());
-        String filePrefix = getFilePrefix(lamaPatientData.getHospitalName(), lamaPatientData.getReportingId(), fileDate);
+        String extendedReportId = getExtendedReportId(lamaPatientData);
+        String filePrefix = getFilePrefix(lamaPatientData.getHospitalName(), extendedReportId, fileDate);
         String fileSuffix = report.isCorrectedReport() ? "_corrected" : Strings.EMPTY;
         return filePrefix + "_oncoact_wgs_report" + fileSuffix;
+    }
+
+    private static String getExtendedReportId(PatientReporterData lamaPatientData) {
+        if (lamaPatientData.getHospitalSampleLabel() == null) {
+            return lamaPatientData.getReportingId();
+        }
+        return lamaPatientData.getReportingId() + "-" + lamaPatientData.getHospitalSampleLabel();
     }
 
     private static String getFilePrefix(String hospitalName, String reportId, String date) {
