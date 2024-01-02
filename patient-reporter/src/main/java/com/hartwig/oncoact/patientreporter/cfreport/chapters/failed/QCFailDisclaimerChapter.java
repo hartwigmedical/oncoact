@@ -197,8 +197,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     private Paragraph sampleHasMolecularTumorPercentage() {
         Integer shallowPurity = failReport.lamaPatientData().getShallowPurity();
         String wgsPurity = failReport.wgsPurityString();
+        String purpleQcStatus = failReport.lamaPatientData().getPurpleStatus();
+        String purpleQcStatusInt = purpleQcStatus != null ? purpleQcStatus : Strings.EMPTY;
+
         var isFailedNoTumor = Objects.requireNonNullElse(failReport.purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
-        if (isFailedNoTumor || shallowPurity == null) {
+        if (isFailedNoTumor || purpleQcStatusInt.equals(PurpleQCStatus.FAIL_NO_TUMOR.name())) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
             String effectivePurity = wgsPurity != null ? wgsPurity : shallowPurity + "%";
