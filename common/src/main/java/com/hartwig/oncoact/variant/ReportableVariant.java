@@ -7,6 +7,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.util.Formats;
 
+import org.apache.logging.log4j.util.Strings;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,17 +58,26 @@ public abstract class ReportableVariant implements Variant {
 
     public abstract int alleleReadCount();
 
-    public abstract double totalCopyNumber();
+    @Nullable
+    public abstract Double totalCopyNumber();
 
-    public abstract double alleleCopyNumber();
+    @Nullable
+    public abstract Double alleleCopyNumber();
 
     public abstract double minorAlleleCopyNumber();
 
     @NotNull
     @Value.Derived
     public String tVAF() {
-        double vaf = alleleCopyNumber() / totalCopyNumber();
-        return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
+        Double alleleCopyNumber = alleleCopyNumber();
+        Double totalCopyNumber = totalCopyNumber();
+
+        if (alleleCopyNumber != null && totalCopyNumber != null) {
+            double vaf = alleleCopyNumber / totalCopyNumber;
+            return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
+        } else {
+            return Strings.EMPTY;
+        }
     }
 
     @NotNull
