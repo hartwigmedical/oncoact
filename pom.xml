@@ -39,7 +39,7 @@
 
         <serve.version>2.4.0</serve.version>
         <orange-datamodel.version>1.3.1</orange-datamodel.version>
-        <lama-client.version>2.3.0</lama-client.version>
+        <lama-client.version>2.3.7</lama-client.version>
         <silo-diagnostic-client.version>3.0.6</silo-diagnostic-client.version>
 
         <commons.cli.version>1.5.0</commons.cli.version>
