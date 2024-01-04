@@ -33,6 +33,7 @@ public interface QCFailReportData extends ReportData {
                 .logoRVAPath(config.rvaLogo())
                 .logoCompanyPath(config.companyLogo())
                 .udiDi(config.udiDi())
+                .reportTime(config.reportTime())
                 .build();
     }
 }

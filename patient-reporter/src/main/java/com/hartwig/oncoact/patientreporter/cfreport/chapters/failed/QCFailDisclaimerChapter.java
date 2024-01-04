@@ -1,8 +1,11 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
@@ -61,16 +64,6 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createContentBody() {
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 }));
-        table.setWidth(contentWidth());
-        table.addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()));
-        table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()));
-        return table;
-    }
-
-    @NotNull
     private Div createSampleDetailsColumn() {
         Set<QCFailReason> qcFailReasons = Sets.newHashSet(QCFailReason.WGS_PROCESSING_ISSUE,
                 QCFailReason.WGS_TCP_SHALLOW_FAIL,
@@ -87,6 +80,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
 
+        if (failReport.reason() == QCFailReason.WGS_TCP_FAIL || failReport.reason() == QCFailReason.WGS_TCP_SHALLOW_FAIL) {
+            div.add(sampleHasMolecularTumorPercentage());
+        }
         div.add(reportIsBasedOnBloodAndTumorSamples());
 
         return div;
@@ -195,6 +191,22 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
     private Paragraph forComplaintsPleaseContactHMF() {
         return createContentParagraph("For feedback or complaints please contact ", "qualitysystem@hartwigmedicalfoundation.nl");
+    }
+
+    @NotNull
+    private Paragraph sampleHasMolecularTumorPercentage() {
+        Integer shallowPurity = failReport.lamaPatientData().getShallowPurity();
+        String wgsPurity = failReport.wgsPurityString();
+        String purpleQcStatus = failReport.lamaPatientData().getPurpleStatus();
+        String purpleQcStatusInt = purpleQcStatus != null ? purpleQcStatus : Strings.EMPTY;
+
+        var isFailedNoTumor = Objects.requireNonNullElse(failReport.purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
+        if (isFailedNoTumor || purpleQcStatusInt.equals(PurpleQCStatus.FAIL_NO_TUMOR.name())) {
+            return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
+        } else {
+            String effectivePurity = wgsPurity != null ? wgsPurity : shallowPurity + "%";
+            return createContentParagraph("The tumor percentage based on molecular estimation is ", effectivePurity);
+        }
     }
 
     @NotNull

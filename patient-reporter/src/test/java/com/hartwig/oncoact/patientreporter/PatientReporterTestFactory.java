@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 public final class PatientReporterTestFactory {
 
     private static final String RUN_DIRECTORY = Resources.getResource("test_run").getPath();
-    private static final String PIPELINE_VERSION_FILE = RUN_DIRECTORY + "/pipeline.version";
     private static final String ORANGE_JSON = RUN_DIRECTORY + "/orange/sample.orange.json";
     private static final String LAMA_JSON = Resources.getResource("lama/sample.lama.json").getPath();
     private static final String DIAGNOSTIC_SILO_JSON = Resources.getResource("silo/sample.silo.json").getPath();
@@ -39,6 +39,7 @@ public final class PatientReporterTestFactory {
     private static final String CORRECTION_JSON = Resources.getResource("correction/correction.json").getPath();
 
     private static final String UDI_DI = "(01)8720299486027(8012)v5.28";
+    public static final LocalDateTime REPORT_TIME = LocalDateTime.parse("2023-12-08T15:26:54");
 
     private PatientReporterTestFactory() {
     }
@@ -65,6 +66,7 @@ public final class PatientReporterTestFactory {
                 .correctionJson(CORRECTION_JSON)
                 .onlyCreatePDF(false)
                 .pipelineVersion("5.31")
+                .reportTime(REPORT_TIME)
                 .build();
     }
 
@@ -78,6 +80,7 @@ public final class PatientReporterTestFactory {
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)
                     .udiDi(UDI_DI)
+                    .reportTime(REPORT_TIME)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -95,6 +98,7 @@ public final class PatientReporterTestFactory {
                     .logoRVAPath(RVA_LOGO_PATH)
                     .logoCompanyPath(COMPANY_LOGO_PATH)
                     .udiDi(UDI_DI)
+                    .reportTime(REPORT_TIME)
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -113,6 +117,7 @@ public final class PatientReporterTestFactory {
                     .germlineReportingModel(germlineReportingModel)
                     .clinicalTranscriptsModel(clinicalTranscriptsModel)
                     .correction(correction)
+                    .reportTime(REPORT_TIME)
                     .build();
         } catch (IOException exception) {
             throw new IllegalStateException("Could not load test analysed report data: " + exception.getMessage());

@@ -69,9 +69,7 @@ public final class SomaticVariants {
 
     public static boolean hasPhasedVariant(@NotNull List<ReportableVariant> reportableVariants) {
         for (ReportableVariant reportableVariant : reportableVariants) {
-            // TODO Check whether evaluation still works
-            if (reportableVariant.canonicalEffect().contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
-                    || reportableVariant.canonicalEffect().contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString())) {
+            if (isPhasedInframeEffect(reportableVariant.canonicalEffect())) {
                 return true;
             }
         }
@@ -117,12 +115,11 @@ public final class SomaticVariants {
     public static String geneDisplayString(@NotNull ReportableVariant variant, boolean notifyGermline, @NotNull String canonicalEffect) {
         String footer = Strings.EMPTY;
         if (notifyGermline) {
-            footer = footer + "#";
+            footer = footer + " #";
         }
 
-        if (canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
-                || canonicalEffect.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString())) {
-            footer = footer + "+";
+        if (isPhasedInframeEffect(canonicalEffect)) {
+            footer = footer + " +";
         }
 
         return variant.gene() + footer;
@@ -281,5 +278,11 @@ public final class SomaticVariants {
         }
 
         return genesDisplay;
+    }
+
+    private static boolean isPhasedInframeEffect(String canonicalEffect) {
+        var upper = canonicalEffect.toUpperCase();
+        return upper.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
+                || upper.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString());
     }
 }

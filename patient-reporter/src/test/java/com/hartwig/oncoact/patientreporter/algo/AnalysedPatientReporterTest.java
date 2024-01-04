@@ -4,23 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.util.Formats;
 
 import org.junit.Test;
 
 public class AnalysedPatientReporterTest {
 
-    private static final String REPORT_DATE = Formats.formatDate(LocalDate.now());
-
     @Test
     public void canRunOnRunDirectory() throws IOException {
-        AnalysedPatientReporter reporter =
-                new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData(), REPORT_DATE);
+        AnalysedPatientReporter reporter = new AnalysedPatientReporter(PatientReporterTestFactory.loadTestAnalysedReportData());
         PatientReporterConfig config = PatientReporterTestFactory.createTestReporterConfig();
 
         assertNotNull(reporter.run(config));

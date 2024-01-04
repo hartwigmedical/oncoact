@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.panel;
 import java.io.IOException;
 
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
+import com.hartwig.oncoact.util.Formats;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -10,12 +11,9 @@ public class PanelReporter {
 
     @NotNull
     private final QCFailPanelReportData reportData;
-    @NotNull
-    private final String reportDate;
 
-    public PanelReporter(@NotNull final QCFailPanelReportData reportData, @NotNull final String reportDate) {
+    public PanelReporter(@NotNull final QCFailPanelReportData reportData) {
         this.reportData = reportData;
-        this.reportDate = reportDate;
     }
 
     @NotNull
@@ -32,7 +30,7 @@ public class PanelReporter {
                 .logoCompanyPath(reportData.logoCompanyPath())
                 .lamaPatientData(reportData.lamaPatientData())
                 .diagnosticSiloPatientData(reportData.diagnosticSiloPatientData())
-                .reportDate(reportDate)
+                .reportDate(Formats.formatDate(reportData.reportTime().toLocalDate()))
                 .isWGSReport(false)
                 .build();
     }

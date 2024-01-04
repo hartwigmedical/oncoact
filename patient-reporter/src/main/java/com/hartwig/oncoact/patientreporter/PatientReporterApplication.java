@@ -2,7 +2,6 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
@@ -14,7 +13,6 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReporter;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
-import com.hartwig.oncoact.util.Formats;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -47,17 +45,14 @@ public class PatientReporterApplication {
         }
 
         LOGGER.info("Patient reporter config is: {}", config);
-        new PatientReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
+        new PatientReporterApplication(config).run();
     }
 
     @NotNull
     private final PatientReporterConfig config;
-    @NotNull
-    private final String reportDate;
 
-    public PatientReporterApplication(@NotNull final PatientReporterConfig config, @NotNull final String reportDate) {
+    public PatientReporterApplication(@NotNull final PatientReporterConfig config) {
         this.config = config;
-        this.reportDate = reportDate;
     }
 
     public void run() throws IOException {
@@ -73,7 +68,7 @@ public class PatientReporterApplication {
 
     private void generateAnalysedReport() throws IOException {
         AnalysedReportData reportData = AnalysedReportData.buildFromConfig(config);
-        AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData, reportDate);
+        AnalysedPatientReporter reporter = new AnalysedPatientReporter(reportData);
 
         AnalysedPatientReport report = reporter.run(config);
 
@@ -105,7 +100,7 @@ public class PatientReporterApplication {
     }
 
     private void generateQCFail() throws IOException {
-        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfig(config), reportDate);
+        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfig(config));
         QCFailReport report = reporter.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
