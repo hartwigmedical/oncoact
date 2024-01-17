@@ -12,13 +12,10 @@ import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.immutables.value.internal.$guava$.annotations.$VisibleForTesting;
 import org.jetbrains.annotations.NotNull;
 
 public final class ConsentFilterFunctions {
-    private static final Logger LOGGER = LogManager.getLogger(ConsentFilterFunctions.class);
 
     private ConsentFilterFunctions() {
     }
@@ -26,9 +23,7 @@ public final class ConsentFilterFunctions {
     @NotNull
     public static GenomicAnalysis filter(@NotNull GenomicAnalysis genomicAnalysis, boolean flagGermlineOnReport,
             boolean reportGermlineOnReport) {
-        List<ReportableVariant> filteredVariantsTumorFirstApproach = filterVariantsTumorFirstApproach(genomicAnalysis.reportableVariants());
-
-        List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(filteredVariantsTumorFirstApproach,
+        List<ReportableVariantWithNotify> filteredVariantsWithNotify = filterVariants(genomicAnalysis.reportableVariants(),
                 genomicAnalysis.notifyGermlineStatusPerVariant(),
                 reportGermlineOnReport);
 
@@ -60,22 +55,6 @@ public final class ConsentFilterFunctions {
 
     @NotNull
     @$VisibleForTesting
-    static List<ReportableVariant> filterVariantsTumorFirstApproach(@NotNull List<ReportableVariant> variants) {
-        List<ReportableVariant> tumorFirstFiltering = Lists.newArrayList();
-        for (ReportableVariant variant : variants) {
-            //TODO; How to determine tumor first approach gene call
-            tumorFirstFiltering.add(ImmutableReportableVariant.builder()
-                    .from(variant)
-                    .biallelic(null)
-                    .alleleCopyNumber(null)
-                    .totalCopyNumber(null)
-                    .build());
-        }
-        return tumorFirstFiltering;
-    }
-
-    @NotNull
-    @$VisibleForTesting
     static List<ReportableVariantWithNotify> filterVariants(@NotNull List<ReportableVariant> variants,
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean reportGermlineOnReport) {
         List<ReportableVariantWithNotify> filteredVariants = Lists.newArrayList();
@@ -83,7 +62,6 @@ public final class ConsentFilterFunctions {
             if (variant.source() == ReportableVariantSource.GERMLINE && !reportGermlineOnReport) {
                 continue;
             }
-            LOGGER.info(variant);
             if (variant.source() == ReportableVariantSource.GERMLINE && !notifyGermlineStatusPerVariant.get(variant)) {
                 filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
                         .variant(ImmutableReportableVariant.builder().from(variant).source(ReportableVariantSource.SOMATIC).build())
