@@ -442,7 +442,7 @@ public final class ConclusionAlgo {
                             .type(TypeAlteration.POSITIVE)
                             .build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-                    if (entry == null || entry.condition() != Condition.ONLY_HIGH) {
+                    if (entry == null || entry.condition() != Condition.ALWAYS) {
                         continue;
                     }
                     actionable.add("virus");

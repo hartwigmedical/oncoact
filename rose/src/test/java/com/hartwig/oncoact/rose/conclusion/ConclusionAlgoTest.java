@@ -229,10 +229,9 @@ public class ConclusionAlgoTest {
         Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
         List<LilacAllele> alleles = Lists.newArrayList();
         List<String> conclusion = Lists.newArrayList();
-        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ONLY_HIGH, "EBV");
-        actionabilityMap = append(actionabilityMap, "HPV", TypeAlteration.POSITIVE, "HPV", Condition.ONLY_HIGH, "HPV");
-        actionabilityMap = append(actionabilityMap, "MCV", TypeAlteration.POSITIVE, "MCV", Condition.ONLY_HIGH, "MCV");
+        Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = create("EBV", TypeAlteration.POSITIVE, "EBV", Condition.ALWAYS, "EBV");
+        actionabilityMap = append(actionabilityMap, "HPV", TypeAlteration.POSITIVE, "HPV", Condition.ALWAYS, "HPV");
+        actionabilityMap = append(actionabilityMap, "MCV", TypeAlteration.POSITIVE, "MCV", Condition.ALWAYS, "MCV");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
