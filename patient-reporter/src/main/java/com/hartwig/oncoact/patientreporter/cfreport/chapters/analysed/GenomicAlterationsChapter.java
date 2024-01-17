@@ -170,7 +170,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private Table createTumorVariantsTable(@NotNull List<ReportableVariant> reportableVariants,
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
-        String title = "Tumor specific variants";
+        String title = "Tumor observed variants";
         if (reportableVariants.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -261,7 +261,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
             @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
-        String title = "Tumor specific gains & losses";
+        String title = "Tumor observed gains & losses";
         if (gainsAndLosses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -292,7 +292,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createHomozygousDisruptionsTable(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
-        String title = "Tumor specific homozygous disruptions";
+        String title = "Tumor observed homozygous disruptions";
         String subtitle = "Complete loss of wild type allele";
         if (homozygousDisruptions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, subtitle, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
@@ -345,7 +345,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createFusionsTable(@NotNull List<LinxFusion> fusions, boolean hasReliablePurity) {
-        String title = "Tumor specific gene fusions";
+        String title = "Tumor observed gene fusions";
         if (fusions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -378,7 +378,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createDisruptionsTable(@NotNull List<GeneDisruption> disruptions, boolean hasReliablePurity) {
-        String title = "Tumor specific gene disruptions";
+        String title = "Tumor observed gene disruptions";
         if (disruptions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -463,7 +463,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createVirusTable(@NotNull List<AnnotatedVirus> viruses) {
-        String title = "Tumor specific viral insertions";
+        String title = "Tumor observed viral insertions";
 
         if (viruses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);

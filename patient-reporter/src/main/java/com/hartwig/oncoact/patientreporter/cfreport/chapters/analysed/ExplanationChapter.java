@@ -44,7 +44,7 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported genomic based therapy approaches")));
         table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the tumor specific variants")));
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the tumor observed variants")));
 
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Div().add(createParaGraphWithLinkTwo(
@@ -120,12 +120,12 @@ public class ExplanationChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
 
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor specific gains & losses")));
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed gains & losses")));
         table.addCell(TableUtil.createLayoutCell());
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor specific gene fusions")));
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed gene fusions")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createSectionTitle("Details on the reported tumor specific homozygous / gene disruptions")));
+                .add(createSectionTitle("Details on the reported tumor observed homozygous / gene disruptions")));
 
         table.addCell(TableUtil.createLayoutCell()
 
@@ -166,7 +166,7 @@ public class ExplanationChapter implements ReportChapter {
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
 
-        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor specific viral insertions")));
+        table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed viral insertions")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
         table.addCell(TableUtil.createLayoutCell());
