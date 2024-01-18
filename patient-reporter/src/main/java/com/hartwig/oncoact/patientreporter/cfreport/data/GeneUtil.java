@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.util.Formats;
 
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,13 +14,14 @@ public final class GeneUtil {
 
     @NotNull
     public static String roundCopyNumber(Double copyNumber, boolean hasReliablePurity) {
-        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+        return copyNumber == null
+                ? Strings.EMPTY
+                : hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     public static String roundCopyNumber(Double copyNumber) {
-        return copyNumber == null ? Formats.NA_STRING :  String.valueOf(Math.round(Math.max(0, copyNumber)));
+        return copyNumber == null ? Formats.NA_STRING : String.valueOf(Math.round(Math.max(0, copyNumber)));
     }
-
 
     @NotNull
     public static String copyNumberToString(@Nullable Double copyNumber, boolean hasReliablePurity) {

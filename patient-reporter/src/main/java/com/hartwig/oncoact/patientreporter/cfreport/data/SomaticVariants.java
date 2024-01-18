@@ -36,24 +36,29 @@ public final class SomaticVariants {
     @NotNull
     public static List<ReportableVariant> sort(@NotNull List<ReportableVariant> variants) {
         return variants.stream().sorted((variant1, variant2) -> {
-            if (Math.abs(variant1.driverLikelihood() - variant2.driverLikelihood()) > 0.001) {
-                return (variant1.driverLikelihood() - variant2.driverLikelihood()) < 0 ? 1 : -1;
-            } else {
-                if (variant1.gene().equals(variant2.gene())) {
-                    // sort on codon position if gene is the same
-                    if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
-                        return 1;
-                    } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
-                        return -1;
-                    } else {
-                        int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
-                        int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
-                        return Integer.compare(codonVariant1, codonVariant2);
-                    }
+            if (variant1.driverLikelihood() != null && variant2.driverLikelihood() != null) {
+                if (Math.abs(variant1.driverLikelihood() - variant2.driverLikelihood()) > 0.001) {
+                    return (variant1.driverLikelihood() - variant2.driverLikelihood()) < 0 ? 1 : -1;
                 } else {
-                    return variant1.gene().compareTo(variant2.gene());
+                    if (variant1.gene().equals(variant2.gene())) {
+                        // sort on codon position if gene is the same
+                        if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
+                            return 1;
+                        } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
+                            return -1;
+                        } else {
+                            int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
+                            int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
+                            return Integer.compare(codonVariant1, codonVariant2);
+                        }
+                    } else {
+                        return variant1.gene().compareTo(variant2.gene());
+                    }
                 }
+            } else {
+                return variant1.gene().compareTo(variant2.gene());
             }
+
         }).collect(Collectors.toList());
     }
 
@@ -159,8 +164,10 @@ public final class SomaticVariants {
     }
 
     @Nullable
-    public static String tVAFString(@Nullable String tVAF, boolean hasReliablePurity, Double totalCopyNumber) {
-        if (totalCopyNumber == null) {
+    public static String tVAFString(@NotNull String tVAF, boolean hasReliablePurity, Double totalCopyNumber) {
+        if (tVAF.equals(Strings.EMPTY)) {
+            return Strings.EMPTY;
+        } else if (totalCopyNumber == null) {
             return Formats.NA_STRING;
         } else {
             double flooredCopyNumber = Math.max(0, totalCopyNumber);
@@ -170,23 +177,31 @@ public final class SomaticVariants {
     }
 
     @NotNull
-    public static String hotspotString(@NotNull Hotspot hotspot) {
-        switch (hotspot) {
-            case HOTSPOT:
-                return "Yes";
-            case NEAR_HOTSPOT:
-                return "Near";
-            default:
-                return Strings.EMPTY;
+    public static String hotspotString(@Nullable Hotspot hotspot) {
+        if (hotspot == null) {
+            return Strings.EMPTY;
+        } else {
+            switch (hotspot) {
+                case HOTSPOT:
+                    return "Yes";
+                case NEAR_HOTSPOT:
+                    return "Near";
+                default:
+                    return Strings.EMPTY;
+            }
         }
     }
 
     @NotNull
     public static String biallelicString(@Nullable Boolean biallelic, boolean hasReliablePurity) {
-        if (hasReliablePurity && biallelic != null) {
-            return biallelic ? "Yes" : "No";
+        if (biallelic == null) {
+            return Strings.EMPTY;
         } else {
-            return Formats.NA_STRING;
+            if (hasReliablePurity) {
+                return biallelic ? "Yes" : "No";
+            } else {
+                return Formats.NA_STRING;
+            }
         }
     }
 

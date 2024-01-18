@@ -1827,7 +1827,7 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
-                .source(ReportableVariantSource.SOMATIC)
+                .source(ReportableVariantSource.GERMLINE)
                 .gene("CDKN2A (p14ARF)")
                 .otherImpactClinical(null)
                 .transcript("ENST00000579755")
@@ -1858,7 +1858,7 @@ public final class ExampleAnalysisTestFactory {
                 .build();
 
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
-                .source(ReportableVariantSource.SOMATIC)
+                .source(ReportableVariantSource.GERMLINE_ONLY)
                 .gene("TERT")
                 .otherImpactClinical(purpleTranscriptImpactClinical("NM_198253",
                         "c.-125_-124delCCinsTT",
@@ -1883,13 +1883,13 @@ public final class ExampleAnalysisTestFactory {
                 .canonicalHgvsProteinImpact(Strings.EMPTY)
                 .alleleReadCount(56)
                 .totalReadCount(65)
-                .alleleCopyNumber(1.74)
-                .minorAlleleCopyNumber(0.0)
-                .totalCopyNumber(2.0)
-                .hotspot(Hotspot.HOTSPOT)
-                .clonalLikelihood(1D)
-                .driverLikelihood(1D)
-                .biallelic(true)
+                .alleleCopyNumber(null)
+                .minorAlleleCopyNumber(null)
+                .totalCopyNumber(null)
+                .hotspot(null)
+                .clonalLikelihood(null)
+                .driverLikelihood(null)
+                .biallelic(null)
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(4621)
                 .type(PurpleVariantType.MNP)
@@ -1957,7 +1957,7 @@ public final class ExampleAnalysisTestFactory {
                 .totalCopyNumber(3.98)
                 .hotspot(Hotspot.NON_HOTSPOT)
                 .clonalLikelihood(1D)
-                .driverLikelihood(0)
+                .driverLikelihood(0D)
                 .biallelic(false)
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)

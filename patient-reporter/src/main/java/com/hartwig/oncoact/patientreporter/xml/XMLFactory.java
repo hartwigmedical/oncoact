@@ -245,7 +245,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]hotsp")
-                    .valuePath(Map.of("value", reportableVariant.hotspot().name()))
+                    .valuePath(Map.of("value", reportableVariant.hotspot() != null ? reportableVariant.hotspot().name() : Strings.EMPTY))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]driver")

@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.variant;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Set;
 
@@ -55,6 +56,7 @@ public class ReportableVariantFactoryTest {
         PurpleVariant variant1 = TestPurpleFactory.variantBuilder()
                 .reported(true)
                 .gene("gene")
+                .variantCopyNumber(0.6)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().transcript("transcript 1").build())
                 .build();
 
@@ -73,6 +75,32 @@ public class ReportableVariantFactoryTest {
                 ClinicalTranscriptModelTestFactory.createEmpty());
 
         assertEquals(0.6, reportable.iterator().next().driverLikelihood(), EPSILON);
+    }
+
+    @Test
+    public void canResolveGermlineVariantsOnly() {
+        PurpleVariant variant1 = TestPurpleFactory.variantBuilder()
+                .reported(true)
+                .gene("gene")
+                .variantCopyNumber(0.4)
+                .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().transcript("transcript 1").build())
+                .build();
+
+        PurpleDriver driver1 = TestPurpleFactory.driverBuilder()
+                .gene("gene")
+                .driverLikelihood(0.6)
+                .transcript("transcript 1")
+                .driver(PurpleDriverType.GERMLINE_MUTATION)
+                .build();
+        PurpleDriver driver2 =
+                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).driver(PurpleDriverType.GERMLINE_DELETION).build();
+        Set<PurpleDriver> drivers = Sets.newHashSet(driver1, driver2);
+
+        Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1),
+                drivers,
+                ClinicalTranscriptModelTestFactory.createEmpty());
+
+        assertNull(reportable.iterator().next().driverLikelihood());
     }
 
     @Test

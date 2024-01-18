@@ -52,7 +52,8 @@ public final class QualityOverruleFunctions {
     }
 
     @NotNull
-    public static List<InterpretPurpleGeneCopyNumbers> overruleSuspectedLOH(@NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers, boolean hasReliablePurity) {
+    public static List<InterpretPurpleGeneCopyNumbers> overruleSuspectedLOH(
+            @NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers, boolean hasReliablePurity) {
         List<InterpretPurpleGeneCopyNumbers> suspectedGenesCurated = Lists.newArrayList();
 
         for (InterpretPurpleGeneCopyNumbers LOHGene : LOHPurpleGeneCopyNumbers) {
@@ -110,15 +111,31 @@ public final class QualityOverruleFunctions {
 
     @NotNull
     private static ReportableVariant overruleVariant(@NotNull ReportableVariant variant, boolean hasReliablePurity) {
-        double flooredCopyNumber = Math.max(0, variant.totalCopyNumber());
-        long roundedCopyNumber = Math.round(flooredCopyNumber);
+        Double totalCopyNumber = variant.totalCopyNumber();
+        Double flooredCopyNumber = null;
+        Long roundedCopyNumber = null;
 
-        return ImmutableReportableVariant.builder()
-                .from(variant)
-                .totalCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? flooredCopyNumber : Double.NaN)
-                .alleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.alleleCopyNumber() : Double.NaN)
-                .minorAlleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.minorAlleleCopyNumber() : Double.NaN)
-                .biallelic(hasReliablePurity && roundedCopyNumber >= 1 ? variant.biallelic() : null)
-                .build();
+        if (totalCopyNumber != null) {
+            flooredCopyNumber = Math.max(0, totalCopyNumber);
+            roundedCopyNumber = Math.round(flooredCopyNumber);
+        }
+
+        if (roundedCopyNumber != null) {
+            return ImmutableReportableVariant.builder()
+                    .from(variant)
+                    .totalCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? flooredCopyNumber : Double.NaN)
+                    .alleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.alleleCopyNumber() : Double.NaN)
+                    .minorAlleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.minorAlleleCopyNumber() : Double.NaN)
+                    .biallelic(hasReliablePurity && roundedCopyNumber >= 1 ? variant.biallelic() : null)
+                    .build();
+        } else {
+            return ImmutableReportableVariant.builder()
+                    .from(variant)
+                    .totalCopyNumber(Double.NaN)
+                    .alleleCopyNumber(Double.NaN)
+                    .minorAlleleCopyNumber(Double.NaN)
+                    .biallelic(null)
+                    .build();
+        }
     }
 }

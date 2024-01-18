@@ -1,11 +1,13 @@
 package com.hartwig.oncoact.variant;
 
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public enum DriverInterpretation {
     HIGH("High"),
     MEDIUM("Medium"),
-    LOW("Low");
+    LOW("Low"),
+    EMPTY(Strings.EMPTY);
 
     @NotNull
     private final String display;
@@ -20,13 +22,17 @@ public enum DriverInterpretation {
     }
 
     @NotNull
-    public static DriverInterpretation interpret(double driverLikelihood) {
-        if (driverLikelihood > 0.8) {
-            return HIGH;
-        } else if (driverLikelihood > 0.2) {
-            return MEDIUM;
+    public static DriverInterpretation interpret(Double driverLikelihood) {
+        if (driverLikelihood == null) {
+            return EMPTY;
         } else {
-            return LOW;
+            if (driverLikelihood > 0.8) {
+                return HIGH;
+            } else if (driverLikelihood > 0.2) {
+                return MEDIUM;
+            } else {
+                return LOW;
+            }
         }
     }
 }

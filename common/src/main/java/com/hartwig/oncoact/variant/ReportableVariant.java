@@ -5,7 +5,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.Variant;
-import com.hartwig.oncoact.util.Formats;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -57,25 +56,26 @@ public abstract class ReportableVariant implements Variant {
 
     public abstract int alleleReadCount();
 
-    public abstract double totalCopyNumber();
+    @Nullable
+    public abstract Double totalCopyNumber();
 
-    public abstract double alleleCopyNumber();
+    @Nullable
+    public abstract Double alleleCopyNumber();
 
-    public abstract double minorAlleleCopyNumber();
-
-    @NotNull
-    @Value.Derived
-    public String tVAF() {
-        double vaf = alleleCopyNumber() / totalCopyNumber();
-        return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
-    }
+    @Nullable
+    public abstract Double minorAlleleCopyNumber();
 
     @NotNull
+    public abstract String tVAF();
+
+    @Nullable
     public abstract Hotspot hotspot();
 
-    public abstract double clonalLikelihood();
+    @Nullable
+    public abstract Double clonalLikelihood();
 
-    public abstract double driverLikelihood();
+    @Nullable
+    public abstract Double driverLikelihood();
 
     @NotNull
     @Value.Derived
