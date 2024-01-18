@@ -2,7 +2,6 @@ package com.hartwig.oncoact.patientreporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Optional;
 
 import com.hartwig.lama.client.model.PatientReporterData;
@@ -16,7 +15,6 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
-import com.hartwig.oncoact.util.Formats;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.apache.commons.cli.HelpFormatter;
@@ -50,17 +48,14 @@ public class PanelReporterApplication {
         }
 
         LOGGER.info("Panel reporter config is: {}", config);
-        new PanelReporterApplication(config, Formats.formatDate(LocalDate.now())).run();
+        new PanelReporterApplication(config).run();
     }
 
     @NotNull
     private final PanelReporterConfig config;
-    @NotNull
-    private final String reportDate;
 
-    public PanelReporterApplication(@NotNull final PanelReporterConfig config, @NotNull final String reportDate) {
+    public PanelReporterApplication(@NotNull final PanelReporterConfig config) {
         this.config = config;
-        this.reportDate = reportDate;
     }
 
     public void run() throws IOException {
@@ -75,7 +70,7 @@ public class PanelReporterApplication {
     }
 
     private void generatePanelAnalysedReport() throws IOException {
-        PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config), reportDate);
+        PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config));
         com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(config.panelVCFname());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
@@ -91,7 +86,7 @@ public class PanelReporterApplication {
     }
 
     private void generatePanelQCFail() throws IOException {
-        PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config), reportDate);
+        PanelFailReporter reporter = new PanelFailReporter(buildBasePanelReportData(config));
         PanelFailReport report = reporter.run(config.panelQcFailReason(), config.sampleFailReasonComment());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
@@ -129,6 +124,7 @@ public class PanelReporterApplication {
                 .correctedReport(Optional.ofNullable(correction).map(Correction::isCorrectedReport).orElse(false))
                 .correctedReportExtern(Optional.ofNullable(correction).map(Correction::isCorrectedReportExtern).orElse(false))
                 .pipelineVersion(config.pipelineVersion())
+                .reportTime(config.reportTime())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.cfreport.components;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Random;
 
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
@@ -27,18 +28,23 @@ import org.jetbrains.annotations.Nullable;
 
 public final class SidePanel {
 
-    private static final float ROW_SPACING = 42;
+    public static final float Y_START = 810;
+    private static final float ROW_SPACING = 36;
     private static final float CONTENT_X_START = 420;
     private static final float RECTANGLE_WIDTH = 200;
-    private static final float RECTANGLE_HEIGHT_SHORT = 120;
+    private static final float RECTANGLE_HEIGHT_SHORT = 100;
 
     @NotNull
     private final ReportResources reportResources;
 
+    @NotNull
+    private final BaseMarker baseMarker;
+
     private static final Logger LOGGER = LogManager.getLogger(SidePanel.class);
 
-    public SidePanel(@NotNull ReportResources reportResources) {
+    public SidePanel(@NotNull final ReportResources reportResources, @NotNull final Random random) {
         this.reportResources = reportResources;
+        this.baseMarker = new BaseMarker(random);
     }
 
     public void renderSidePatientReport(@NotNull PdfPage page, @NotNull PatientReport patientReport, boolean fullHeight) {
@@ -69,8 +75,9 @@ public final class SidePanel {
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
 
-        int height = fullHeight ? (isFailure ? 120 : 12) : 3;
-        BaseMarker.renderMarkerGrid(5, height, CONTENT_X_START, 35, 820, -ROW_SPACING, .05f, .15f, canvas);
+        int yCount = fullHeight ? (isFailure ? 120 : 14) : 3;
+        var gridYStart = Y_START + 16;
+        baseMarker.renderMarkerGrid(5, yCount, CONTENT_X_START, 35, gridYStart, -ROW_SPACING, .05f, .15f, canvas);
 
         int sideTextIndex = -1;
         Canvas cv = new Canvas(canvas, page.getDocument(), page.getPageSize());
@@ -84,6 +91,10 @@ public final class SidePanel {
             if (lamaPatientData.getPathologyNumber() != null) {
                 cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", lamaPatientData.getPathologyNumber()));
             }
+            if (lamaPatientData.getHospitalSampleLabel() != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital sample label", lamaPatientData.getHospitalSampleLabel()));
+            }
+            cv.add(createSidePanelDiv(++sideTextIndex, "Cohort", lamaPatientData.getCohort()));
         }
 
         cv.add(createSidePanelDiv(++sideTextIndex, "Report date", reportDate));
@@ -158,8 +169,7 @@ public final class SidePanel {
 
     @NotNull
     private Div createSidePanelDiv(int index, @NotNull String label, @NotNull String value) {
-        float Y_START = 802;
-        float VALUE_TEXT_Y_OFFSET = 18;
+        float VALUE_TEXT_Y_OFFSET = 16;
         float MAX_WIDTH = 170;
 
         Div div = new Div();

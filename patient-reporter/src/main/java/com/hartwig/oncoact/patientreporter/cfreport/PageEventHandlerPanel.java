@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
+import java.util.Random;
+
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Footer;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Header;
@@ -31,9 +33,10 @@ class PageEventHandlerPanel implements IEventHandler {
 
     PageEventHandlerPanel(@NotNull final PanelReport patientReport, @NotNull final ReportResources reportResources) {
         this.patientReport = patientReport;
+        var random = new Random(patientReport.lamaPatientData().getTumorSampleBarcode().hashCode());
         this.header = new Header(patientReport.logoCompanyPath(), reportResources);
-        this.footer = new Footer(reportResources);
-        this.sidePanel = new SidePanel(reportResources);
+        this.footer = new Footer(reportResources, random);
+        this.sidePanel = new SidePanel(reportResources, random);
     }
 
     @Override
@@ -49,7 +52,7 @@ class PageEventHandlerPanel implements IEventHandler {
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
             sidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar);
-            footer.renderFooter(page, patientReport.qsFormNumber(), !fullSidebar);
+            footer.renderFooter(page, patientReport.qsFormNumber());
         }
     }
 
@@ -61,7 +64,7 @@ class PageEventHandlerPanel implements IEventHandler {
         this.chapterTitle = chapterTitle;
     }
 
-    void sidebarType(boolean full, boolean fullContent) {
+    void sidebarType(boolean full) {
         fullSidebar = full;
     }
 

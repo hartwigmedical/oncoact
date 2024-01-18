@@ -247,12 +247,14 @@ public class GenomicAlterationsChapter implements ReportChapter {
         if (SomaticVariants.hasNotifiableGermlineVariant(notifyGermlineStatusPerVariant)) {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                     .add(new Paragraph("\n# Marked variant(s) are also present in the germline of the patient. Referral to a genetic "
-                            + "specialist should be advised.").addStyle(reportResources.subTextStyle())));
+                            + "specialist should be advised.").addStyle(reportResources.subTextStyle()
+                            .setTextAlignment(TextAlignment.LEFT))));
         }
 
         if (SomaticVariants.hasPhasedVariant(reportableVariants)) {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
-                    .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(reportResources.subTextStyle())));
+                    .add(new Paragraph("\n+ Marked protein (p.) annotation is based on multiple phased variants.").addStyle(reportResources.subTextStyle()
+                            .setTextAlignment(TextAlignment.LEFT))));
         }
 
         return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN);
