@@ -260,7 +260,8 @@ public class ClinicalEvidenceFunctions {
                             table.addCell(tableUtil.createContentCell(publications));
                         }
                     } else {
-                        table.addCell(tableUtil.createContentCell(cellType));
+                        table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
+                                sourceUrls))));
                         table.addCell(tableUtil.createContentCell(cellGenomic));
                     }
                 }
