@@ -9,10 +9,10 @@ import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
+import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
@@ -261,7 +261,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
+    private Table createGainsAndLossesTable(@NotNull List<PurpleGainLossData> gainsAndLosses, boolean hasReliablePurity,
             @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
         String title = "Tumor observed gains & losses";
         if (gainsAndLosses.isEmpty()) {
@@ -275,8 +275,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         tableUtil.createHeaderCell("Chromosome arm copies").setTextAlignment(TextAlignment.CENTER) },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        List<PurpleGainLoss> sortedGainsAndLosses = GainsAndLosses.sort(gainsAndLosses);
-        for (PurpleGainLoss gainLoss : sortedGainsAndLosses) {
+        List<PurpleGainLossData> sortedGainsAndLosses = GainsAndLosses.sort(gainsAndLosses);
+        for (PurpleGainLossData gainLoss : sortedGainsAndLosses) {
             contentTable.addCell(tableUtil.createContentCell(gainLoss.chromosome()));
             contentTable.addCell(tableUtil.createContentCell(gainLoss.chromosomeBand()));
             contentTable.addCell(tableUtil.createContentCell(gainLoss.gene()));

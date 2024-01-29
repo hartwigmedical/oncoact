@@ -19,4 +19,15 @@ public class ListUtil {
         }
         return result;
     }
+
+    public static <T> List<T> mergeLists(@NotNull Collection<T> list1, @Nullable Collection<T> list2, @Nullable Collection<T> list3) {
+        ArrayList<T> result = new ArrayList<>(list1);
+        if (list2 != null) {
+            result.addAll(list2);
+        }
+        if (list3 != null) {
+            result.addAll(list3);
+        }
+        return result;
+    }
 }

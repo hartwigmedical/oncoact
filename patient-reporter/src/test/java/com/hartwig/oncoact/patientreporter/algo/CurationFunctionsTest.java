@@ -8,11 +8,11 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
@@ -124,8 +124,8 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateGainsAndLosses() {
-        List<PurpleGainLoss> gainsLosses = createTestGainsLosses();
-        List<PurpleGainLoss> curated = CurationFunctions.curateGainsAndLosses(gainsLosses);
+        List<PurpleGainLossData> gainsLosses = createTestGainsLosses();
+        List<PurpleGainLossData> curated = CurationFunctions.curateGainsAndLosses(gainsLosses);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneGainLoss(curated, "BRAF", true), "BRAF");
@@ -134,8 +134,8 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneGainLoss(@NotNull List<PurpleGainLoss> gainsLosses, @NotNull String gene, boolean isCanonical) {
-        for (PurpleGainLoss gainLoss : gainsLosses) {
+    private static String findByGeneGainLoss(@NotNull List<PurpleGainLossData> gainsLosses, @NotNull String gene, boolean isCanonical) {
+        for (PurpleGainLossData gainLoss : gainsLosses) {
             if (gainLoss.gene().equals(gene) && gainLoss.isCanonical() == isCanonical) {
                 return gainLoss.gene();
             }
@@ -269,10 +269,10 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static List<PurpleGainLoss> createTestGainsLosses() {
-        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder().gene("BRAF").isCanonical(true).build();
-        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder().gene("CDKN2A").isCanonical(true).build();
-        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder().gene("CDKN2A").isCanonical(false).build();
+    private static List<PurpleGainLossData> createTestGainsLosses() {
+        PurpleGainLossData gainLoss1 = TestPurpleFactory.gainLossBuilderOncoAct().gene("BRAF").isCanonical(true).build();
+        PurpleGainLossData gainLoss2 = TestPurpleFactory.gainLossBuilderOncoAct().gene("CDKN2A").isCanonical(true).build();
+        PurpleGainLossData gainLoss3 = TestPurpleFactory.gainLossBuilderOncoAct().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
     }
 
@@ -286,10 +286,8 @@ public class CurationFunctionsTest {
 
     @NotNull
     private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
-        HomozygousDisruption homozygousDisruption1 =
-                TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption2 =
-                TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
+        HomozygousDisruption homozygousDisruption1 = TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
+        HomozygousDisruption homozygousDisruption2 = TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
         HomozygousDisruption homozygousDisruption3 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(homozygousDisruption1, homozygousDisruption2, homozygousDisruption3);

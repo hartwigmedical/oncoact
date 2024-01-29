@@ -6,11 +6,11 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.oncoact.copynumber.CopyNumberInterpretation;
+import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -79,24 +79,24 @@ public class SomaticVariantsTest {
 
         List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2);
 
-        PurpleGainLoss baseGainLoss = createGainLoss("1", "p.12");
-        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData baseGainLoss = createGainLoss("1", "p.12");
+        PurpleGainLossData gainLoss1 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("MSH2")
-                .interpretation(CopyNumberInterpretation.FULL_LOSS)
+                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.FULL_LOSS)
                 .build();
-        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData gainLoss2 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("MSH6")
-                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
+                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
-        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData gainLoss3 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("EPCAM")
                 .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .build();
 
-        List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
+        List<PurpleGainLossData> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
         List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
 
@@ -110,24 +110,24 @@ public class SomaticVariantsTest {
 
         List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2);
 
-        PurpleGainLoss baseGainLoss = createGainLoss("1", "p.12");
-        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData baseGainLoss = createGainLoss("1", "p.12");
+        PurpleGainLossData gainLoss1 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("BRCA2")
-                .interpretation(CopyNumberInterpretation.FULL_LOSS)
+                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.FULL_LOSS)
                 .build();
-        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData gainLoss2 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("PALB2")
-                .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
+                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.PARTIAL_LOSS)
                 .build();
-        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
+        PurpleGainLossData gainLoss3 = TestPurpleFactory.gainLossBuilderOncoAct()
                 .from(baseGainLoss)
                 .gene("RAD51B")
-                .interpretation(CopyNumberInterpretation.FULL_GAIN)
+                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.FULL_GAIN)
                 .build();
 
-        List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
+        List<PurpleGainLossData> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
         List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
 
@@ -140,7 +140,7 @@ public class SomaticVariantsTest {
     }
 
     @NotNull
-    private static PurpleGainLoss createGainLoss(@NotNull String chromosome, @NotNull String chromosomeBand) {
-        return TestPurpleFactory.gainLossBuilder().chromosome(chromosome).chromosomeBand(chromosomeBand).build();
+    private static PurpleGainLossData createGainLoss(@NotNull String chromosome, @NotNull String chromosomeBand) {
+        return TestPurpleFactory.gainLossBuilderOncoAct().chromosome(chromosome).chromosomeBand(chromosomeBand).build();
     }
 }
