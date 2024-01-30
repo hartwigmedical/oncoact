@@ -50,7 +50,8 @@ public class CopyNumberEvidenceTest {
         List<ProtectEvidence> evidences = copyNumberEvidence.evidence(reportableSomaticGainLosses,
                 unreportedGainLosses,
                 reportableGermlineGainLosses,
-                unreportedGermlineGainLosses);
+                unreportedGermlineGainLosses,
+                Lists.newArrayList());
 
         assertEquals(3, evidences.size());
 

@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
+import com.hartwig.oncoact.copynumber.CopyNumberInterpretation;
+import com.hartwig.oncoact.copynumber.PurpleGainLossData;
+import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.ListUtil;
@@ -35,14 +38,18 @@ public class CopyNumberEvidence {
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
             @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-            @Nullable List<PurpleGainLoss> allGermlineLosses) {
+            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLoss reportableGainLoss : ListUtil.mergeLists(reportableSomaticGainLosses, reportableGermlineLosses)) {
+        for (PurpleGainLossData reportableGainLoss : ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(
+                        reportableSomaticGainLosses),
+                ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
+                ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity))) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (PurpleGainLoss gainLoss : ListUtil.mergeLists(allSomaticGainLosses, allGermlineLosses)) {
-            if (!reportableSomaticGainLosses.contains(gainLoss)) {
+        for (PurpleGainLossData gainLoss : ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
+                ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses))) {
+            if (!ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses).contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }
         }
@@ -51,7 +58,7 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull PurpleGainLoss gainLoss, boolean report) {
+    private List<ProtectEvidence> evidence(@NotNull PurpleGainLossData gainLoss, boolean report) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
@@ -70,7 +77,7 @@ public class CopyNumberEvidence {
         return result;
     }
 
-    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull PurpleGainLoss reportable) {
+    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull PurpleGainLossData reportable) {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:
@@ -81,7 +88,9 @@ public class CopyNumberEvidence {
             case UNDEREXPRESSION:
             case ANY_MUTATION:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_LOSS
-                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS;
+                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
+                        || reportable.interpretation() == CopyNumberInterpretation.FULL_GENE
+                        || reportable.interpretation() == CopyNumberInterpretation.FULL_GENE;
             default:
                 throw new IllegalStateException(
                         "Actionable event found in copy number evidence that should not exist: " + actionable.event());
