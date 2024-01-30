@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.variant;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -195,7 +196,7 @@ public final class ReportableVariantFactory {
     @NotNull
     public static List<ReportableVariant> mergeVariantLists(@NotNull Iterable<ReportableVariant> list1,
             @NotNull Iterable<ReportableVariant> list2) {
-        List<ReportableVariant> result = Lists.newArrayList();
+        Set<ReportableVariant> result = Sets.newHashSet();
 
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
         for (ReportableVariant variant : list1) {
@@ -224,7 +225,7 @@ public final class ReportableVariantFactory {
                     .build());
         }
 
-        return result;
+        return new ArrayList<>(result);
     }
 
     @NotNull
