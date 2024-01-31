@@ -194,31 +194,21 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    public static List<ReportableVariant> mergeVariantLists(@NotNull Iterable<ReportableVariant> list1,
-            @NotNull Iterable<ReportableVariant> list2) {
+    public static List<ReportableVariant> mergeVariantLists(@NotNull Collection<ReportableVariant> list1,
+            @NotNull Collection<ReportableVariant> list2) {
         Set<ReportableVariant> result = Sets.newHashSet();
+        result.addAll(list1);
+        result.addAll(list2);
 
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
-        for (ReportableVariant variant : list1) {
+
+        for (ReportableVariant variant : result) {
             if (variant.driverLikelihood() != null) {
                 maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
             }
         }
-
-        for (ReportableVariant variant : list1) {
-            result.add(ImmutableReportableVariant.builder()
-                    .from(variant)
-                    .driverLikelihood(variant.driverLikelihood() != null ? maxLikelihoodPerGene.get(variant.gene()) : null)
-                    .build());
-        }
-
-        for (ReportableVariant variant : list2) {
-            if (variant.driverLikelihood() != null) {
-                maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
-            }
-        }
-
-        for (ReportableVariant variant : list2) {
+        
+        for (ReportableVariant variant : result) {
             result.add(ImmutableReportableVariant.builder()
                     .from(variant)
                     .driverLikelihood(variant.driverLikelihood() != null ? maxLikelihoodPerGene.get(variant.gene()) : null)

@@ -26,7 +26,8 @@ public class GermlineReportingModel {
 
     public boolean notifyGermlineVariant(@NotNull ReportableVariant germlineVariant, boolean flagGermlineOnReport,
             @NotNull Set<String> germlineGenesWithIndependentHits) {
-        assert germlineVariant.source() == ReportableVariantSource.GERMLINE;
+        assert (germlineVariant.source() == ReportableVariantSource.GERMLINE
+                || germlineVariant.source() == ReportableVariantSource.GERMLINE_ONLY);
 
         if (!flagGermlineOnReport) {
             return false;

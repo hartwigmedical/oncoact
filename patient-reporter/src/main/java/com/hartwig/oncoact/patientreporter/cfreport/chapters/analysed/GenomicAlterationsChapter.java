@@ -222,8 +222,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     variant.alleleReadCount() + " / ").setFont(reportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(reportResources.fontRegular()))
                     .setTextAlignment(TextAlignment.CENTER), annotationSize));
-            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity),
-                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumberVariants(variant.totalCopyNumber(),
+                    hasReliablePurity), annotationSize).setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.tVAFString(variant.tVAF(),
                     hasReliablePurity,
                     variant.totalCopyNumber()), annotationSize).setTextAlignment(TextAlignment.CENTER));
@@ -458,7 +458,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
                 .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
-                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
+                        + " Copy number of detected mutations can be found in the tumor observed variants table.").addStyle(reportResources.subTextStyle()
                         .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }

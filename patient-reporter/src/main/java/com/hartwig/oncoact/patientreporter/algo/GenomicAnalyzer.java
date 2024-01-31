@@ -75,10 +75,10 @@ public class GenomicAnalyzer {
         List<PurpleGainLossData> germlineLosses =
                 ReportablePurpleGainLoss.toReportableGainLoss(orange.purple().reportableGermlineFullLosses());
         List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = orange.purple().reportableGermlineLossOfHeterozygosities();
-        List<PurpleGainLossData> germlineLossOfHeterozygosityConversion =
+        List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
         List<PurpleGainLossData> reportableGainsLosses =
-                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, germlineLossOfHeterozygosityConversion);
+                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         // Determine chromosome copy number arm
         RefGenomeCoordinates refGenomeCoordinates =
@@ -158,15 +158,15 @@ public class GenomicAnalyzer {
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
         for (ReportableVariant variant : reportableVariants) {
-            if (variant.source() == ReportableVariantSource.GERMLINE && hasOtherGermlineVariantWithDifferentPhaseSet(reportableVariants,
-                    variant)) {
+            if ((variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY)
+                    && hasOtherGermlineVariantWithDifferentPhaseSet(reportableVariants, variant)) {
                 germlineGenesWithIndependentHits.add(variant.gene());
             }
         }
 
         for (ReportableVariant variant : reportableVariants) {
             boolean notify = false;
-            if (variant.source() == ReportableVariantSource.GERMLINE) {
+            if (variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY) {
                 notify = germlineReportingModel.notifyGermlineVariant(variant, flagGermlineOnReport, germlineGenesWithIndependentHits);
             }
             notifyGermlineStatusPerVariant.put(variant, notify);
@@ -180,9 +180,9 @@ public class GenomicAnalyzer {
             @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
-            if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene())
-                    && variant.source() == ReportableVariantSource.GERMLINE && (phaseSetToCompareWith == null
-                    || !phaseSetToCompareWith.equals(variant.localPhaseSet()))) {
+            if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene()) && (
+                    variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY) && (
+                    phaseSetToCompareWith == null || !phaseSetToCompareWith.equals(variant.localPhaseSet()))) {
                 return true;
             }
         }

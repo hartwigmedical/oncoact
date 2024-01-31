@@ -2,7 +2,6 @@ package com.hartwig.oncoact.protect.evidence;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -117,8 +116,7 @@ public class VariantEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report,
-            @NotNull String range) {
+    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report, @NotNull String range) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
@@ -126,7 +124,8 @@ public class VariantEvidence {
         Integer rangeRank;
         if (variant instanceof ReportableVariant) {
             ReportableVariant reportable = (ReportableVariant) variant;
-            isGermline = reportable.source() == ReportableVariantSource.GERMLINE;
+            isGermline =
+                    reportable.source() == ReportableVariantSource.GERMLINE || reportable.source() == ReportableVariantSource.GERMLINE_ONLY;
             driverInterpretation = reportable.driverLikelihoodInterpretation();
             transcript = reportable.transcript();
             isCanonical = reportable.isCanonical();

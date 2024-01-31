@@ -13,10 +13,15 @@ public final class GeneUtil {
     }
 
     @NotNull
-    public static String roundCopyNumber(Double copyNumber, boolean hasReliablePurity) {
+    public static String roundCopyNumberVariants(Double copyNumber, boolean hasReliablePurity) {
         return copyNumber == null
                 ? Strings.EMPTY
                 : hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+    }
+
+    @NotNull
+    public static String roundCopyNumber(Double copyNumber, boolean hasReliablePurity) {
+        return hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
     }
 
     public static String roundCopyNumber(Double copyNumber) {

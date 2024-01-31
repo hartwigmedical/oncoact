@@ -160,7 +160,7 @@ public final class SomaticVariants {
         return hgvsCoding.startsWith("c.*") ? 3 : 2;
     }
 
-    @Nullable
+    @NotNull
     public static String tVAFString(@NotNull String tVAF, boolean hasReliablePurity, Double totalCopyNumber) {
         if (tVAF.equals(Strings.EMPTY)) {
             return Strings.EMPTY;

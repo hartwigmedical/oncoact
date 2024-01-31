@@ -75,6 +75,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
+        //TODO; check if this should changed to observed
         document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
                 onLabelTreatments,
                 contentWidth()));

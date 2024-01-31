@@ -112,6 +112,9 @@ public final class QualityOverruleFunctions {
     @NotNull
     private static ReportableVariant overruleVariant(@NotNull ReportableVariant variant, boolean hasReliablePurity) {
         Double totalCopyNumber = variant.totalCopyNumber();
+        Double alleleCopyNumber = variant.alleleCopyNumber();
+        Double minorAlleleCopyNumber = variant.minorAlleleCopyNumber();
+
         Double flooredCopyNumber = null;
         Long roundedCopyNumber = null;
 
@@ -120,22 +123,13 @@ public final class QualityOverruleFunctions {
             roundedCopyNumber = Math.round(flooredCopyNumber);
         }
 
-        if (roundedCopyNumber != null) {
-            return ImmutableReportableVariant.builder()
-                    .from(variant)
-                    .totalCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? flooredCopyNumber : Double.NaN)
-                    .alleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.alleleCopyNumber() : Double.NaN)
-                    .minorAlleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.minorAlleleCopyNumber() : Double.NaN)
-                    .biallelic(hasReliablePurity && roundedCopyNumber >= 1 ? variant.biallelic() : null)
-                    .build();
-        } else {
-            return ImmutableReportableVariant.builder()
-                    .from(variant)
-                    .totalCopyNumber(Double.NaN)
-                    .alleleCopyNumber(Double.NaN)
-                    .minorAlleleCopyNumber(Double.NaN)
-                    .biallelic(null)
-                    .build();
-        }
+        boolean showCopyNumbers = totalCopyNumber != null && hasReliablePurity && roundedCopyNumber >= 1;
+        return ImmutableReportableVariant.builder()
+                .from(variant)
+                .totalCopyNumber(showCopyNumbers ? flooredCopyNumber : Double.NaN)
+                .alleleCopyNumber(showCopyNumbers && alleleCopyNumber != null ? alleleCopyNumber : Double.NaN)
+                .minorAlleleCopyNumber(showCopyNumbers && minorAlleleCopyNumber != null ? minorAlleleCopyNumber : Double.NaN)
+                .biallelic(showCopyNumbers ? variant.biallelic() : null)
+                .build();
     }
 }

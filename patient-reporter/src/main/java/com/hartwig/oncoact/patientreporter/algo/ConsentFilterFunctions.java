@@ -59,10 +59,12 @@ public final class ConsentFilterFunctions {
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean reportGermlineOnReport) {
         List<ReportableVariantWithNotify> filteredVariants = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
-            if (variant.source() == ReportableVariantSource.GERMLINE && !reportGermlineOnReport) {
+            if ((variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY)
+                    && !reportGermlineOnReport) {
                 continue;
             }
-            if (variant.source() == ReportableVariantSource.GERMLINE && !notifyGermlineStatusPerVariant.get(variant)) {
+            if ((variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY)
+                    && !notifyGermlineStatusPerVariant.get(variant)) {
                 filteredVariants.add(ImmutableReportableVariantWithNotify.builder()
                         .variant(ImmutableReportableVariant.builder().from(variant).source(ReportableVariantSource.SOMATIC).build())
                         .notifyVariant(false)

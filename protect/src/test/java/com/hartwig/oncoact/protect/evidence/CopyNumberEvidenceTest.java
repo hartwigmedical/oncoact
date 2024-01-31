@@ -51,6 +51,7 @@ public class CopyNumberEvidenceTest {
                 unreportedGainLosses,
                 reportableGermlineGainLosses,
                 unreportedGermlineGainLosses,
+                Lists.newArrayList(),
                 Lists.newArrayList());
 
         assertEquals(3, evidences.size());

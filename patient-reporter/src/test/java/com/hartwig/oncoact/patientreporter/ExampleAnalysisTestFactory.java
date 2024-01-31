@@ -236,7 +236,11 @@ public final class ExampleAnalysisTestFactory {
     private static Map<ReportableVariant, Boolean> notifyAllGermlineVariants(@NotNull List<ReportableVariant> reportableVariants) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
         for (ReportableVariant variant : reportableVariants) {
-            notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE);
+            if (variant.alleleCopyNumber() == null) {
+                notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE_ONLY);
+            } else {
+                notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE);
+            }
         }
         return notifyGermlineStatusPerVariant;
     }

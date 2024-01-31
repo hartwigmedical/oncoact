@@ -38,17 +38,24 @@ public class CopyNumberEvidence {
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
             @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity) {
+            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity,
+            @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLossData reportableGainLoss : ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(
-                        reportableSomaticGainLosses),
-                ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
-                ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity))) {
+
+        List<PurpleGainLossData> allReportableGainsLosses =
+                ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses),
+                        ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
+                        ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity));
+
+        for (PurpleGainLossData reportableGainLoss : allReportableGainsLosses) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (PurpleGainLossData gainLoss : ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
-                ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses))) {
+        List<PurpleGainLossData> allGainsLosses = ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
+                ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses),
+                ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
+
+        for (PurpleGainLossData gainLoss : allGainsLosses) {
             if (!ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses).contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }
@@ -90,7 +97,7 @@ public class CopyNumberEvidence {
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_LOSS
                         || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
                         || reportable.interpretation() == CopyNumberInterpretation.FULL_GENE
-                        || reportable.interpretation() == CopyNumberInterpretation.FULL_GENE;
+                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GENE;
             default:
                 throw new IllegalStateException(
                         "Actionable event found in copy number evidence that should not exist: " + actionable.event());

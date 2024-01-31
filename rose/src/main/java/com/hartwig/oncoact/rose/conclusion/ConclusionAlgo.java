@@ -94,10 +94,10 @@ public final class ConclusionAlgo {
         List<PurpleGainLossData> somaticGainsLosses = ReportablePurpleGainLoss.toReportableGainLoss(purple.reportableSomaticGainsLosses());
         List<PurpleGainLossData> germlineLosses = ReportablePurpleGainLoss.toReportableGainLoss(purple.reportableGermlineFullLosses());
         List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = purple.reportableGermlineLossOfHeterozygosities();
-        List<PurpleGainLossData> germlineLossOfHeterozygosityConversion =
+        List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
         List<PurpleGainLossData> reportableGainLosses =
-                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, germlineLossOfHeterozygosityConversion);
+                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
 
@@ -439,7 +439,7 @@ public final class ConclusionAlgo {
                     ActionabilityKey key =
                             ImmutableActionabilityKey.builder().match("HPV-16 | HLA-A*02").type(TypeAlteration.POSITIVE).build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-                    if (entry == null || entry.condition() != Condition.ALWAYS) {
+                    if (entry == null || entry.condition() != Condition.ONLY_HIGH) {
                         continue;
                     }
                     oncogenic.add("HLA | virus");
@@ -450,7 +450,7 @@ public final class ConclusionAlgo {
                             .type(TypeAlteration.POSITIVE)
                             .build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-                    if (entry == null || entry.condition() != Condition.ALWAYS) {
+                    if (entry == null || entry.condition() != Condition.ONLY_HIGH) {
                         continue;
                     }
                     actionable.add("virus");
