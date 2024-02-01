@@ -73,6 +73,27 @@ public class SomaticVariantsTest {
     }
 
     @Test
+    public void sortCorrectlyWithOutTumorOnly() {
+        ReportableVariant variant1 =
+                TestReportableVariantFactory.builder().gene("EGFR").driverLikelihood(null).canonicalHgvsCodingImpact("c.500T>A").build();
+        ReportableVariant variant2 =
+                TestReportableVariantFactory.builder().gene("KRAS").driverLikelihood(0.6).canonicalHgvsCodingImpact("c.-300T>A").build();
+        ReportableVariant variant3 =
+                TestReportableVariantFactory.builder().gene("KRAS").driverLikelihood(null).canonicalHgvsCodingImpact("c.4000T>A").build();
+        ReportableVariant variant4 =
+                TestReportableVariantFactory.builder().gene("ZRAF").driverLikelihood(0.9).canonicalHgvsCodingImpact("c.500T>A").build();
+
+        List<ReportableVariant> variants = Lists.newArrayList(variant1, variant2, variant3, variant4);
+
+        List<ReportableVariant> sortedVariants = SomaticVariants.sort(variants);
+
+        assertEquals(variant4, sortedVariants.get(0));
+        assertEquals(variant2, sortedVariants.get(1));
+        assertEquals(variant3, sortedVariants.get(2));
+        assertEquals(variant1, sortedVariants.get(3));
+    }
+
+    @Test
     public void canExtractMSIGenes() {
         ReportableVariant variant1 = TestReportableVariantFactory.builder().gene("MLH1").build();
         ReportableVariant variant2 = TestReportableVariantFactory.builder().gene("BRAF").build();

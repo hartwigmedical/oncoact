@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.google.api.client.util.Lists;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
@@ -35,31 +36,52 @@ public final class SomaticVariants {
 
     @NotNull
     public static List<ReportableVariant> sort(@NotNull List<ReportableVariant> variants) {
-        return variants.stream().sorted((variant1, variant2) -> {
-            if (variant1.driverLikelihood() != null && variant2.driverLikelihood() != null) {
-                if (Math.abs(variant1.driverLikelihood() - variant2.driverLikelihood()) > 0.001) {
-                    return (variant1.driverLikelihood() - variant2.driverLikelihood()) < 0 ? 1 : -1;
-                } else {
-                    if (variant1.gene().equals(variant2.gene())) {
-                        // sort on codon position if gene is the same
-                        if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
-                            return 1;
-                        } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
-                            return -1;
-                        } else {
-                            int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
-                            int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
-                            return Integer.compare(codonVariant1, codonVariant2);
-                        }
-                    } else {
-                        return variant1.gene().compareTo(variant2.gene());
-                    }
-                }
-            } else {
-                return variant1.gene().compareTo(variant2.gene());
-            }
 
-        }).collect(Collectors.toList());
+        // create map on gene level
+        Map<String, List<ReportableVariant>> mapReportableVariant = Maps.newHashMap();
+        for (ReportableVariant variant : variants) {
+            if (mapReportableVariant.containsKey(variant.gene())) {
+                List<ReportableVariant> current = mapReportableVariant.get(variant.gene());
+                current.add(variant);
+                mapReportableVariant.put(variant.gene(), current);
+            } else {
+                mapReportableVariant.put(variant.gene(), com.google.common.collect.Lists.newArrayList(variant));
+            }
+        }
+
+        // sort the gene level map
+        Map<String, List<ReportableVariant>> mapReportableVariantSorted = Maps.newHashMap();
+        for (Map.Entry<String, List<ReportableVariant>> entry : mapReportableVariant.entrySet()) {
+            mapReportableVariantSorted.put(entry.getKey(), entry.getValue().stream().sorted((variant1, variant2) -> {
+                if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
+                    return 1;
+                } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
+                    return -1;
+                } else {
+                    int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
+                    int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
+                    return Integer.compare(codonVariant1, codonVariant2);
+                }
+            }).collect(Collectors.toList()));
+        }
+
+        // sorted the genes on driver likelihood
+        List<ReportableVariant> variantList = Lists.newArrayList();
+        for (Map.Entry<String, List<ReportableVariant>> entry : mapReportableVariantSorted.entrySet()) {
+            variantList.addAll(entry.getValue().stream().sorted((variant1, variant2) -> {
+                if (variant1.driverLikelihood() != null && variant2.driverLikelihood() != null) {
+                    if (Math.abs(variant1.driverLikelihood() - variant2.driverLikelihood()) > 0.001) {
+                        return (variant1.driverLikelihood() - variant2.driverLikelihood()) < 0 ? 1 : -1;
+                    }
+                } else if (variant1.driverLikelihood() != null && variant2.driverLikelihood() == null) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+                return 0;
+            }).collect(Collectors.toList()));
+        }
+        return variantList;
     }
 
     public static boolean hasNotifiableGermlineVariant(@NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant) {
