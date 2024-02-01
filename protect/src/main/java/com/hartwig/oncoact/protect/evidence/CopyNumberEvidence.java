@@ -95,9 +95,7 @@ public class CopyNumberEvidence {
             case UNDEREXPRESSION:
             case ANY_MUTATION:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_LOSS
-                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
-                        || reportable.interpretation() == CopyNumberInterpretation.FULL_GENE
-                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GENE;
+                        || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS;
             default:
                 throw new IllegalStateException(
                         "Actionable event found in copy number evidence that should not exist: " + actionable.event());

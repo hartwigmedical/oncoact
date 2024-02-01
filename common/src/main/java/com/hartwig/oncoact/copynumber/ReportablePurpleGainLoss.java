@@ -63,7 +63,13 @@ public class ReportablePurpleGainLoss {
     public static com.hartwig.oncoact.copynumber.CopyNumberInterpretation toInterpretation(@NotNull String interpretationInput) {
         for (com.hartwig.oncoact.copynumber.CopyNumberInterpretation interpretation : com.hartwig.oncoact.copynumber.CopyNumberInterpretation.values()) {
             if (interpretationInput.equals(interpretation.toString())) {
-                return interpretation;
+                if (interpretation == CopyNumberInterpretation.FULL_GENE) {
+                    return CopyNumberInterpretation.FULL_LOSS;
+                } else if (interpretation == CopyNumberInterpretation.PARTIAL_GENE) {
+                    return CopyNumberInterpretation.PARTIAL_LOSS;
+                } else {
+                    return interpretation;
+                }
             }
         }
 
