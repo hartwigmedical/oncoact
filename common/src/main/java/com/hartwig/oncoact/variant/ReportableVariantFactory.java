@@ -21,7 +21,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.util.Formats;
-import com.hartwig.oncoact.util.ListUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -197,8 +196,9 @@ public final class ReportableVariantFactory {
     @NotNull
     public static List<ReportableVariant> mergeVariantLists(@NotNull Collection<ReportableVariant> list1,
             @NotNull Collection<ReportableVariant> list2) {
-        List<ReportableVariant> result = ListUtil.mergeListsDistinct(list1, list2);
-
+        Set<ReportableVariant> result = Sets.newHashSet();
+        result.addAll(list1);
+        result.addAll(list2);
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
 
         for (ReportableVariant variant : result) {
@@ -206,7 +206,7 @@ public final class ReportableVariantFactory {
                 maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
             }
         }
-        
+
         for (ReportableVariant variant : result) {
             result.add(ImmutableReportableVariant.builder()
                     .from(variant)
