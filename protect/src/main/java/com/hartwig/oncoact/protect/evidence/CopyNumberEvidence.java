@@ -38,14 +38,14 @@ public class CopyNumberEvidence {
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
             @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity,
+            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> reportableGermlineLOHs,
             @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities) {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         List<PurpleGainLossData> allReportableGainsLosses =
                 ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses),
                         ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
-                        ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity));
+                        ReportablePurpleGainLoss.toReportableGainLossLOH(reportableGermlineLOHs));
 
         for (PurpleGainLossData reportableGainLoss : allReportableGainsLosses) {
             result.addAll(evidence(reportableGainLoss, true));

@@ -202,9 +202,9 @@ public class AnalysedPatientReporter {
         LOGGER.info(" Somatic variants to report: {}", analysis.reportableVariants().size());
         if (lamaPatientData.getReportSettings().getFlagGermlineOnReport()) {
             LOGGER.info("  Number of tumor variants known to exist in germline: {}",
-                    germlineOnly(analysis.reportableVariants(), ReportableVariantSource.GERMLINE).size());
+                    filterOnGermlineSource(analysis.reportableVariants(), ReportableVariantSource.GERMLINE).size());
             LOGGER.info("  Number of variants known to exist in germline: {}",
-                    germlineOnly(analysis.reportableVariants(), ReportableVariantSource.GERMLINE_ONLY).size());
+                    filterOnGermlineSource(analysis.reportableVariants(), ReportableVariantSource.GERMLINE_ONLY).size());
 
         } else {
             LOGGER.info("  Germline variants and evidence have been removed since no consent has been given");
@@ -228,14 +228,14 @@ public class AnalysedPatientReporter {
     }
 
     @NotNull
-    private static List<ReportableVariant> germlineOnly(@NotNull List<ReportableVariant> variants,
+    private static List<ReportableVariant> filterOnGermlineSource(@NotNull List<ReportableVariant> variants,
             @NotNull ReportableVariantSource source) {
-        List<ReportableVariant> germlineOnly = Lists.newArrayList();
+        List<ReportableVariant> filterOnSource = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
             if (variant.source() == source) {
-                germlineOnly.add(variant);
+                filterOnSource.add(variant);
             }
         }
-        return germlineOnly;
+        return filterOnSource;
     }
 }
