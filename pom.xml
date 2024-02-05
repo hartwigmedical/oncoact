@@ -33,7 +33,7 @@
         <common.version>local-SNAPSHOT</common.version>
 
         <oncoact-database.version>1.0</oncoact-database.version>
-        <patient-reporter.version>8.0</patient-reporter.version>
+        <patient-reporter.version>8.0.1</patient-reporter.version>
         <protect.version>3.0</protect.version>
         <rose.version>2.0</rose.version>
 

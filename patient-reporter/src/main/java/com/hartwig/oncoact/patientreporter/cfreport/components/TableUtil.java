@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TableUtil {
 
-    public static final float TABLE_BOTTOM_MARGIN = 20;
+    public static final float TABLE_BOTTOM_MARGIN = 30;
     public static final float TABLE_BOTTOM_MARGIN_SUMMARY = 0;
     @NotNull
     private final ReportResources reportResources;
