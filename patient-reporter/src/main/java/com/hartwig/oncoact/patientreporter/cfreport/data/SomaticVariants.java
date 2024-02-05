@@ -1,7 +1,10 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,52 +39,12 @@ public final class SomaticVariants {
 
     @NotNull
     public static List<ReportableVariant> sort(@NotNull List<ReportableVariant> variants) {
+        Map<String, List<ReportableVariant>> geneToReportableVariants = groupByGene(variants);
 
-        // create map on gene level
-        Map<String, List<ReportableVariant>> mapReportableVariant = Maps.newHashMap();
-        for (ReportableVariant variant : variants) {
-            if (mapReportableVariant.containsKey(variant.gene())) {
-                List<ReportableVariant> current = mapReportableVariant.get(variant.gene());
-                current.add(variant);
-                mapReportableVariant.put(variant.gene(), current);
-            } else {
-                mapReportableVariant.put(variant.gene(), com.google.common.collect.Lists.newArrayList(variant));
-            }
-        }
+        List<String> sortedGenes = sortGenes(geneToReportableVariants);
+        Map<String, List<ReportableVariant>> geneToSortedReportableVariants = sortVariantsPerGene(geneToReportableVariants);
 
-        // sort the gene level map
-        Map<String, List<ReportableVariant>> mapReportableVariantSorted = Maps.newHashMap();
-        for (Map.Entry<String, List<ReportableVariant>> entry : mapReportableVariant.entrySet()) {
-            mapReportableVariantSorted.put(entry.getKey(), entry.getValue().stream().sorted((variant1, variant2) -> {
-                if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
-                    return 1;
-                } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
-                    return -1;
-                } else {
-                    int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
-                    int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
-                    return Integer.compare(codonVariant1, codonVariant2);
-                }
-            }).collect(Collectors.toList()));
-        }
-
-        // sorted the genes on driver likelihood
-        List<ReportableVariant> variantList = Lists.newArrayList();
-        for (Map.Entry<String, List<ReportableVariant>> entry : mapReportableVariantSorted.entrySet()) {
-            variantList.addAll(entry.getValue().stream().sorted((variant1, variant2) -> {
-                if (variant1.driverLikelihood() != null && variant2.driverLikelihood() != null) {
-                    if (Math.abs(variant1.driverLikelihood() - variant2.driverLikelihood()) > 0.001) {
-                        return (variant1.driverLikelihood() - variant2.driverLikelihood()) < 0 ? 1 : -1;
-                    }
-                } else if (variant1.driverLikelihood() != null && variant2.driverLikelihood() == null) {
-                    return -1;
-                } else {
-                    return 1;
-                }
-                return 0;
-            }).collect(Collectors.toList()));
-        }
-        return variantList;
+        return sortedGenes.stream().flatMap(g -> geneToSortedReportableVariants.get(g).stream()).collect(Collectors.toList());
     }
 
     public static boolean hasNotifiableGermlineVariant(@NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant) {
@@ -323,5 +286,113 @@ public final class SomaticVariants {
         var upper = canonicalEffect.toUpperCase();
         return upper.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
                 || upper.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString());
+    }
+
+    @NotNull
+    private static Map<String, List<ReportableVariant>> groupByGene(@NotNull List<ReportableVariant> variants) {
+        Map<String, List<ReportableVariant>> geneToReportableVariants = Maps.newHashMap();
+        for (ReportableVariant variant : variants) {
+            if (geneToReportableVariants.containsKey(variant.gene())) {
+                geneToReportableVariants.get(variant.gene()).add(variant);
+            } else {
+                geneToReportableVariants.put(variant.gene(), com.google.common.collect.Lists.newArrayList(variant));
+            }
+        }
+        return geneToReportableVariants;
+    }
+
+    @NotNull
+    private static List<String> sortGenes(@NotNull Map<String, List<ReportableVariant>> geneToReportableVariants) {
+        // Sort genes by two rules:
+        //  1. Maximum driver likelihood from high to low. Null is interpreted as the lowest possible driver likelihood.
+        //  2. If maximum driver likelihoods are the same or very similar, sort gene names alphabetically.
+        Map<String, Double> geneToMaxDriverLikelihood = determineMaximumDriverLikelihoodPerGene(geneToReportableVariants);
+
+        return geneToReportableVariants.keySet()
+                .stream()
+                .sorted((gene1, gene2) -> geneCompareTo(gene1, gene2, geneToMaxDriverLikelihood))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    private static Map<String, Double> determineMaximumDriverLikelihoodPerGene(
+            @NotNull Map<String, List<ReportableVariant>> geneToReportableVariants) {
+        Map<String, Double> geneToMaxDriverLikelihood = new HashMap<>();
+        for (Map.Entry<String, List<ReportableVariant>> entry : geneToReportableVariants.entrySet()) {
+            geneToMaxDriverLikelihood.put(entry.getKey(), determineMaximumDriverLikelihood(entry.getValue()));
+        }
+        return geneToMaxDriverLikelihood;
+    }
+
+    @Nullable
+    private static Double determineMaximumDriverLikelihood(@NotNull List<ReportableVariant> variants) {
+        OptionalDouble optionalMaximumDriverLikelihood =
+                variants.stream().map(ReportableVariant::driverLikelihood).filter(Objects::nonNull).mapToDouble(d -> d).max();
+        if (optionalMaximumDriverLikelihood.isPresent()) {
+            return optionalMaximumDriverLikelihood.getAsDouble();
+        } else {
+            return null;
+        }
+    }
+
+    @VisibleForTesting
+    static int geneCompareTo(@NotNull String gene1, @NotNull String gene2, @NotNull Map<String, Double> geneToMaximumDriverLikelihood) {
+        Double maxDriverLikelihood1 = geneToMaximumDriverLikelihood.get(gene1);
+        Double maxDriverLikelihood2 = geneToMaximumDriverLikelihood.get(gene2);
+        if (maxDriverLikelihood1 == null && maxDriverLikelihood2 != null) {
+            return 1;
+        } else if (maxDriverLikelihood1 != null && maxDriverLikelihood2 == null) {
+            return -1;
+        } else if (driverLikelihoodsComparable(maxDriverLikelihood1, maxDriverLikelihood2)) {
+            return (maxDriverLikelihood1 - maxDriverLikelihood2) < 0 ? 1 : -1;
+        } else {
+            return gene1.compareTo(gene2);
+        }
+    }
+
+    @NotNull
+    private static Map<String, List<ReportableVariant>> sortVariantsPerGene(
+            @NotNull Map<String, List<ReportableVariant>> geneToReportableVariants) {
+        // Sort by two rules:
+        //  1. Sort by driver likelihood from high to low. Null is interpreted as the lowest possible driver likelihood.
+        //  2. Sort by position in the HGVS coding impact, if present. Empty coding impacts are sorted towards the end of the list.
+        Map<String, List<ReportableVariant>> geneToSortedReportableVariants = Maps.newHashMap();
+        for (Map.Entry<String, List<ReportableVariant>> entry : geneToReportableVariants.entrySet()) {
+            List<ReportableVariant> sortedVariantsForGene =
+                    entry.getValue().stream().sorted(SomaticVariants::variantCompareTo).collect(Collectors.toList());
+            geneToSortedReportableVariants.put(entry.getKey(), sortedVariantsForGene);
+        }
+        return geneToSortedReportableVariants;
+    }
+
+    @VisibleForTesting
+    static int variantCompareTo(@NotNull ReportableVariant variant1, @NotNull ReportableVariant variant2) {
+        Double driverLikelihood1 = variant1.driverLikelihood();
+        Double driverLikelihood2 = variant2.driverLikelihood();
+        if (driverLikelihood1 == null && driverLikelihood2 != null) {
+            return 1;
+        } else if (driverLikelihood1 != null && driverLikelihood2 == null) {
+            return -1;
+        } else if (driverLikelihoodsComparable(driverLikelihood1, driverLikelihood2)) {
+            return (driverLikelihood1 - driverLikelihood2) < 0 ? 1 : -1;
+        } else if (variant1.canonicalHgvsCodingImpact().isEmpty() && variant2.canonicalHgvsCodingImpact().isEmpty()) {
+            return 0;
+        } else if (variant1.canonicalHgvsCodingImpact().isEmpty()) {
+            return 1;
+        } else if (variant2.canonicalHgvsCodingImpact().isEmpty()) {
+            return -1;
+        } else {
+            int codonVariant1 = extractCodonField(variant1.canonicalHgvsCodingImpact());
+            int codonVariant2 = extractCodonField(variant2.canonicalHgvsCodingImpact());
+            return Integer.compare(codonVariant1, codonVariant2);
+        }
+    }
+
+    private static boolean driverLikelihoodsComparable(@Nullable Double driverLikelihood1, @Nullable Double driverLikelihood2) {
+        if (driverLikelihood1 == null || driverLikelihood2 == null) {
+            return false;
+        } else {
+            return Math.abs(driverLikelihood1 - driverLikelihood2) > 0.001;
+        }
     }
 }
