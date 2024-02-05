@@ -118,7 +118,7 @@ public final class QualityOverruleFunctions {
         boolean showCopyNumbers = totalCopyNumber != null && totalCopyNumber >= 0.5 && hasReliablePurity;
         return ImmutableReportableVariant.builder()
                 .from(variant)
-                .totalCopyNumber(showCopyNumbers ? totalCopyNumber : Double.NaN)
+                .totalCopyNumber(showCopyNumbers ? Math.max(0, totalCopyNumber) : Double.NaN)
                 .alleleCopyNumber(showCopyNumbers && alleleCopyNumber != null ? alleleCopyNumber : Double.NaN)
                 .minorAlleleCopyNumber(showCopyNumbers && minorAlleleCopyNumber != null ? minorAlleleCopyNumber : Double.NaN)
                 .biallelic(showCopyNumbers ? variant.biallelic() : null)
