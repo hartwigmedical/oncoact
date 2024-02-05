@@ -1800,6 +1800,7 @@ public final class ExampleAnalysisTestFactory {
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
                 .type(PurpleVariantType.SNP)
+                .tVAF("12%")
                 .build();
 
         ReportableVariant variant2 = TestReportableVariantFactory.builder()
@@ -1838,6 +1839,7 @@ public final class ExampleAnalysisTestFactory {
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
                 .type(PurpleVariantType.INDEL)
+                .tVAF("12%")
                 .build();
 
         ReportableVariant variant3 = TestReportableVariantFactory.builder()
@@ -1869,6 +1871,7 @@ public final class ExampleAnalysisTestFactory {
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
                 .type(PurpleVariantType.INDEL)
+                .tVAF("12%")
                 .build();
 
         ReportableVariant variant4 = TestReportableVariantFactory.builder()
@@ -1945,6 +1948,7 @@ public final class ExampleAnalysisTestFactory {
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
                 .type(PurpleVariantType.SNP)
+                .tVAF("12%")
                 .build();
 
         ReportableVariant variant6 = TestReportableVariantFactory.builder()
@@ -1976,6 +1980,7 @@ public final class ExampleAnalysisTestFactory {
                 .genotypeStatus(PurpleGenotypeStatus.HOM_REF)
                 .localPhaseSet(null)
                 .type(PurpleVariantType.SNP)
+                .tVAF("12%")
                 .build();
 
         return Lists.newArrayList(variant1, variant2, variant3, variant4, variant5, variant6);
