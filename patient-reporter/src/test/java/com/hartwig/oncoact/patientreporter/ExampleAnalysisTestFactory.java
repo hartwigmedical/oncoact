@@ -105,7 +105,8 @@ public final class ExampleAnalysisTestFactory {
         List<ProtectEvidence> clinicalTrials = createCOLO829ClinicalTrials();
         List<ProtectEvidence> offLabelEvidence = createCOLO829OffLabelEvidence();
         List<ReportableVariant> reportableVariants = createCOLO829SomaticVariants(config.reportGermline());
-        Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = notifyAllGermlineVariants(reportableVariants);
+        Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
+                notifyAllGermlineVariants(reportableVariants, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
         List<PurpleGainLossData> gainsAndLosses = createCOLO829GainsLosses();
         List<LinxFusion> fusions = Lists.newArrayList();
         List<HomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
@@ -233,13 +234,22 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static Map<ReportableVariant, Boolean> notifyAllGermlineVariants(@NotNull List<ReportableVariant> reportableVariants) {
+    private static Map<ReportableVariant, Boolean> notifyAllGermlineVariants(@NotNull List<ReportableVariant> reportableVariants,
+            boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
         for (ReportableVariant variant : reportableVariants) {
-            if (variant.alleleCopyNumber() == null) {
-                notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE_ONLY);
+            if (flagGermlineOnReport) {
+                if (variant.alleleCopyNumber() == null) {
+                    notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE_ONLY);
+                } else {
+                    if (variant.source() == ReportableVariantSource.GERMLINE) {
+                        notifyGermlineStatusPerVariant.put(variant, true);
+                    } else {
+                        notifyGermlineStatusPerVariant.put(variant, false);
+                    }
+                }
             } else {
-                notifyGermlineStatusPerVariant.put(variant, variant.source() == ReportableVariantSource.GERMLINE);
+                notifyGermlineStatusPerVariant.put(variant, false);
             }
         }
         return notifyGermlineStatusPerVariant;

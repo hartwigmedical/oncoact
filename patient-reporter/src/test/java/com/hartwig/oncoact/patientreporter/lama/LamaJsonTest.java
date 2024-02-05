@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter.lama;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -36,8 +37,8 @@ public class LamaJsonTest {
         assertEquals(lamaPatientData.getRequesterName(), "requesterName");
         assertEquals(lamaPatientData.getRequesterEmail(), "requesterEmail");
         assertEquals(lamaPatientData.getReportingId(), "reportingId");
-        assertTrue(lamaPatientData.getReportSettings().getReportGermline());
-        assertTrue(lamaPatientData.getReportSettings().getReportGermline());
+        assertFalse(lamaPatientData.getReportSettings().getFlagGermlineOnReport());
+        assertFalse(lamaPatientData.getReportSettings().getReportGermline());
         assertEquals(lamaPatientData.getContractCode(), "contractCode");
         assertEquals(lamaPatientData.getCohort(), "cohort");
         assertEquals(lamaPatientData.getSubmissionNr(), "submissionNr");
