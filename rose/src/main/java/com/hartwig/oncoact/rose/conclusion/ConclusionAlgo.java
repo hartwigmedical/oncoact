@@ -97,13 +97,14 @@ public final class ConclusionAlgo {
         List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
         List<PurpleGainLossData> reportableGainLosses =
-                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
+                ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
 
         List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions =
+                ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);

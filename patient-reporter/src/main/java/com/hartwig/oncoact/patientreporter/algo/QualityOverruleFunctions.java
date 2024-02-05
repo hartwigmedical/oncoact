@@ -115,18 +115,10 @@ public final class QualityOverruleFunctions {
         Double alleleCopyNumber = variant.alleleCopyNumber();
         Double minorAlleleCopyNumber = variant.minorAlleleCopyNumber();
 
-        Double flooredCopyNumber = null;
-        Long roundedCopyNumber = null;
-
-        if (totalCopyNumber != null) {
-            flooredCopyNumber = Math.max(0, totalCopyNumber);
-            roundedCopyNumber = Math.round(flooredCopyNumber);
-        }
-
-        boolean showCopyNumbers = totalCopyNumber != null && hasReliablePurity && roundedCopyNumber >= 1;
+        boolean showCopyNumbers = totalCopyNumber != null && totalCopyNumber >= 0.5 && hasReliablePurity;
         return ImmutableReportableVariant.builder()
                 .from(variant)
-                .totalCopyNumber(showCopyNumbers ? flooredCopyNumber : Double.NaN)
+                .totalCopyNumber(showCopyNumbers ? Math.max(0, totalCopyNumber) : Double.NaN)
                 .alleleCopyNumber(showCopyNumbers && alleleCopyNumber != null ? alleleCopyNumber : Double.NaN)
                 .minorAlleleCopyNumber(showCopyNumbers && minorAlleleCopyNumber != null ? minorAlleleCopyNumber : Double.NaN)
                 .biallelic(showCopyNumbers ? variant.biallelic() : null)

@@ -35,7 +35,8 @@ public class DisruptionEvidence {
     public List<ProtectEvidence> evidence(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
             @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (HomozygousDisruption homozygousDisruption : ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions)) {
+        for (HomozygousDisruption homozygousDisruption : ListUtil.mergeListsDistinct(somaticHomozygousDisruptions,
+                germlineHomozygousDisruptions)) {
             result.addAll(evidence(homozygousDisruption));
         }
         return result;

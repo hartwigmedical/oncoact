@@ -14,21 +14,13 @@ public class ListUtil {
     private ListUtil() {
     }
 
-    public static <T> List<T> mergeLists(@NotNull Collection<T> list1, @Nullable Collection<T> list2) {
-        Set<T> result = new HashSet<>(list1);
-        if (list2 != null) {
-            result.addAll(list2);
-        }
-        return new ArrayList<>(result);
-    }
-
-    public static <T> List<T> mergeLists(@NotNull Collection<T> list1, @Nullable Collection<T> list2, @Nullable Collection<T> list3) {
-        Set<T> result = new HashSet<>(list1);
-        if (list2 != null) {
-            result.addAll(list2);
-        }
-        if (list3 != null) {
-            result.addAll(list3);
+    @SafeVarargs
+    public static <T> List<T> mergeListsDistinct(Collection<T>... lists) {
+        Set<T> result = new HashSet<>();
+        for (Collection<T> list : lists) {
+            if (list != null) {
+                result.addAll(list);
+            }
         }
         return new ArrayList<>(result);
     }

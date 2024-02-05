@@ -43,7 +43,7 @@ public class CopyNumberEvidence {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         List<PurpleGainLossData> allReportableGainsLosses =
-                ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses),
+                ListUtil.mergeListsDistinct(ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses),
                         ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
                         ReportablePurpleGainLoss.toReportableGainLossLOH(reportableGermlineLOHs));
 
@@ -51,9 +51,10 @@ public class CopyNumberEvidence {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        List<PurpleGainLossData> allGainsLosses = ListUtil.mergeLists(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
-                ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses),
-                ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
+        List<PurpleGainLossData> allGainsLosses =
+                ListUtil.mergeListsDistinct(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
+                        ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses),
+                        ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
 
         for (PurpleGainLossData gainLoss : allGainsLosses) {
             if (!ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses).contains(gainLoss)) {

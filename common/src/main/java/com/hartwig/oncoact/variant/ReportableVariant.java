@@ -77,7 +77,7 @@ public abstract class ReportableVariant implements Variant {
     @Nullable
     public abstract Double driverLikelihood();
 
-    @NotNull
+    @Nullable
     @Value.Derived
     public DriverInterpretation driverLikelihoodInterpretation() {
         return DriverInterpretation.interpret(driverLikelihood());

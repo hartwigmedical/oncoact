@@ -78,7 +78,7 @@ public class GenomicAnalyzer {
         List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
         List<PurpleGainLossData> reportableGainsLosses =
-                ListUtil.mergeLists(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
+                ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         // Determine chromosome copy number arm
         RefGenomeCoordinates refGenomeCoordinates =
@@ -92,7 +92,8 @@ public class GenomicAnalyzer {
         // homozygous disruptions
         List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions =
+                ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         //disruptions
         List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
@@ -108,7 +109,8 @@ public class GenomicAnalyzer {
             reportableGermlineGeneDisruptions = GeneDisruptionFactory.convert(reportableGermlineBreakends, allGermlineStructuralVariants);
         }
 
-        List<GeneDisruption> geneDisruptions = ListUtil.mergeLists(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
+        List<GeneDisruption> geneDisruptions =
+                ListUtil.mergeListsDistinct(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
         geneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();

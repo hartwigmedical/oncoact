@@ -199,7 +199,6 @@ public final class ReportableVariantFactory {
         Set<ReportableVariant> result = Sets.newHashSet();
         result.addAll(list1);
         result.addAll(list2);
-
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
 
         for (ReportableVariant variant : result) {
@@ -207,7 +206,7 @@ public final class ReportableVariantFactory {
                 maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
             }
         }
-        
+
         for (ReportableVariant variant : result) {
             result.add(ImmutableReportableVariant.builder()
                     .from(variant)
@@ -241,7 +240,7 @@ public final class ReportableVariantFactory {
                 .alleleReadCount(variant.tumorDepth().alleleReadCount())
                 .totalCopyNumber(totalCopyNumber)
                 .minorAlleleCopyNumber(variant.minorAlleleCopyNumber())
-                .tVAF(extractTvaf(source, totalCopyNumber, alleleCopyNumber))
+                .tVAF(extractTvaf(totalCopyNumber, alleleCopyNumber))
                 .alleleCopyNumber(alleleCopyNumber)
                 .hotspot(source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.hotspot())
                 .clonalLikelihood(1 - variant.subclonalLikelihood())
@@ -251,12 +250,10 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    private static String extractTvaf(@NotNull ReportableVariantSource source, Double totalCopyNumber, Double alleleCopyNumber) {
-        if (source == ReportableVariantSource.GERMLINE_ONLY) {
+    private static String extractTvaf(Double totalCopyNumber, Double alleleCopyNumber) {
+        if (totalCopyNumber == null || alleleCopyNumber == null) {
             return Strings.EMPTY;
         } else {
-            assert alleleCopyNumber != null;
-            assert totalCopyNumber != null;
             double vaf = alleleCopyNumber / totalCopyNumber;
             return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
         }
