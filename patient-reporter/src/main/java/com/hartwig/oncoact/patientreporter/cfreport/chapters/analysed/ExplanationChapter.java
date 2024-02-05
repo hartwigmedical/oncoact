@@ -131,7 +131,7 @@ public class ExplanationChapter implements ReportChapter {
 
                 .add(createContentDiv(new String[] { "The lowest copy number value along the exonic regions of the canonical transcript is"
                         + " determined as a measure for the gene's copy number.",
-                        "Copy numbers are corrected for the implied tumor purity and represent the number of copies in the tumor DNA.",
+                        "When applicable, copy numbers are corrected for the implied tumor purity and represent the number of copies in the tumor DNA.",
                         "Any gene with < 0.5 copies along the entire canonical transcript is reported as a full loss. Any gene where only "
                                 + "a part along the canonical transcript has < 0.5 copies is reported as a partial loss. \n"
                                 + "Any gene with ≥  3 times the average tumor ploidy in copies along the entire canonical transcript "
@@ -159,7 +159,7 @@ public class ExplanationChapter implements ReportChapter {
                                 + "and the direction the disruption faces.",
                         "The type of disruption can be INV (inversion), DEL (deletion), DUP (duplication), INS "
                                 + "(insertion), SGL (single) or BND (translocation).",
-                        "A gene for which no wild type exists anymore in the tumor DNA due to disruption(s) "
+                        "A gene for which no wild type exists anymore in the (tumor) DNA due to disruption(s) "
                                 + "is reported in a separate section called 'homozygous disruptions'." })));
 
         // Is needed to set details on new page
