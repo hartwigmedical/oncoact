@@ -36,6 +36,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
@@ -235,8 +236,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.clonalString(variant.clonalLikelihood()),
                         annotationSize).setTextAlignment(TextAlignment.CENTER));
             }
-            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
-                    .setTextAlignment(TextAlignment.CENTER);
+            contentTable.addCell(tableUtil.createContentCellRowSpan(DriverInterpretation.display(variant.driverLikelihoodInterpretation()),
+                    annotationSize)).setTextAlignment(TextAlignment.CENTER);
         }
 
         contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())

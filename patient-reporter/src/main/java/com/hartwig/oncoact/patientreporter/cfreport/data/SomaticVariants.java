@@ -39,10 +39,10 @@ public final class SomaticVariants {
 
     @NotNull
     public static List<ReportableVariant> sort(@NotNull List<ReportableVariant> variants) {
-        Map<String, List<ReportableVariant>> geneToReportableVariants = groupByGene(variants);
+        var geneToReportableVariants = variants.stream().collect(Collectors.groupingBy(ReportableVariant::gene, Collectors.toList()));
+        var geneToSortedReportableVariants = sortVariantsPerGene(geneToReportableVariants);
 
-        List<String> sortedGenes = sortGenes(geneToReportableVariants);
-        Map<String, List<ReportableVariant>> geneToSortedReportableVariants = sortVariantsPerGene(geneToReportableVariants);
+        List<String> sortedGenes = sortGenes(geneToSortedReportableVariants);
 
         return sortedGenes.stream().flatMap(g -> geneToSortedReportableVariants.get(g).stream()).collect(Collectors.toList());
     }
@@ -286,19 +286,6 @@ public final class SomaticVariants {
         var upper = canonicalEffect.toUpperCase();
         return upper.contains(PurpleVariantEffect.PHASED_INFRAME_DELETION.toString())
                 || upper.contains(PurpleVariantEffect.PHASED_INFRAME_INSERTION.toString());
-    }
-
-    @NotNull
-    private static Map<String, List<ReportableVariant>> groupByGene(@NotNull List<ReportableVariant> variants) {
-        Map<String, List<ReportableVariant>> geneToReportableVariants = Maps.newHashMap();
-        for (ReportableVariant variant : variants) {
-            if (geneToReportableVariants.containsKey(variant.gene())) {
-                geneToReportableVariants.get(variant.gene()).add(variant);
-            } else {
-                geneToReportableVariants.put(variant.gene(), com.google.common.collect.Lists.newArrayList(variant));
-            }
-        }
-        return geneToReportableVariants;
     }
 
     @NotNull

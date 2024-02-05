@@ -21,6 +21,7 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.util.ListUtil;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -196,9 +197,7 @@ public final class ReportableVariantFactory {
     @NotNull
     public static List<ReportableVariant> mergeVariantLists(@NotNull Collection<ReportableVariant> list1,
             @NotNull Collection<ReportableVariant> list2) {
-        Set<ReportableVariant> result = Sets.newHashSet();
-        result.addAll(list1);
-        result.addAll(list2);
+        List<ReportableVariant> result = ListUtil.mergeListsDistinct(list1, list2);
 
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
 
@@ -241,7 +240,7 @@ public final class ReportableVariantFactory {
                 .alleleReadCount(variant.tumorDepth().alleleReadCount())
                 .totalCopyNumber(totalCopyNumber)
                 .minorAlleleCopyNumber(variant.minorAlleleCopyNumber())
-                .tVAF(extractTvaf(source, totalCopyNumber, alleleCopyNumber))
+                .tVAF(extractTvaf(totalCopyNumber, alleleCopyNumber))
                 .alleleCopyNumber(alleleCopyNumber)
                 .hotspot(source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.hotspot())
                 .clonalLikelihood(1 - variant.subclonalLikelihood())
@@ -251,12 +250,10 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    private static String extractTvaf(@NotNull ReportableVariantSource source, Double totalCopyNumber, Double alleleCopyNumber) {
-        if (source == ReportableVariantSource.GERMLINE_ONLY) {
+    private static String extractTvaf(Double totalCopyNumber, Double alleleCopyNumber) {
+        if (totalCopyNumber == null || alleleCopyNumber == null) {
             return Strings.EMPTY;
         } else {
-            assert alleleCopyNumber != null;
-            assert totalCopyNumber != null;
             double vaf = alleleCopyNumber / totalCopyNumber;
             return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
         }

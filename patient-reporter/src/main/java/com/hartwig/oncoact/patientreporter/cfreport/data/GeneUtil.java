@@ -14,9 +14,12 @@ public final class GeneUtil {
 
     @NotNull
     public static String roundCopyNumberVariants(Double copyNumber, boolean hasReliablePurity) {
-        return copyNumber == null
-                ? Strings.EMPTY
-                : hasReliablePurity && !copyNumber.isNaN() ? String.valueOf(Math.round(copyNumber)) : Formats.NA_STRING;
+        if (copyNumber == null) {
+            return Strings.EMPTY;
+        } else if (!hasReliablePurity || copyNumber.isNaN()) {
+            return Formats.NA_STRING;
+        }
+        return String.valueOf(Math.round(copyNumber));
     }
 
     @NotNull

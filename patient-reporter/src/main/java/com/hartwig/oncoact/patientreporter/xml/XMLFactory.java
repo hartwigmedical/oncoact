@@ -21,6 +21,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
@@ -249,7 +250,10 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]driver")
-                    .valuePath(Map.of("value", reportableVariant.driverLikelihoodInterpretation().name()))
+                    .valuePath(Map.of("value",
+                            Optional.ofNullable(reportableVariant.driverLikelihoodInterpretation())
+                                    .map(DriverInterpretation::name)
+                                    .orElse("")))
                     .build());
             count += 1;
         }
