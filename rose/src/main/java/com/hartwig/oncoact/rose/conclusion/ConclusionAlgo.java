@@ -24,6 +24,7 @@ import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
@@ -31,7 +32,6 @@ import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.copynumber.CopyNumberInterpretation;
 import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.drivergene.DriverCategory;
@@ -314,9 +314,7 @@ public final class ConclusionAlgo {
             oncogenic.add("CNV");
 
             if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS
-                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
-                    || gainLoss.interpretation() == CopyNumberInterpretation.FULL_GENE
-                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_GENE) {
+                    || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS) {
 
                 ActionabilityKey keyLoss = ImmutableActionabilityKey.builder().match(gainLoss.gene()).type(TypeAlteration.LOSS).build();
                 ActionabilityEntry entry = actionabilityMap.get(keyLoss);

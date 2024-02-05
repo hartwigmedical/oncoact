@@ -5,10 +5,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.copynumber.CopyNumberInterpretation;
 import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 

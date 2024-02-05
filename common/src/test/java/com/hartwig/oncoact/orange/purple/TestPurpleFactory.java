@@ -141,7 +141,7 @@ public final class TestPurpleFactory {
                 .gene(Strings.EMPTY)
                 .transcript(Strings.EMPTY)
                 .isCanonical(false)
-                .interpretation(com.hartwig.oncoact.copynumber.CopyNumberInterpretation.FULL_LOSS)
+                .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0);
     }

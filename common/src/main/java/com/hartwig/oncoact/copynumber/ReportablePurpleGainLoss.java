@@ -3,6 +3,8 @@ package com.hartwig.oncoact.copynumber;
 import java.util.List;
 
 import com.google.api.client.util.Lists;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.GeneProportion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 
@@ -22,7 +24,7 @@ public class ReportablePurpleGainLoss {
         if (germlineLossOfHeterozygosity != null) {
             for (PurpleLossOfHeterozygosity loh : germlineLossOfHeterozygosity) {
                 reportablePurpleGainLoss.add(ImmutablePurpleGainLossData.builder()
-                        .interpretation(toInterpretation(loh.geneProportion().name()))
+                        .interpretation(toInterpretationGene(loh.geneProportion().name()))
                         .chromosome(loh.chromosome())
                         .chromosomeBand(loh.chromosomeBand())
                         .gene(loh.gene())
@@ -44,7 +46,7 @@ public class ReportablePurpleGainLoss {
         if (purpleGainLosses != null) {
             for (PurpleGainLoss purpleGainLoss : purpleGainLosses) {
                 reportablePurpleGainLoss.add(ImmutablePurpleGainLossData.builder()
-                        .interpretation(toInterpretation(purpleGainLoss.interpretation().name()))
+                        .interpretation(toInterpretationCNV(purpleGainLoss.interpretation().name()))
                         .chromosome(purpleGainLoss.chromosome())
                         .chromosomeBand(purpleGainLoss.chromosomeBand())
                         .gene(purpleGainLoss.gene())
@@ -60,19 +62,22 @@ public class ReportablePurpleGainLoss {
     }
 
     @NotNull
-    public static CopyNumberInterpretation toInterpretation(@NotNull String interpretationInput) {
+    public static CopyNumberInterpretation toInterpretationGene(@NotNull String interpretationInput) {
+        if (interpretationInput.equals(GeneProportion.FULL_GENE.name())) {
+            return CopyNumberInterpretation.FULL_LOSS;
+        } else if (interpretationInput.equals(GeneProportion.PARTIAL_GENE.name())) {
+            return CopyNumberInterpretation.PARTIAL_LOSS;
+        }
+        throw new IllegalStateException("Cannot resolve interpretation: " + interpretationInput);
+    }
+
+    @NotNull
+    public static CopyNumberInterpretation toInterpretationCNV(@NotNull String interpretationInput) {
         for (CopyNumberInterpretation interpretation : CopyNumberInterpretation.values()) {
             if (interpretationInput.equals(interpretation.toString())) {
-                if (interpretation == CopyNumberInterpretation.FULL_GENE) {
-                    return CopyNumberInterpretation.FULL_LOSS;
-                } else if (interpretation == CopyNumberInterpretation.PARTIAL_GENE) {
-                    return CopyNumberInterpretation.PARTIAL_LOSS;
-                } else {
-                    return interpretation;
-                }
+                return interpretation;
             }
         }
-
         throw new IllegalStateException("Cannot resolve interpretation: " + interpretationInput);
     }
 }

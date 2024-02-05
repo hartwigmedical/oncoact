@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.copynumber;
 
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
