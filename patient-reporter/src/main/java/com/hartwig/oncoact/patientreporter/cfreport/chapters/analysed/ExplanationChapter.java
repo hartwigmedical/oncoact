@@ -118,7 +118,8 @@ public class ExplanationChapter implements ReportChapter {
                         "https://www.ncbi.nlm.nih.gov/clinvar/intro/",
                         " is used to determine the pathogenicity of observed " + "germline variants."))
                 .add(createContentDiv(new String[] {
-                        "When the TVAF is not reported for a variant, there is uncertainty about the presence of the variant in the tumor." })));
+                        "When the 'tVAF', 'Biallelic', 'Hotspot' and 'Driver' are not reported for a variant, there is uncertainty "
+                                + "about the presence of the variant in the tumor." })));
 
         table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
 
