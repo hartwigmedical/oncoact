@@ -10,7 +10,7 @@ public final class EvidenceDriverLikelihood {
     private EvidenceDriverLikelihood() {
     }
 
-    public static boolean interpretVariant(@NotNull DriverInterpretation driverInterpretation) {
+    public static Boolean interpretVariant(@NotNull DriverInterpretation driverInterpretation) {
         switch (driverInterpretation) {
             case HIGH:
                 return true;
@@ -45,7 +45,7 @@ public final class EvidenceDriverLikelihood {
     }
 
     public static boolean interpretWildType() {
-       // All wild types genes has a low driver likelihood
+        // All wild types genes has a low driver likelihood
         return false;
     }
 }

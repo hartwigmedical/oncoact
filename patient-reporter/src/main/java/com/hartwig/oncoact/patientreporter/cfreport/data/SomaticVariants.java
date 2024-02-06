@@ -15,9 +15,9 @@ import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.util.Genes;
 import com.hartwig.oncoact.util.Formats;
@@ -229,7 +229,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLossData> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -238,7 +238,7 @@ public final class SomaticVariants {
             }
         }
 
-        for (PurpleGainLossData gainLoss : gainsAndLosses) {
+        for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (Genes.MSI_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
                     || gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS)) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
@@ -255,7 +255,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLossData> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -264,7 +264,7 @@ public final class SomaticVariants {
             }
         }
 
-        for (PurpleGainLossData gainLoss : gainsAndLosses) {
+        for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (Genes.HRD_GENES.contains(gainLoss.gene()) && (gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS
                     || gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS)) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));

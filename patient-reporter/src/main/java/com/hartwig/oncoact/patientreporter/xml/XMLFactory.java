@@ -9,9 +9,9 @@ import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -156,10 +156,10 @@ public class XMLFactory {
                 .build();
     }
 
-    public static void addGainLossesToXML(@NotNull List<PurpleGainLossData> gainLosses,
-            @NotNull List<CnPerChromosomeArmData> chromosomeArmData, @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
+    public static void addGainLossesToXML(@NotNull List<PurpleGainLoss> gainLosses, @NotNull List<CnPerChromosomeArmData> chromosomeArmData,
+            @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
         int count = 1;
-        for (PurpleGainLossData gainLoss : GainsAndLosses.sort(gainLosses)) {
+        for (PurpleGainLoss gainLoss : GainsAndLosses.sort(gainLosses)) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgscnv.line[" + count + "]chr")
                     .valuePath(Map.of("value", gainLoss.chromosome()))

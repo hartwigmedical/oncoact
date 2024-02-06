@@ -14,13 +14,13 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.disruption.GeneDisruption;
@@ -70,14 +70,12 @@ public class GenomicAnalyzer {
                 determineNotify(reportableVariants, germlineReportingModel, flagGermlineOnReport);
 
         // gains & losses
-        List<PurpleGainLossData> somaticGainsLosses =
-                ReportablePurpleGainLoss.toReportableGainLoss(orange.purple().reportableSomaticGainsLosses());
-        List<PurpleGainLossData> germlineLosses =
-                ReportablePurpleGainLoss.toReportableGainLoss(orange.purple().reportableGermlineFullLosses());
+        List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = orange.purple().reportableGermlineFullLosses();
         List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = orange.purple().reportableGermlineLossOfHeterozygosities();
-        List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
+        List<PurpleGainLoss> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
-        List<PurpleGainLossData> reportableGainsLosses =
+        List<PurpleGainLoss> reportableGainsLosses =
                 ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         // Determine chromosome copy number arm

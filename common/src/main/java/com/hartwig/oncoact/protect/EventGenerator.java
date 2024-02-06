@@ -6,11 +6,11 @@ import java.util.StringJoiner;
 import com.google.common.base.Strings;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.hmftools.datamodel.purple.Variant;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +82,7 @@ public final class EventGenerator {
     }
 
     @NotNull
-    public static String gainLossEvent(@NotNull PurpleGainLossData gainLoss) {
+    public static String gainLossEvent(@NotNull PurpleGainLoss gainLoss) {
         return gainLoss.interpretation().toString().toLowerCase().replaceAll("_", " ");
     }
 

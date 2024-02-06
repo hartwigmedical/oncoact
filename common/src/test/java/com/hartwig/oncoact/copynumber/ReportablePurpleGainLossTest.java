@@ -16,17 +16,4 @@ public class ReportablePurpleGainLossTest {
                 ReportablePurpleGainLoss.toInterpretationGene(GeneProportion.PARTIAL_GENE.name()));
     }
 
-    @Test
-    public void canInterpretationCNV() {
-        assertEquals(CopyNumberInterpretation.FULL_LOSS,
-                ReportablePurpleGainLoss.toInterpretationCNV(CopyNumberInterpretation.FULL_LOSS.name()));
-        assertEquals(CopyNumberInterpretation.PARTIAL_LOSS,
-                ReportablePurpleGainLoss.toInterpretationCNV(CopyNumberInterpretation.PARTIAL_LOSS.name()));
-        assertEquals(CopyNumberInterpretation.FULL_GAIN,
-                ReportablePurpleGainLoss.toInterpretationCNV(CopyNumberInterpretation.FULL_GAIN.name()));
-        assertEquals(CopyNumberInterpretation.PARTIAL_GAIN,
-                ReportablePurpleGainLoss.toInterpretationCNV(CopyNumberInterpretation.PARTIAL_GAIN.name()));
-
-    }
-
 }

@@ -21,6 +21,7 @@ import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.Hotspot;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
@@ -34,7 +35,6 @@ import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.ImmutableCnPerChromosomeArmData;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
@@ -107,7 +107,7 @@ public final class ExampleAnalysisTestFactory {
         List<ReportableVariant> reportableVariants = createCOLO829SomaticVariants(config.reportGermline());
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant =
                 notifyAllGermlineVariants(reportableVariants, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
-        List<PurpleGainLossData> gainsAndLosses = createCOLO829GainsLosses();
+        List<PurpleGainLoss> gainsAndLosses = createCOLO829GainsLosses();
         List<LinxFusion> fusions = Lists.newArrayList();
         List<HomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
         List<GeneDisruption> disruptions = createCOLO829Disruptions();
@@ -2003,8 +2003,8 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<PurpleGainLossData> createCOLO829GainsLosses() {
-        PurpleGainLossData gainLoss1 = TestPurpleFactory.gainLossBuilderOncoAct()
+    private static List<PurpleGainLoss> createCOLO829GainsLosses() {
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
                 .chromosome("10")
                 .chromosomeBand("q23.31")
                 .gene("PTEN")

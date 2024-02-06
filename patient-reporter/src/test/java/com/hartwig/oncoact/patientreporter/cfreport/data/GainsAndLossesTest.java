@@ -5,11 +5,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.ImmutableCnPerChromosomeArmData;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.util.Formats;
 
@@ -91,7 +91,7 @@ public class GainsAndLossesTest {
     }
 
     @NotNull
-    private static PurpleGainLossData createGainLoss(@NotNull String chromosome, @NotNull String chromosomeBand) {
-        return TestPurpleFactory.gainLossBuilderOncoAct().chromosome(chromosome).chromosomeBand(chromosomeBand).build();
+    private static PurpleGainLoss createGainLoss(@NotNull String chromosome, @NotNull String chromosomeBand) {
+        return TestPurpleFactory.gainLossBuilder().chromosome(chromosome).chromosomeBand(chromosomeBand).build();
     }
 }

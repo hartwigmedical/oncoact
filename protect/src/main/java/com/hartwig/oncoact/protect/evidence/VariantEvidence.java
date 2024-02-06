@@ -148,7 +148,7 @@ public class VariantEvidence {
                 .event(EventGenerator.variantEvent(variant))
                 .germline(isGermline)
                 .reported(report)
-                .eventIsHighDriver(EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
+                .eventIsHighDriver(driverInterpretation == null ? null : EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
                 .build();
     }
 

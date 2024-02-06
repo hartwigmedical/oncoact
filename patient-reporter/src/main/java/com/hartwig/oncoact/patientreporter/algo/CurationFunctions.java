@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableHomozygousDisruption;
-import com.hartwig.oncoact.copynumber.ImmutablePurpleGainLossData;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.ImmutableGeneDisruption;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
@@ -111,13 +111,13 @@ public final class CurationFunctions {
 
     @NotNull
     @VisibleForTesting
-    static List<PurpleGainLossData> curateGainsAndLosses(@NotNull List<PurpleGainLossData> gainsAndLosses) {
-        List<PurpleGainLossData> curateGainsAndLosses = Lists.newArrayList();
-        for (PurpleGainLossData gainLoss : gainsAndLosses) {
+    static List<PurpleGainLoss> curateGainsAndLosses(@NotNull List<PurpleGainLoss> gainsAndLosses) {
+        List<PurpleGainLoss> curateGainsAndLosses = Lists.newArrayList();
+        for (PurpleGainLoss gainLoss : gainsAndLosses) {
             if (gainLoss.gene().equals(GENE_CDKN2A) && gainLoss.isCanonical()) {
-                curateGainsAndLosses.add(ImmutablePurpleGainLossData.builder().from(gainLoss).gene(GENE_CDKN2A_CANONICAL).build());
+                curateGainsAndLosses.add(ImmutablePurpleGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_CANONICAL).build());
             } else if (gainLoss.gene().equals(GENE_CDKN2A) && !gainLoss.isCanonical()) {
-                curateGainsAndLosses.add(ImmutablePurpleGainLossData.builder().from(gainLoss).gene(GENE_CDKN2A_NON_CANONICAL).build());
+                curateGainsAndLosses.add(ImmutablePurpleGainLoss.builder().from(gainLoss).gene(GENE_CDKN2A_NON_CANONICAL).build());
             } else {
                 curateGainsAndLosses.add(gainLoss);
             }

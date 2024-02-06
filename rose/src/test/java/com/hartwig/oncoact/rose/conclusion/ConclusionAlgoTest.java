@@ -24,12 +24,12 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
@@ -169,7 +169,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateCNVConclusion() {
-        Set<PurpleGainLossData> gainLoss = createTestGainsLosses();
+        Set<PurpleGainLoss> gainLoss = createTestGainsLosses();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("BRAF", TypeAlteration.AMPLIFICATION, "BRAF", Condition.ALWAYS, "BRAF");
@@ -556,32 +556,32 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static Set<PurpleGainLossData> createTestGainsLosses() {
-        PurpleGainLossData gainLoss1 = TestPurpleFactory.gainLossBuilderOncoAct()
+    private static Set<PurpleGainLoss> createTestGainsLosses() {
+        PurpleGainLoss gainLoss1 = TestPurpleFactory.gainLossBuilder()
                 .gene("BRAF")
                 .interpretation(CopyNumberInterpretation.FULL_GAIN)
                 .minCopies(4)
                 .maxCopies(4)
                 .build();
-        PurpleGainLossData gainLoss2 = TestPurpleFactory.gainLossBuilderOncoAct()
+        PurpleGainLoss gainLoss2 = TestPurpleFactory.gainLossBuilder()
                 .gene("KRAS")
                 .interpretation(CopyNumberInterpretation.PARTIAL_GAIN)
                 .minCopies(3)
                 .maxCopies(8)
                 .build();
-        PurpleGainLossData gainLoss3 = TestPurpleFactory.gainLossBuilderOncoAct()
+        PurpleGainLoss gainLoss3 = TestPurpleFactory.gainLossBuilder()
                 .gene("CDKN2A")
                 .interpretation(CopyNumberInterpretation.FULL_LOSS)
                 .minCopies(0)
                 .maxCopies(0)
                 .build();
-        PurpleGainLossData gainLoss4 = TestPurpleFactory.gainLossBuilderOncoAct()
+        PurpleGainLoss gainLoss4 = TestPurpleFactory.gainLossBuilder()
                 .gene("EGFR")
                 .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .minCopies(0)
                 .maxCopies(3)
                 .build();
-        PurpleGainLossData gainLoss5 = TestPurpleFactory.gainLossBuilderOncoAct()
+        PurpleGainLoss gainLoss5 = TestPurpleFactory.gainLossBuilder()
                 .gene("CDKN2A")
                 .interpretation(CopyNumberInterpretation.PARTIAL_LOSS)
                 .minCopies(0)

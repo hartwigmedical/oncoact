@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static List<PurpleGainLossData> sort(@NotNull List<PurpleGainLossData> gainsAndLosses) {
+    public static List<PurpleGainLoss> sort(@NotNull List<PurpleGainLoss> gainsAndLosses) {
         return gainsAndLosses.stream().sorted((gainLoss1, gainLoss2) -> {
             String location1 = GeneUtil.zeroPrefixed(gainLoss1.chromosome() + gainLoss1.chromosomeBand());
             String location2 = GeneUtil.zeroPrefixed(gainLoss2.chromosome() + gainLoss2.chromosomeBand());
@@ -34,9 +34,9 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static Set<String> amplifiedGenes(@NotNull Iterable<PurpleGainLossData> reportableGainLosses) {
+    public static Set<String> amplifiedGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = Sets.newTreeSet();
-        for (PurpleGainLossData gainLoss : reportableGainLosses) {
+        for (PurpleGainLoss gainLoss : reportableGainLosses) {
             if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_GAIN
                     || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN) {
                 genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
@@ -46,9 +46,9 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static Set<String> lostGenes(@NotNull Iterable<PurpleGainLossData> reportableGainLosses) {
+    public static Set<String> lostGenes(@NotNull Iterable<PurpleGainLoss> reportableGainLosses) {
         Set<String> genes = Sets.newTreeSet();
-        for (PurpleGainLossData gainLoss : reportableGainLosses) {
+        for (PurpleGainLoss gainLoss : reportableGainLosses) {
             if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS
                     || gainLoss.interpretation() == CopyNumberInterpretation.PARTIAL_LOSS) {
                 genes.add(CurationFunctions.curateGeneNamePdf(gainLoss.gene()));
@@ -59,7 +59,7 @@ public final class GainsAndLosses {
 
     @NotNull
     public static String chromosomeArmCopyNumber(@NotNull List<CnPerChromosomeArmData> cnPerChromosomeData,
-            @NotNull PurpleGainLossData gainLoss) {
+            @NotNull PurpleGainLoss gainLoss) {
         ChromosomeArm chromosomeArm;
         if (gainLoss.chromosomeBand().startsWith("p")) {
             chromosomeArm = ChromosomeArm.P_ARM;
@@ -81,7 +81,7 @@ public final class GainsAndLosses {
     }
 
     @NotNull
-    public static String interpretation(@NotNull PurpleGainLossData gainLoss) {
+    public static String interpretation(@NotNull PurpleGainLoss gainLoss) {
         return gainLoss.interpretation().toString().toLowerCase().replaceAll("_", " ");
     }
 }

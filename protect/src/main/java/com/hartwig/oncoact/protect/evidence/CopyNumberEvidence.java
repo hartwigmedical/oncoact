@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -42,22 +41,20 @@ public class CopyNumberEvidence {
             @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities) {
         List<ProtectEvidence> result = Lists.newArrayList();
 
-        List<PurpleGainLossData> allReportableGainsLosses =
-                ListUtil.mergeListsDistinct(ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses),
-                        ReportablePurpleGainLoss.toReportableGainLoss(reportableGermlineLosses),
-                        ReportablePurpleGainLoss.toReportableGainLossLOH(reportableGermlineLOHs));
+        List<PurpleGainLoss> allReportableGainsLosses = ListUtil.mergeListsDistinct(reportableSomaticGainLosses,
+                reportableGermlineLosses,
+                ReportablePurpleGainLoss.toReportableGainLossLOH(reportableGermlineLOHs));
 
-        for (PurpleGainLossData reportableGainLoss : allReportableGainsLosses) {
+        for (PurpleGainLoss reportableGainLoss : allReportableGainsLosses) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        List<PurpleGainLossData> allGainsLosses =
-                ListUtil.mergeListsDistinct(ReportablePurpleGainLoss.toReportableGainLoss(allSomaticGainLosses),
-                        ReportablePurpleGainLoss.toReportableGainLoss(allGermlineLosses),
-                        ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
+        List<PurpleGainLoss> allGainsLosses = ListUtil.mergeListsDistinct(allSomaticGainLosses,
+                allGermlineLosses,
+                ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
 
-        for (PurpleGainLossData gainLoss : allGainsLosses) {
-            if (!ReportablePurpleGainLoss.toReportableGainLoss(reportableSomaticGainLosses).contains(gainLoss)) {
+        for (PurpleGainLoss gainLoss : allGainsLosses) {
+            if (!reportableSomaticGainLosses.contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }
         }
@@ -66,7 +63,7 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull PurpleGainLossData gainLoss, boolean report) {
+    private List<ProtectEvidence> evidence(@NotNull PurpleGainLoss gainLoss, boolean report) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
@@ -85,7 +82,7 @@ public class CopyNumberEvidence {
         return result;
     }
 
-    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull PurpleGainLossData reportable) {
+    private static boolean isTypeMatch(@NotNull ActionableGene actionable, @NotNull PurpleGainLoss reportable) {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:

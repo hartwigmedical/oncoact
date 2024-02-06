@@ -24,7 +24,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
-import com.hartwig.oncoact.copynumber.ImmutablePurpleGainLossData;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -131,19 +130,6 @@ public final class TestPurpleFactory {
                 .geneName(Strings.EMPTY)
                 .minCopyNumber(0D)
                 .minMinorAlleleCopyNumber(0D);
-    }
-
-    @NotNull
-    public static ImmutablePurpleGainLossData.Builder gainLossBuilderOncoAct() {
-        return ImmutablePurpleGainLossData.builder()
-                .chromosome(Strings.EMPTY)
-                .chromosomeBand(Strings.EMPTY)
-                .gene(Strings.EMPTY)
-                .transcript(Strings.EMPTY)
-                .isCanonical(false)
-                .interpretation(CopyNumberInterpretation.FULL_LOSS)
-                .minCopies(0)
-                .maxCopies(0);
     }
 
     @NotNull

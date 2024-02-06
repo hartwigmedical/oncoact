@@ -25,6 +25,7 @@ import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
@@ -32,7 +33,6 @@ import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.oncoact.copynumber.PurpleGainLossData;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -91,12 +91,12 @@ public final class ConclusionAlgo {
         List<ReportableVariant> reportableVariants =
                 ReportableVariantFactory.mergeVariantLists(reportableGermlineVariants, reportableSomaticVariants);
 
-        List<PurpleGainLossData> somaticGainsLosses = ReportablePurpleGainLoss.toReportableGainLoss(purple.reportableSomaticGainsLosses());
-        List<PurpleGainLossData> germlineLosses = ReportablePurpleGainLoss.toReportableGainLoss(purple.reportableGermlineFullLosses());
+        List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
+        List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
         List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = purple.reportableGermlineLossOfHeterozygosities();
-        List<PurpleGainLossData> convertedGermlineLossOfHeterozygosity =
+        List<PurpleGainLoss> convertedGermlineLossOfHeterozygosity =
                 ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
-        List<PurpleGainLossData> reportableGainLosses =
+        List<PurpleGainLoss> reportableGainLosses =
                 ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
@@ -307,10 +307,10 @@ public final class ConclusionAlgo {
     }
 
     @VisibleForTesting
-    static void generateCNVConclusion(@NotNull List<String> conclusion, @NotNull Collection<PurpleGainLossData> reportableGainLosses,
+    static void generateCNVConclusion(@NotNull List<String> conclusion, @NotNull Collection<PurpleGainLoss> reportableGainLosses,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable, boolean hasReliablePurity) {
-        for (PurpleGainLossData gainLoss : reportableGainLosses) {
+        for (PurpleGainLoss gainLoss : reportableGainLosses) {
             oncogenic.add("CNV");
 
             if (gainLoss.interpretation() == CopyNumberInterpretation.FULL_LOSS
