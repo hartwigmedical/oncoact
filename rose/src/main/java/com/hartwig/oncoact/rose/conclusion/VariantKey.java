@@ -19,7 +19,8 @@ public abstract class VariantKey {
     @Nullable
     public abstract DriverInterpretation driverInterpretation();
 
-    public abstract boolean biallelic();
+    @Nullable
+    public abstract Boolean biallelic();
 
     @NotNull
     public abstract String canonicalEffect();
