@@ -122,6 +122,13 @@ public class ExplanationChapter implements ReportChapter {
                                 + "about the presence of the variant in the tumor." })));
 
         table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed gains & losses")));
         table.addCell(TableUtil.createLayoutCell());
