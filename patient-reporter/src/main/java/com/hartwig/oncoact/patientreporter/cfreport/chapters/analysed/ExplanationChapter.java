@@ -116,7 +116,9 @@ public class ExplanationChapter implements ReportChapter {
                 .add(createParaGraphClinvar("The external ",
                         "ClinVar database",
                         "https://www.ncbi.nlm.nih.gov/clinvar/intro/",
-                        " is used to determine the pathogenicity of observed " + "germline variants.")));
+                        " is used to determine the pathogenicity of observed " + "germline variants."))
+                .add(createContentDiv(new String[] {
+                        "When the TVAF is not reported for a variant, there is uncertainty about the presence of the variant in the tumor." })));
 
         table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
 
@@ -132,11 +134,11 @@ public class ExplanationChapter implements ReportChapter {
                 .add(createContentDiv(new String[] { "The lowest copy number value along the exonic regions of the canonical transcript is"
                         + " determined as a measure for the gene's copy number.",
                         "When applicable, copy numbers are corrected for the implied tumor purity and represent the number of copies in the tumor DNA.",
-                        "Any gene with < 0.5 copies along the entire canonical transcript is reported as a full loss. Any gene where only "
-                                + "a part along the canonical transcript has < 0.5 copies is reported as a partial loss. \n"
+                        "Any gene with < 0.5 copies along the entire canonical transcript is reported as a full loss in the tumor. Any gene where only "
+                                + "a part along the canonical transcript has < 0.5 copies is reported as a partial loss in the tumor. \n"
                                 + "Any gene with ≥  3 times the average tumor ploidy in copies along the entire canonical transcript "
-                                + "is reported as a full gain. Any gene where only a part of the canonical transcript has ≥  than 3 "
-                                + "times the average tumor ploidy in copies is reported as a partial gain.", })));
+                                + "is reported as a full gain in the tumor. Any gene where only a part of the canonical transcript has ≥ 3 "
+                                + "times the average tumor ploidy in copies is reported as a partial gain in the tumor.", })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
