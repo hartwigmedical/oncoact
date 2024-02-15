@@ -1,15 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
 
-import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
@@ -24,7 +18,6 @@ public final class EvidenceItems {
     public EvidenceItems(@NotNull ReportResources reportResources) {
         this.reportResources = reportResources;
     }
-
 
     @NotNull
     public Paragraph createLinksPublications(@NotNull Set<String> evidenceUrls) {
@@ -60,6 +53,25 @@ public final class EvidenceItems {
             } else {
                 paragraphSources.add(new Text(entry.getKey()).addStyle(reportResources.urlStyle())
                         .setAction(PdfAction.createURI(entry.getValue()))).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+            }
+        }
+        return paragraphSources;
+    }
+
+    @NotNull
+    public Paragraph createSourceIclusion(@NotNull Map<String, String> sourceUrls) {
+        Paragraph paragraphSources = new Paragraph();
+
+        for (Map.Entry<String, String> entry : sourceUrls.entrySet()) {
+            if (!paragraphSources.isEmpty()) {
+                paragraphSources.add(new Text(", "));
+            }
+
+            if (entry.getValue().isEmpty()) {
+                paragraphSources.add(new Text(entry.getKey()).addStyle(reportResources.subTextStyle()));
+            } else {
+                paragraphSources.add(new Text(entry.getKey()).addStyle(reportResources.subTextStyle()))
+                        .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
             }
         }
         return paragraphSources;

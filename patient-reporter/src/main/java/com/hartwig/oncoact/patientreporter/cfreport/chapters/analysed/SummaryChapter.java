@@ -415,8 +415,8 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private Div renderGermlineText() {
-        String text = "Data concerning cancer predisposition genes may be requested by a clinical geneticist after the patient has "
-                + "given informed consent.";
+        String text = "Underlying data concerning cancer predisposition genes may be requested by a licensed clinical genetics laboratory"
+                + " after the patient has given informed consent.";
 
         Div div = createSectionStartDivWithoutLineDivider(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         div.add(new Paragraph("Germline results").addStyle(reportResources.sectionTitleStyle()));

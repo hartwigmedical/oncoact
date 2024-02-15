@@ -21,6 +21,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
 import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
@@ -233,7 +234,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]copie")
-                    .valuePath(Map.of("value", GeneUtil.roundCopyNumber(reportableVariant.totalCopyNumber(), hasReliablePurity)))
+                    .valuePath(Map.of("value", GeneUtil.roundCopyNumberVariants(reportableVariant.totalCopyNumber(), hasReliablePurity)))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]tvaf")
@@ -245,11 +246,14 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]hotsp")
-                    .valuePath(Map.of("value", reportableVariant.hotspot().name()))
+                    .valuePath(Map.of("value", reportableVariant.hotspot() != null ? reportableVariant.hotspot().name() : Strings.EMPTY))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsgene.line[" + count + "]driver")
-                    .valuePath(Map.of("value", reportableVariant.driverLikelihoodInterpretation().name()))
+                    .valuePath(Map.of("value",
+                            Optional.ofNullable(reportableVariant.driverLikelihoodInterpretation())
+                                    .map(DriverInterpretation::name)
+                                    .orElse("")))
                     .build());
             count += 1;
         }

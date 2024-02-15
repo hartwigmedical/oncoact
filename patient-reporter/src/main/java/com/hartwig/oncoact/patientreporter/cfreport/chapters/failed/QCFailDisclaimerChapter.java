@@ -201,7 +201,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
         String purpleQcStatusInt = purpleQcStatus != null ? purpleQcStatus : Strings.EMPTY;
 
         var isFailedNoTumor = Objects.requireNonNullElse(failReport.purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
-        if (isFailedNoTumor || purpleQcStatusInt.equals(PurpleQCStatus.FAIL_NO_TUMOR.name())) {
+        if (isFailedNoTumor || purpleQcStatusInt.contains(PurpleQCStatus.FAIL_NO_TUMOR.name())) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
             String effectivePurity = wgsPurity != null ? wgsPurity : shallowPurity + "%";

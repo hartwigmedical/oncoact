@@ -65,7 +65,7 @@ public class CircosChapter implements ReportChapter {
                                 " shows the chromosomes. The darker shaded areas represent large gaps in the human reference genome: "
                                         + "i.e. regions of centromeres, heterochromatin & missing short arms."))
                         .add(createContentParagraph("The second circle ",
-                                "shows all tumor specific variants (incl. exon, intron and intergenic regions) and "
+                                "shows all tumor observed variants (incl. exon, intron and intergenic regions) and "
                                         + "are divided into an outer ring of single nucleotide polymorphism (SNP) allele "
                                         + "frequencies and an inner ring of short insertion/deletion (INDEL) locations. Variant allele "
                                         + "frequencies have been corrected for tumor purity and scale from 0 to 100%. Each dot represents "

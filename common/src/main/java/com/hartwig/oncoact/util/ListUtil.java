@@ -2,21 +2,23 @@ package com.hartwig.oncoact.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.Set;
 
 public class ListUtil {
 
     private ListUtil() {
     }
 
-    public static <T> List<T> mergeLists(@NotNull Collection<T> list1, @Nullable Collection<T> list2) {
-        ArrayList<T> result = new ArrayList<>(list1);
-        if (list2 != null) {
-            result.addAll(list2);
+    @SafeVarargs
+    public static <T> List<T> mergeListsDistinct(Collection<T>... lists) {
+        Set<T> result = new HashSet<>();
+        for (Collection<T> list : lists) {
+            if (list != null) {
+                result.addAll(list);
+            }
         }
-        return result;
+        return new ArrayList<>(result);
     }
 }

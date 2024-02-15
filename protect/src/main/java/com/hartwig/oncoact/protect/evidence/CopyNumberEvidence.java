@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
+import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.protect.EventGenerator;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.ListUtil;
@@ -35,13 +37,23 @@ public class CopyNumberEvidence {
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
             @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-            @Nullable List<PurpleGainLoss> allGermlineLosses) {
+            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> reportableGermlineLOHs,
+            @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (PurpleGainLoss reportableGainLoss : ListUtil.mergeLists(reportableSomaticGainLosses, reportableGermlineLosses)) {
+
+        List<PurpleGainLoss> allReportableGainsLosses = ListUtil.mergeListsDistinct(reportableSomaticGainLosses,
+                reportableGermlineLosses,
+                ReportablePurpleGainLoss.toReportableGainLossLOH(reportableGermlineLOHs));
+
+        for (PurpleGainLoss reportableGainLoss : allReportableGainsLosses) {
             result.addAll(evidence(reportableGainLoss, true));
         }
 
-        for (PurpleGainLoss gainLoss : ListUtil.mergeLists(allSomaticGainLosses, allGermlineLosses)) {
+        List<PurpleGainLoss> allGainsLosses = ListUtil.mergeListsDistinct(allSomaticGainLosses,
+                allGermlineLosses,
+                ReportablePurpleGainLoss.toReportableGainLossLOH(allGermlineLossOfHeterozygosities));
+
+        for (PurpleGainLoss gainLoss : allGainsLosses) {
             if (!reportableSomaticGainLosses.contains(gainLoss)) {
                 result.addAll(evidence(gainLoss, false));
             }

@@ -36,6 +36,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
@@ -170,7 +171,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private Table createTumorVariantsTable(@NotNull List<ReportableVariant> reportableVariants,
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant, boolean hasReliablePurity) {
-        String title = "Tumor specific variants";
+        String title = "Tumor observed variants";
         if (reportableVariants.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -222,8 +223,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                     variant.alleleReadCount() + " / ").setFont(reportResources.fontBold())
                     .add(new Text(String.valueOf(variant.totalReadCount())).setFont(reportResources.fontRegular()))
                     .setTextAlignment(TextAlignment.CENTER), annotationSize));
-            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumber(variant.totalCopyNumber(), hasReliablePurity),
-                    annotationSize).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellRowSpan(GeneUtil.roundCopyNumberVariants(variant.totalCopyNumber(),
+                    hasReliablePurity), annotationSize).setTextAlignment(TextAlignment.CENTER));
             contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.tVAFString(variant.tVAF(),
                     hasReliablePurity,
                     variant.totalCopyNumber()), annotationSize).setTextAlignment(TextAlignment.CENTER));
@@ -235,8 +236,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 contentTable.addCell(tableUtil.createContentCellRowSpan(SomaticVariants.clonalString(variant.clonalLikelihood()),
                         annotationSize).setTextAlignment(TextAlignment.CENTER));
             }
-            contentTable.addCell(tableUtil.createContentCellRowSpan(variant.driverLikelihoodInterpretation().display(), annotationSize))
-                    .setTextAlignment(TextAlignment.CENTER);
+            contentTable.addCell(tableUtil.createContentCellRowSpan(DriverInterpretation.display(variant.driverLikelihoodInterpretation()),
+                    annotationSize)).setTextAlignment(TextAlignment.CENTER);
         }
 
         contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
@@ -263,7 +264,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     @NotNull
     private Table createGainsAndLossesTable(@NotNull List<PurpleGainLoss> gainsAndLosses, boolean hasReliablePurity,
             @NotNull List<CnPerChromosomeArmData> cnPerChromosome) {
-        String title = "Tumor specific gains & losses";
+        String title = "Tumor observed gains & losses";
         if (gainsAndLosses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -294,7 +295,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createHomozygousDisruptionsTable(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
-        String title = "Tumor specific homozygous disruptions";
+        String title = "Tumor observed homozygous disruptions";
         String subtitle = "Complete loss of wild type allele";
         if (homozygousDisruptions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, subtitle, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
@@ -347,7 +348,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createFusionsTable(@NotNull List<LinxFusion> fusions, boolean hasReliablePurity) {
-        String title = "Tumor specific gene fusions";
+        String title = "Tumor observed gene fusions";
         if (fusions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -380,7 +381,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
     @NotNull
     private Table createDisruptionsTable(@NotNull List<GeneDisruption> disruptions, boolean hasReliablePurity) {
-        String title = "Tumor specific gene disruptions";
+        String title = "Tumor observed gene disruptions";
         if (disruptions.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         }
@@ -458,14 +459,14 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell(1, table.getNumberOfColumns())
                 .add(new Paragraph("\n *When phasing is unclear, the mutation will be counted in both alleles as 0.5."
-                        + " Copy number of detected mutations can be found in the tumor specific variants table.").addStyle(reportResources.subTextStyle()
+                        + " Copy number of detected mutations can be found in the tumor observed variants table.").addStyle(reportResources.subTextStyle()
                         .setTextAlignment(TextAlignment.CENTER))));
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
     @NotNull
     private Table createVirusTable(@NotNull List<AnnotatedVirus> viruses) {
-        String title = "Tumor specific viral insertions";
+        String title = "Tumor observed viral insertions";
 
         if (viruses.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);

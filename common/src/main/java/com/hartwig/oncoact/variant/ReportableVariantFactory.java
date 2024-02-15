@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.variant;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,11 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.util.Formats;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +63,27 @@ public final class ReportableVariantFactory {
             @NotNull Collection<PurpleDriver> germlineDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> germlineMutationDrivers =
                 germlineDrivers.stream().filter(x -> x.driver() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
-        return toReportableVariants(germlineVariants, germlineMutationDrivers, ReportableVariantSource.GERMLINE, clinicalTranscriptsModel);
+
+        //Extract germline only variants
+        Collection<PurpleVariant> germlineVariantsOnly =
+                germlineVariants.stream().filter(x -> x.variantCopyNumber() < 0.5).collect(Collectors.toList());
+        Set<ReportableVariant> reportableVariantsGermlineVariantsOnly = toReportableVariants(germlineVariantsOnly,
+                germlineMutationDrivers,
+                ReportableVariantSource.GERMLINE_ONLY,
+                clinicalTranscriptsModel);
+
+        //Extract germline tumor support variants
+        Collection<PurpleVariant> germlineVariantsTumorSupport =
+                germlineVariants.stream().filter(x -> x.variantCopyNumber() >= 0.5).collect(Collectors.toList());
+        Set<ReportableVariant> reportableVariantsGermlineVariantsTumorSupport = toReportableVariants(germlineVariantsTumorSupport,
+                germlineMutationDrivers,
+                ReportableVariantSource.GERMLINE,
+                clinicalTranscriptsModel);
+
+        Set<ReportableVariant> allReportableVariants = Sets.newHashSet();
+        allReportableVariants.addAll(reportableVariantsGermlineVariantsOnly);
+        allReportableVariants.addAll(reportableVariantsGermlineVariantsTumorSupport);
+        return allReportableVariants;
     }
 
     @NotNull
@@ -91,7 +114,8 @@ public final class ReportableVariantFactory {
 
                 PurpleDriver canonicalDriver = findCanonicalEntryForVariant(driverMap, variant);
                 if (canonicalDriver != null) {
-                    reportableVariants.add(builder.driverLikelihood(canonicalDriver.driverLikelihood())
+                    reportableVariants.add(builder.driverLikelihood(
+                                    source == ReportableVariantSource.GERMLINE_ONLY ? null : canonicalDriver.driverLikelihood())
                             .transcript(canonicalDriver.transcript())
                             .isCanonical(true)
                             .otherImpactClinical(purpleTranscriptImpact)
@@ -102,7 +126,8 @@ public final class ReportableVariantFactory {
                 if (nonCanonicalDriver != null) {
                     for (PurpleTranscriptImpact transcriptImpact : variant.otherImpacts()) {
                         if (transcriptImpact.transcript().equals(nonCanonicalDriver.transcript())) {
-                            reportableVariants.add(builder.driverLikelihood(nonCanonicalDriver.driverLikelihood())
+                            reportableVariants.add(builder.driverLikelihood(
+                                            source == ReportableVariantSource.GERMLINE_ONLY ? null : nonCanonicalDriver.driverLikelihood())
                                     .transcript(nonCanonicalDriver.transcript())
                                     .isCanonical(false)
                                     .otherImpactClinical(null)
@@ -169,38 +194,35 @@ public final class ReportableVariantFactory {
     }
 
     @NotNull
-    public static List<ReportableVariant> mergeVariantLists(@NotNull Iterable<ReportableVariant> list1,
-            @NotNull Iterable<ReportableVariant> list2) {
-        List<ReportableVariant> result = Lists.newArrayList();
+    public static List<ReportableVariant> mergeVariantLists(@NotNull Collection<ReportableVariant> list1,
+            @NotNull Collection<ReportableVariant> list2) {
+        Set<ReportableVariant> result = Sets.newHashSet();
+        Set<ReportableVariant> allVariants = Sets.newHashSet();
 
+        result.addAll(list1);
+        result.addAll(list2);
         Map<String, Double> maxLikelihoodPerGene = Maps.newHashMap();
-        for (ReportableVariant variant : list1) {
-            maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
+
+        for (ReportableVariant variant : result) {
+            if (variant.driverLikelihood() != null) {
+                maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
+            }
         }
 
-        for (ReportableVariant variant : list2) {
-            maxLikelihoodPerGene.merge(variant.gene(), variant.driverLikelihood(), Math::max);
-        }
-
-        for (ReportableVariant variant : list1) {
-            result.add(ImmutableReportableVariant.builder()
+        for (ReportableVariant variant : result) {
+            allVariants.add(ImmutableReportableVariant.builder()
                     .from(variant)
-                    .driverLikelihood(maxLikelihoodPerGene.get(variant.gene()))
+                    .driverLikelihood(variant.driverLikelihood() != null ? maxLikelihoodPerGene.get(variant.gene()) : null)
                     .build());
         }
 
-        for (ReportableVariant variant : list2) {
-            result.add(ImmutableReportableVariant.builder()
-                    .from(variant)
-                    .driverLikelihood(maxLikelihoodPerGene.get(variant.gene()))
-                    .build());
-        }
-
-        return result;
+        return new ArrayList<>(allVariants);
     }
 
     @NotNull
     public static ImmutableReportableVariant.Builder fromVariant(@NotNull PurpleVariant variant, @NotNull ReportableVariantSource source) {
+        Double totalCopyNumber = source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.adjustedCopyNumber();
+        Double alleleCopyNumber = source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.variantCopyNumber();
         return ImmutableReportableVariant.builder()
                 .type(variant.type())
                 .source(source)
@@ -218,14 +240,25 @@ public final class ReportableVariantFactory {
                 .canonicalHgvsProteinImpact(variant.canonicalImpact().hgvsProteinImpact())
                 .totalReadCount(variant.tumorDepth().totalReadCount())
                 .alleleReadCount(variant.tumorDepth().alleleReadCount())
-                .totalCopyNumber(variant.adjustedCopyNumber())
+                .totalCopyNumber(totalCopyNumber)
                 .minorAlleleCopyNumber(variant.minorAlleleCopyNumber())
-                .alleleCopyNumber(variant.variantCopyNumber())
-                .hotspot(variant.hotspot())
+                .tVAF(extractTvaf(totalCopyNumber, alleleCopyNumber))
+                .alleleCopyNumber(alleleCopyNumber)
+                .hotspot(source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.hotspot())
                 .clonalLikelihood(1 - variant.subclonalLikelihood())
-                .biallelic(variant.biallelic())
+                .biallelic(source == ReportableVariantSource.GERMLINE_ONLY ? null : variant.biallelic())
                 .genotypeStatus(variant.genotypeStatus())
                 .localPhaseSet(toLocalPhaseSet(variant.localPhaseSets()));
+    }
+
+    @NotNull
+    private static String extractTvaf(Double totalCopyNumber, Double alleleCopyNumber) {
+        if (totalCopyNumber == null || alleleCopyNumber == null) {
+            return Strings.EMPTY;
+        } else {
+            double vaf = alleleCopyNumber / totalCopyNumber;
+            return Formats.formatPercentage(100 * Math.max(0, Math.min(1, vaf)));
+        }
     }
 
     @NotNull

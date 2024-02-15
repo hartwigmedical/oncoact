@@ -93,8 +93,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         }
 
         // We subtract 0.0001 from the minimum to allow visualization of a HR-score of exactly 0.
-        BarChart hrChart =
-                new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, false, reportResources);
+        BarChart hrChart = new BarChart(hrdValue, HrDeficiency.RANGE_MIN - 0.0001, HrDeficiency.RANGE_MAX, false, reportResources);
         hrChart.enabled(hasReliablePurity && isHrdReliable);
         hrChart.setTickMarks(HrDeficiency.RANGE_MIN, HrDeficiency.RANGE_MAX, 0.1, SINGLE_DECIMAL_FORMAT);
 
@@ -120,7 +119,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         BarChart satelliteChart = new BarChart(microSatelliteStability,
                 MicrosatelliteStatus.RANGE_MIN,
-                MicrosatelliteStatus.RANGE_MAX, false,
+                MicrosatelliteStatus.RANGE_MAX,
+                false,
                 reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
@@ -174,10 +174,8 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
         String mutationalBurdenString =
                 hasReliablePurity ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) : Formats.NA_STRING;
-        BarChart mutationalBurdenChart = new BarChart(mutationalBurden,
-                MutationalBurden.RANGE_MIN,
-                MutationalBurden.RANGE_MAX, false,
-                reportResources);
+        BarChart mutationalBurdenChart =
+                new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, false, reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
         mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
@@ -271,7 +269,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                     .add(new Div().add(createContentParagraph("The right plot(s)",
                             " shows the breakdown of the strongest predicted "
                                     + "likelihood(s) into the contribution of the 1) SNV types (related to those used in Cosmic signatures), 2) "
-                                    + "driver landscape and passenger characteristics (e.g. tumor-type specific drivers), and 3) somatic mutation "
+                                    + "driver landscape and passenger characteristics (e.g. tumor-type observed drivers), and 3) somatic mutation "
                                     + "pattern (mutation distribution across the genome)."))));
         } else {
             reportDocument.add(new Paragraph(

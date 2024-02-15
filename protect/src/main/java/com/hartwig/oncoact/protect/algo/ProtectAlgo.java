@@ -121,7 +121,9 @@ public class ProtectAlgo {
         List<ProtectEvidence> copyNumberEvidence = copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(),
                 orange.purple().allSomaticGainsLosses(),
                 orange.purple().reportableGermlineFullLosses(),
-                orange.purple().allGermlineFullLosses());
+                orange.purple().allGermlineFullLosses(),
+                orange.purple().reportableGermlineLossOfHeterozygosities(),
+                orange.purple().allGermlineLossOfHeterozygosities());
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
         List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),

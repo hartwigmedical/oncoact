@@ -9,7 +9,7 @@
   "requesterEmail": "requesterEmail",
   "reportingId": "reportingId",
   "reportSettings": {
-    "reportGermline": true,
+    "reportGermline": false,
     "flagGermlineOnReport": false
   },
   "contractCode": "contractCode",

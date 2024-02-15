@@ -124,7 +124,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 + "hospital. Further interpretation of these results within the patient’s clinical context is required by a clinician "
                 + "with support of a molecular tumor board."));
         div.add(createContentParagraph("Based on a implied tumor purity of at least 20%, the test has a sensitivity of > 95% for "
-                + "detection of tumor specific variants, tumor specific gains and losses, tumor specific gene fusions and tumor specific "
+                + "detection of tumor observed variants, tumor observed gains and losses, tumor observed gene fusions and tumor observed "
                 + "gene/homozygous disruptions."));
         div.add(createContentParagraph("Hartwig Medical Foundation is not responsible for the content of all external data sources "
                 + "used to do the analyses and generate this report. Hartwig Medical Foundation is not liable and cannot be held "

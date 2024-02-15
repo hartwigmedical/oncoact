@@ -33,11 +33,12 @@ public final class TestReportableVariantFactory {
                 .canonicalHgvsProteinImpact(Strings.EMPTY)
                 .totalReadCount(0)
                 .alleleReadCount(0)
-                .totalCopyNumber(0)
+                .totalCopyNumber(0D)
                 .alleleCopyNumber(0D)
                 .minorAlleleCopyNumber(0D)
+                .tVAF(Strings.EMPTY)
                 .hotspot(Hotspot.HOTSPOT)
-                .clonalLikelihood(1D)
+                .clonalLikelihood(0D)
                 .driverLikelihood(0D)
                 .biallelic(false);
     }

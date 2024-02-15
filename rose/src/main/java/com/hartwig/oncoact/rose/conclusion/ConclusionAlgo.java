@@ -26,12 +26,14 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
+import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.drivergene.DriverCategory;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.EventGenerator;
@@ -91,13 +93,18 @@ public final class ConclusionAlgo {
 
         List<PurpleGainLoss> somaticGainsLosses = purple.reportableSomaticGainsLosses();
         List<PurpleGainLoss> germlineLosses = purple.reportableGermlineFullLosses();
-        List<PurpleGainLoss> reportableGainLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
+        List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = purple.reportableGermlineLossOfHeterozygosities();
+        List<PurpleGainLoss> convertedGermlineLossOfHeterozygosity =
+                ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
+        List<PurpleGainLoss> reportableGainLosses =
+                ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
 
         List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions =
+                ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
@@ -431,7 +438,7 @@ public final class ConclusionAlgo {
                     ActionabilityKey key =
                             ImmutableActionabilityKey.builder().match("HPV-16 | HLA-A*02").type(TypeAlteration.POSITIVE).build();
                     ActionabilityEntry entry = actionabilityMap.get(key);
-                    if (entry == null || entry.condition() != Condition.ALWAYS) {
+                    if (entry == null || entry.condition() != Condition.ONLY_HIGH) {
                         continue;
                     }
                     oncogenic.add("HLA | virus");

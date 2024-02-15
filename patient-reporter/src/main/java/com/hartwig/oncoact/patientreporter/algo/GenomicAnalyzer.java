@@ -16,11 +16,13 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
+import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
 import com.hartwig.oncoact.copynumber.RefGenomeCoordinates;
+import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
@@ -70,7 +72,11 @@ public class GenomicAnalyzer {
         // gains & losses
         List<PurpleGainLoss> somaticGainsLosses = orange.purple().reportableSomaticGainsLosses();
         List<PurpleGainLoss> germlineLosses = orange.purple().reportableGermlineFullLosses();
-        List<PurpleGainLoss> reportableGainsLosses = ListUtil.mergeLists(somaticGainsLosses, germlineLosses);
+        List<PurpleLossOfHeterozygosity> germlineLossOfHeterozygosity = orange.purple().reportableGermlineLossOfHeterozygosities();
+        List<PurpleGainLoss> convertedGermlineLossOfHeterozygosity =
+                ReportablePurpleGainLoss.toReportableGainLossLOH(germlineLossOfHeterozygosity);
+        List<PurpleGainLoss> reportableGainsLosses =
+                ListUtil.mergeListsDistinct(somaticGainsLosses, germlineLosses, convertedGermlineLossOfHeterozygosity);
 
         // Determine chromosome copy number arm
         RefGenomeCoordinates refGenomeCoordinates =
@@ -84,7 +90,8 @@ public class GenomicAnalyzer {
         // homozygous disruptions
         List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
         List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions = ListUtil.mergeLists(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
+        List<HomozygousDisruption> homozygousDisruptions =
+                ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         //disruptions
         List<GeneDisruption> additionalSuspectBreakends = GeneDisruptionFactory.convert(orange.linx().additionalSuspectSomaticBreakends(),
@@ -100,7 +107,8 @@ public class GenomicAnalyzer {
             reportableGermlineGeneDisruptions = GeneDisruptionFactory.convert(reportableGermlineBreakends, allGermlineStructuralVariants);
         }
 
-        List<GeneDisruption> geneDisruptions = ListUtil.mergeLists(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
+        List<GeneDisruption> geneDisruptions =
+                ListUtil.mergeListsDistinct(reportableSomaticGeneDisruptions, reportableGermlineGeneDisruptions);
         geneDisruptions.addAll(additionalSuspectBreakends);
 
         List<PurpleGeneCopyNumber> suspectGeneCopyNumbersWithLOH = orange.purple().suspectGeneCopyNumbersWithLOH();
@@ -150,15 +158,15 @@ public class GenomicAnalyzer {
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
         for (ReportableVariant variant : reportableVariants) {
-            if (variant.source() == ReportableVariantSource.GERMLINE && hasOtherGermlineVariantWithDifferentPhaseSet(reportableVariants,
-                    variant)) {
+            if ((variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY)
+                    && hasOtherGermlineVariantWithDifferentPhaseSet(reportableVariants, variant)) {
                 germlineGenesWithIndependentHits.add(variant.gene());
             }
         }
 
         for (ReportableVariant variant : reportableVariants) {
             boolean notify = false;
-            if (variant.source() == ReportableVariantSource.GERMLINE) {
+            if (variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY) {
                 notify = germlineReportingModel.notifyGermlineVariant(variant, flagGermlineOnReport, germlineGenesWithIndependentHits);
             }
             notifyGermlineStatusPerVariant.put(variant, notify);
@@ -172,9 +180,9 @@ public class GenomicAnalyzer {
             @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
-            if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene())
-                    && variant.source() == ReportableVariantSource.GERMLINE && (phaseSetToCompareWith == null
-                    || !phaseSetToCompareWith.equals(variant.localPhaseSet()))) {
+            if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene()) && (
+                    variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY) && (
+                    phaseSetToCompareWith == null || !phaseSetToCompareWith.equals(variant.localPhaseSet()))) {
                 return true;
             }
         }

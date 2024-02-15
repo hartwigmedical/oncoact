@@ -8,11 +8,11 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ImmutableKnowledgebaseSource;
@@ -286,10 +286,8 @@ public class CurationFunctionsTest {
 
     @NotNull
     private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
-        HomozygousDisruption homozygousDisruption1 =
-                TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption2 =
-                TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
+        HomozygousDisruption homozygousDisruption1 = TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
+        HomozygousDisruption homozygousDisruption2 = TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
         HomozygousDisruption homozygousDisruption3 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(homozygousDisruption1, homozygousDisruption2, homozygousDisruption3);

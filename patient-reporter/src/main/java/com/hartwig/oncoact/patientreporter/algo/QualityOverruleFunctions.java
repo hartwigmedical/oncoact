@@ -1,16 +1,15 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class QualityOverruleFunctions {
 
@@ -52,7 +51,8 @@ public final class QualityOverruleFunctions {
     }
 
     @NotNull
-    public static List<InterpretPurpleGeneCopyNumbers> overruleSuspectedLOH(@NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers, boolean hasReliablePurity) {
+    public static List<InterpretPurpleGeneCopyNumbers> overruleSuspectedLOH(
+            @NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers, boolean hasReliablePurity) {
         List<InterpretPurpleGeneCopyNumbers> suspectedGenesCurated = Lists.newArrayList();
 
         for (InterpretPurpleGeneCopyNumbers LOHGene : LOHPurpleGeneCopyNumbers) {
@@ -81,7 +81,7 @@ public final class QualityOverruleFunctions {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> overruleMap(@NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
-            boolean hasReliablePurity) {
+                                                               boolean hasReliablePurity) {
         Map<ReportableVariant, Boolean> filteredMap = Maps.newHashMap();
         for (Map.Entry<ReportableVariant, Boolean> entry : notifyGermlineStatusPerVariant.entrySet()) {
             filteredMap.put(ImmutableReportableVariant.builder()
@@ -94,7 +94,7 @@ public final class QualityOverruleFunctions {
 
     @NotNull
     private static List<ReportableVariantWithNotify> overruleVariants(@NotNull List<ReportableVariant> variants,
-            @NotNull Map<ReportableVariant, Boolean> notifyVariant, boolean hasReliablePurity) {
+                                                                      @NotNull Map<ReportableVariant, Boolean> notifyVariant, boolean hasReliablePurity) {
         List<ReportableVariantWithNotify> overruledVariants = Lists.newArrayList();
 
         for (ReportableVariant variant : variants) {
@@ -110,15 +110,17 @@ public final class QualityOverruleFunctions {
 
     @NotNull
     private static ReportableVariant overruleVariant(@NotNull ReportableVariant variant, boolean hasReliablePurity) {
-        double flooredCopyNumber = Math.max(0, variant.totalCopyNumber());
-        long roundedCopyNumber = Math.round(flooredCopyNumber);
+        Double totalCopyNumber = variant.totalCopyNumber();
+        Double alleleCopyNumber = variant.alleleCopyNumber();
+        Double minorAlleleCopyNumber = variant.minorAlleleCopyNumber();
 
+        boolean showCopyNumbers = totalCopyNumber != null && totalCopyNumber >= 0.5 && hasReliablePurity;
         return ImmutableReportableVariant.builder()
                 .from(variant)
-                .totalCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? flooredCopyNumber : Double.NaN)
-                .alleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.alleleCopyNumber() : Double.NaN)
-                .minorAlleleCopyNumber(hasReliablePurity && roundedCopyNumber >= 1 ? variant.minorAlleleCopyNumber() : Double.NaN)
-                .biallelic(hasReliablePurity && roundedCopyNumber >= 1 ? variant.biallelic() : null)
+                .totalCopyNumber(totalCopyNumber == null ? null : showCopyNumbers ? Math.max(0, totalCopyNumber) : Double.NaN)
+                .alleleCopyNumber(showCopyNumbers && alleleCopyNumber != null ? alleleCopyNumber : Double.NaN)
+                .minorAlleleCopyNumber(showCopyNumbers && minorAlleleCopyNumber != null ? minorAlleleCopyNumber : Double.NaN)
+                .biallelic(showCopyNumbers ? variant.biallelic() : null)
                 .build();
     }
 }

@@ -261,7 +261,7 @@ public class ConclusionAlgoTest {
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
-                create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02", Condition.ALWAYS, "HPV HLA conclusion");
+                create("HPV-16 | HLA-A*02", TypeAlteration.POSITIVE, "HPV-16 | HLA-A*02", Condition.ONLY_HIGH, "HPV HLA conclusion");
 
         ConclusionAlgo.generateVirusHLAConclusion(conclusion, viruses, alleles, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
 
