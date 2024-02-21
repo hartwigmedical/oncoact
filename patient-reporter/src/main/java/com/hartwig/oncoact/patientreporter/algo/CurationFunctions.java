@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -16,8 +13,10 @@ import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ImmutableReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariant;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
 
 public final class CurationFunctions {
 
@@ -32,9 +31,9 @@ public final class CurationFunctions {
     public static GenomicAnalysis curate(@NotNull GenomicAnalysis genomicAnalysis) {
         return ImmutableGenomicAnalysis.builder()
                 .from(genomicAnalysis)
-                .tumorSpecificEvidence(curateEvidence(genomicAnalysis.tumorSpecificEvidence()))
-                .clinicalTrials(curateEvidence(genomicAnalysis.clinicalTrials()))
-                .offLabelEvidence(curateEvidence(genomicAnalysis.offLabelEvidence()))
+                // .tumorSpecificEvidence(curateEvidence(genomicAnalysis.tumorSpecificEvidence()))
+                //   .clinicalTrials(curateEvidence(genomicAnalysis.clinicalTrials()))
+                //  .offLabelEvidence(curateEvidence(genomicAnalysis.offLabelEvidence()))
                 .reportableVariants(curateReportableVariants(genomicAnalysis.reportableVariants()))
                 .notifyGermlineStatusPerVariant(curateNotifyGermlineStatusPerVariant(genomicAnalysis.notifyGermlineStatusPerVariant()))
                 .gainsAndLosses(curateGainsAndLosses(genomicAnalysis.gainsAndLosses()))

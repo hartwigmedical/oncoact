@@ -1,9 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
@@ -16,13 +12,16 @@ import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
-
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class GenomicAnalysis {
 
     public abstract Set<PurpleQCStatus> purpleQCStatus();
@@ -36,13 +35,10 @@ public abstract class GenomicAnalysis {
     public abstract double averageTumorPloidy();
 
     @NotNull
-    public abstract List<ProtectEvidence> tumorSpecificEvidence();
+    public abstract Map<String, List<ProtectEvidence>> highLevelEvidences();
 
     @NotNull
-    public abstract List<ProtectEvidence> clinicalTrials();
-
-    @NotNull
-    public abstract List<ProtectEvidence> offLabelEvidence();
+    public abstract Map<String, List<ProtectEvidence>> clinicalTrials();
 
     @NotNull
     public abstract List<ReportableVariant> reportableVariants();

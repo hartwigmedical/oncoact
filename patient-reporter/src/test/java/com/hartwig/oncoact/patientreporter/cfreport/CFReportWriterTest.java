@@ -1,36 +1,26 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.oncoact.patientreporter.ExampleAnalysisConfig;
-import com.hartwig.oncoact.patientreporter.ExampleAnalysisTestFactory;
-import com.hartwig.oncoact.patientreporter.OutputFileUtil;
-import com.hartwig.oncoact.patientreporter.PatientReport;
-import com.hartwig.oncoact.patientreporter.PatientReporterTestFactory;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.ReportData;
+import com.hartwig.oncoact.patientreporter.*;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.patientreporter.failedreasondb.ImmutableFailedReason;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.ImmutablePanelReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReason;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
+import com.hartwig.oncoact.patientreporter.panel.*;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
 
 public class CFReportWriterTest {
 
@@ -278,8 +268,8 @@ public class CFReportWriterTest {
     }
 
     private static void generateQCFailReport(@NotNull String sampleId, @Nullable String wgsPurityString, @NotNull QCFailReason reason,
-            boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus,
-            @NotNull String reportReason, @NotNull String reportExplanation) throws IOException {
+                                             boolean correctedReport, boolean correctionReportExtern, @NotNull String comments, @NotNull PurpleQCStatus purpleQCStatus,
+                                             @NotNull String reportReason, @NotNull String reportExplanation) throws IOException {
 
         ReportData testReportData = PatientReporterTestFactory.loadTestReportData();
         FailedReason failExplanation = ImmutableFailedReason.builder()

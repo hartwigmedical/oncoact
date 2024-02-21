@@ -118,15 +118,23 @@ public class GenomicAnalyzer {
         List<ProtectEvidence> trialsOnLabel = ClinicalTrialFactory.extractOnLabelTrials(reportableEvidences);
         List<ProtectEvidence> nonTrialsOffLabel = ReportableEvidenceItemFactory.extractNonTrialsOffLabel(reportableEvidences);
 
+        List<ProtectEvidence> highLevelOnAndOffLabel = Lists.newArrayList();
+        highLevelOnAndOffLabel.addAll(nonTrialsOffLabel);
+        highLevelOnAndOffLabel.addAll(nonTrialsOnLabel);
+
+        Map<String, List<ProtectEvidence>> highLevel =
+                ClinicalEvidenceInterpretation.buildTreatmentMap(highLevelOnAndOffLabel, flagGermlineOnReport, null, "treatmentApproach");
+        Map<String, List<ProtectEvidence>> studies =
+                ClinicalEvidenceInterpretation.buildTreatmentMap(trialsOnLabel, flagGermlineOnReport, true, "study");
+
         return ImmutableGenomicAnalysis.builder()
                 .purpleQCStatus(orange.purple().fit().qc().status())
                 .impliedPurity(orange.purple().fit().purity())
                 .hasReliablePurity(orange.purple().fit().containsTumorCells())
                 .hasReliableQuality(orange.purple().fit().hasSufficientQuality())
                 .averageTumorPloidy(orange.purple().fit().ploidy())
-                .tumorSpecificEvidence(nonTrialsOnLabel)
-                .clinicalTrials(trialsOnLabel)
-                .offLabelEvidence(nonTrialsOffLabel)
+                .highLevelEvidences(highLevel)
+                .clinicalTrials(studies)
                 .reportableVariants(reportableVariants)
                 .notifyGermlineStatusPerVariant(notifyGermlineStatusPerVariant)
                 .microsatelliteIndelsPerMb(orange.purple().characteristics().microsatelliteIndelsPerMb())
