@@ -1,9 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,7 +13,6 @@ import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeFactory;
@@ -27,17 +22,19 @@ import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.GeneDisruptionFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ClinicalTrialFactory;
 import com.hartwig.oncoact.patientreporter.actionability.ReportableEvidenceItemFactory;
-import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GenomicAnalyzer {
 
@@ -50,14 +47,14 @@ public class GenomicAnalyzer {
     private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel,
-            @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
+                           @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.germlineReportingModel = germlineReportingModel;
         this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-            boolean flagGermlineOnReport) {
+                               boolean flagGermlineOnReport) {
 
         // variants
         Set<ReportableVariant> reportableGermlineVariants =
@@ -135,9 +132,7 @@ public class GenomicAnalyzer {
                 .microsatelliteIndelsPerMb(orange.purple().characteristics().microsatelliteIndelsPerMb())
                 .microsatelliteStatus(orange.purple().characteristics().microsatelliteStatus())
                 .tumorMutationalLoad(orange.purple().characteristics().tumorMutationalLoad())
-                .tumorMutationalBurdenStatus(orange.purple().characteristics().tumorMutationalBurdenPerMb() >= MutationalBurden.THRESHOLD
-                        ? PurpleTumorMutationalStatus.HIGH
-                        : PurpleTumorMutationalStatus.LOW)
+                .tumorMutationalBurdenStatus(orange.purple().characteristics().tumorMutationalBurdenStatus())
                 .tumorMutationalBurden(orange.purple().characteristics().tumorMutationalBurdenPerMb())
                 .hrdValue(orange.chord().hrdValue())
                 .hrdStatus(orange.chord().hrStatus())
@@ -153,7 +148,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull GermlineReportingModel germlineReportingModel, boolean flagGermlineOnReport) {
+                                                                   @NotNull GermlineReportingModel germlineReportingModel, boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -177,7 +172,7 @@ public class GenomicAnalyzer {
 
     @VisibleForTesting
     static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
-            @NotNull ReportableVariant variantToCompareWith) {
+                                                                @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
             if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene()) && (
