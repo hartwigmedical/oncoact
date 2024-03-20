@@ -12,4 +12,8 @@ public abstract class TumorMutationalBurden {
 
     @NotNull
     public abstract TumorMutationalStatus status();
+
+    public static ImmutableTumorMutationalBurden.Builder builder() {
+        return ImmutableTumorMutationalBurden.builder();
+    }
 }

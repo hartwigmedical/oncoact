@@ -1,8 +1,13 @@
 package com.hartwig.oncoact.patientreporter.model;
 
 public enum TumorMutationalStatus {
+    HIGH("High"),
+    LOW("Low"),
+    UNKNOWN("Unknown");
 
-    HIGH,
-    LOW,
-    UNKNOWN;
+    public final String label;
+
+    TumorMutationalStatus(String label) {
+        this.label = label;
+    }
 }

@@ -27,4 +27,8 @@ public abstract class Summary {
 
     @NotNull
     public abstract List<HlaAlleleSummary> hlaAlleles();
+
+    public static ImmutableSummary.Builder builder() {
+        return ImmutableSummary.builder();
+    }
 }

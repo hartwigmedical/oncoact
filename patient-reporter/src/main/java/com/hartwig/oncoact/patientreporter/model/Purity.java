@@ -6,10 +6,16 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class TissueOfOriginPrediction {
+public abstract class Purity {
+
+    public abstract double value();
 
     @NotNull
-    public abstract String cancerType();
+    public abstract String label();
 
-    public abstract double likelihood();
+    public abstract boolean isReliable();
+
+    public static ImmutablePurity.Builder builder() {
+        return ImmutablePurity.builder();
+    }
 }

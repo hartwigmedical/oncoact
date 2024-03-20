@@ -10,21 +10,25 @@ import java.util.List;
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class TumorCharacteristics {
 
-    public abstract double purity();
+    @NotNull
+    public abstract Purity purity();
 
     @NotNull
-    public abstract TissueOfOriginPrediction tissueOfOriginPrediction();
+    public abstract String tissueOfOriginPrediction();
 
     @NotNull
-    public abstract TumorMutationalBurden tumorMutationalBurden();
+    public abstract String tumorMutationalBurden();
 
     @NotNull
-    public abstract Microsatellite microsatellite();
+    public abstract String microsatellite();
 
     @NotNull
-    public abstract HomologousRecombinationDeficiency homologousRecombinationDeficiency();
+    public abstract String homologousRecombinationDeficiency();
 
     @NotNull
-    public abstract List<String> viruses();
+    public abstract String viruses();
 
+    public static ImmutableTumorCharacteristics.Builder builder() {
+        return ImmutableTumorCharacteristics.builder();
+    }
 }

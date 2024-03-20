@@ -18,7 +18,7 @@ public final class ViralPresence {
     @NotNull
     public static Set<String> virusInterpretationSummary(@NotNull Iterable<AnnotatedVirus> reportableViruses) {
         Set<VirusInterpretation> positiveHighDriverInterpretations = Sets.newHashSet();
-        Set<String> virusInterpretationSummary = Sets.newHashSet();
+        Set<String> virusInterpretationSummary = Sets.newTreeSet();
 
         for (AnnotatedVirus virus : reportableViruses) {
             if (virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {

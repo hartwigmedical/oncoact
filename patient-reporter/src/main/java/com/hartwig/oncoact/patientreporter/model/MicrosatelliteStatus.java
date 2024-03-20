@@ -1,7 +1,13 @@
 package com.hartwig.oncoact.patientreporter.model;
 
 public enum MicrosatelliteStatus {
-    MSI,
-    MSS,
-    UNKNOWN
+    MSI("Unstable"),
+    MSS("Stable"),
+    UNKNOWN("Unknown");
+
+    public final String label;
+
+    MicrosatelliteStatus(String label) {
+        this.label = label;
+    }
 }
