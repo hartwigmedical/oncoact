@@ -19,10 +19,12 @@ public abstract class TumorCharacteristics {
     public abstract TumorMutationalBurden tumorMutationalBurden();
 
     @NotNull
+    public abstract Microsatellite microsatellite();
+
+    @NotNull
     public abstract HomologousRecombinationDeficiency homologousRecombinationDeficiency();
 
     @NotNull
     public abstract List<String> viruses();
-
 
 }

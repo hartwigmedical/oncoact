@@ -26,5 +26,5 @@ public abstract class Summary {
     public abstract List<PharmacogeneticsGenotype> pharmacogenetics();
 
     @NotNull
-    public abstract List<HlaAllele> hlaAlleles();
+    public abstract List<HlaAlleleSummary> hlaAlleles();
 }

@@ -8,21 +8,11 @@ import java.util.List;
 
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class HlaAllele {
+public abstract class HlaAlleleSummary {
 
     @NotNull
     public abstract String gene();
 
     @NotNull
-    public abstract String germlineAllele();
-
-    public abstract int germlineCopies();
-
-    public abstract int tumorCopies();
-
-    @NotNull
-    public abstract String numberSomaticMutations();
-
-    @NotNull
-    public abstract String interpretationPresenceInTumor();
+    public abstract List<String> germlineAlleles();
 }

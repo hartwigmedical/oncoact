@@ -4,25 +4,22 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class HlaAllele {
+public abstract class Pharmacogenetics {
 
     @NotNull
     public abstract String gene();
 
     @NotNull
-    public abstract String germlineAllele();
-
-    public abstract int germlineCopies();
-
-    public abstract int tumorCopies();
+    public abstract String genotype();
 
     @NotNull
-    public abstract String numberSomaticMutations();
+    public abstract String function();
 
     @NotNull
-    public abstract String interpretationPresenceInTumor();
+    public abstract String linkedDrugs();
+
+    @NotNull
+    public abstract PharmacogeneticsSource source();
 }

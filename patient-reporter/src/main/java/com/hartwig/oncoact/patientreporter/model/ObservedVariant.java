@@ -33,7 +33,7 @@ public abstract class ObservedVariant {
     public abstract Hotspot hotspot();
 
     @NotNull
-    public abstract DriverInterpretation driver();
+    public abstract VariantDriverInterpretation driver();
 
     public abstract boolean hasNotifiableGermlineVariant();
 

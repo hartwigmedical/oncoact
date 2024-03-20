@@ -17,5 +17,33 @@ public abstract class Genomic {
     @NotNull
     public abstract List<ObservedVariant> variants();
 
+    @NotNull
+    public abstract List<ObservedGainsLosses> gainsLosses();
 
+    @NotNull
+    public abstract List<ObservedGeneFusion> geneFusions();
+
+    @NotNull
+    public abstract List<ObservedHomozygousDisruption> homozygousDisruptions();
+
+    @NotNull
+    public abstract List<LohEvent> lohEventsHrd();
+
+    @NotNull
+    public abstract List<LohEvent> lohEventsMsi();
+
+    @NotNull
+    public abstract List<ObservedGeneDisruption> geneDisruptions();
+
+    @NotNull
+    public abstract List<ObservedViralInsertion> viralInsertions();
+
+    @NotNull
+    public abstract List<Pharmacogenetics> pharmacogenetics();
+
+    @NotNull
+    public abstract List<HlaAllele> hlaAlleles();
+
+    @NotNull
+    public abstract GenomicProfiles profiles();
 }

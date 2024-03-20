@@ -1,7 +1,6 @@
 package com.hartwig.oncoact.patientreporter.model;
 
-public enum DriverInterpretation {
-
+public enum VariantDriverInterpretation {
     HIGH,
     MEDIUM,
     LOW,

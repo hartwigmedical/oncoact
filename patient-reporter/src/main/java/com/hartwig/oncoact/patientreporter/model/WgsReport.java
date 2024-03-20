@@ -9,19 +9,27 @@ import java.time.LocalDate;
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class WgsReport {
-
     @NotNull
     public abstract LocalDate reportDate();
+
+    @NotNull
+    public abstract String receiver();
+
+    @NotNull
+    public abstract Summary summary();
 
     @NotNull
     public abstract TumorSample tumorSample();
 
     @NotNull
-    public abstract Therapy therapy();
+    public abstract Sample referenceSample();
 
     @NotNull
     public abstract Genomic genomic();
 
     @NotNull
-    public abstract Summary summary();
+    public abstract Therapy therapy();
+
+    @NotNull
+    public abstract Version version();
 }
