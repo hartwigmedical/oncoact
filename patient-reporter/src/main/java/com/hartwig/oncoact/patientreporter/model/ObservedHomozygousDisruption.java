@@ -16,4 +16,8 @@ public abstract class ObservedHomozygousDisruption {
 
     @NotNull
     public abstract String gene();
+
+    public static ImmutableObservedHomozygousDisruption.Builder builder() {
+        return ImmutableObservedHomozygousDisruption.builder();
+    }
 }
