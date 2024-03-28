@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.algo.wgs;
 
 import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.model.Summary;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicAlterationsInCancerGenesCreator.createGenomicAlterationsInCancerGenesCreator;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.HlaAllelesCreator.createHlaAlleles;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.PharmacogeneticsCreator.createPharmacogeneticsGenotype;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.TumorCharacteristicsCreator.createTumorCharacteristics;
 
@@ -23,6 +25,7 @@ class SummaryCreator {
     static Summary createSummary(
             @NotNull GenomicAnalysis curatedAnalysis,
             @NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap,
+            @NotNull HlaAllelesReportingData hlaReportingData,
             @Nullable CuppaData cuppa,
             @Nullable Correction correction,
             @Nullable String roseTsvFile
@@ -33,7 +36,7 @@ class SummaryCreator {
                 .tumorCharacteristics(createTumorCharacteristics(curatedAnalysis, cuppa))
                 .genomicAlterations(createGenomicAlterationsInCancerGenesCreator(curatedAnalysis))
                 .pharmacogenetics(createPharmacogeneticsGenotype(pharmacogeneticsGenotypesMap))
-                // TODO: hlaAlleles
+                .hlaAlleles(createHlaAlleles(hlaReportingData))
                 .build();
     }
 

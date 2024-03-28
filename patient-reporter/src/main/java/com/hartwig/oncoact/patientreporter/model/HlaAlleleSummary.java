@@ -15,4 +15,8 @@ public abstract class HlaAlleleSummary {
 
     @NotNull
     public abstract List<String> germlineAlleles();
+
+    public static ImmutableHlaAlleleSummary.Builder builder() {
+        return ImmutableHlaAlleleSummary.builder();
+    }
 }
