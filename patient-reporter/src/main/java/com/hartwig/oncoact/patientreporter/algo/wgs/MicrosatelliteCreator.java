@@ -1,19 +1,15 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.model.MicrosatelliteStatus;
-import com.hartwig.oncoact.patientreporter.model.TumorMutationalStatus;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.DoubleFormatter.formatSingleDecimal;
-import static com.hartwig.oncoact.patientreporter.model.TumorMutationalStatus.HIGH;
-import static com.hartwig.oncoact.patientreporter.model.TumorMutationalStatus.LOW;
 
 class MicrosatelliteCreator {
 
@@ -30,7 +26,7 @@ class MicrosatelliteCreator {
         return label + " (" + formatSingleDecimal(value) + ")";
     }
 
-    private static MicrosatelliteStatus getMicrosatalliteStatus(PurpleMicrosatelliteStatus status) {
+    static MicrosatelliteStatus getMicrosatalliteStatus(PurpleMicrosatelliteStatus status) {
         switch (status) {
             case MSI:
                 return MicrosatelliteStatus.MSI;

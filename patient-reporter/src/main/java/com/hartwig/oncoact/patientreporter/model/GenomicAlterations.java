@@ -4,30 +4,32 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class GenomicAlterations {
 
     @NotNull
-    public abstract List<String> genesWithDriverMutation();
+    public abstract String genesWithDriverMutation();
 
     @NotNull
-    public abstract List<String> amplifiedGenes();
+    public abstract String amplifiedGenes();
 
     @NotNull
-    public abstract List<String> deletedGenes();
+    public abstract String deletedGenes();
 
     @NotNull
-    public abstract List<String> homozygouslyDisruptedGenes();
+    public abstract String homozygouslyDisruptedGenes();
 
     @NotNull
-    public abstract List<String> geneFusions();
+    public abstract String geneFusions();
 
     @Nullable
-    public abstract List<String> potentialHrdGenes();
+    public abstract String potentialHrdGenes();
 
     @Nullable
-    public abstract List<String> potentialMsiGenes();
+    public abstract String potentialMsiGenes();
+
+    public static ImmutableGenomicAlterations.Builder builder() {
+        return ImmutableGenomicAlterations.builder();
+    }
 }

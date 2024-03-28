@@ -5,8 +5,6 @@ import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.model.Summary;
 import com.hartwig.oncoact.rose.RoseConclusionFile;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicAlterationsInCancerGenesCreator.createGenomicAlterationsInCancerGenesCreator;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.TumorCharacteristicsCreator.createTumorCharacteristics;
 
 class SummaryCreator {
@@ -27,7 +26,8 @@ class SummaryCreator {
                 .mostRelevantFindings(getClinicalSummary(roseTsvFile))
                 .specialRemark(getSpecialRemark(correction))
                 .tumorCharacteristics(createTumorCharacteristics(curatedAnalysis, cuppa))
-                // TODO: genomicAlterations, pharmacogenetics, hlaAlleles
+                .genomicAlterations(createGenomicAlterationsInCancerGenesCreator(curatedAnalysis))
+                // TODO: pharmacogenetics, hlaAlleles
                 .build();
     }
 

@@ -26,7 +26,7 @@ class HomologousRecombinationDeficiencyCreator {
         return status == HR_DEFICIENT || status == HR_PROFICIENT;
     }
 
-    private static HomologousRecombinationDeficiencyStatus getHomologousRecombinationDeficiencyStatus(ChordStatus status) {
+    static HomologousRecombinationDeficiencyStatus getHomologousRecombinationDeficiencyStatus(ChordStatus status) {
         switch (status) {
             case HR_DEFICIENT:
                 return HR_DEFICIENT;
