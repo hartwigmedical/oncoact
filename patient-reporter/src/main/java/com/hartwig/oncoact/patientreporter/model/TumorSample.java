@@ -27,4 +27,8 @@ public abstract class TumorSample extends Sample {
 
     @NotNull
     public abstract String sop();
+
+    public static ImmutableTumorSample.Builder builder() {
+        return ImmutableTumorSample.builder();
+    }
 }

@@ -19,4 +19,8 @@ public abstract class ReportingId {
 
     @Nullable
     public abstract String label();
+
+    public static ImmutableReportingId.Builder builder() {
+        return ImmutableReportingId.builder();
+    }
 }

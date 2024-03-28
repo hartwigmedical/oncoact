@@ -1,7 +1,14 @@
 package com.hartwig.oncoact.patientreporter.model;
 
 public enum Lateralisation {
-    LEFT,
-    RIGHT,
-    UNKNOWN
+    LEFT("Left"),
+    RIGHT("Right"),
+    UNKNOWN("Unknown"),
+    NULL("-");
+
+    public final String lateralisation;
+
+    Lateralisation(String lateralisation) {
+        this.lateralisation = lateralisation;
+    }
 }

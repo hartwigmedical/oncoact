@@ -19,4 +19,8 @@ public abstract class Biopsy {
 
     @NotNull
     public abstract String isPrimaryTumor();
+
+    public static ImmutableBiopsy.Builder builder() {
+        return ImmutableBiopsy.builder();
+    }
 }

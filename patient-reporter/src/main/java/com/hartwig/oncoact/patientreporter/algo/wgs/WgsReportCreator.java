@@ -85,6 +85,7 @@ public class WgsReportCreator {
                 .reportDate(getReportDate())
                 .receiver(getReceiver())
                 .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, hlaReportingData, cuppa, reportData.correction(), roseTsvFile))
+                .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .build();
 
         // TODO printReportState(report);

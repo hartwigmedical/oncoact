@@ -13,4 +13,8 @@ public abstract class PrimaryTumor {
 
     @NotNull
     public abstract String type();
+
+    public static ImmutablePrimaryTumor.Builder builder() {
+        return ImmutablePrimaryTumor.builder();
+    }
 }
