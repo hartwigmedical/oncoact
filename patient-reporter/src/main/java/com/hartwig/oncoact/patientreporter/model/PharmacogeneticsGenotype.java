@@ -15,4 +15,8 @@ public abstract class PharmacogeneticsGenotype {
 
     @NotNull
     public abstract List<String> functions();
+
+    public static ImmutablePharmacogeneticsGenotype.Builder builder() {
+        return PharmacogeneticsGenotype.builder();
+    }
 }

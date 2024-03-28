@@ -16,7 +16,7 @@ import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.*;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
-import com.hartwig.oncoact.patientreporter.model.*;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidenceFile;
@@ -84,7 +84,7 @@ public class WgsReportCreator {
         WgsReport report = WgsReport.builder()
                 .reportDate(getReportDate())
                 .receiver(getReceiver())
-                .summary(SummaryCreator.createSummary(curatedAnalysis, cuppa, reportData.correction(), roseTsvFile))
+                .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, cuppa, reportData.correction(), roseTsvFile))
                 .build();
 
         // TODO printReportState(report);
