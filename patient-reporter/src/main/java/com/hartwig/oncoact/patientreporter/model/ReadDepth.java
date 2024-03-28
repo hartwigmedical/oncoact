@@ -12,4 +12,7 @@ public abstract class ReadDepth {
 
     public abstract int totalReadCount();
 
+    public static ImmutableReadDepth.Builder builder() {
+        return ImmutableReadDepth.builder();
+    }
 }

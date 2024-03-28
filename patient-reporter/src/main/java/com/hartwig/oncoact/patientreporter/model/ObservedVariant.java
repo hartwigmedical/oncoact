@@ -4,6 +4,8 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class ObservedVariant {
@@ -15,7 +17,7 @@ public abstract class ObservedVariant {
     public abstract String position();
 
     @NotNull
-    public abstract String variant();
+    public abstract List<String> variant();
 
     @NotNull
     public abstract ReadDepth readDepth();
@@ -38,4 +40,8 @@ public abstract class ObservedVariant {
     public abstract boolean hasNotifiableGermlineVariant();
 
     public abstract boolean hasPhasedVariant();
+
+    public static ImmutableObservedVariant.Builder builder() {
+        return ImmutableObservedVariant.builder();
+    }
 }

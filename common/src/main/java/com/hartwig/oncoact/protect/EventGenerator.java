@@ -1,29 +1,61 @@
 package com.hartwig.oncoact.protect;
 
-import java.util.Set;
-import java.util.StringJoiner;
-
+import com.google.api.client.util.Lists;
 import com.google.common.base.Strings;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.purple.Variant;
+import com.hartwig.hmftools.datamodel.purple.*;
 import com.hartwig.oncoact.variant.ReportableVariant;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 public final class EventGenerator {
 
     private EventGenerator() {
     }
 
+
+    @NotNull
+    public static String determineVariantAnnotationCanonicalReport(@NotNull String hgvsCoding, @NotNull String hgvsProtein) {
+        if (!hgvsCoding.isEmpty() && !hgvsProtein.isEmpty()) {
+            return hgvsCoding + " (" + hgvsProtein + ")";
+        } else if (!hgvsCoding.isEmpty()) {
+            return hgvsCoding;
+        } else if (!hgvsProtein.isEmpty()) {
+            return hgvsProtein;
+        }
+        return org.apache.logging.log4j.util.Strings.EMPTY;
+    }
+
+    @NotNull
+    public static String determineVariantAnnotationClinicalReport(@Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+        if (purpleTranscriptImpact != null) {
+            String hgvsCoding = purpleTranscriptImpact.hgvsCodingImpact();
+            String hgvsProtein = purpleTranscriptImpact.hgvsProteinImpact();
+            return determineVariantAnnotationCanonicalReport(hgvsCoding, hgvsProtein);
+        }
+        return org.apache.logging.log4j.util.Strings.EMPTY;
+    }
+
+    @NotNull
+    public static List<String> determineVariantAnnotationReport(@NotNull String hgvsCoding, @NotNull String hgvsProtein,
+                                                                @Nullable PurpleTranscriptImpact purpleTranscriptImpact) {
+
+        List<String> annotationList = Lists.newArrayList();
+        annotationList.add(determineVariantAnnotationCanonicalReport(hgvsCoding, hgvsProtein));
+        if (purpleTranscriptImpact != null && !hgvsCoding.equals(purpleTranscriptImpact.hgvsCodingImpact())) {
+            annotationList.add(determineVariantAnnotationClinicalReport(purpleTranscriptImpact));
+        }
+        return annotationList;
+    }
+
+
     @NotNull
     public static String determineVariantAnnotation(@Nullable String hgvsCoding, @Nullable String hgvsProtein, @NotNull String effect,
-            @NotNull PurpleCodingEffect codingEffect) {
+                                                    @NotNull PurpleCodingEffect codingEffect) {
         if (!Strings.isNullOrEmpty(hgvsProtein) && !hgvsProtein.equals("p.?")) {
             return hgvsProtein;
         }

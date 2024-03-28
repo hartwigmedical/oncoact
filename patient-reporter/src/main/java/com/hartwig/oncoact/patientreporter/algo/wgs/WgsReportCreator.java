@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicCreator.createGenomic;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.SampleCreator.createSample;
 
 public class WgsReportCreator {
@@ -89,6 +90,7 @@ public class WgsReportCreator {
                 .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, hlaReportingData, cuppa, reportData.correction(), roseTsvFile))
                 .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .referenceSample(createSample(reportData.lamaPatientData().getTumorSampleBarcode(), reportData.lamaPatientData().getTumorArrivalDate()))
+                .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant()))
                 .build();
 
         // TODO printReportState(report);

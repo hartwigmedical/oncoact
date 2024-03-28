@@ -46,4 +46,8 @@ public abstract class Genomic {
 
     @NotNull
     public abstract GenomicProfiles profiles();
+
+    public static ImmutableGenomic.Builder builder() {
+        return ImmutableGenomic.builder();
+    }
 }
