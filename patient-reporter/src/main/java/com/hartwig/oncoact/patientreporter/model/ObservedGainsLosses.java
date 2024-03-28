@@ -20,10 +20,13 @@ public abstract class ObservedGainsLosses {
     @NotNull
     public abstract ObservedGainsLossesType type();
 
-    public abstract int minCopies();
+    public abstract String minCopies();
 
-    public abstract int maxCopies();
+    public abstract String maxCopies();
 
-    public abstract int chromosomeArmCopies();
+    public abstract String chromosomeArmCopies();
 
+    public static ImmutableObservedGainsLosses.Builder builder() {
+        return ImmutableObservedGainsLosses.builder();
+    }
 }
