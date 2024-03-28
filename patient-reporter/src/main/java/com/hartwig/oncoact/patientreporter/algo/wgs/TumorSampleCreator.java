@@ -11,6 +11,7 @@ import static com.hartwig.oncoact.patientreporter.algo.wgs.HospitalCreator.creat
 import static com.hartwig.oncoact.patientreporter.algo.wgs.PatientCreater.createPatient;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.PrimaryTumorCreator.createPrimaryTumor;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.ReportingIdCreator.createReportingId;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.SampleCreator.createSample;
 
 class TumorSampleCreator {
 
@@ -19,8 +20,7 @@ class TumorSampleCreator {
             @Nullable PatientInformationResponse diagnosticSiloPatientData
     ) {
         return TumorSample.builder()
-                .sampleBarcode(lamaPatientData.getTumorSampleBarcode())
-                .arrivalDate(lamaPatientData.getTumorArrivalDate())
+                .sample(createSample(lamaPatientData.getTumorSampleBarcode(), lamaPatientData.getTumorArrivalDate()))
                 .primaryTumor(createPrimaryTumor(lamaPatientData.getPrimaryTumorType()))
                 .reportingId(createReportingId(lamaPatientData))
                 .cohort(lamaPatientData.getCohort())

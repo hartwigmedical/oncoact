@@ -6,7 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class TumorSample extends Sample {
+public abstract class TumorSample {
+
+    @NotNull
+    public abstract Sample sample();
 
     @NotNull
     public abstract PrimaryTumor primaryTumor();
