@@ -14,6 +14,7 @@ import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionC
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventHrd;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventMSI;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.VariantCreator.createObservedVariant;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.ViralInsertionCreator.createViralInsertion;
 
 class GenomicCreator {
     static Genomic createGenomic(
@@ -30,7 +31,7 @@ class GenomicCreator {
                 .lohEventsHrd(createLohEventHrd(analysis.suspectGeneCopyNumbersWithLOH(), analysis.hrdStatus()))
                 .lohEventsMsi(createLohEventMSI(analysis.suspectGeneCopyNumbersWithLOH(), analysis.microsatelliteStatus()))
                 .geneDisruptions(createGeneDisruption(analysis.geneDisruptions(), analysis.hasReliablePurity()))
-//                .viralInsertions()
+                .viralInsertions(createViralInsertion(analysis.reportableViruses()))
 //                .pharmacogenetics()
 //                .hlaAlleles()
 //                .profiles()

@@ -14,7 +14,11 @@ public abstract class ObservedViralInsertion {
     @NotNull
     public abstract String detectedIntegrationSites();
 
-    public abstract int viralCoveragePercentage();
+    public abstract long viralCoveragePercentage();
 
     public abstract VirusDriverInterpretation virusDriverInterpretation();
+
+    public static ImmutableObservedViralInsertion.Builder builder() {
+        return ImmutableObservedViralInsertion.builder();
+    }
 }
