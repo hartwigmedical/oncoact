@@ -20,10 +20,15 @@ public abstract class ObservedGeneDisruption {
     @NotNull
     public abstract String disruptionType();
 
+    public abstract Integer clusterId();
+
     @NotNull
-    public abstract String clusterId();
+    public abstract String disruptedCopies();
 
-    public abstract int disruptedCopies();
+    @NotNull
+    public abstract String undisruptedCopies();
 
-    public abstract int undisruptedCopies();
+    public static ImmutableObservedGeneDisruption.Builder builder() {
+        return ImmutableObservedGeneDisruption.builder();
+    }
 }
