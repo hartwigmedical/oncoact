@@ -22,4 +22,8 @@ public abstract class Pharmacogenetics {
 
     @NotNull
     public abstract PharmacogeneticsSource source();
+
+    public static ImmutablePharmacogenetics.Builder builder() {
+        return ImmutablePharmacogenetics.builder();
+    }
 }

@@ -12,4 +12,8 @@ public abstract class PharmacogeneticsSource {
 
     @NotNull
     public abstract String url();
+
+    public static ImmutablePharmacogeneticsSource.Builder builder() {
+        return ImmutablePharmacogeneticsSource.builder();
+    }
 }

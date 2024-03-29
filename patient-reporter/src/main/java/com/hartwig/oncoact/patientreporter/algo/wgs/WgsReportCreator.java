@@ -90,7 +90,7 @@ public class WgsReportCreator {
                 .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, hlaReportingData, cuppa, reportData.correction(), roseTsvFile))
                 .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .referenceSample(createSample(reportData.lamaPatientData().getTumorSampleBarcode(), reportData.lamaPatientData().getTumorArrivalDate()))
-                .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant()))
+                .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant(), pharmacogeneticsGenotypesMap))
                 .build();
 
         // TODO printReportState(report);

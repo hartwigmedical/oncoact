@@ -1,10 +1,12 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
+import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.model.Genomic;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.FusionCreator.createFusion;
@@ -13,13 +15,15 @@ import static com.hartwig.oncoact.patientreporter.algo.wgs.GeneDisruptionCreator
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionCreator.createHomozygousDisruption;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventHrd;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventMSI;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.PharmacogeneticsCreator.createPharmacogeneticsGenotype;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.VariantCreator.createObservedVariant;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.ViralInsertionCreator.createViralInsertion;
 
 class GenomicCreator {
     static Genomic createGenomic(
             @NotNull GenomicAnalysis analysis,
-            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant) {
+            @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
+            @NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap) {
 
         return Genomic.builder()
                 .purity(analysis.impliedPurity())
@@ -32,7 +36,7 @@ class GenomicCreator {
                 .lohEventsMsi(createLohEventMSI(analysis.suspectGeneCopyNumbersWithLOH(), analysis.microsatelliteStatus()))
                 .geneDisruptions(createGeneDisruption(analysis.geneDisruptions(), analysis.hasReliablePurity()))
                 .viralInsertions(createViralInsertion(analysis.reportableViruses()))
-//                .pharmacogenetics()
+                .pharmacogenetics(createPharmacogeneticsGenotype(pharmacogeneticsGenotypesMap))
 //                .hlaAlleles()
 //                .profiles()
                 .build();
