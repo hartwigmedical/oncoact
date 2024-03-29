@@ -26,7 +26,8 @@ public abstract class ObservedGeneFusion {
     @NotNull
     public abstract String threePromiscuousStart();
 
-    public abstract int copies();
+    @NotNull
+    public abstract String copies();
 
     @NotNull
     public abstract PhasedType phasing();
@@ -34,4 +35,7 @@ public abstract class ObservedGeneFusion {
     @NotNull
     public abstract FusionDriverInterpretation driver();
 
+    public static ImmutableObservedGeneFusion.Builder builder() {
+        return ImmutableObservedGeneFusion.builder();
+    }
 }

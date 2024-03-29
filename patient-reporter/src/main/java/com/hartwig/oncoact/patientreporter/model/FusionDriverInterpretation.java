@@ -1,7 +1,13 @@
 package com.hartwig.oncoact.patientreporter.model;
 
 public enum FusionDriverInterpretation {
-    HIGH,
-    LOW,
-    NA
+    HIGH("High"),
+    LOW("Low"),
+    NA("Na");
+
+    public final String value;
+
+    FusionDriverInterpretation(String value) {
+        this.value = value;
+    }
 }

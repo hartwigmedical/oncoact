@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+import static com.hartwig.oncoact.patientreporter.algo.wgs.FusionCreator.createFusion;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GainsLossesCreator.createGainsLosses;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionCreator.createHomozygousDisruption;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.VariantCreator.createObservedVariant;
@@ -21,7 +22,7 @@ class GenomicCreator {
                 .averagePloidy(analysis.averageTumorPloidy())
                 .variants(createObservedVariant(analysis.reportableVariants(), analysis.hasReliablePurity(), notifyGermlineStatusPerVariant))
                 .gainsLosses(createGainsLosses(analysis.gainsAndLosses(), analysis.cnPerChromosome(), analysis.hasReliablePurity()))
-//                .geneFusions()
+                .geneFusions(createFusion(analysis.geneFusions(), analysis.hasReliablePurity()))
                 .homozygousDisruptions(createHomozygousDisruption(analysis.homozygousDisruptions()))
 //                .lohEventsHrd()
 //                .lohEventsMsi()
