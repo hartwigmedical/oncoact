@@ -13,6 +13,7 @@ import java.util.Map;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.FusionCreator.createFusion;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GainsLossesCreator.createGainsLosses;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GeneDisruptionCreator.createGeneDisruption;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicProfilesCreator.createGenomicProfiles;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HlaAllelesCreator.createHlaAlleles;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionCreator.createHomozygousDisruption;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventHrd;
@@ -41,9 +42,9 @@ class GenomicCreator {
                 .viralInsertions(createViralInsertion(analysis.reportableViruses()))
                 .pharmacogenetics(createPharmacogeneticsGenotype(pharmacogeneticsGenotypesMap))
                 .hlaAlleles(createHlaAlleles(hlaReportingData, analysis.hasReliablePurity()))
-//                .profiles()
+                .profiles(createGenomicProfiles(analysis.hrdValue(), analysis.hrdStatus(), analysis.microsatelliteIndelsPerMb(),
+                        analysis.microsatelliteStatus(), analysis.tumorMutationalBurden(), analysis.tumorMutationalBurdenStatus(),
+                        analysis.tumorMutationalLoad(), analysis.hasReliablePurity()))
                 .build();
     }
-
-
 }

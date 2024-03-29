@@ -3,6 +3,7 @@ package com.hartwig.oncoact.patientreporter.algo.wgs;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.model.Microsatellite;
 import com.hartwig.oncoact.patientreporter.model.MicrosatelliteStatus;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,15 @@ class MicrosatelliteCreator {
         double value = analysis.microsatelliteIndelsPerMb();
 
         return label + " (" + formatSingleDecimal(value) + ")";
+    }
+
+    static Microsatellite createMicrosatalliteExtend(
+            double microsatelliteIndelsPerMb,
+            @NotNull PurpleMicrosatelliteStatus microsatelliteStatus) {
+        return Microsatellite.builder()
+                .value(microsatelliteIndelsPerMb)
+                .status(getMicrosatalliteStatus(microsatelliteStatus))
+                .build();
     }
 
     static MicrosatelliteStatus getMicrosatalliteStatus(PurpleMicrosatelliteStatus status) {

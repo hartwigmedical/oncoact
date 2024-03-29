@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.algo.wgs;
 
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.model.HomologousRecombinationDeficiency;
 import com.hartwig.oncoact.patientreporter.model.HomologousRecombinationDeficiencyStatus;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,17 @@ class HomologousRecombinationDeficiencyCreator {
             return Formats.NA_STRING;
         }
     }
+
+    static HomologousRecombinationDeficiency createHomologousRecombinationDeficiencyExtend(
+            double hrdValue,
+            @NotNull ChordStatus hrdStatus,
+            boolean hasReliablePurity) {
+        return HomologousRecombinationDeficiency.builder()
+                .value(hrdValue)
+                .status(getHomologousRecombinationDeficiencyStatus(hrdStatus))
+                .build();
+    }
+
 
     private static boolean isReportedStatus(HomologousRecombinationDeficiencyStatus status) {
         return status == HR_DEFICIENT || status == HR_PROFICIENT;
