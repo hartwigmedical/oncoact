@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.model.Genomic;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -12,6 +13,7 @@ import java.util.Map;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.FusionCreator.createFusion;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GainsLossesCreator.createGainsLosses;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GeneDisruptionCreator.createGeneDisruption;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.HlaAllelesCreator.createHlaAlleles;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionCreator.createHomozygousDisruption;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventHrd;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventMSI;
@@ -23,7 +25,8 @@ class GenomicCreator {
     static Genomic createGenomic(
             @NotNull GenomicAnalysis analysis,
             @NotNull Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant,
-            @NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap) {
+            @NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypesMap,
+            @NotNull HlaAllelesReportingData hlaReportingData) {
 
         return Genomic.builder()
                 .purity(analysis.impliedPurity())
@@ -37,7 +40,7 @@ class GenomicCreator {
                 .geneDisruptions(createGeneDisruption(analysis.geneDisruptions(), analysis.hasReliablePurity()))
                 .viralInsertions(createViralInsertion(analysis.reportableViruses()))
                 .pharmacogenetics(createPharmacogeneticsGenotype(pharmacogeneticsGenotypesMap))
-//                .hlaAlleles()
+                .hlaAlleles(createHlaAlleles(hlaReportingData, analysis.hasReliablePurity()))
 //                .profiles()
                 .build();
     }

@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicAlterationsInCancerGenesCreator.createGenomicAlterationsInCancerGenesCreator;
-import static com.hartwig.oncoact.patientreporter.algo.wgs.HlaAllelesCreator.createHlaAlleles;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.HlaAllelesCreator.createHlaAllelesSummary;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.PharmacogeneticsCreator.createPharmacogeneticsGenotypeSummary;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.TumorCharacteristicsCreator.createTumorCharacteristics;
 
@@ -36,7 +36,7 @@ class SummaryCreator {
                 .tumorCharacteristics(createTumorCharacteristics(curatedAnalysis, cuppa))
                 .genomicAlterations(createGenomicAlterationsInCancerGenesCreator(curatedAnalysis))
                 .pharmacogenetics(createPharmacogeneticsGenotypeSummary(pharmacogeneticsGenotypesMap))
-                .hlaAlleles(createHlaAlleles(hlaReportingData))
+                .hlaAlleles(createHlaAllelesSummary(hlaReportingData))
                 .build();
     }
 
