@@ -10,6 +10,8 @@ import java.util.Map;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.FusionCreator.createFusion;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GainsLossesCreator.createGainsLosses;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.HomozygousDisruptionCreator.createHomozygousDisruption;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventHrd;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.LohCreator.createLohEventMSI;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.VariantCreator.createObservedVariant;
 
 class GenomicCreator {
@@ -24,8 +26,8 @@ class GenomicCreator {
                 .gainsLosses(createGainsLosses(analysis.gainsAndLosses(), analysis.cnPerChromosome(), analysis.hasReliablePurity()))
                 .geneFusions(createFusion(analysis.geneFusions(), analysis.hasReliablePurity()))
                 .homozygousDisruptions(createHomozygousDisruption(analysis.homozygousDisruptions()))
-//                .lohEventsHrd()
-//                .lohEventsMsi()
+                .lohEventsHrd(createLohEventHrd(analysis.suspectGeneCopyNumbersWithLOH(), analysis.hrdStatus()))
+                .lohEventsMsi(createLohEventMSI(analysis.suspectGeneCopyNumbersWithLOH(), analysis.microsatelliteStatus()))
 //                .geneDisruptions()
 //                .viralInsertions()
 //                .pharmacogenetics()

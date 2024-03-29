@@ -14,7 +14,13 @@ public abstract class LohEvent {
     @NotNull
     public abstract String gene();
 
-    public abstract int tumorMinorAlleleCopies();
+    @NotNull
+    public abstract String tumorMinorAlleleCopies();
 
-    public abstract int tumorCopies();
+    @NotNull
+    public abstract String tumorCopies();
+
+    public static ImmutableLohEvent.Builder builder() {
+        return ImmutableLohEvent.builder();
+    }
 }
