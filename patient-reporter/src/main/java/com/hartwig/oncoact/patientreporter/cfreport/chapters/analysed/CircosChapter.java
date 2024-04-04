@@ -1,35 +1,29 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.net.MalformedURLException;
-
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Div;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.net.MalformedURLException;
 
 public class CircosChapter implements ReportChapter {
 
     @NotNull
-    private final AnalysedPatientReport patientReport;
-    @NotNull
     private final ReportResources reportResources;
+    @NotNull
+    private final String purpleCircosPlot;
 
-    public CircosChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
-        this.patientReport = patientReport;
+    public CircosChapter(@NotNull final ReportResources reportResources, @NotNull String purpleCircosPlot) {
         this.reportResources = reportResources;
+        this.purpleCircosPlot = purpleCircosPlot;
     }
 
     @NotNull
@@ -46,7 +40,7 @@ public class CircosChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
-        String circosPlotPath = patientReport.circosPlotPath();
+        String circosPlotPath = purpleCircosPlot;
         try {
             Image circosImage = new Image(ImageDataFactory.create(circosPlotPath));
             circosImage.setMaxHeight(400);
@@ -57,7 +51,7 @@ public class CircosChapter implements ReportChapter {
             throw new IOException("Failed to read circos plot image at " + circosPlotPath);
         }
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 10, 1, 10}));
         table.setWidth(contentWidth());
 
         table.addCell(TableUtil.createLayoutCell()

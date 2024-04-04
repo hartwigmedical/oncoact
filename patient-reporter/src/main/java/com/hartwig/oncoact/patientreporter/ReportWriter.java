@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public interface ReportWriter {
 
-    void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath) throws IOException;
+    void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath, @NotNull String purpleCircosPlot) throws IOException;
 
     void writeQCFailReport(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException;
 
