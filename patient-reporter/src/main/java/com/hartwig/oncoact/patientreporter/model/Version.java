@@ -20,4 +20,8 @@ public abstract class Version {
 
     @NotNull
     public abstract QsFormNumber qsFormNumber();
+
+    public static ImmutableVersion.Builder builder() {
+        return ImmutableVersion.builder();
+    }
 }

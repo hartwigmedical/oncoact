@@ -15,4 +15,8 @@ public abstract class Therapy {
 
     @NotNull
     public abstract List<ClinicalStudy> clinicalStudies();
+
+    public static ImmutableTherapy.Builder builder() {
+        return ImmutableTherapy.builder();
+    }
 }

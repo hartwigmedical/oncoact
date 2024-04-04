@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -12,9 +11,7 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.*;
-import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
@@ -33,6 +30,8 @@ import java.util.Set;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicCreator.createGenomic;
 import static com.hartwig.oncoact.patientreporter.algo.wgs.SampleCreator.createSample;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.TherapyCreator.createTherapy;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.VersionCreator.createVersion;
 
 public class WgsReportCreator {
 
@@ -47,8 +46,6 @@ public class WgsReportCreator {
     public WgsReport run(@NotNull PatientReporterConfig config) throws IOException {
         String roseTsvFile = config.roseTsv();
 
-        String pipelineVersion = config.pipelineVersion();
-
         GenomicAnalyzer genomicAnalyzer = new GenomicAnalyzer(reportData.germlineReportingModel(), reportData.clinicalTranscriptsModel());
 
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
@@ -61,8 +58,6 @@ public class WgsReportCreator {
         GenomicAnalysis filteredAnalysis = ConsentFilterFunctions.filter(genomicAnalysis, flagGermlineOnReport, reportGermlineOnReport);
         GenomicAnalysis overruledAnalysis = QualityOverruleFunctions.overrule(filteredAnalysis);
         GenomicAnalysis curatedAnalysis = CurationFunctions.curate(overruledAnalysis);
-
-        String qcForm = determineForNumber(curatedAnalysis.hasReliablePurity(), curatedAnalysis.impliedPurity());
 
         Set<PeachGenotype> pharmacogeneticsGenotypes =
                 curatedAnalysis.purpleQCStatus().contains(PurpleQCStatus.FAIL_CONTAMINATION) ? Sets.newHashSet() : orange.peach();
@@ -91,6 +86,8 @@ public class WgsReportCreator {
                 .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .referenceSample(createSample(reportData.lamaPatientData().getTumorSampleBarcode(), reportData.lamaPatientData().getTumorArrivalDate()))
                 .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant(), pharmacogeneticsGenotypesMap, hlaReportingData))
+                .therapy(createTherapy())
+                .version(createVersion(config.pipelineVersion(), reportData.udiDi(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.impliedPurity()))
                 .build();
 
         // TODO printReportState(report);
@@ -112,13 +109,6 @@ public class WgsReportCreator {
         LOGGER.info(" Loaded {} reportable evidence items from {}", reportableEvidenceItems.size(), protectEvidenceTsv);
 
         return reportableEvidenceItems;
-    }
-
-    @VisibleForTesting
-    static String determineForNumber(boolean hasReliablePurity, double purity) {
-        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
-                ? QsFormNumber.FOR_080.display()
-                : QsFormNumber.FOR_209.display();
     }
 
     @NotNull
