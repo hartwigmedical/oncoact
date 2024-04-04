@@ -8,7 +8,6 @@ import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +51,7 @@ public class PanelQCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
+        // reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(report.lamaPatientData().getPrimaryTumorType(), contentWidth()));
         reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
 
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));

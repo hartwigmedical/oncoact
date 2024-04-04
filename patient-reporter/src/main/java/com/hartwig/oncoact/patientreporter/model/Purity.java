@@ -8,7 +8,8 @@ import org.jetbrains.annotations.Nullable;
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class Purity {
 
-    public abstract double value();
+    @Nullable
+    public abstract Double value();
 
     @NotNull
     public abstract String label();

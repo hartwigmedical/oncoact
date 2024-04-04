@@ -11,6 +11,9 @@ import java.util.List;
 public abstract class Summary {
 
     @NotNull
+    public abstract String titleReport();
+
+    @NotNull
     public abstract String mostRelevantFindings();
 
     @Nullable
@@ -27,6 +30,8 @@ public abstract class Summary {
 
     @NotNull
     public abstract List<HlaAlleleSummary> hlaAlleles();
+
+    public abstract boolean hlaQc();
 
     public static ImmutableSummary.Builder builder() {
         return ImmutableSummary.builder();

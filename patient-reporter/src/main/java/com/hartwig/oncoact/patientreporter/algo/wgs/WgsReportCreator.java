@@ -1,5 +1,6 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -11,7 +12,10 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaAllelesReportingFactory;
 import com.hartwig.oncoact.orange.OrangeJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
+import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.*;
+import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
@@ -26,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.GenomicCreator.createGenomic;
@@ -79,20 +84,34 @@ public class WgsReportCreator {
 
         CuppaData cuppa = orange.cuppa();
 
+        QsFormNumber qcFormNumber = determineForNumber(curatedAnalysis.hasReliablePurity(), curatedAnalysis.impliedPurity());
+        boolean isCorrection = Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false);
+        boolean isCorrectedReportExtern = Optional.ofNullable(reportData.correction())
+                .map(Correction::isCorrectedReportExtern)
+                .orElse(false);
+        String specialRemark = Optional.ofNullable(reportData.correction()).map(Correction::specialRemark).orElse("");
+
         WgsReport report = WgsReport.builder()
                 .reportDate(getReportDate())
                 .receiver(getReceiver())
-                .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, hlaReportingData, cuppa, reportData.correction(), roseTsvFile))
+                .summary(SummaryCreator.createSummary(curatedAnalysis, pharmacogeneticsGenotypesMap, hlaReportingData, cuppa, isCorrection, reportData.correction(), roseTsvFile, qcFormNumber))
                 .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .referenceSample(createSample(reportData.lamaPatientData().getTumorSampleBarcode(), reportData.lamaPatientData().getTumorArrivalDate()))
                 .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant(), pharmacogeneticsGenotypesMap, hlaReportingData))
                 .therapy(createTherapy())
-                .version(createVersion(config.pipelineVersion(), reportData.udiDi(), curatedAnalysis.hasReliablePurity(), curatedAnalysis.impliedPurity()))
+                .version(createVersion(config.pipelineVersion(), reportData.udiDi(), qcFormNumber))
                 .build();
 
         // TODO printReportState(report);
 
         return report;
+    }
+
+    @VisibleForTesting
+    static QsFormNumber determineForNumber(boolean hasReliablePurity, double purity) {
+        return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
+                ? QsFormNumber.FOR_080
+                : QsFormNumber.FOR_209;
     }
 
     @NotNull

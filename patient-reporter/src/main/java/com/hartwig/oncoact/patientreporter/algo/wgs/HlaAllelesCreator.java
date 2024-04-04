@@ -50,21 +50,22 @@ class HlaAllelesCreator {
     private static List<HlaAllele> createHlaAllelesList(@NotNull HlaAllelesReportingData hlaReportingData, boolean hasReliablePurity) {
         List<HlaAllele> hlaAlleleList = Lists.newArrayList();
 
+        if (hlaReportingData.hlaQC().equals("PASS")) {
+            Set<String> genes = Sets.newTreeSet(hlaReportingData.hlaAllelesReporting().keySet());
+            for (String gene : genes) {
+                List<HlaReporting> allele = hlaReportingData.hlaAllelesReporting().get(gene);
 
-        Set<String> genes = Sets.newTreeSet(hlaReportingData.hlaAllelesReporting().keySet());
-        for (String gene : genes) {
-            List<HlaReporting> allele = hlaReportingData.hlaAllelesReporting().get(gene);
+                for (HlaReporting hlaAlleleReporting : allele) {
 
-            for (HlaReporting hlaAlleleReporting : allele) {
-
-                hlaAlleleList.add(HlaAllele.builder()
-                        .gene(gene)
-                        .germlineAllele(hlaAlleleReporting.hlaAllele().germlineAllele())
-                        .germlineCopies(roundCopyNumber(hlaAlleleReporting.germlineCopies(), hasReliablePurity))
-                        .tumorCopies(roundCopyNumber(hlaAlleleReporting.tumorCopies(), hasReliablePurity))
-                        .numberSomaticMutations(hlaAlleleReporting.somaticMutations())
-                        .interpretationPresenceInTumor(hlaAlleleReporting.interpretation())
-                        .build());
+                    hlaAlleleList.add(HlaAllele.builder()
+                            .gene(gene)
+                            .germlineAllele(hlaAlleleReporting.hlaAllele().germlineAllele())
+                            .germlineCopies(roundCopyNumber(hlaAlleleReporting.germlineCopies(), hasReliablePurity))
+                            .tumorCopies(roundCopyNumber(hlaAlleleReporting.tumorCopies(), hasReliablePurity))
+                            .numberSomaticMutations(hlaAlleleReporting.somaticMutations())
+                            .interpretationPresenceInTumor(hlaAlleleReporting.interpretation())
+                            .build());
+                }
             }
         }
         return hlaAlleleList;

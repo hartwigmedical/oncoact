@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
@@ -12,10 +10,11 @@ import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 public class QCFailChapter implements ReportChapter {
 
@@ -69,8 +68,8 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(),
-                contentWidth()));
+//        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(),
+//                contentWidth()));
         reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
 
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
@@ -83,7 +82,7 @@ public class QCFailChapter implements ReportChapter {
 
     @NotNull
     private Div createFailReasonDiv(@NotNull String reportReason, @NotNull String reportExplanation,
-            @Nullable String sampleFailReasonComment) {
+                                    @Nullable String sampleFailReasonComment) {
         Div div = new Div();
         div.setKeepTogether(true);
 

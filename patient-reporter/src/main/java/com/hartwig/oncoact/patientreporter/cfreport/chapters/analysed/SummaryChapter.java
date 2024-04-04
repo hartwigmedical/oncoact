@@ -1,21 +1,13 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.cfreport.data.*;
+import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
+import com.hartwig.oncoact.patientreporter.model.*;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
@@ -29,25 +21,22 @@ import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Set;
 import java.util.StringJoiner;
 
 public class SummaryChapter implements ReportChapter {
 
     private static final float TABLE_SPACER_HEIGHT = 5;
-    private static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
 
     @NotNull
-    private final AnalysedPatientReport patientReport;
+    private final WgsReport wgsReport;
     @NotNull
     private final ReportResources reportResources;
     private final TableUtil tableUtil;
     private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public SummaryChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
-        this.patientReport = patientReport;
+    public SummaryChapter(@NotNull final WgsReport wgsReport, @NotNull final ReportResources reportResources) {
+        this.wgsReport = wgsReport;
         this.reportResources = reportResources;
         this.tableUtil = new TableUtil(reportResources);
         this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
@@ -56,19 +45,7 @@ public class SummaryChapter implements ReportChapter {
     @NotNull
     @Override
     public String pdfTitle() {
-        if (patientReport.isCorrectedReport()) {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number)) {
-                return "OncoAct tumor WGS report \n- low purity analysis (Corrected)";
-            } else {
-                return "OncoAct tumor WGS report (Corrected)";
-            }
-        } else {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number)) {
-                return "OncoAct tumor WGS report \n- low purity analysis";
-            } else {
-                return "OncoAct tumor WGS report";
-            }
-        }
+        return wgsReport.summary().titleReport();
     }
 
     @NotNull
@@ -87,16 +64,12 @@ public class SummaryChapter implements ReportChapter {
         return true;
     }
 
-    private GenomicAnalysis analysis() {
-        return patientReport.genomicAnalysis();
-    }
-
     @Override
     public void render(@NotNull Document reportDocument) {
-
-        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(patientReport.lamaPatientData().getPrimaryTumorType(),
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(wgsReport.tumorSample().primaryTumor(),
                 contentWidth()));
-        reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
+        reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation()
+                .addStyle(reportResources.subTextStyle()));
 
         renderClinicalConclusionText(reportDocument);
         renderSpecialRemarkText(reportDocument);
@@ -107,26 +80,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderClinicalConclusionText(@NotNull Document reportDocument) {
-        String text = patientReport.clinicalSummary();
-        String clinicalConclusion = Strings.EMPTY;
-        String sentence = "An overview of all detected cancer associated DNA aberrations can be found in the report";
-
-        if (text == null) {
-            if (!analysis().hasReliablePurity()) {
-                clinicalConclusion = "Of note, WGS analysis indicated a very low abundance of genomic aberrations, which can be caused "
-                        + "by a low tumor percentage in the received tumor material or due to genomic very stable/normal tumor type. "
-                        + "As a consequence no reliable tumor purity assessment is possible and no information regarding "
-                        + "mutation copy number and tVAF can be provided.\n" + sentence;
-            } else if (analysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
-                double impliedPurityPercentage =
-                        MathUtil.mapPercentage(analysis().impliedPurity(), TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
-                clinicalConclusion = "Due to the lower sensitivity (" + Formats.formatPercentage(impliedPurityPercentage) + ") "
-                        + "of this test potential (subclonal) DNA aberrations might not have been detected using this test. "
-                        + "This result should therefore be considered with caution.\n" + sentence;
-            }
-        } else {
-            clinicalConclusion = text + sentence;
-        }
+        String clinicalConclusion = wgsReport.summary().mostRelevantFindings();
 
         if (!clinicalConclusion.isEmpty()) {
             Div div = createSectionStartDiv(contentWidth());
@@ -143,9 +97,9 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderSpecialRemarkText(@NotNull Document reportDocument) {
-        String text = patientReport.specialRemark();
+        String text = wgsReport.summary().specialRemark();
 
-        if (!text.isEmpty()) {
+        if (text != null && !text.isEmpty()) {
             Div div = createSectionStartDiv(contentWidth());
             div.add(new Paragraph("Special Remark").addStyle(reportResources.sectionTitleStyle()));
 
@@ -156,7 +110,8 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderTumorCharacteristics(@NotNull Document reportDocument) {
-        boolean hasReliablePurity = analysis().hasReliablePurity();
+        TumorCharacteristics tumorCharacteristics = wgsReport.summary().tumorCharacteristics();
+        boolean hasReliablePurity = tumorCharacteristics.purity().isReliable();
 
         Div div = createSectionStartDiv(contentWidth());
 
@@ -167,106 +122,65 @@ public class SummaryChapter implements ReportChapter {
                         .addStyle(reportResources.sectionTitleStyle())));
         table.addCell(TableUtil.createLayoutCell(1, 3).setHeight(TABLE_SPACER_HEIGHT));
 
-        double impliedPurity = analysis().impliedPurity();
-        double impliedPurityPercentage = MathUtil.mapPercentage(impliedPurity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX);
-        renderTumorPurity(hasReliablePurity,
-                Formats.formatPercentage(impliedPurityPercentage),
-                impliedPurity,
-                TumorPurity.RANGE_MIN,
-                TumorPurity.RANGE_MAX,
-                table);
-
-        String cuppaPrediction = Strings.EMPTY;
-        if (patientReport.molecularTissueOriginReporting() == null) {
-            cuppaPrediction = Formats.NA_STRING;
-        } else if (patientReport.molecularTissueOriginReporting() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
-            if (patientReport.molecularTissueOriginReporting().interpretLikelihood() == null) {
-                cuppaPrediction = patientReport.molecularTissueOriginReporting().interpretCancerType();
-            } else {
-                cuppaPrediction =
-                        patientReport.molecularTissueOriginReporting().interpretCancerType() + " (" + Formats.formatPercentageDigit(
-                                patientReport.molecularTissueOriginReporting().interpretLikelihood()) + ")";
-            }
-        }
+        renderTumorPurity(tumorCharacteristics, table);
 
         Style dataStyleMolecularTissuePrediction =
                 hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Molecular tissue of origin prediction").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(cuppaPrediction).addStyle(dataStyleMolecularTissuePrediction)));
+        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(tumorCharacteristics.tissueOfOriginPrediction()).addStyle(dataStyleMolecularTissuePrediction)));
 
         Style dataStyle = hasReliablePurity ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
-
-        String eligible = analysis().tumorMutationalBurdenStatus().display();
-        String mutationalBurdenString = hasReliablePurity
-                ? eligible + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().tumorMutationalBurden()) + ")"
-                : Formats.NA_STRING;
-
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Tumor mutational burden status").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(mutationalBurdenString).addStyle(dataStyle)));
+        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(tumorCharacteristics.tumorMutationalBurden()).addStyle(dataStyle)));
 
-        String microSatelliteStabilityString = hasReliablePurity ? analysis().microsatelliteStatus().name() + " ("
-                + SINGLE_DECIMAL_FORMAT.format(analysis().microsatelliteIndelsPerMb()) + ")" : Formats.NA_STRING;
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Microsatellite status").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(microSatelliteStabilityString).addStyle(dataStyle)));
+        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(tumorCharacteristics.microsatellite()).addStyle(dataStyle)));
 
-        String hrdString;
+        String hrdString = tumorCharacteristics.homologousRecombinationDeficiency();
         Style hrdStyle;
-
-        if (hasReliablePurity && (ChordStatus.HR_DEFICIENT == analysis().hrdStatus()
-                || ChordStatus.HR_PROFICIENT == analysis().hrdStatus())) {
-            hrdString = analysis().hrdStatus().display() + " (" + SINGLE_DECIMAL_FORMAT.format(analysis().hrdValue()) + ")";
+        if (!hrdString.equals(Formats.NA_STRING)) {
             hrdStyle = reportResources.dataHighlightStyle();
         } else {
-            hrdString = Formats.NA_STRING;
             hrdStyle = reportResources.dataHighlightNaStyle();
         }
-
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("HR Status").addStyle(reportResources.bodyTextStyle())));
         table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(hrdString).addStyle(hrdStyle)));
 
+        Style style;
+        if (tumorCharacteristics.viruses().equals(Formats.NONE_STRING)) {
+            style = reportResources.dataHighlightNaStyle();
+        } else {
+            style = reportResources.dataHighlightStyle();
+        }
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Virus").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createVirusInterpretationString(ViralPresence.virusInterpretationSummary(analysis().reportableViruses())));
+        table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(tumorCharacteristics.viruses())).addStyle(style));
 
         div.add(table);
 
         reportDocument.add(div);
     }
 
-    @NotNull
-    private Cell createVirusInterpretationString(@NotNull Set<String> virus) {
-        String virusSummary;
-        Style style;
-        if (virus.size() == 0) {
-            virusSummary = Formats.NONE_STRING;
-            style = reportResources.dataHighlightNaStyle();
-        } else {
-            virusSummary = String.join(", ", virus);
-            style = reportResources.dataHighlightStyle();
-        }
-
-        return createMiddleAlignedCell(2).add(createHighlightParagraph(virusSummary)).addStyle(style);
-    }
-
-    private void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-                                   @NotNull Table table) {
+    private void renderTumorPurity(@NotNull TumorCharacteristics tumorCharacteristics, @NotNull Table table) {
         String label = "Tumor purity";
         table.addCell(createMiddleAlignedCell().add(new Paragraph(label).addStyle(reportResources.bodyTextStyle())));
 
-        if (hasReliablePurity) {
-            table.addCell(createMiddleAlignedCell().add(createHighlightParagraph(valueLabel).addStyle(reportResources.dataHighlightStyle())));
-            table.addCell(createMiddleAlignedCell().add(createInlineBarChart(value, min, max)));
+        Double impliedPurity = tumorCharacteristics.purity().value();
+        if (impliedPurity != null) {
+            table.addCell(createMiddleAlignedCell().add(createHighlightParagraph(tumorCharacteristics.purity().label()).addStyle(reportResources.dataHighlightStyle())));
+            table.addCell(createMiddleAlignedCell().add(createInlineBarChart(impliedPurity, TumorPurity.RANGE_MIN, TumorPurity.RANGE_MAX)));
         } else {
-            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph("N/A").addStyle(reportResources.dataHighlightNaStyle())));
+            table.addCell(createMiddleAlignedCell(2).add(createHighlightParagraph(tumorCharacteristics.purity().label()).addStyle(reportResources.dataHighlightNaStyle())));
         }
     }
 
     private void renderGenomicAlterations(@NotNull Document reportDocument) {
+        GenomicAlterations genomicAlterations = wgsReport.summary().genomicAlterations();
         Div div = createSectionStartDiv(contentWidth());
 
         Table table = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
@@ -275,51 +189,38 @@ public class SummaryChapter implements ReportChapter {
                 .add(new Paragraph("Genomic alterations in cancer genes").addStyle(reportResources.sectionTitleStyle())));
         table.addCell(TableUtil.createLayoutCell(1, 2).setHeight(TABLE_SPACER_HEIGHT));
 
-        Set<String> driverVariantGenes = SomaticVariants.driverGenesWithVariant(analysis().reportableVariants());
-
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Genes with driver mutation").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(driverVariantGenes));
+        table.addCell(createGeneSetCell(genomicAlterations.genesWithDriverMutation()));
 
-        Set<String> amplifiedGenes = GainsAndLosses.amplifiedGenes(analysis().gainsAndLosses());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Amplified gene(s)").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(amplifiedGenes));
+        table.addCell(createGeneSetCell(genomicAlterations.amplifiedGenes()));
 
-        Set<String> copyLossGenes = GainsAndLosses.lostGenes(analysis().gainsAndLosses());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Deleted gene(s)").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(copyLossGenes));
+        table.addCell(createGeneSetCell(genomicAlterations.deletedGenes()));
 
-        Set<String> disruptedGenes = HomozygousDisruptions.disruptedGenes(analysis().homozygousDisruptions());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Homozygously disrupted genes").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(disruptedGenes));
+        table.addCell(createGeneSetCell(genomicAlterations.homozygouslyDisruptedGenes()));
 
-        Set<String> fusionGenes = GeneFusions.uniqueGeneFusions(analysis().geneFusions());
         table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                 .add(new Paragraph("Gene fusions").addStyle(reportResources.bodyTextStyle())));
-        table.addCell(createGeneSetCell(fusionGenes));
+        table.addCell(createGeneSetCell(genomicAlterations.geneFusions()));
 
-        PurpleMicrosatelliteStatus microSatelliteStabilityString =
-                analysis().hasReliablePurity() ? analysis().microsatelliteStatus() : PurpleMicrosatelliteStatus.UNKNOWN;
-        if (microSatelliteStabilityString == PurpleMicrosatelliteStatus.MSI) {
-            Set<String> genesDisplay = SomaticVariants.determineMSIGenes(analysis().reportableVariants(),
-                    analysis().gainsAndLosses(),
-                    analysis().homozygousDisruptions());
+        String potentialMsiGenes = genomicAlterations.potentialMsiGenes();
+        if (potentialMsiGenes != null) {
             table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                     .add(new Paragraph("Potential MMR genes").addStyle(reportResources.bodyTextStyle())));
-            table.addCell(createGeneSetCell(genesDisplay));
+            table.addCell(createGeneSetCell(potentialMsiGenes));
         }
 
-        ChordStatus hrdStatus = analysis().hasReliablePurity() ? analysis().hrdStatus() : ChordStatus.UNKNOWN;
-        if (hrdStatus == ChordStatus.HR_DEFICIENT) {
-            Set<String> genesDisplay = SomaticVariants.determineHRDGenes(analysis().reportableVariants(),
-                    analysis().gainsAndLosses(),
-                    analysis().homozygousDisruptions());
+        String potentialHrdGenes = genomicAlterations.potentialHrdGenes();
+        if (potentialHrdGenes != null) {
             table.addCell(createMiddleAlignedCell().setVerticalAlignment(VerticalAlignment.TOP)
                     .add(new Paragraph("Potential HRD genes").addStyle(reportResources.bodyTextStyle())));
-            table.addCell(createGeneSetCell(genesDisplay));
+            table.addCell(createGeneSetCell(potentialHrdGenes));
         }
 
         div.add(table);
@@ -345,7 +246,8 @@ public class SummaryChapter implements ReportChapter {
     private Table renderPharmacogenetics() {
         String title = "Pharmacogenetics";
 
-        if (patientReport.pharmacogeneticsGenotypes().isEmpty()) {
+        List<PharmacogeneticsGenotype> pharmacogeneticsData = wgsReport.summary().pharmacogenetics();
+        if (wgsReport.summary().pharmacogenetics().isEmpty()) {
             return tableUtil.createNoneReportTable(title,
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
@@ -355,18 +257,9 @@ public class SummaryChapter implements ReportChapter {
                     new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Function")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
 
-            Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
-            for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                List<PeachGenotype> pharmacogeneticsGenotypeList = patientReport.pharmacogeneticsGenotypes().get(sortPharmacogenetics);
-
-                Set<String> function = Sets.newHashSet();
-
-                for (PeachGenotype pharmacogeneticsGenotype : pharmacogeneticsGenotypeList) {
-                    function.add(pharmacogeneticsGenotype.function());
-                }
-
-                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics));
-                contentTable.addCell(tableUtil.createContentCell(concat(function)));
+            for (PharmacogeneticsGenotype pharmacogenetics : pharmacogeneticsData) {
+                contentTable.addCell(tableUtil.createContentCell(pharmacogenetics.gene()));
+                contentTable.addCell(tableUtil.createContentCell(concat(pharmacogenetics.functions())));
             }
             return tableUtil.createWrappingReportTable(title, null, contentTable, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY);
         }
@@ -374,13 +267,13 @@ public class SummaryChapter implements ReportChapter {
 
     private Table renderHla() {
         String title = "HLA Alleles";
-        if (!patientReport.hlaAllelesReportingData().hlaQC().equals("PASS")) {
+        if (!wgsReport.summary().hlaQc()) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
             return tableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
-        } else if (patientReport.hlaAllelesReportingData().hlaAllelesReporting().isEmpty()) {
+        } else if (wgsReport.summary().hlaAlleles().isEmpty()) {
             return tableUtil.createNoneReportTable(title,
                     null,
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
@@ -390,17 +283,10 @@ public class SummaryChapter implements ReportChapter {
                     new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
 
-            Set<String> sortedAlleles = Sets.newTreeSet(patientReport.hlaAllelesReportingData().hlaAllelesReporting().keySet());
-            for (String sortAllele : sortedAlleles) {
-                List<HlaReporting> allele = patientReport.hlaAllelesReportingData().hlaAllelesReporting().get(sortAllele);
-
-                Set<String> germlineAllele = Sets.newHashSet();
-
-                for (HlaReporting hlaReporting : HLAAllele.sort(allele)) {
-                    germlineAllele.add(hlaReporting.hlaAllele().germlineAllele());
-                }
-                table.addCell(tableUtil.createContentCell(sortAllele));
-                table.addCell(tableUtil.createContentCell(concat(germlineAllele)));
+            List<HlaAlleleSummary> hlaData = wgsReport.summary().hlaAlleles();
+            for (HlaAlleleSummary hla : hlaData) {
+                table.addCell(tableUtil.createContentCell(hla.gene()));
+                table.addCell(tableUtil.createContentCell(concat(hla.germlineAlleles())));
             }
 
             return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY);
@@ -453,12 +339,10 @@ public class SummaryChapter implements ReportChapter {
     }
 
     @NotNull
-    private Cell createGeneSetCell(@NotNull Set<String> genes) {
-        String geneString = (genes.size() > 0) ? String.join(", ", genes) : Formats.NONE_STRING;
+    private Cell createGeneSetCell(@NotNull String genes) {
+        Style style = genes.equals(Formats.NONE_STRING) ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
 
-        Style style = (genes.size() > 0) ? reportResources.dataHighlightStyle() : reportResources.dataHighlightNaStyle();
-
-        return createMiddleAlignedCell().add(createHighlightParagraph(geneString)).addStyle(style);
+        return createMiddleAlignedCell().add(createHighlightParagraph(genes)).addStyle(style);
     }
 
     @NotNull
