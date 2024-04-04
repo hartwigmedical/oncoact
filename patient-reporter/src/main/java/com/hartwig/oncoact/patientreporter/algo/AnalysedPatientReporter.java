@@ -1,14 +1,5 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -37,11 +28,19 @@ import com.hartwig.oncoact.rose.RoseConclusionFile;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class AnalysedPatientReporter {
 
@@ -136,8 +135,8 @@ public class AnalysedPatientReporter {
     @VisibleForTesting
     static String determineForNumber(boolean hasReliablePurity, double purity) {
         return hasReliablePurity && purity > ReportResources.PURITY_CUTOFF
-                ? QsFormNumber.FOR_080.display()
-                : QsFormNumber.FOR_209.display();
+                ? QsFormNumber.FOR_080.number
+                : QsFormNumber.FOR_209.number;
     }
 
     @NotNull
@@ -229,7 +228,7 @@ public class AnalysedPatientReporter {
 
     @NotNull
     private static List<ReportableVariant> filterOnGermlineSource(@NotNull List<ReportableVariant> variants,
-            @NotNull ReportableVariantSource source) {
+                                                                  @NotNull ReportableVariantSource source) {
         List<ReportableVariant> filterOnSource = Lists.newArrayList();
         for (ReportableVariant variant : variants) {
             if (variant.source() == source) {

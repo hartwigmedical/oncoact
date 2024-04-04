@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.net.MalformedURLException;
-import java.text.DecimalFormat;
-
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
@@ -23,16 +20,14 @@ import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Div;
-import com.itextpdf.layout.element.Image;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 
 public class TumorCharacteristicsChapter implements ReportChapter {
 
@@ -124,7 +119,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 reportResources);
         satelliteChart.enabled(hasReliablePurity);
         satelliteChart.scale(InlineBarChart.LOG10_SCALE);
-        satelliteChart.setTickMarks(new double[] { MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX },
+        satelliteChart.setTickMarks(new double[]{MicrosatelliteStatus.RANGE_MIN, 10, MicrosatelliteStatus.RANGE_MAX},
                 SINGLE_DECIMAL_FORMAT);
         satelliteChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         satelliteChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(satelliteChart.max()));
@@ -152,7 +147,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 new BarChart(mutationalLoad, MutationalLoad.RANGE_MIN, MutationalLoad.RANGE_MAX, false, reportResources);
         mutationalLoadChart.enabled(hasReliablePurity);
         mutationalLoadChart.scale(InlineBarChart.LOG10_SCALE);
-        mutationalLoadChart.setTickMarks(new double[] { MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX }, NO_DECIMAL_FORMAT);
+        mutationalLoadChart.setTickMarks(new double[]{MutationalLoad.RANGE_MIN, 10, 100, MutationalLoad.RANGE_MAX}, NO_DECIMAL_FORMAT);
         mutationalLoadChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalLoadChart.enableOvershoot(">" + NO_DECIMAL_FORMAT.format(mutationalLoadChart.max()));
 
@@ -178,7 +173,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
                 new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, false, reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
         mutationalBurdenChart.scale(InlineBarChart.LOG10_SCALE);
-        mutationalBurdenChart.setTickMarks(new double[] { MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX },
+        mutationalBurdenChart.setTickMarks(new double[]{MutationalBurden.RANGE_MIN, 10, MutationalBurden.RANGE_MAX},
                 SINGLE_DECIMAL_FORMAT);
         mutationalBurdenChart.enableUndershoot(NO_DECIMAL_FORMAT.format(0));
         mutationalBurdenChart.enableOvershoot(">" + SINGLE_DECIMAL_FORMAT.format(mutationalBurdenChart.max()));
@@ -208,13 +203,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv(""));
 
         reportDocument.add(createCharacteristicDiv("Molecular tissue of origin prediction"));
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 10, 1, 10 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 10, 1, 10}));
         table.setWidth(contentWidth());
         if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
 
             String cuppaPlot = patientReport.molecularTissueOriginPlotPath();
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display()) || patientReport.qsFormNumber()
-                    .equals(QsFormNumber.FOR_080.display())) {
+            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number) || patientReport.qsFormNumber()
+                    .equals(QsFormNumber.FOR_080.number)) {
                 if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
                     reportDocument.add(createCharacteristicDisclaimerDiv(
                             "Due to the low tumor purity, the molecular tissue of origin prediction should be interpreted with caution."));
@@ -308,13 +303,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
     @NotNull
     private Div createCharacteristicDiv(@NotNull String title, @NotNull String highlight, @NotNull String description,
-            @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
+                                        @NotNull BarChart chart, @NotNull String footnote, boolean displayFootnote) {
         Div div = new Div();
         div.setKeepTogether(true);
 
         div.add(new Paragraph(title).addStyle(reportResources.sectionTitleStyle()));
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 10, 1, 19 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 19}));
         table.setWidth(contentWidth());
         table.addCell(TableUtil.createLayoutCell().add(DataLabel.createDataLabel(reportResources, highlight)));
 

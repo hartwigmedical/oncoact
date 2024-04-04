@@ -1,12 +1,11 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public enum QCFailReason {
 
@@ -75,7 +74,7 @@ public enum QCFailReason {
     private final String reportExplanation;
 
     QCFailReason(@NotNull final String identifier, @NotNull final QCFailType type, final boolean deepWGSDataAvailable,
-            @NotNull QsFormNumber qsFormNumber, @NotNull final String reportReason, @NotNull final String reportExplanation) {
+                 @NotNull QsFormNumber qsFormNumber, @NotNull final String reportReason, @NotNull final String reportExplanation) {
         this.identifier = identifier;
         this.type = type;
         this.deepWGSDataAvailable = deepWGSDataAvailable;
@@ -100,7 +99,7 @@ public enum QCFailReason {
 
     @NotNull
     public String qcFormNumber() {
-        return qsFormNumber.display();
+        return qsFormNumber.number;
     }
 
     @NotNull

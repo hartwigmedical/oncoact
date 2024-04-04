@@ -1,11 +1,10 @@
 package com.hartwig.oncoact.patientreporter.panel;
 
-import java.io.IOException;
-
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.util.Formats;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class PanelReporter {
 
@@ -20,7 +19,7 @@ public class PanelReporter {
     public PanelReport run(@NotNull String panelVCFname) throws IOException {
 
         return ImmutablePanelReport.builder()
-                .qsFormNumber(QsFormNumber.FOR_344.display())
+                .qsFormNumber(QsFormNumber.FOR_344.number)
                 .pipelineVersion(reportData.pipelineVersion())
                 .VCFFilename(panelVCFname)
                 .comments(reportData.comments())

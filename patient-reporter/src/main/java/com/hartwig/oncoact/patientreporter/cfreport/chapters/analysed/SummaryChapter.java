@@ -1,10 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Set;
-import java.util.StringJoiner;
-
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
@@ -20,13 +15,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
-import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.patientreporter.cfreport.data.ViralPresence;
+import com.hartwig.oncoact.patientreporter.cfreport.data.*;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.Style;
@@ -36,10 +25,14 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.layout.property.VerticalAlignment;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 public class SummaryChapter implements ReportChapter {
 
@@ -64,13 +57,13 @@ public class SummaryChapter implements ReportChapter {
     @Override
     public String pdfTitle() {
         if (patientReport.isCorrectedReport()) {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number)) {
                 return "OncoAct tumor WGS report \n- low purity analysis (Corrected)";
             } else {
                 return "OncoAct tumor WGS report (Corrected)";
             }
         } else {
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.display())) {
+            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number)) {
                 return "OncoAct tumor WGS report \n- low purity analysis";
             } else {
                 return "OncoAct tumor WGS report";
@@ -167,7 +160,7 @@ public class SummaryChapter implements ReportChapter {
 
         Div div = createSectionStartDiv(contentWidth());
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, .33f, .66f }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, .33f, .66f}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
         table.addCell(TableUtil.createLayoutCell()
                 .add(new Paragraph("Tumor characteristics").setVerticalAlignment(VerticalAlignment.TOP)
@@ -261,7 +254,7 @@ public class SummaryChapter implements ReportChapter {
     }
 
     private void renderTumorPurity(boolean hasReliablePurity, @NotNull String valueLabel, double value, double min, double max,
-            @NotNull Table table) {
+                                   @NotNull Table table) {
         String label = "Tumor purity";
         table.addCell(createMiddleAlignedCell().add(new Paragraph(label).addStyle(reportResources.bodyTextStyle())));
 
@@ -276,7 +269,7 @@ public class SummaryChapter implements ReportChapter {
     private void renderGenomicAlterations(@NotNull Document reportDocument) {
         Div div = createSectionStartDiv(contentWidth());
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1, 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1, 1}));
         table.setWidth(ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_LEFT);
         table.addCell(TableUtil.createLayoutCellSummary()
                 .add(new Paragraph("Genomic alterations in cancer genes").addStyle(reportResources.sectionTitleStyle())));
@@ -358,8 +351,8 @@ public class SummaryChapter implements ReportChapter {
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[] { 1, 3 },
-                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Function") },
+            Table contentTable = TableUtil.createReportContentTable(new float[]{1, 3},
+                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Function")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
 
             Set<String> sortedPharmacogenetics = Sets.newTreeSet(patientReport.pharmacogeneticsGenotypes().keySet());
@@ -393,8 +386,8 @@ public class SummaryChapter implements ReportChapter {
                     TableUtil.TABLE_BOTTOM_MARGIN_SUMMARY,
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
         } else {
-            Table table = TableUtil.createReportContentTable(new float[] { 8, 10 },
-                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele") },
+            Table table = TableUtil.createReportContentTable(new float[]{8, 10},
+                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele")},
                     ReportResources.CONTENT_WIDTH_WIDE_SUMMARY_RIGHT);
 
             Set<String> sortedAlleles = Sets.newTreeSet(patientReport.hlaAllelesReportingData().hlaAllelesReporting().keySet());

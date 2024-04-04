@@ -1,12 +1,11 @@
 package com.hartwig.oncoact.patientreporter.panel;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public enum PanelFailReason {
 
@@ -27,7 +26,7 @@ public enum PanelFailReason {
     private final String reportExplanation;
 
     PanelFailReason(@NotNull final String identifier, @NotNull final QsFormNumber qsFormNumber, @NotNull final String reportReason,
-            @NotNull final String reportExplanation) {
+                    @NotNull final String reportExplanation) {
         this.identifier = identifier;
         this.qsFormNumber = qsFormNumber;
         this.reportReason = reportReason;
@@ -41,7 +40,7 @@ public enum PanelFailReason {
 
     @NotNull
     public String qcFormNumber() {
-        return qsFormNumber.display();
+        return qsFormNumber.number;
     }
 
     @NotNull

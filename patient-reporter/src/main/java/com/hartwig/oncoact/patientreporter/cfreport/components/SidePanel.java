@@ -1,19 +1,13 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.model.Patient;
-import com.hartwig.oncoact.patientreporter.model.ReportingId;
-import com.hartwig.oncoact.patientreporter.model.ReportingIdType;
-import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
+import com.hartwig.oncoact.patientreporter.model.*;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,8 +27,6 @@ public final class SidePanel {
     @NotNull
     private final BaseMarker baseMarker;
 
-    private static final Logger LOGGER = LogManager.getLogger(SidePanel.class);
-
     public SidePanel(@NotNull final ReportResources reportResources, @NotNull final Random random) {
         this.reportResources = reportResources;
         this.baseMarker = new BaseMarker(random);
@@ -44,8 +36,7 @@ public final class SidePanel {
         renderSidePanel(page,
                 wgsPatientReport,
                 fullHeight,
-                !wgsPatientReport.version().qsFormNumber().equals(QsFormNumber.FOR_209.display()) && !wgsPatientReport.version().qsFormNumber()
-                        .equals(QsFormNumber.FOR_080.display()));
+                wgsPatientReport.version().qsFormNumber().isFailed);
     }
 
 //    public void renderSidePanelPanelReport(@NotNull PdfPage page, @NotNull PanelReport patientReport, boolean fullHeight) {
@@ -80,11 +71,13 @@ public final class SidePanel {
             cv.add(createSidePanelDiv(++sideTextIndex, "Hospital patient id", reportingId));
         }
         if (fullHeight) {
-            if (reportingIdData.pathologyId() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", reportingIdData.pathologyId()));
+            String pathologyId = reportingIdData.pathologyId();
+            if (pathologyId != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital pathology id", pathologyId));
             }
-            if (reportingIdData.label() != null) {
-                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital sample label", reportingIdData.label()));
+            String sampleHospitalLabel = reportingIdData.label();
+            if (sampleHospitalLabel != null) {
+                cv.add(createSidePanelDiv(++sideTextIndex, "Hospital sample label", sampleHospitalLabel));
             }
             cv.add(createSidePanelDiv(++sideTextIndex, "Cohort", wgsPatientReport.tumorSample().cohort()));
         }
@@ -99,40 +92,22 @@ public final class SidePanel {
                     cv.add(createSidePanelDiv(++sideTextIndex, "Name", name));
                 }
 
-                if (patientData.birthDate() != null) {
-                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", patientData.birthDate()));
+                String birthDate = patientData.birthDate();
+                if (birthDate != null) {
+                    cv.add(createSidePanelDiv(++sideTextIndex, "Date of birth", birthDate));
                 }
             }
 
-//            if (wgsPatientReport.tumorSample().reportingId().type().equals(ReportingIdType.STUDY)) {
-//                if (lamaPatientData.getStudyPI() != null) {
-//                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
-//                } else {
-//                    LOGGER.warn("Missing study PI");
-//                }
-//            } else {
-//                if (lamaPatientData.getRequesterName() != null) {
-//                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getRequesterName()));
-//                } else if (lamaPatientData.getStudyPI() != null) {
-//                    cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", lamaPatientData.getStudyPI()));
-//                } else {
-//                    LOGGER.warn("Missing requester name");
-//                }
-//            }
-//
-//            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", lamaPatientData.getOfficialHospitalName()));
-//            BiopsySite biopsySite = lamaPatientData.getBiopsySite();
-            String biopsyLocation = "-";
-            String biopsySubLocation = "-";
-            String biopsyLateralisation = "-";
-            String isPrimaryTumor = "-";
-//            if (biopsySite != null) {
-//                biopsyLocation = biopsySite.getLocation();
-//                biopsySubLocation = biopsySite.getSubLocation();
-//                biopsyLateralisation =
-//                        biopsySite.getLateralisation() != null ? biopsySite.getLateralisation().toString() : biopsyLateralisation;
-//                isPrimaryTumor = biopsySite.getIsPrimaryTumor() != null ? (biopsySite.getIsPrimaryTumor() ? "yes" : "no") : "-";
-//            }
+            TumorSample tumorSample = wgsPatientReport.tumorSample();
+            Hospital hospital = tumorSample.hospital();
+            cv.add(createSidePanelDiv(++sideTextIndex, "Requested by", hospital.requester()));
+
+            cv.add(createSidePanelDiv(++sideTextIndex, "Hospital", hospital.name()));
+            Biopsy biopsy = wgsPatientReport.tumorSample().biopsy();
+            String biopsyLocation = biopsy.location();
+            String biopsySubLocation = biopsy.subLocation();
+            String biopsyLateralisation = biopsy.lateralisation().lateralisation;
+            String isPrimaryTumor = biopsy.isPrimaryTumor();
 
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy location", biopsyLocation));
             cv.add(createSidePanelDiv(++sideTextIndex, "Biopsy sublocation", biopsySubLocation));
