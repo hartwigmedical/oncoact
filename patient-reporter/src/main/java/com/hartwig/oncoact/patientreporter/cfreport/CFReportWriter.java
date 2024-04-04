@@ -6,6 +6,7 @@ import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ExplanationChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.SummaryChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.*;
 import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
@@ -48,7 +49,7 @@ public class CFReportWriter implements ReportWriter {
     @Override
     public void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath) throws IOException {
         ReportResources reportResources = ReportResources.create();
-        ReportChapter[] chapters = new ReportChapter[]{new SummaryChapter(report, reportResources)};
+        ReportChapter[] chapters = new ReportChapter[]{new SummaryChapter(report, reportResources), new ExplanationChapter(reportResources)};
 //        =
 //                new ReportChapter[]{new SummaryChapter(report, reportResources), new ClinicalEvidenceChapter(report, reportResources),
 //                        new GenomicAlterationsChapter(report, reportResources), new TumorCharacteristicsChapter(report, reportResources),
