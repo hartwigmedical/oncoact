@@ -1,11 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import java.util.Random;
-
-import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Footer;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Header;
 import com.hartwig.oncoact.patientreporter.cfreport.components.SidePanel;
+import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
 import com.itextpdf.kernel.events.Event;
 import com.itextpdf.kernel.events.IEventHandler;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -13,13 +11,14 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfOutline;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.navigation.PdfExplicitRemoteGoToDestination;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 class PageEventHandler implements IEventHandler {
 
     @NotNull
-    private final PatientReport patientReport;
+    private final WgsPatientReport wgsPatientReport;
     @NotNull
     private final Footer footer;
     @NotNull
@@ -32,11 +31,11 @@ class PageEventHandler implements IEventHandler {
     private boolean firstPageOfChapter = true;
     private PdfOutline outline = null;
 
-    PageEventHandler(@NotNull final PatientReport patientReport, @NotNull final ReportResources reportResources) {
-        this.patientReport = patientReport;
-        var random = new Random(patientReport.lamaPatientData().getTumorSampleBarcode().hashCode());
+    PageEventHandler(@NotNull final WgsPatientReport wgsPatientReport, @NotNull final ReportResources reportResources, @NotNull String logoCompanyPath) {
+        this.wgsPatientReport = wgsPatientReport;
+        var random = new Random(wgsPatientReport.tumorSample().sample().sampleBarcode().hashCode());
         this.sidePanel = new SidePanel(reportResources, random);
-        this.header = new Header(patientReport.logoCompanyPath(), reportResources);
+        this.header = new Header(logoCompanyPath, reportResources);
         this.footer = new Footer(reportResources, random);
     }
 
@@ -52,8 +51,8 @@ class PageEventHandler implements IEventHandler {
 
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
-            sidePanel.renderSidePatientReport(page, patientReport, fullSidebar);
-            footer.renderFooter(page, patientReport.qsFormNumber());
+            sidePanel.renderSidePatientReport(page, wgsPatientReport, fullSidebar);
+            footer.renderFooter(page, wgsPatientReport.version().qsFormNumber().display());
         }
     }
 

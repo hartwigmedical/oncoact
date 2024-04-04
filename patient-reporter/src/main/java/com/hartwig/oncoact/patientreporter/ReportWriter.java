@@ -1,25 +1,24 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.io.IOException;
-
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public interface ReportWriter {
 
-    void writeAnalysedPatientReport(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException;
+    void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath) throws IOException;
 
     void writeQCFailReport(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException;
 
     void writeJsonFailedFile(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException;
 
-    void writeJsonAnalysedFile(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException;
+    void writeJsonAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException;
 
-    void writeXMLAnalysedFile(@NotNull AnalysedPatientReport report, @NotNull String outputFilePath) throws IOException;
+    void writeXMLAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException;
 
     void writePanelAnalysedReport(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException;
 

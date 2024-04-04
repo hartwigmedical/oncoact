@@ -1,33 +1,26 @@
 package com.hartwig.oncoact.patientreporter.xml;
 
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GainsAndLosses;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HomozygousDisruptions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.SomaticVariants;
+import com.hartwig.oncoact.patientreporter.cfreport.data.*;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.xml.ImmutableKeyXML;
 import com.hartwig.oncoact.xml.KeyXML;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class XMLFactory {
 
@@ -39,107 +32,107 @@ public class XMLFactory {
     }
 
     @NotNull
-    public static ReportXML generateXMLData(@NotNull AnalysedPatientReport report) {
+    public static ReportXML generateXMLData(@NotNull WgsReport report) {
         List<KeyXML> xml = Lists.newArrayList();
 
-        boolean hasReliablePurity = report.genomicAnalysis().hasReliablePurity();
-        xml.add(ImmutableKeyXML.builder().keyPath("VrbAanvrager").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("VrbAanvragerAnders").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("VrbOnderzoekNummers").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("VrbProcedure").valuePath(Map.of("value", "wgs")).build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("RefNummerWgs")
-                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgs_reference_number")
-                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
-                .build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTher").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTherAnd").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzDiffDiag").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzDiffDiagAnd").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsPercNeoCellenEx").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsPercNeoCellenBeoord").valuePath(Map.of("value", Strings.EMPTY)).build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsPlatform").valuePath(Map.of("value", "Illumina NovaSeq")).build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("WgsTumorPurity")
-                .valuePath(Map.of("value", Formats.formatPercentageRoundWithoutPercent(report.genomicAnalysis().impliedPurity())))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("WgsGemTuPloid")
-                .valuePath(Map.of("value", GeneUtil.copyNumberToString(report.genomicAnalysis().averageTumorPloidy(), hasReliablePurity)))
-                .build());
-
-        String cupAnalyse = null;
-        if (report.molecularTissueOriginReporting() == null) {
-            cupAnalyse = null;
-        } else if (report.molecularTissueOriginReporting().interpretLikelihood() == null) {
-            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType();
-        } else {
-            String cuppaLikelihood = Formats.formatPercentageDigit(report.molecularTissueOriginReporting().interpretLikelihood());
-            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType() + " " + cuppaLikelihood;
-        }
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("WgsCupAnalyse")
-                .valuePath(cupAnalyse == null ? null : Map.of("value", cupAnalyse))
-                .build());
-
-        String disclaimer = "- Further interpretation of these results within the patient’s clinical context is "
-                + "required by a clinician with support of a molecular tumor board." + "\n";
-        disclaimer += report.qsFormNumber().equals(QsFormNumber.FOR_209.display()) ? "- Due to the lower tumor purity potential "
-                + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
-                + "considered with caution. " + "\n" : Strings.EMPTY;
-        disclaimer += !report.specialRemark().isEmpty() ? "-" + report.specialRemark() : Strings.EMPTY;
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsDisclaimerTonen").valuePath(Map.of("value", disclaimer)).build());
-
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("WgsMolecInter")
-                .valuePath(Map.of("value", report.clinicalSummary() != null ? report.clinicalSummary() : Strings.EMPTY))
-                .build());
-        xml.add(ImmutableKeyXML.builder().keyPath("WgsKlinInter").valuePath(Map.of("value", Strings.EMPTY)).build());
-
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]msscore")
-                .valuePath(Map.of("value",
-                        hasReliablePurity
-                                ? DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().microsatelliteIndelsPerMb())
-                                : Formats.NA_STRING))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]msstatus")
-                .valuePath(Map.of("value", report.genomicAnalysis().microsatelliteStatus().name()))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]tumuload")
-                .valuePath(Map.of("value",
-                        hasReliablePurity ? NO_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad()) : Formats.NA_STRING))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]tutmb")
-                .valuePath(Map.of("value",
-                        hasReliablePurity
-                                ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalBurden())
-                                : Formats.NA_STRING))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]horesco")
-                .valuePath(Map.of("value",
-                        report.genomicAnalysis().hrdStatus() == ChordStatus.CANNOT_BE_DETERMINED
-                                ? "N/A"
-                                : DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().hrdValue())))
-                .build());
-        xml.add(ImmutableKeyXML.builder()
-                .keyPath("importwgs.wgsms.line[1]horestu")
-                .valuePath(Map.of("value", report.genomicAnalysis().hrdStatus().name()))
-                .build());
-
-        addReportableVariantsToXML(report.genomicAnalysis().reportableVariants(), xml, hasReliablePurity);
-        addGainLossesToXML(report.genomicAnalysis().gainsAndLosses(), report.genomicAnalysis().cnPerChromosome(), xml, hasReliablePurity);
-        addFusionToXML(report.genomicAnalysis().geneFusions(), xml, hasReliablePurity);
-        addHomozygousDisruptionsToXML(report.genomicAnalysis().homozygousDisruptions(), xml);
-        addVirussesToXML(report.genomicAnalysis().reportableViruses(), xml);
+//        boolean hasReliablePurity = report.genomicAnalysis().hasReliablePurity();
+//        xml.add(ImmutableKeyXML.builder().keyPath("VrbAanvrager").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("VrbAanvragerAnders").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("VrbOnderzoekNummers").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("VrbProcedure").valuePath(Map.of("value", "wgs")).build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("RefNummerWgs")
+//                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgs_reference_number")
+//                .valuePath(Map.of("value", report.lamaPatientData().getReportingId()))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsRedenAanvraag").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTher").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzTherAnd").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzDiffDiag").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsGevrOndzDiffDiagAnd").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsPercNeoCellenEx").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsPercNeoCellenBeoord").valuePath(Map.of("value", Strings.EMPTY)).build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsPlatform").valuePath(Map.of("value", "Illumina NovaSeq")).build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("WgsTumorPurity")
+//                .valuePath(Map.of("value", Formats.formatPercentageRoundWithoutPercent(report.genomicAnalysis().impliedPurity())))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("WgsGemTuPloid")
+//                .valuePath(Map.of("value", GeneUtil.copyNumberToString(report.genomicAnalysis().averageTumorPloidy(), hasReliablePurity)))
+//                .build());
+//
+//        String cupAnalyse = null;
+//        if (report.molecularTissueOriginReporting() == null) {
+//            cupAnalyse = null;
+//        } else if (report.molecularTissueOriginReporting().interpretLikelihood() == null) {
+//            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType();
+//        } else {
+//            String cuppaLikelihood = Formats.formatPercentageDigit(report.molecularTissueOriginReporting().interpretLikelihood());
+//            cupAnalyse = report.molecularTissueOriginReporting().interpretCancerType() + " " + cuppaLikelihood;
+//        }
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("WgsCupAnalyse")
+//                .valuePath(cupAnalyse == null ? null : Map.of("value", cupAnalyse))
+//                .build());
+//
+//        String disclaimer = "- Further interpretation of these results within the patient’s clinical context is "
+//                + "required by a clinician with support of a molecular tumor board." + "\n";
+//        disclaimer += report.qsFormNumber().equals(QsFormNumber.FOR_209.display()) ? "- Due to the lower tumor purity potential "
+//                + "(subclonal) DNA aberrations might not have been detected using this test. This result should therefore be "
+//                + "considered with caution. " + "\n" : Strings.EMPTY;
+//        disclaimer += !report.specialRemark().isEmpty() ? "-" + report.specialRemark() : Strings.EMPTY;
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsDisclaimerTonen").valuePath(Map.of("value", disclaimer)).build());
+//
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("WgsMolecInter")
+//                .valuePath(Map.of("value", report.clinicalSummary() != null ? report.clinicalSummary() : Strings.EMPTY))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder().keyPath("WgsKlinInter").valuePath(Map.of("value", Strings.EMPTY)).build());
+//
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]msscore")
+//                .valuePath(Map.of("value",
+//                        hasReliablePurity
+//                                ? DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().microsatelliteIndelsPerMb())
+//                                : Formats.NA_STRING))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]msstatus")
+//                .valuePath(Map.of("value", report.genomicAnalysis().microsatelliteStatus().name()))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]tumuload")
+//                .valuePath(Map.of("value",
+//                        hasReliablePurity ? NO_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalLoad()) : Formats.NA_STRING))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]tutmb")
+//                .valuePath(Map.of("value",
+//                        hasReliablePurity
+//                                ? SINGLE_DECIMAL_FORMAT.format(report.genomicAnalysis().tumorMutationalBurden())
+//                                : Formats.NA_STRING))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]horesco")
+//                .valuePath(Map.of("value",
+//                        report.genomicAnalysis().hrdStatus() == ChordStatus.CANNOT_BE_DETERMINED
+//                                ? "N/A"
+//                                : DOUBLE_DECIMAL_FORMAT.format(report.genomicAnalysis().hrdValue())))
+//                .build());
+//        xml.add(ImmutableKeyXML.builder()
+//                .keyPath("importwgs.wgsms.line[1]horestu")
+//                .valuePath(Map.of("value", report.genomicAnalysis().hrdStatus().name()))
+//                .build());
+//
+//        addReportableVariantsToXML(report.genomicAnalysis().reportableVariants(), xml, hasReliablePurity);
+//        addGainLossesToXML(report.genomicAnalysis().gainsAndLosses(), report.genomicAnalysis().cnPerChromosome(), xml, hasReliablePurity);
+//        addFusionToXML(report.genomicAnalysis().geneFusions(), xml, hasReliablePurity);
+//        addHomozygousDisruptionsToXML(report.genomicAnalysis().homozygousDisruptions(), xml);
+//        addVirussesToXML(report.genomicAnalysis().reportableViruses(), xml);
 
         List<ImportWGSXML> importWGSXML = Lists.newArrayList();
         importWGSXML.add(ImmutableImportWGSXML.builder().item(xml).build());
@@ -157,7 +150,7 @@ public class XMLFactory {
     }
 
     public static void addGainLossesToXML(@NotNull List<PurpleGainLoss> gainLosses, @NotNull List<CnPerChromosomeArmData> chromosomeArmData,
-            @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
+                                          @NotNull List<KeyXML> xmlList, boolean hasReliablePurity) {
         int count = 1;
         for (PurpleGainLoss gainLoss : GainsAndLosses.sort(gainLosses)) {
             xmlList.add(ImmutableKeyXML.builder()
@@ -189,7 +182,7 @@ public class XMLFactory {
     }
 
     public static void addHomozygousDisruptionsToXML(@NotNull List<HomozygousDisruption> homozygousDisruptions,
-            @NotNull List<KeyXML> xmlList) {
+                                                     @NotNull List<KeyXML> xmlList) {
         int count = 1;
         for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             xmlList.add(ImmutableKeyXML.builder()
@@ -209,7 +202,7 @@ public class XMLFactory {
     }
 
     public static void addReportableVariantsToXML(@NotNull List<ReportableVariant> reportableVariants, @NotNull List<KeyXML> xmlList,
-            boolean hasReliablePurity) {
+                                                  boolean hasReliablePurity) {
         int count = 1;
         for (ReportableVariant reportableVariant : SomaticVariants.sort(reportableVariants)) {
             xmlList.add(ImmutableKeyXML.builder()

@@ -8,8 +8,7 @@ import org.jetbrains.annotations.Nullable;
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class HomologousRecombinationDeficiency {
 
-    @NotNull
-    public abstract String value();
+    public abstract double value();
 
     @NotNull
     public abstract HomologousRecombinationDeficiencyStatus status();

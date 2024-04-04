@@ -1,7 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
-import java.util.Random;
-
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Footer;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Header;
@@ -13,8 +11,9 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfOutline;
 import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.navigation.PdfExplicitRemoteGoToDestination;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 class PageEventHandlerPanel implements IEventHandler {
 
@@ -51,7 +50,7 @@ class PageEventHandlerPanel implements IEventHandler {
 
                 createChapterBookmark(documentEvent.getDocument(), chapterTitle);
             }
-            sidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar);
+            //  sidePanel.renderSidePanelPanelReport(page, patientReport, fullSidebar);
             footer.renderFooter(page, patientReport.qsFormNumber());
         }
     }

@@ -14,6 +14,10 @@ public abstract class Genomic {
 
     public abstract double averagePloidy();
 
+    public abstract boolean hasReliablePurity();
+
+    public abstract boolean hasReliableQuality();
+
     @NotNull
     public abstract List<ObservedVariant> variants();
 

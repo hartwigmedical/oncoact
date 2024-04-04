@@ -1,5 +1,16 @@
 package com.hartwig.oncoact.patientreporter.reportingdb;
 
+import com.google.gson.GsonBuilder;
+import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
+import com.hartwig.oncoact.patientreporter.model.Genomic;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
+import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
+import com.hartwig.oncoact.patientreporter.panel.PanelReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -7,18 +18,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-
-import com.google.gson.GsonBuilder;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 public class ReportingDb {
 
@@ -54,32 +53,32 @@ public class ReportingDb {
         writeApiUpdateJson(outputDirectory, reportType, NA_STRING, null, null, report.reportDate());
     }
 
-    public void appendAnalysedReport(@NotNull AnalysedPatientReport report, @NotNull String outputDirectory) throws IOException {
-        GenomicAnalysis analysis = report.genomicAnalysis();
+    public void appendAnalysedReport(@NotNull WgsReport report, @NotNull String outputDirectory, boolean isCorrection, boolean isCorrectionExtern) throws IOException {
+        Genomic analysis = report.genomic();
 
-        String purity = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(analysis.impliedPurity());
+        String purity = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(analysis.purity());
         boolean hasReliableQuality = analysis.hasReliableQuality();
         boolean hasReliablePurity = analysis.hasReliablePurity();
 
         String reportType;
-        String clinicalSummary = report.clinicalSummary();
+        String clinicalSummary = report.summary().mostRelevantFindings();
         if (clinicalSummary == null || clinicalSummary.isEmpty()) {
-            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.lamaPatientData().getReportingId());
+            LOGGER.warn("Skipping addition to reporting db, missing summary for sample '{}'!", report.tumorSample().reportingId());
             reportType = "report_without_conclusion";
         } else {
-            reportType = hasReliablePurity && analysis.impliedPurity() > ReportResources.PURITY_CUTOFF
+            reportType = hasReliablePurity && analysis.purity() > ReportResources.PURITY_CUTOFF
                     ? "wgs_analysis"
                     : "wgs_analysis_low_purity";
 
-            if (report.isCorrectedReport()) {
-                reportType = report.isCorrectedReportExtern() ? reportType + "_corrected_external" : reportType + "_corrected_internal";
+            if (isCorrection) {
+                reportType = isCorrectionExtern ? reportType + "_corrected_external" : reportType + "_corrected_internal";
             }
         }
         writeApiUpdateJson(outputDirectory, reportType, purity, hasReliableQuality, hasReliablePurity, report.reportDate());
     }
 
     private void writeApiUpdateJson(String outputDirectory, String reportType, String purity, Boolean hasReliableQuality,
-            Boolean hasReliablePurity, String reportDate) throws IOException {
+                                    Boolean hasReliablePurity, String reportDate) throws IOException {
         File outputFile = new File(outputDirectory, "api-update.json");
         LOGGER.info(outputFile);
 

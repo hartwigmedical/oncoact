@@ -1,15 +1,13 @@
 package com.hartwig.oncoact.patientreporter.model;
 
-import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.LocalDate;
-
 @Value.Immutable
 @Value.Style(passAnnotations = {NotNull.class, Nullable.class})
-public abstract class WgsReport {
+public abstract class WgsReport implements WgsPatientReport {
+
     @NotNull
     public abstract String reportDate();
 

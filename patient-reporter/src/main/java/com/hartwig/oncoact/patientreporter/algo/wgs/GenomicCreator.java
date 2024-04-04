@@ -32,6 +32,8 @@ class GenomicCreator {
         return Genomic.builder()
                 .purity(analysis.impliedPurity())
                 .averagePloidy(analysis.averageTumorPloidy())
+                .hasReliablePurity(analysis.hasReliablePurity())
+                .hasReliableQuality(analysis.hasReliableQuality())
                 .variants(createObservedVariant(analysis.reportableVariants(), analysis.hasReliablePurity(), notifyGermlineStatusPerVariant))
                 .gainsLosses(createGainsLosses(analysis.gainsAndLosses(), analysis.cnPerChromosome(), analysis.hasReliablePurity()))
                 .geneFusions(createFusion(analysis.geneFusions(), analysis.hasReliablePurity()))
