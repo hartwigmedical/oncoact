@@ -1,11 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.oncoact.patientreporter.QsFormNumber;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.BarChart;
@@ -16,6 +10,9 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.HrDeficiency;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MicrosatelliteStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalBurden;
 import com.hartwig.oncoact.patientreporter.cfreport.data.MutationalLoad;
+import com.hartwig.oncoact.patientreporter.model.Genomic;
+import com.hartwig.oncoact.patientreporter.model.GenomicProfiles;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -37,13 +34,17 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     private static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
 
     @NotNull
-    private final AnalysedPatientReport patientReport;
+    private final WgsReport wgsReport;
     @NotNull
     private final ReportResources reportResources;
 
-    public TumorCharacteristicsChapter(@NotNull final AnalysedPatientReport patientReport, @NotNull final ReportResources reportResources) {
-        this.patientReport = patientReport;
+    @NotNull
+    private final String cuppaPath;
+
+    public TumorCharacteristicsChapter(@NotNull final WgsReport wgsReport, @NotNull final ReportResources reportResources, @NotNull final String cuppaPath) {
+        this.wgsReport = wgsReport;
         this.reportResources = reportResources;
+        this.cuppaPath = cuppaPath;
     }
 
     @NotNull
@@ -68,20 +69,20 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     private void renderHrdCharacteristic(@NotNull Document reportDocument) {
-        GenomicAnalysis genomicAnalysis = patientReport.genomicAnalysis();
-        double hrdValue = genomicAnalysis.hrdValue();
-        ChordStatus hrdStatus = genomicAnalysis.hrdStatus();
+        Genomic genomic = wgsReport.genomic();
+        GenomicProfiles genomicProfiles = genomic.profiles();
 
-        boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
-        String hrDeficiencyLabel =
-                hasReliablePurity ? chordStatusString(hrdStatus) + " " + SINGLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
+        double hrdValue = genomicProfiles.homologousRecombinationDeficiency().value();
+
+        boolean hasReliablePurity = genomic.hasReliablePurity();
+        String hrDeficiencyLabel = genomicProfiles.homologousRecombinationDeficiency().label();
 
         String hrdUnreliableFootnote =
                 "* Homologous recombination score can not be determined reliably when a tumor is microsatellite unstable "
                         + "(MSI) or has insufficient number of mutations and is therefore not reported for this sample.";
         boolean displayFootNote = false;
-        boolean isHrdReliable =
-                genomicAnalysis.hrdStatus() == ChordStatus.HR_PROFICIENT || genomicAnalysis.hrdStatus() == ChordStatus.HR_DEFICIENT;
+        boolean isHrdReliable = genomicProfiles.homologousRecombinationDeficiency().status().isReliable;
+
         if (!isHrdReliable) {
             displayFootNote = true;
             hrDeficiencyLabel = Formats.NA_STRING + "*";
@@ -105,12 +106,12 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     private void renderMicrosatelliteStabilityCharacteristic(@NotNull Document reportDocument) {
-        GenomicAnalysis genomicAnalysis = patientReport.genomicAnalysis();
-        boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
-        double microSatelliteStability = genomicAnalysis.microsatelliteIndelsPerMb();
-        String microSatelliteStabilityString =
-                hasReliablePurity ? microsatelliteStatusString(genomicAnalysis.microsatelliteStatus()) + " " + SINGLE_DECIMAL_FORMAT.format(
-                        genomicAnalysis.microsatelliteIndelsPerMb()) : Formats.NA_STRING;
+        Genomic genomic = wgsReport.genomic();
+        GenomicProfiles genomicProfiles = genomic.profiles();
+
+        boolean hasReliablePurity = genomic.hasReliablePurity();
+        double microSatelliteStability = genomicProfiles.microsatellite().value();
+        String microSatelliteStabilityString = genomicProfiles.microsatellite().label();
 
         BarChart satelliteChart = new BarChart(microSatelliteStability,
                 MicrosatelliteStatus.RANGE_MIN,
@@ -137,10 +138,11 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     private void renderMutationalLoadCharacteristic(@NotNull Document reportDocument) {
-        GenomicAnalysis genomicAnalysis = patientReport.genomicAnalysis();
+        Genomic genomic = wgsReport.genomic();
+        GenomicProfiles genomicProfiles = genomic.profiles();
 
-        boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
-        int mutationalLoad = genomicAnalysis.tumorMutationalLoad();
+        boolean hasReliablePurity = genomic.hasReliablePurity();
+        int mutationalLoad = genomicProfiles.tumorMutationalLoad();
 
         String mutationalLoadString = hasReliablePurity ? NO_DECIMAL_FORMAT.format(mutationalLoad) : Formats.NA_STRING;
         BarChart mutationalLoadChart =
@@ -161,14 +163,13 @@ public class TumorCharacteristicsChapter implements ReportChapter {
     }
 
     private void renderMutationalBurdenCharacteristic(@NotNull Document reportDocument) {
-        GenomicAnalysis genomicAnalysis = patientReport.genomicAnalysis();
+        Genomic genomic = wgsReport.genomic();
+        GenomicProfiles genomicProfiles = genomic.profiles();
 
-        boolean hasReliablePurity = genomicAnalysis.hasReliablePurity();
-        double mutationalBurden = genomicAnalysis.tumorMutationalBurden();
-        String tmbStatus = tumorMutationalBurdenString(genomicAnalysis.tumorMutationalBurdenStatus());
+        boolean hasReliablePurity = genomic.hasReliablePurity();
+        double mutationalBurden = genomicProfiles.tumorMutationalBurden().value();
 
-        String mutationalBurdenString =
-                hasReliablePurity ? tmbStatus + " " + SINGLE_DECIMAL_FORMAT.format(mutationalBurden) : Formats.NA_STRING;
+        String mutationalBurdenString = genomicProfiles.tumorMutationalBurden().label();
         BarChart mutationalBurdenChart =
                 new BarChart(mutationalBurden, MutationalBurden.RANGE_MIN, MutationalBurden.RANGE_MAX, false, reportResources);
         mutationalBurdenChart.enabled(hasReliablePurity);
@@ -205,25 +206,24 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv("Molecular tissue of origin prediction"));
         Table table = new Table(UnitValue.createPercentArray(new float[]{10, 1, 10, 1, 10}));
         table.setWidth(contentWidth());
-        if (patientReport.molecularTissueOriginPlotPath() != null && patientReport.genomicAnalysis().hasReliablePurity()) {
+        Genomic genomic = wgsReport.genomic();
+        if (cuppaPath != null && genomic.hasReliablePurity()) {
 
-            String cuppaPlot = patientReport.molecularTissueOriginPlotPath();
-            if (patientReport.qsFormNumber().equals(QsFormNumber.FOR_209.number) || patientReport.qsFormNumber()
-                    .equals(QsFormNumber.FOR_080.number)) {
-                if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
+            if (wgsReport.version().qsFormNumber().isFailed) {
+                if (genomic.purity() < ReportResources.PURITY_CUTOFF) {
                     reportDocument.add(createCharacteristicDisclaimerDiv(
                             "Due to the low tumor purity, the molecular tissue of origin prediction should be interpreted with caution."));
                 }
 
                 try {
                     reportDocument.add(createCharacteristicDiv("")); // For better display plot
-                    Image circosImage = new Image(ImageDataFactory.create(cuppaPlot));
+                    Image circosImage = new Image(ImageDataFactory.create(cuppaPath));
                     circosImage.setMaxHeight(250);
                     circosImage.setHorizontalAlignment(HorizontalAlignment.CENTER);
                     circosImage.setMarginBottom(8);
                     reportDocument.add(circosImage);
                 } catch (MalformedURLException e) {
-                    throw new IOException("Failed to read molecular tissue origin plot image at " + cuppaPlot);
+                    throw new IOException("Failed to read molecular tissue origin plot image at " + cuppaPath);
                 }
             }
 
@@ -240,7 +240,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
 
             table.addCell(TableUtil.createLayoutCell());
 
-            if (patientReport.genomicAnalysis().impliedPurity() < ReportResources.PURITY_CUTOFF) {
+            if (genomic.purity() < ReportResources.PURITY_CUTOFF) {
                 table.addCell(TableUtil.createLayoutCell()
                         .add(new Div().add(createContentParagraph("The left plot",
                                 " shows the likelihoods (similarity) for all the origin "
@@ -327,62 +327,5 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         }
 
         return div;
-    }
-
-    @NotNull
-    private static String chordStatusString(@NotNull ChordStatus hrdStatus) {
-        switch (hrdStatus) {
-            case CANNOT_BE_DETERMINED: {
-                return "Cannot be determined";
-            }
-            case HR_PROFICIENT: {
-                return "Proficient";
-            }
-            case HR_DEFICIENT: {
-                return "Deficient";
-            }
-            case UNKNOWN: {
-                return "Unknown";
-            }
-            default: {
-                return "Invalid";
-            }
-        }
-    }
-
-    @NotNull
-    private static String microsatelliteStatusString(@NotNull PurpleMicrosatelliteStatus microsatelliteStatus) {
-        switch (microsatelliteStatus) {
-            case MSI: {
-                return "Unstable";
-            }
-            case MSS: {
-                return "Stable";
-            }
-            case UNKNOWN: {
-                return "Unknown";
-            }
-            default: {
-                return "Invalid";
-            }
-        }
-    }
-
-    @NotNull
-    private static String tumorMutationalBurdenString(@NotNull PurpleTumorMutationalStatus tumorMutationalLoadStatus) {
-        switch (tumorMutationalLoadStatus) {
-            case HIGH: {
-                return "High";
-            }
-            case LOW: {
-                return "Low";
-            }
-            case UNKNOWN: {
-                return "Unknown";
-            }
-            default: {
-                return "Invalid";
-            }
-        }
     }
 }

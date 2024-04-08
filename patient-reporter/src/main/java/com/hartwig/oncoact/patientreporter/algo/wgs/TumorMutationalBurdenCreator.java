@@ -8,6 +8,7 @@ import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.DoubleFormatter.formatSingleDecimal;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.MicrosatelliteCreator.SINGLE_DECIMAL_FORMAT;
 
 class TumorMutationalBurdenCreator {
 
@@ -24,11 +25,18 @@ class TumorMutationalBurdenCreator {
 
     static TumorMutationalBurden createTumorMutationalBurdenExtend(
             double tumorMutationalBurden,
-            @NotNull PurpleTumorMutationalStatus tumorMutationalBurdenStatus) {
+            @NotNull PurpleTumorMutationalStatus tumorMutationalBurdenStatus,
+            boolean hasReliablePurity) {
         return TumorMutationalBurden.builder()
                 .value(tumorMutationalBurden)
                 .status(getTumorMutationalStatus(tumorMutationalBurdenStatus))
+                .label(getLabel(hasReliablePurity, getTumorMutationalStatus(tumorMutationalBurdenStatus), tumorMutationalBurden))
                 .build();
+    }
+
+    @NotNull
+    private static String getLabel(boolean hasReliablePurity, TumorMutationalStatus status, double tumorMutationalBurden) {
+        return hasReliablePurity ? status + " " + SINGLE_DECIMAL_FORMAT.format(tumorMutationalBurden) : Formats.NA_STRING;
     }
 
     private static TumorMutationalStatus getTumorMutationalStatus(PurpleTumorMutationalStatus status) {

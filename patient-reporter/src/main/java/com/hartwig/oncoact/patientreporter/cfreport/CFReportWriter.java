@@ -6,10 +6,7 @@ import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.CircosChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.DetailsAndDisclaimerChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.ExplanationChapter;
-import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.SummaryChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.*;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.*;
 import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
@@ -49,10 +46,12 @@ public class CFReportWriter implements ReportWriter {
     }
 
     @Override
-    public void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath, @NotNull String purpleCircosPlot, @NotNull String logoRVAPath, @NotNull String signaturePath) throws IOException {
+    public void writeAnalysedPatientReport(@NotNull WgsReport report, @NotNull String outputFilePath, @NotNull String logoCompanyPath, @NotNull String purpleCircosPlot,
+                                           @NotNull String logoRVAPath, @NotNull String signaturePath, @NotNull String cuppaPlot) throws IOException {
         ReportResources reportResources = ReportResources.create();
         ReportChapter[] chapters = new ReportChapter[]{
                 new SummaryChapter(report, reportResources),
+                new TumorCharacteristicsChapter(report, reportResources, cuppaPlot),
                 new CircosChapter(reportResources, purpleCircosPlot),
                 new ExplanationChapter(reportResources),
                 new DetailsAndDisclaimerChapter(report, reportResources, logoRVAPath, signaturePath)};

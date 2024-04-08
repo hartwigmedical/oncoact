@@ -13,6 +13,9 @@ public abstract class HomologousRecombinationDeficiency {
     @NotNull
     public abstract HomologousRecombinationDeficiencyStatus status();
 
+    @NotNull
+    public abstract String label();
+
     public static ImmutableHomologousRecombinationDeficiency.Builder builder() {
         return ImmutableHomologousRecombinationDeficiency.builder();
     }

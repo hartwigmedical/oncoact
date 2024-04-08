@@ -13,6 +13,9 @@ public abstract class Microsatellite {
     @NotNull
     public abstract MicrosatelliteStatus status();
 
+    @NotNull
+    public abstract String label();
+
     public static ImmutableMicrosatellite.Builder builder() {
         return ImmutableMicrosatellite.builder();
     }

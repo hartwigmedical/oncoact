@@ -14,7 +14,7 @@ import static com.hartwig.oncoact.patientreporter.algo.wgs.DoubleFormatter.forma
 
 class MicrosatelliteCreator {
 
-    private static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
+    static final DecimalFormat SINGLE_DECIMAL_FORMAT = ReportResources.decimalFormat("#.#");
 
     static String createMicrosatallite(@NotNull GenomicAnalysis analysis) {
         if (!analysis.hasReliablePurity()) {
@@ -29,11 +29,18 @@ class MicrosatelliteCreator {
 
     static Microsatellite createMicrosatalliteExtend(
             double microsatelliteIndelsPerMb,
-            @NotNull PurpleMicrosatelliteStatus microsatelliteStatus) {
+            @NotNull PurpleMicrosatelliteStatus microsatelliteStatus,
+            boolean hasReliablePurity) {
         return Microsatellite.builder()
                 .value(microsatelliteIndelsPerMb)
                 .status(getMicrosatalliteStatus(microsatelliteStatus))
+                .label(getLabel(hasReliablePurity, getMicrosatalliteStatus(microsatelliteStatus), microsatelliteIndelsPerMb))
                 .build();
+    }
+
+    @NotNull
+    private static String getLabel(boolean hasReliablePurity, MicrosatelliteStatus status, double microsatelliteIndelsPerMb) {
+        return hasReliablePurity ? status + " " + SINGLE_DECIMAL_FORMAT.format(microsatelliteIndelsPerMb) : Formats.NA_STRING;
     }
 
     static MicrosatelliteStatus getMicrosatalliteStatus(PurpleMicrosatelliteStatus status) {

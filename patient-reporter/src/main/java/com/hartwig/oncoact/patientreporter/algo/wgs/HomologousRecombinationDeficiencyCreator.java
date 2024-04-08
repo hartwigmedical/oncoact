@@ -8,6 +8,7 @@ import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 import static com.hartwig.oncoact.patientreporter.algo.wgs.DoubleFormatter.formatSingleDecimal;
+import static com.hartwig.oncoact.patientreporter.algo.wgs.MicrosatelliteCreator.SINGLE_DECIMAL_FORMAT;
 import static com.hartwig.oncoact.patientreporter.model.HomologousRecombinationDeficiencyStatus.*;
 
 class HomologousRecombinationDeficiencyCreator {
@@ -30,9 +31,15 @@ class HomologousRecombinationDeficiencyCreator {
         return HomologousRecombinationDeficiency.builder()
                 .value(hrdValue)
                 .status(getHomologousRecombinationDeficiencyStatus(hrdStatus))
+                .label(getLabel(hrdValue, hasReliablePurity, getHomologousRecombinationDeficiencyStatus(hrdStatus)))
                 .build();
     }
 
+    @NotNull
+    private static String getLabel(double hrdValue, boolean hasReliablePurity, HomologousRecombinationDeficiencyStatus hrdStatus) {
+        return
+                hasReliablePurity ? hrdStatus + " " + SINGLE_DECIMAL_FORMAT.format(hrdValue) : Formats.NA_STRING;
+    }
 
     private static boolean isReportedStatus(HomologousRecombinationDeficiencyStatus status) {
         return status == HR_DEFICIENT || status == HR_PROFICIENT;

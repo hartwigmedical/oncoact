@@ -23,8 +23,8 @@ class GenomicProfilesCreator {
             boolean hasReliablePurity) {
 
         return GenomicProfiles.builder()
-                .tumorMutationalBurden(createTumorMutationalBurdenExtend(tumorMutationalBurden, tumorMutationalBurdenStatus))
-                .microsatellite(createMicrosatalliteExtend(microsatelliteIndelsPerMb, microsatelliteStatus))
+                .tumorMutationalBurden(createTumorMutationalBurdenExtend(tumorMutationalBurden, tumorMutationalBurdenStatus, hasReliablePurity))
+                .microsatellite(createMicrosatalliteExtend(microsatelliteIndelsPerMb, microsatelliteStatus, hasReliablePurity))
                 .homologousRecombinationDeficiency(createHomologousRecombinationDeficiencyExtend(hrdValue, hrdStatus, hasReliablePurity))
                 .tumorMutationalLoad(tumorMutationalLoad)
                 .build();
