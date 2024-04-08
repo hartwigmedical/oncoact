@@ -16,6 +16,7 @@ class HospitalCreator {
         return Hospital.builder()
                 .name(lamaPatientData.getOfficialHospitalName())
                 .requester(determineRequester(lamaPatientData))
+                .reportAddress(determineReportAddress(lamaPatientData))
                 .build();
     }
 
@@ -38,5 +39,51 @@ class HospitalCreator {
             }
         }
         return requester;
+    }
+
+    public static String determineReportAddress(@NotNull PatientReporterData lamaPatientData) {
+        String studyPI = lamaPatientData.getStudyPI();
+        String requester = lamaPatientData.getRequesterName();
+        String hospital = lamaPatientData.getOfficialHospitalName();
+        String postalCode = lamaPatientData.getHospitalPostalCode();
+        String city = lamaPatientData.getHospitalCity();
+        String address = lamaPatientData.getHospitalAddress();
+
+        String requesterNameReport = Strings.EMPTY;
+
+        if (lamaPatientData.getIsStudy()) {
+            if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None study PI name of report is known. Solve before reporting!");
+            }
+        } else {
+            if (requester != null) {
+                requesterNameReport = requester;
+            } else if (studyPI != null) {
+                requesterNameReport = studyPI;
+            } else {
+                throw new IllegalArgumentException("None requester name of report is known. Solve before reporting!");
+            }
+        }
+
+        if (hospital.equals(Strings.EMPTY)) {
+            throw new IllegalArgumentException("Unknown hospital name is known");
+        }
+
+        if (postalCode.equals(Strings.EMPTY)) {
+            throw new IllegalArgumentException("Unknown postal code of hospital known");
+        }
+
+        if (city.equals(Strings.EMPTY)) {
+            throw new IllegalArgumentException("Unknown city of hospital known");
+        }
+
+        String hospitalAddress = hospital + ", " + postalCode + " " + city;
+        if (address != null) {
+            hospitalAddress = hospital + ", " + address + ", " + postalCode + " " + city;
+        }
+
+        return requesterNameReport + ", " + hospitalAddress;
     }
 }

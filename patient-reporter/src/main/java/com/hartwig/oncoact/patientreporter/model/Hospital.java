@@ -14,6 +14,9 @@ public abstract class Hospital {
     @NotNull
     public abstract String name();
 
+    @NotNull
+    public abstract String reportAddress();
+
     public static ImmutableHospital.Builder builder() {
         return ImmutableHospital.builder();
     }

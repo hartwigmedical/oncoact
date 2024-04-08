@@ -90,7 +90,6 @@ public class WgsReportCreator {
                 .map(Correction::isCorrectedReportExtern)
                 .orElse(false);
         String specialRemark = Optional.ofNullable(reportData.correction()).map(Correction::specialRemark).orElse("");
-
         WgsReport report = WgsReport.builder()
                 .reportDate(getReportDate())
                 .receiver(getReceiver())
@@ -100,6 +99,8 @@ public class WgsReportCreator {
                 .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant(), pharmacogeneticsGenotypesMap, hlaReportingData))
                 .therapy(createTherapy())
                 .version(createVersion(config.pipelineVersion(), reportData.udiDi(), qcFormNumber))
+                .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
+                .user(getUser())
                 .build();
 
         // TODO printReportState(report);
@@ -138,5 +139,48 @@ public class WgsReportCreator {
     @NotNull
     private String getReportDate() {
         return Formats.formatDate(reportData.reportTime().toLocalDate());
+    }
+
+    @NotNull
+    private String getUser() {
+        String systemUser = System.getProperty("user.name");
+        String userName;
+        String trainedEmployee = " (trained IT employee)";
+        String combinedUserName;
+
+        switch (systemUser) {
+            case "lieke":
+            case "liekeschoenmaker":
+            case "lschoenmaker":
+                userName = "LS";
+                combinedUserName = userName + trainedEmployee;
+                break;
+            case "sandra":
+            case "sandravandenbroek":
+            case "sandravdbroek":
+            case "s_vandenbroek":
+            case "svandenbroek":
+                userName = "SvdB";
+                combinedUserName = userName + trainedEmployee;
+                break;
+            case "ybijl":
+                userName = "YB";
+                combinedUserName = userName + trainedEmployee;
+                break;
+            case "root":
+                combinedUserName = "automatically";
+                break;
+            default:
+                userName = systemUser;
+                combinedUserName = userName + trainedEmployee;
+                break;
+        }
+
+        if (combinedUserName.endsWith(trainedEmployee)) {
+            combinedUserName = "by " + combinedUserName;
+        }
+
+        return combinedUserName + " and checked by a trained Clinical Molecular Biologist in Pathology (KMBP)";
+
     }
 }

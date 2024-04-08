@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
+import com.hartwig.oncoact.patientreporter.model.*;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.io.IOException;
 import com.itextpdf.layout.Document;
@@ -14,20 +14,28 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
 public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
-    private final AnalysedPatientReport patientReport;
+    private final WgsReport wgsReport;
     @NotNull
     private final ReportResources reportResources;
 
-    public DetailsAndDisclaimerChapter(@NotNull AnalysedPatientReport patientReport, @NotNull ReportResources reportResources) {
-        this.patientReport = patientReport;
+    @NotNull
+    private final String logoRVAPath;
+
+    @NotNull
+    private final String signaturePath;
+
+    public DetailsAndDisclaimerChapter(@NotNull WgsReport wgsReport, @NotNull ReportResources reportResources,
+                                       @NotNull String logoRVAPath, @NotNull String signaturePath) {
+        this.wgsReport = wgsReport;
         this.reportResources = reportResources;
+        this.logoRVAPath = logoRVAPath;
+        this.signaturePath = signaturePath;
     }
 
     @NotNull
@@ -45,9 +53,9 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) throws IOException {
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        var signatureDiv = reportSignature.createSignatureDiv(patientReport.logoRVAPath(), patientReport.signaturePath());
+        var signatureDiv = reportSignature.createSignatureDiv(logoRVAPath, signaturePath);
         var endOfReportIndication = reportSignature.createEndOfReportIndication();
-        var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
+        var chapterTable = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1})).setWidth(contentWidth())
                 .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))
                 .addCell(TableUtil.createLayoutCell())
                 .addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()))
@@ -65,43 +73,46 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
         div.add(createContentParagraph("The samples have been sequenced at ", ReportResources.HARTWIG_ADDRESS, "."));
 
-        div.add(generateHMFAndPathologySampleIDParagraph(patientReport));
+        TumorSample tumorSample = wgsReport.tumorSample();
+        Sample referenceSample = wgsReport.referenceSample();
+        div.add(generateHMFAndPathologySampleIDParagraph(tumorSample.reportingId()));
 
+        //TODO; should earliest arrival date also in datamodel?
         String earliestArrivalDate =
-                LamaInterpretation.extractEarliestArrivalDate(patientReport.lamaPatientData().getReferenceArrivalDate(),
-                        patientReport.lamaPatientData().getTumorArrivalDate());
+                LamaInterpretation.extractEarliestArrivalDate(referenceSample.arrivalDate(),
+                        tumorSample.sample().arrivalDate());
         div.add(createContentParagraphTwice("The results in this report have been obtained between ",
                 Formats.formatNullableString(earliestArrivalDate),
                 " and ",
-                patientReport.reportDate(),
+                wgsReport.reportDate(),
                 "."));
 
         div.add(createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
-                Formats.formatDate(patientReport.lamaPatientData().getTumorArrivalDate()),
+                Formats.formatDate(tumorSample.sample().arrivalDate()),
                 " with barcode ",
-                patientReport.lamaPatientData().getTumorSampleBarcode(),
+                tumorSample.sample().sampleBarcode(),
                 "."));
         div.add(createContentParagraphTwice("This analysis is performed on the reference sample as arrived on ",
-                Formats.formatDate(patientReport.lamaPatientData().getReferenceArrivalDate()),
+                Formats.formatDate(referenceSample.arrivalDate()),
                 " with barcode ",
-                Formats.formatNullableString(patientReport.lamaPatientData().getReferenceSampleBarcode()),
+                Formats.formatNullableString(referenceSample.sampleBarcode()),
                 "."));
         div.add(createContentParagraph("The results stated in this report are based on the tested tumor and reference sample."));
         div.add(createContentParagraph("This experiment is performed according to lab procedures: ",
-                patientReport.lamaPatientData().getSopString()));
+                tumorSample.sop()));
 
         div.add(createContentParagraph("This report is addressed to: ",
-                LamaInterpretation.hospitalContactReport(patientReport.lamaPatientData()),
+                tumorSample.hospital().reportAddress(),
                 "."));
 
-        patientReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments, ".")));
-
+        wgsReport.comments().ifPresent(comments -> div.add(createContentParagraphRed("Comments: " + comments, ".")));
         return div;
     }
 
     @NotNull
     private Div createDisclaimerColumn() {
-        String pipelineVersion = patientReport.pipelineVersion() == null ? "No pipeline version is known" : patientReport.pipelineVersion();
+        String molecularPipeline = wgsReport.version().molecularPipeline();
+        String pipelineVersion = molecularPipeline == null ? "No pipeline version is known" : molecularPipeline;
         Div div = new Div();
 
         div.add(new Paragraph("Disclaimers").addStyle(reportResources.smallBodyHeadingStyle()));
@@ -111,10 +122,10 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
         div.add(createContentParagraphTwice("This report is generated using the molecular pipeline version ",
                 pipelineVersion,
                 " and OncoAct reporting pipeline version ",
-                "1.0."));
-        div.add(createContentParagraph("(basic) UDI-DI: ", patientReport.udiDi() + "."));
+                wgsReport.version().reportingPipeline()));
+        div.add(createContentParagraph("(basic) UDI-DI: ", wgsReport.version().udiDi() + "."));
 
-        String whoVerified = "This report was generated " + patientReport.user();
+        String whoVerified = "This report was generated " + wgsReport.user();
         div.add(createContentParagraph(whoVerified, "."));
 
         div.add(createContentParagraph("The ‘primary tumor location’ and ‘primary tumor type’ have influence on the "
@@ -142,12 +153,12 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull AnalysedPatientReport patientReport) {
-        String pathologyId = patientReport.lamaPatientData().getPathologyNumber();
-        String reportingId = patientReport.lamaPatientData().getReportingId();
+    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull ReportingId reportingIdData) {
+        String pathologyId = reportingIdData.pathologyId();
+        String reportingId = reportingIdData.value();
 
         String interpretId;
-        if (patientReport.lamaPatientData().getIsStudy()) {
+        if (reportingIdData.type().equals(ReportingIdType.STUDY)) {
             interpretId = "The study ID is: ";
         } else {
             interpretId = "The hospital patient ID is: ";
@@ -189,7 +200,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
-            @NotNull String boldPart2) {
+                                                  @NotNull String boldPart2) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))
@@ -198,7 +209,7 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
-            @NotNull String boldPart2, @NotNull String regularPar3) {
+                                                  @NotNull String boldPart2, @NotNull String regularPar3) {
         return createContentParagraph(regularPart).add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(regularPart2)
                 .add(new Text(boldPart2).addStyle(reportResources.smallBodyBoldTextStyle()))

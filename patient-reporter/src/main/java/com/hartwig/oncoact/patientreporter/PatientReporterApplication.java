@@ -74,7 +74,7 @@ public class PatientReporterApplication {
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
         String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
-        reportWriter.writeAnalysedPatientReport(report, outputFilePath, reportData.logoCompanyPath(), config.purpleCircosPlot());
+        reportWriter.writeAnalysedPatientReport(report, outputFilePath, reportData.logoCompanyPath(), config.purpleCircosPlot(), config.rvaLogo(), config.signature());
 
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
