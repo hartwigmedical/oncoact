@@ -49,6 +49,9 @@ public abstract class Genomic {
     public abstract List<HlaAllele> hlaAlleles();
 
     @NotNull
+    public abstract String hlaQc();
+
+    @NotNull
     public abstract GenomicProfiles profiles();
 
     public static ImmutableGenomic.Builder builder() {

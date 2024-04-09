@@ -10,8 +10,10 @@ import com.hartwig.oncoact.patientreporter.model.HlaAlleleSummary;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class HlaAllelesCreator {
     static List<HlaAlleleSummary> createHlaAllelesSummary(
@@ -24,7 +26,15 @@ class HlaAllelesCreator {
             @NotNull HlaAllelesReportingData hlaReportingData,
             boolean hasReliablePurity
     ) {
-        return createHlaAllelesList(hlaReportingData, hasReliablePurity);
+        return sort(createHlaAllelesList(hlaReportingData, hasReliablePurity));
+    }
+
+    @NotNull
+    public static List<HlaAllele> sort(@NotNull List<HlaAllele> alleles) {
+        return alleles.stream()
+                .sorted(Comparator.comparing(HlaAllele::gene)
+                        .thenComparing(HlaAllele::germlineAllele))
+                .collect(Collectors.toList());
     }
 
     private static List<HlaAlleleSummary> createHlaAllelesListSummary(@NotNull HlaAllelesReportingData hlaReportingData) {

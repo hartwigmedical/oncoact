@@ -2,7 +2,6 @@ package com.hartwig.oncoact.patientreporter.cfreport.data;
 
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.util.Formats;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,7 @@ public final class GeneUtil {
     }
 
     @NotNull
-    static String zeroPrefixed(@NotNull String location) {
+    public static String zeroPrefixed(@NotNull String location) {
         // First remove q or p arm if present.
         int armStart = location.indexOf("q");
         if (armStart < 0) {

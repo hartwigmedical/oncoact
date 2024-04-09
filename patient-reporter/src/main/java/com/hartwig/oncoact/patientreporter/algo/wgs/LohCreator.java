@@ -8,7 +8,9 @@ import com.hartwig.oncoact.patientreporter.model.LohEvent;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class LohCreator {
 
@@ -18,7 +20,7 @@ class LohCreator {
     ) {
         List<LohEvent> lohEvents = Lists.newArrayList();
         if (status == ChordStatus.HR_DEFICIENT) {
-            for (InterpretPurpleGeneCopyNumbers copyNumbers : suspectGeneCopyNumbersWithLOH) {
+            for (InterpretPurpleGeneCopyNumbers copyNumbers : sort(suspectGeneCopyNumbersWithLOH)) {
                 lohEvents.add(LohEvent.builder()
                         .location(copyNumbers.chromosome() + copyNumbers.chromosomeBand())
                         .gene(copyNumbers.geneName())
@@ -30,13 +32,20 @@ class LohCreator {
         return lohEvents;
     }
 
+    @NotNull
+    public static List<InterpretPurpleGeneCopyNumbers> sort(@NotNull List<InterpretPurpleGeneCopyNumbers> LOHPurpleGeneCopyNumbers) {
+        return LOHPurpleGeneCopyNumbers.stream()
+                .sorted(Comparator.comparing(InterpretPurpleGeneCopyNumbers::geneName))
+                .collect(Collectors.toList());
+    }
+
     static List<LohEvent> createLohEventMSI(
             @NotNull List<InterpretPurpleGeneCopyNumbers> suspectGeneCopyNumbersWithLOH,
             @NotNull PurpleMicrosatelliteStatus status
     ) {
         List<LohEvent> lohEvents = Lists.newArrayList();
         if (status == PurpleMicrosatelliteStatus.MSI) {
-            for (InterpretPurpleGeneCopyNumbers copyNumbers : suspectGeneCopyNumbersWithLOH) {
+            for (InterpretPurpleGeneCopyNumbers copyNumbers : sort(suspectGeneCopyNumbersWithLOH)) {
                 lohEvents.add(LohEvent.builder()
                         .location(copyNumbers.chromosome() + copyNumbers.chromosomeBand())
                         .gene(copyNumbers.geneName())

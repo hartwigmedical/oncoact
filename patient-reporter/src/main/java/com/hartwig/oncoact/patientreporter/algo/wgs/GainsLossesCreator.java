@@ -13,6 +13,7 @@ import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 class GainsLossesCreator {
 
@@ -23,7 +24,7 @@ class GainsLossesCreator {
     ) {
         List<ObservedGainsLosses> observedGainsLosses = Lists.newArrayList();
 
-        for (PurpleGainLoss purpleGainLoss : gainsAndLosses) {
+        for (PurpleGainLoss purpleGainLoss : sort(gainsAndLosses)) {
             observedGainsLosses.add(ObservedGainsLosses.builder()
                     .chromosome(purpleGainLoss.chromosome())
                     .region(purpleGainLoss.chromosomeBand())
@@ -35,6 +36,20 @@ class GainsLossesCreator {
                     .build());
         }
         return observedGainsLosses;
+    }
+
+    @NotNull
+    public static List<PurpleGainLoss> sort(@NotNull List<PurpleGainLoss> gainsAndLosses) {
+        return gainsAndLosses.stream().sorted((gainLoss1, gainLoss2) -> {
+            String location1 = GeneUtil.zeroPrefixed(gainLoss1.chromosome() + gainLoss1.chromosomeBand());
+            String location2 = GeneUtil.zeroPrefixed(gainLoss2.chromosome() + gainLoss2.chromosomeBand());
+
+            if (location1.equals(location2)) {
+                return gainLoss1.gene().compareTo(gainLoss2.gene());
+            } else {
+                return location1.compareTo(location2);
+            }
+        }).collect(Collectors.toList());
     }
 
     @NotNull

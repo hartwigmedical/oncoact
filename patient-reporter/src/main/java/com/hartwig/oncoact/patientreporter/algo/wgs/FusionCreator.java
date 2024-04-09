@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.patientreporter.algo.wgs;
 
 import com.google.api.client.util.Lists;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.model.FusionDriverInterpretation;
@@ -11,6 +12,7 @@ import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 class FusionCreator {
 
@@ -19,7 +21,7 @@ class FusionCreator {
             boolean hasReliablePurity
     ) {
         List<ObservedGeneFusion> observedGeneFusions = Lists.newArrayList();
-        for (LinxFusion fusion : geneFusions) {
+        for (LinxFusion fusion : sort(geneFusions)) {
             observedGeneFusions.add(ObservedGeneFusion.builder()
                     .name(CurationFunctions.curateGeneNamePdf(fusion.geneStart()) + " - " + CurationFunctions.curateGeneNamePdf(fusion.geneEnd()))
                     .type(type(fusion))
@@ -34,6 +36,22 @@ class FusionCreator {
         }
         return observedGeneFusions;
     }
+
+    @NotNull
+    public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
+        return fusions.stream().sorted((fusion1, fusion2) -> {
+            if (fusion1.likelihood() == fusion2.likelihood()) {
+                if (fusion1.geneStart().equals(fusion2.geneStart())) {
+                    return fusion1.geneEnd().compareTo(fusion2.geneEnd());
+                } else {
+                    return fusion1.geneStart().compareTo(fusion2.geneStart());
+                }
+            } else {
+                return fusion1.likelihood() == FusionLikelihoodType.HIGH ? -1 : 1;
+            }
+        }).collect(Collectors.toList());
+    }
+
 
     @NotNull
     public static ObservedGeneFusionType type(@NotNull LinxFusion fusion) {

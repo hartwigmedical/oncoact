@@ -44,6 +44,7 @@ class GenomicCreator {
                 .viralInsertions(createViralInsertion(analysis.reportableViruses()))
                 .pharmacogenetics(createPharmacogeneticsGenotype(pharmacogeneticsGenotypesMap))
                 .hlaAlleles(createHlaAlleles(hlaReportingData, analysis.hasReliablePurity()))
+                .hlaQc(hlaReportingData.hlaQC())
                 .profiles(createGenomicProfiles(analysis.hrdValue(), analysis.hrdStatus(), analysis.microsatelliteIndelsPerMb(),
                         analysis.microsatelliteStatus(), analysis.tumorMutationalBurden(), analysis.tumorMutationalBurdenStatus(),
                         analysis.tumorMutationalLoad(), analysis.hasReliablePurity()))

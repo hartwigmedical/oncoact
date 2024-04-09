@@ -1,9 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
@@ -11,11 +7,15 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
+import com.hartwig.oncoact.patientreporter.model.ObservedGeneFusionType;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class GeneFusions {
 
@@ -53,8 +53,8 @@ public final class GeneFusions {
     }
 
     @NotNull
-    public Cell fusionContentType(@NotNull LinxFusionType type, @NotNull String geneName, @NotNull String transcript) {
-        if (type.equals(LinxFusionType.IG_PROMISCUOUS) || type.equals(LinxFusionType.IG_KNOWN_PAIR)) {
+    public Cell fusionContentType(@NotNull ObservedGeneFusionType type, @NotNull String geneName, @NotNull String transcript) {
+        if (type.equals(ObservedGeneFusionType.IG_PROMISCUOUS) || type.equals(ObservedGeneFusionType.IG_KNOWN_PAIR)) {
             if (geneName.startsWith("@IG")) {
                 return tableUtil.createContentCell(new Paragraph(transcript));
             } else {
