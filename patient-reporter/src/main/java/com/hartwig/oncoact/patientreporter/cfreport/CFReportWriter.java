@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
@@ -129,23 +131,23 @@ public class CFReportWriter implements ReportWriter {
         }
     }
 
-    public void writeXMLAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException {
+    public void writeXMLAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath, boolean isCorrection) throws IOException {
         ReportXML xmlReport = XMLFactory.generateXMLData(report);
-        writeReportDataToXML(xmlReport, outputFilePath, report);
+        writeReportDataToXML(xmlReport, outputFilePath, report, isCorrection);
     }
 
-    public void writeReportDataToXML(@NotNull ReportXML importWGS, @NotNull String outputDirData, @NotNull WgsPatientReport report)
+    public void writeReportDataToXML(@NotNull ReportXML importWGS, @NotNull String outputDirData, @NotNull WgsPatientReport report, boolean isCorrection)
             throws IOException {
         if (writeToFile) {
 
-//            XmlMapper xmlMapper = new XmlMapper();
-//            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
-//
-//            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".xml";
-//
-//            xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFileData), importWGS);
-//
-//            LOGGER.info(" Created report data xml file at {} ", outputFileData);
+            XmlMapper xmlMapper = new XmlMapper();
+            xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+
+            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report, isCorrection) + ".xml";
+
+            xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputFileData), importWGS);
+
+            LOGGER.info(" Created report data xml file at {} ", outputFileData);
         }
     }
 

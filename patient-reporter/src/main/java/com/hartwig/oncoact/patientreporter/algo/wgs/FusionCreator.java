@@ -23,7 +23,8 @@ class FusionCreator {
         List<ObservedGeneFusion> observedGeneFusions = Lists.newArrayList();
         for (LinxFusion fusion : sort(geneFusions)) {
             observedGeneFusions.add(ObservedGeneFusion.builder()
-                    .name(CurationFunctions.curateGeneNamePdf(fusion.geneStart()) + " - " + CurationFunctions.curateGeneNamePdf(fusion.geneEnd()))
+                    .threeGene(CurationFunctions.curateGeneNamePdf(fusion.geneEnd()))
+                    .fiveGene(CurationFunctions.curateGeneNamePdf(fusion.geneStart()))
                     .type(type(fusion))
                     .fivePromiscuousTranscript(fusion.geneTranscriptStart())
                     .threePromiscuousTranscript(fusion.geneTranscriptEnd())

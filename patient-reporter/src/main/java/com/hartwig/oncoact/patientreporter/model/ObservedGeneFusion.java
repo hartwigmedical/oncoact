@@ -9,7 +9,10 @@ import org.jetbrains.annotations.Nullable;
 public abstract class ObservedGeneFusion {
 
     @NotNull
-    public abstract String name();
+    public abstract String fiveGene();
+
+    @NotNull
+    public abstract String threeGene();
 
     @NotNull
     public abstract ObservedGeneFusionType type();

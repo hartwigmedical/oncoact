@@ -20,6 +20,12 @@ public abstract class ObservedVariant {
     public abstract List<String> variant();
 
     @NotNull
+    public abstract String canonicalHgvsCodingImpact();
+
+    @NotNull
+    public abstract String canonicalHgvsProteinImpact();
+
+    @NotNull
     public abstract ReadDepth readDepth();
 
     @NotNull

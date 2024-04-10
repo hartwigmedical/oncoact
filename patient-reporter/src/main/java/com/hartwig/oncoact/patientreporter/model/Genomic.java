@@ -12,7 +12,8 @@ public abstract class Genomic {
 
     public abstract double purity();
 
-    public abstract double averagePloidy();
+    @NotNull
+    public abstract String averagePloidy();
 
     public abstract boolean hasReliablePurity();
 

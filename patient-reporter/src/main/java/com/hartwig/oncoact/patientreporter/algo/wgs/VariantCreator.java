@@ -38,6 +38,8 @@ class VariantCreator {
                     .gene(determineGeneSymbol(variant.gene(), notifyGermlineStatusPerVariant.get(variant), variant.canonicalEffect()))
                     .position(variant.gDNA())
                     .variant(determineVariantAnnotations(variant))
+                    .canonicalHgvsCodingImpact(variant.canonicalHgvsCodingImpact())
+                    .canonicalHgvsProteinImpact(variant.canonicalHgvsProteinImpact())
                     .readDepth(createReadDepth(variant.alleleReadCount(), variant.totalReadCount()))
                     .copies(determineCopies(variant.totalCopyNumber(), hasReliablePurity))
                     .tVaf(determineTvaf(variant.tVAF(), hasReliablePurity, variant.totalCopyNumber()))

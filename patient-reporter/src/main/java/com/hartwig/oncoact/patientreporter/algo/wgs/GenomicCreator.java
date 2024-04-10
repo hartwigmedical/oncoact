@@ -3,9 +3,12 @@ package com.hartwig.oncoact.patientreporter.algo.wgs;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.model.Genomic;
+import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +34,7 @@ class GenomicCreator {
 
         return Genomic.builder()
                 .purity(analysis.impliedPurity())
-                .averagePloidy(analysis.averageTumorPloidy())
+                .averagePloidy(ploidyToString(analysis.averageTumorPloidy(), analysis.hasReliablePurity()))
                 .hasReliablePurity(analysis.hasReliablePurity())
                 .hasReliableQuality(analysis.hasReliableQuality())
                 .variants(createObservedVariant(analysis.reportableVariants(), analysis.hasReliablePurity(), notifyGermlineStatusPerVariant))
@@ -49,5 +52,14 @@ class GenomicCreator {
                         analysis.microsatelliteStatus(), analysis.tumorMutationalBurden(), analysis.tumorMutationalBurdenStatus(),
                         analysis.tumorMutationalLoad(), analysis.hasReliablePurity()))
                 .build();
+    }
+
+    @NotNull
+    public static String ploidyToString(@Nullable Double copyNumber, boolean hasReliablePurity) {
+        if (!hasReliablePurity) {
+            return Formats.NA_STRING;
+        } else {
+            return copyNumber != null ? ReportResources.decimalFormat("#.#").format(copyNumber) : Formats.NA_STRING;
+        }
     }
 }

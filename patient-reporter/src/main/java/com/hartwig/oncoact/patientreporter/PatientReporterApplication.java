@@ -7,6 +7,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.model.ImmutableSummary;
 import com.hartwig.oncoact.patientreporter.model.ImmutableWgsReport;
+import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import org.apache.commons.cli.HelpFormatter;
@@ -73,7 +74,12 @@ public class PatientReporterApplication {
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
 
-        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport());
+        boolean isCorrection = Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false);
+        boolean isCorrectionExtern = Optional.ofNullable(reportData.correction())
+                .map(Correction::isCorrectedReportExtern)
+                .orElse(false);
+
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report, isCorrection);
         reportWriter.writeAnalysedPatientReport(report, outputFilePath, reportData.logoCompanyPath(),
                 config.purpleCircosPlot(), config.rvaLogo(), config.signature(), config.cuppaPlot());
 
@@ -95,13 +101,7 @@ public class PatientReporterApplication {
                             .build())
                     .build();
             reportWriter.writeJsonAnalysedFile(report, config.outputDirData());
-
-            reportWriter.writeXMLAnalysedFile(report, config.outputDirData());
-
-            boolean isCorrection = Optional.ofNullable(reportData.correction()).map(Correction::isCorrectedReport).orElse(false);
-            boolean isCorrectionExtern = Optional.ofNullable(reportData.correction())
-                    .map(Correction::isCorrectedReportExtern)
-                    .orElse(false);
+            reportWriter.writeXMLAnalysedFile(report, config.outputDirData(), isCorrection);
             new ReportingDb().appendAnalysedReport(report, config.outputDirData(), isCorrection, isCorrectionExtern);
         }
     }
@@ -125,7 +125,8 @@ public class PatientReporterApplication {
     }
 
     @NotNull
-    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport) {
-        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName() + ".pdf";
+    private static String generateOutputFilePathForPatientReport(@NotNull String outputDirReport,
+                                                                 @NotNull WgsPatientReport wgsReport, boolean isCorrection) {
+        return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName(wgsReport, isCorrection) + ".pdf";
     }
 }

@@ -7,7 +7,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.InlineBarChart;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.GeneFusions;
-import com.hartwig.oncoact.patientreporter.cfreport.data.GeneUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
 import com.hartwig.oncoact.patientreporter.model.*;
 import com.hartwig.oncoact.util.Formats;
@@ -84,7 +83,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createPloidyPloidyTable(double ploidy, double purity, boolean hasReliablePurity) {
+    private Table createPloidyPloidyTable(String ploidy, double purity, boolean hasReliablePurity) {
         String title = "Tumor purity & ploidy";
 
         Table contentTable =
@@ -98,12 +97,11 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 TumorPurity.RANGE_MAX,
                 contentTable);
 
-        String copyNumber = GeneUtil.copyNumberToString(ploidy, hasReliablePurity);
         contentTable.addCell(tableUtil.createContentCell("Average tumor ploidy"));
-        if (copyNumber.equals(Formats.NA_STRING)) {
-            contentTable.addCell(tableUtil.createContentCell(copyNumber).setTextAlignment(TextAlignment.CENTER));
+        if (ploidy.equals(Formats.NA_STRING)) {
+            contentTable.addCell(tableUtil.createContentCell(ploidy).setTextAlignment(TextAlignment.CENTER));
         } else {
-            contentTable.addCell(tableUtil.createContentCellPurityPloidy(copyNumber).setTextAlignment(TextAlignment.CENTER));
+            contentTable.addCell(tableUtil.createContentCellPurityPloidy(ploidy).setTextAlignment(TextAlignment.CENTER));
 
         }
         contentTable.addCell(tableUtil.createContentCell(Strings.EMPTY));
@@ -306,10 +304,10 @@ public class GenomicAlterationsChapter implements ReportChapter {
                 ReportResources.CONTENT_WIDTH_WIDE);
 
         for (ObservedGeneFusion fusion : fusions) {
-            contentTable.addCell(tableUtil.createContentCell(fusion.name()));
+            contentTable.addCell(tableUtil.createContentCell(fusion.fiveGene() + " - " + fusion.threeGene()));
             contentTable.addCell(tableUtil.createContentCell(fusion.type().type).setTextAlignment(TextAlignment.CENTER));
-            contentTable.addCell(geneFusions.fusionContentType(fusion.type(), fusion.name().split(" - ")[0], fusion.fivePromiscuousTranscript()));
-            contentTable.addCell(geneFusions.fusionContentType(fusion.type(), fusion.name().split(" - ")[1], fusion.threePromiscuousTranscript()));
+            contentTable.addCell(geneFusions.fusionContentType(fusion.type(), fusion.fiveGene(), fusion.fivePromiscuousTranscript()));
+            contentTable.addCell(geneFusions.fusionContentType(fusion.type(), fusion.threeGene(), fusion.threePromiscuousTranscript()));
             contentTable.addCell(tableUtil.createContentCell(fusion.threePromiscuousStart()));
             contentTable.addCell(tableUtil.createContentCell(fusion.fivePromiscuousEnd()));
             contentTable.addCell(tableUtil.createContentCell(fusion.copies())

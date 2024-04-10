@@ -20,7 +20,7 @@ public interface ReportWriter {
 
     void writeJsonAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException;
 
-    void writeXMLAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException;
+    void writeXMLAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath, boolean isCorrection) throws IOException;
 
     void writePanelAnalysedReport(@NotNull PanelReport report, @NotNull String outputFilePath) throws IOException;
 
