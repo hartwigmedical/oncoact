@@ -18,4 +18,8 @@ public abstract class ClinicalStudy {
 
     @NotNull
     public abstract String genomicEvent();
+
+    public static ImmutableClinicalStudy.Builder builder() {
+        return ImmutableClinicalStudy.builder();
+    }
 }

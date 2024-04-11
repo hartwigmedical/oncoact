@@ -1,25 +1,18 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.components.Icon;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
+import com.hartwig.oncoact.patientreporter.model.ClinicalStudy;
+import com.hartwig.oncoact.patientreporter.model.EvidenceMatch;
+import com.hartwig.oncoact.patientreporter.model.HighLevelEvidence;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.AminoAcids;
-import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Cell;
@@ -27,10 +20,13 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.VerticalAlignment;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ClinicalEvidenceFunctions {
 
@@ -50,16 +46,9 @@ public class ClinicalEvidenceFunctions {
     private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
 
-    private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
-            Sets.newHashSet(EvidenceDirection.RESISTANT, EvidenceDirection.PREDICTED_RESISTANT);
-    private static final Set<EvidenceDirection> RESPONSE_DIRECTIONS =
-            Sets.newHashSet(EvidenceDirection.RESPONSIVE, EvidenceDirection.PREDICTED_RESPONSIVE);
-    private static final Set<EvidenceDirection> PREDICTED =
-            Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
-
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-            Boolean requireOnLabel, @NotNull String name) {
+                                                                       Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
@@ -99,7 +88,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
-            @NotNull ProtectEvidence evidenceToCheck) {
+                                                                        @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
@@ -112,7 +101,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
-            @NotNull ProtectEvidence evidenceToCheck) {
+                                                                                @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().relevantTreatmentApproaches().equals(evidenceToCheck.treatment().relevantTreatmentApproaches())
                     && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
@@ -125,53 +114,46 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTreatmentApproachTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 50, 80, 25, 15, 40, 100 },
-                new Cell[] { tableUtil.createHeaderCell("Drug type", 2), tableUtil.createHeaderCell("Tumor type specific", 1),
+    public Table createTreatmentApproachTable(@NotNull String title, @NotNull List<HighLevelEvidence> highLevelEvidence,
+                                              float contentWidth) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[]{25, 100, 50, 80, 25, 15, 40, 100},
+                new Cell[]{tableUtil.createHeaderCell("Drug type", 2), tableUtil.createHeaderCell("Tumor type specific", 1),
                         tableUtil.createHeaderCell("Match", 1), tableUtil.createHeaderCell("Level", 1),
-                        tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1) },
+                        tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1)},
                 contentWidth);
 
-        treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "treatmentApproach");
+        treatmentTable = addDataTreatementTable(treatmentTable, highLevelEvidence, title);
         return treatmentTable;
     }
 
     @NotNull
-    public Table createTreatmentTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 100, 50, 80, 25, 15, 40, 100, 60 },
-                new Cell[] { tableUtil.createHeaderCell("Drug", 2), tableUtil.createHeaderCell("Tumor type specific", 1),
-                        tableUtil.createHeaderCell("Match", 1), tableUtil.createHeaderCell("Level", 1),
-                        tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1),
-                        tableUtil.createHeaderCell("Evidence links", 1) },
+    public Table createTrialTable(@NotNull String title, @NotNull List<ClinicalStudy> studies, float contentWidth) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[]{20, 170, 80, 170},
+                new Cell[]{tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
+                        tableUtil.createHeaderCell("Genomic event", 1)},
                 contentWidth);
 
-        treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "treatment");
+        treatmentTable = addTrialTable(treatmentTable, studies, title);
         return treatmentTable;
     }
 
     @NotNull
-    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 170, 80, 170 },
-                new Cell[] { tableUtil.createHeaderCell("Trial", 2), tableUtil.createHeaderCell("Match", 1),
-                        tableUtil.createHeaderCell("Genomic event", 1) },
-                contentWidth);
-
-        treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "trial");
-        return treatmentTable;
-    }
-
-    @NotNull
-    private Table addDataIntoTable(@NotNull Table treatmentTable, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            @NotNull String title, @NotNull String evidenceType) {
-        boolean hasEvidence = false;
-        for (EvidenceLevel level : EvidenceLevel.values()) {
-            if (addEvidenceWithMaxLevel(treatmentTable, treatmentMap, level, evidenceType)) {
-                hasEvidence = true;
-            }
-        }
+    private Table addDataTreatementTable(@NotNull Table treatmentTable, @NotNull List<HighLevelEvidence> highLevelEvidence,
+                                         @NotNull String title) {
+        boolean hasEvidence = createTreatmentTable(treatmentTable, highLevelEvidence);
 
         if (hasEvidence) {
+            return tableUtil.createWrappingReportTable(title, null, treatmentTable, TableUtil.TABLE_BOTTOM_MARGIN);
+        } else {
+            return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
+        }
+    }
+
+    @NotNull
+    private Table addTrialTable(@NotNull Table treatmentTable, @NotNull List<ClinicalStudy> studies,
+                                @NotNull String title) {
+        boolean hasTrials = createTrialTable(treatmentTable, studies);
+        if (hasTrials) {
             return tableUtil.createWrappingReportTable(title, null, treatmentTable, TableUtil.TABLE_BOTTOM_MARGIN);
         } else {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
@@ -188,86 +170,86 @@ public class ClinicalEvidenceFunctions {
         return p;
     }
 
-    private boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-            @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
-        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
+    private boolean createTrialTable(@NotNull Table table, @NotNull List<ClinicalStudy> studies) {
         boolean hasEvidence = false;
-        for (String treatment : sortedTreatments) {
-            List<ProtectEvidence> evidences = treatmentMap.get(treatment);
-            if (allowedHighestLevel == highestEvidence(treatmentMap.get(treatment))) {
 
-                boolean addTreatment = true;
-                for (ProtectEvidence responsive : sort(evidences)) {
-                    Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
+        for (ClinicalStudy study : studies) {
+            Cell cellGenomic = tableUtil.createTransparentCell(study.genomicEvent());
 
-                    String onLabel = responsive.onLabel() ? "Yes" : "No";
-                    Cell cellOnLabel = tableUtil.createTransparentCell(onLabel);
+            Map<String, String> sourceUrls = Maps.newHashMap();
 
-                    Map<String, String> sourceUrls = Maps.newHashMap();
-                    Set<String> evidenceUrls = Sets.newHashSet();
+            for (EvidenceMatch source : study.matches()) {
 
-                    for (KnowledgebaseSource source : responsive.sources()) {
-                        evidenceUrls.addAll(source.evidenceUrls());
-
-                        if (source.sourceUrls().size() >= 1) {
-                            sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
-                        } else {
-                            sourceUrls.put(determineEvidenceType(source), Strings.EMPTY);
-                        }
-                    }
-
-                    Cell cellType = tableUtil.createTransparentCell(evidenceItems.createLinksSource(sourceUrls));
-                    Cell cellLevel = tableUtil.createTransparentCell(Strings.EMPTY);
-                    Cell cellPredicted = tableUtil.createTransparentCell(Strings.EMPTY);
-                    Cell cellResistant = tableUtil.createTransparentCell(Strings.EMPTY);
-                    if (!evidenceType.equals("trial")) {
-                        if (PREDICTED.contains(responsive.direction())) {
-                            cellPredicted = tableUtil.createTransparentCell(PREDICTED_SYMBOL).addStyle(reportResources.predictedStyle());
-                        }
-
-                        if (RESISTANT_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistant = tableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(reportResources.resistantStyle());
-                        }
-
-                        if (RESPONSE_DIRECTIONS.contains(responsive.direction())) {
-                            cellResistant = tableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle());
-                        }
-
-                        cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources,
-                                responsive.level().name())));
-                    }
-
-                    Cell publications = tableUtil.createTransparentCell(Strings.EMPTY);
-                    if (evidenceType.equals("treatment")) {
-                        publications = tableUtil.createTransparentCell(evidenceItems.createLinksPublications(evidenceUrls));
-                    }
-
-                    if (addTreatment) {
-                        table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(treatment), evidences.size())
-                                .setVerticalAlignment(VerticalAlignment.TOP));
-                        table.addCell(tableUtil.createContentCellRowSpan(treatment, evidences.size()));
-                        addTreatment = false;
-                    }
-
-                    if (evidenceType.equals("treatmentApproach") || evidenceType.equals("treatment")) {
-                        table.addCell(tableUtil.createContentCell(cellOnLabel));
-                        table.addCell(tableUtil.createContentCell(cellType));
-                        table.addCell(tableUtil.createContentCell(cellLevel));
-                        table.addCell(tableUtil.createContentCell(cellResistant));
-                        table.addCell(tableUtil.createContentCell(cellPredicted));
-                        table.addCell(tableUtil.createContentCell(cellGenomic));
-                        if (evidenceType.equals("treatment")) {
-                            table.addCell(tableUtil.createContentCell(publications));
-                        }
-                    } else {
-                        table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
-                                sourceUrls))));
-                        table.addCell(tableUtil.createContentCell(cellGenomic));
-                    }
+                if (source.url().size() >= 1) {
+                    sourceUrls.put(source.rank(), source.url().stream().iterator().next());
+                } else {
+                    sourceUrls.put(source.rank(), Strings.EMPTY);
                 }
-                hasEvidence = true;
             }
+
+            table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(study.clinicalStudy()), 1)
+                    .setVerticalAlignment(VerticalAlignment.TOP));
+            table.addCell(tableUtil.createContentCellRowSpan(study.clinicalStudy(), 1));
+
+            table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
+                    sourceUrls))));
+            table.addCell(tableUtil.createContentCell(cellGenomic));
+            hasEvidence = true;
         }
+        return hasEvidence;
+    }
+
+
+    private boolean createTreatmentTable(@NotNull Table table, @NotNull List<HighLevelEvidence> highLevelEvidences) {
+        boolean hasEvidence = false;
+        for (HighLevelEvidence highLevelEvidence : highLevelEvidences) {
+            Cell cellGenomic = tableUtil.createTransparentCell(highLevelEvidence.genomicEvent());
+
+            String onLabel = highLevelEvidence.isTumorTypeSpecific() ? "Yes" : "No";
+            Cell cellOnLabel = tableUtil.createTransparentCell(onLabel);
+
+            Map<String, String> sourceUrls = Maps.newHashMap();
+            for (EvidenceMatch source : highLevelEvidence.matches()) {
+                if (source.url().size() >= 1) {
+                    sourceUrls.put(source.rank(), source.url().stream().iterator().next());
+                } else {
+                    sourceUrls.put(source.rank(), Strings.EMPTY);
+                }
+            }
+
+            Cell cellType = tableUtil.createTransparentCell(evidenceItems.createLinksSource(sourceUrls));
+            Cell cellLevel = tableUtil.createTransparentCell(Strings.EMPTY);
+            Cell cellPredicted = tableUtil.createTransparentCell(Strings.EMPTY);
+            Cell cellResistant = tableUtil.createTransparentCell(Strings.EMPTY);
+            if (highLevelEvidence.isPredicted()) {
+                cellPredicted = tableUtil.createTransparentCell(PREDICTED_SYMBOL).addStyle(reportResources.predictedStyle());
+            }
+
+            if (!highLevelEvidence.isResponsive()) {
+                cellResistant = tableUtil.createTransparentCell(RESISTANT_SYMBOL).addStyle(reportResources.resistantStyle());
+            }
+
+            if (highLevelEvidence.isResponsive()) {
+                cellResistant = tableUtil.createTransparentCell(RESPONSE_SYMBOL).addStyle(reportResources.responseStyle());
+            }
+
+            cellLevel = tableUtil.createTransparentCell(new Paragraph(Icon.createLevelIcon(reportResources,
+                    highLevelEvidence.level().name())));
+
+
+            table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(highLevelEvidence.drugType()), 1)
+                    .setVerticalAlignment(VerticalAlignment.TOP));
+            table.addCell(tableUtil.createContentCellRowSpan(highLevelEvidence.drugType(), 1));
+
+            table.addCell(tableUtil.createContentCell(cellOnLabel));
+            table.addCell(tableUtil.createContentCell(cellType));
+            table.addCell(tableUtil.createContentCell(cellLevel));
+            table.addCell(tableUtil.createContentCell(cellResistant));
+            table.addCell(tableUtil.createContentCell(cellPredicted));
+            table.addCell(tableUtil.createContentCell(cellGenomic));
+            hasEvidence = true;
+        }
+
         return hasEvidence;
     }
 

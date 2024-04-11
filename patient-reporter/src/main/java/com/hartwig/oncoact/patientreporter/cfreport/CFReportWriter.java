@@ -53,17 +53,12 @@ public class CFReportWriter implements ReportWriter {
         ReportResources reportResources = ReportResources.create();
         ReportChapter[] chapters = new ReportChapter[]{
                 new SummaryChapter(report, reportResources),
+                new ClinicalEvidenceChapter(report, reportResources),
                 new GenomicAlterationsChapter(report, reportResources),
                 new TumorCharacteristicsChapter(report, reportResources, cuppaPlot),
                 new CircosChapter(reportResources, purpleCircosPlot),
                 new ExplanationChapter(reportResources),
                 new DetailsAndDisclaimerChapter(report, reportResources, logoRVAPath, signaturePath)};
-//        =
-//                new ReportChapter[]{new SummaryChapter(report, reportResources), new ClinicalEvidenceChapter(report, reportResources),
-//                        new GenomicAlterationsChapter(report, reportResources), new TumorCharacteristicsChapter(report, reportResources),
-//                        new CircosChapter(report, reportResources), new ExplanationChapter(reportResources),
-//                        new DetailsAndDisclaimerChapter(report, reportResources)};
-
         writeReport(reportResources, report, chapters, outputFilePath, logoCompanyPath);
     }
 

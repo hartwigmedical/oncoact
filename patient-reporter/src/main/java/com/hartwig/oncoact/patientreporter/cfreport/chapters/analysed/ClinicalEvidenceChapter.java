@@ -1,18 +1,15 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.util.List;
-import java.util.Map;
-
-import com.google.common.collect.Lists;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
-import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.patientreporter.model.ClinicalStudy;
+import com.hartwig.oncoact.patientreporter.model.HighLevelEvidence;
+import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.itextpdf.layout.Document;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ClinicalEvidenceChapter implements ReportChapter {
 
@@ -31,27 +28,18 @@ public class ClinicalEvidenceChapter implements ReportChapter {
     }
 
     @NotNull
-    private final AnalysedPatientReport report;
+    private final WgsReport wgsReport;
 
-    public ClinicalEvidenceChapter(@NotNull final AnalysedPatientReport report, @NotNull final ReportResources reportResources) {
-        this.report = report;
+    public ClinicalEvidenceChapter(@NotNull final WgsReport wgsReport, @NotNull final ReportResources reportResources) {
+        this.wgsReport = wgsReport;
         clinicalEvidenceFunctions = new ClinicalEvidenceFunctions(reportResources);
     }
 
     @Override
     public void render(@NotNull final Document document) {
 
-        GenomicAnalysis analysis = report.genomicAnalysis();
-        List<ProtectEvidence> reportedOnLabel = analysis.tumorSpecificEvidence();
-        List<ProtectEvidence> reportedOffLabel = analysis.offLabelEvidence();
-        List<ProtectEvidence> reportedStudies = analysis.clinicalTrials();
-
-        List<ProtectEvidence> allEvidences = Lists.newArrayList();
-        allEvidences.addAll(reportedOnLabel);
-        allEvidences.addAll(reportedOffLabel);
-
-        addTreatmentSection(document, allEvidences);
-        addTrialSection(document, reportedStudies);
+        addTreatmentSection(document, wgsReport.therapy().highLevelEvidence());
+        addTrialSection(document, wgsReport.therapy().clinicalStudies());
 
         document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore"
                 + " patients with certain tumor types may not be eligible for the DRUP study.\n"));
@@ -62,21 +50,13 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
-    private void addTreatmentSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
-        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
-
-        Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, null, "treatmentApproach");
-        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level evidence", onLabelTreatments, contentWidth()));
+    private void addTreatmentSection(@NotNull Document document, @NotNull List<HighLevelEvidence> highLevelEvidences) {
+        document.add(clinicalEvidenceFunctions.createTreatmentApproachTable("High level evidence", highLevelEvidences, contentWidth()));
     }
 
-    private void addTrialSection(@NotNull Document document, @NotNull List<ProtectEvidence> evidences) {
-        boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
-
-        Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
+    private void addTrialSection(@NotNull Document document, @NotNull List<ClinicalStudy> studies) {
         document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
-                onLabelTreatments,
+                studies,
                 contentWidth()));
     }
 }

@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.model;
 
-import com.hartwig.serve.datamodel.EvidenceLevel;
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,4 +27,8 @@ public abstract class HighLevelEvidence {
 
     @NotNull
     public abstract String genomicEvent();
+
+    public static ImmutableHighLevelEvidence.Builder builder() {
+        return ImmutableHighLevelEvidence.builder();
+    }
 }

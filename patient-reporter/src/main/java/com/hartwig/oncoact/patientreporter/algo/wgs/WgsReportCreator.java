@@ -97,7 +97,7 @@ public class WgsReportCreator {
                 .tumorSample(TumorSampleCreator.createTumorSample(reportData.lamaPatientData(), reportData.diagnosticSiloPatientData()))
                 .referenceSample(createSample(reportData.lamaPatientData().getTumorSampleBarcode(), reportData.lamaPatientData().getTumorArrivalDate()))
                 .genomic(createGenomic(curatedAnalysis, genomicAnalysis.notifyGermlineStatusPerVariant(), pharmacogeneticsGenotypesMap, hlaReportingData))
-                .therapy(createTherapy())
+                .therapy(createTherapy(reportData.lamaPatientData().getReportSettings(), reportableEvidence))
                 .version(createVersion(config.pipelineVersion(), reportData.udiDi(), qcFormNumber))
                 .comments(Optional.ofNullable(reportData.correction()).map(Correction::comments))
                 .user(getUser())
