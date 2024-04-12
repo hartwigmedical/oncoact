@@ -281,7 +281,7 @@ public class CFReportWriterTest {
 
         QCFailReport patientReport = ImmutableQCFailReport.builder()
                 .lamaPatientData(testReportData.lamaPatientData())
-                .qsFormNumber(reason.qcFormNumber())
+                //.qsFormNumber(QsFormNumber.FOR_082)
                 .reason(reason)
                 .failExplanation(failExplanation)
                 .wgsPurityString(wgsPurityString)

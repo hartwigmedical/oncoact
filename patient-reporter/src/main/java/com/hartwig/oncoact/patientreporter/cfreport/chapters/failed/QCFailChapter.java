@@ -5,8 +5,8 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.LineDivider;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TumorLocationAndTypeTable;
+import com.hartwig.oncoact.patientreporter.model.WgsReportFailed;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
@@ -19,15 +19,21 @@ import java.util.Set;
 public class QCFailChapter implements ReportChapter {
 
     @NotNull
-    private final QCFailReport failReport;
+    private final WgsReportFailed failReport;
     @NotNull
     private final ReportResources reportResources;
     private final TumorLocationAndTypeTable tumorLocationAndTypeTable;
 
-    public QCFailChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
+    private final QCFailReason reason;
+    private final boolean isCorrection;
+
+    public QCFailChapter(@NotNull WgsReportFailed failReport, @NotNull ReportResources reportResources, @NotNull QCFailReason reason,
+                         boolean isCorrection) {
         this.failReport = failReport;
         this.reportResources = reportResources;
         this.tumorLocationAndTypeTable = new TumorLocationAndTypeTable(reportResources);
+        this.reason = reason;
+        this.isCorrection = isCorrection;
     }
 
     @NotNull
@@ -41,14 +47,14 @@ public class QCFailChapter implements ReportChapter {
     public String pdfTitle() {
         Set<QCFailReason> tumorFailTitle = Sets.newHashSet(QCFailReason.WGS_TUMOR_PROCESSING_ISSUE, QCFailReason.WGS_TCP_FAIL);
 
-        if (tumorFailTitle.contains(failReport.reason())) {
-            if (failReport.isCorrectedReport()) {
+        if (tumorFailTitle.contains(reason)) {
+            if (isCorrection) {
                 return "OncoAct tumor WGS report \n- failed tumor analysis (Corrected)";
             } else {
                 return "OncoAct tumor WGS report \n- failed tumor analysis";
             }
         } else {
-            if (failReport.isCorrectedReport()) {
+            if (isCorrection) {
                 return "OncoAct tumor WGS report \n- failed analysis (Corrected)";
             } else {
                 return "OncoAct tumor WGS report \n- failed analysis";
@@ -68,15 +74,15 @@ public class QCFailChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-//        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.lamaPatientData().getPrimaryTumorType(),
-//                contentWidth()));
+        reportDocument.add(tumorLocationAndTypeTable.createTumorLocation(failReport.tumorSample().primaryTumor(),
+                contentWidth()));
         reportDocument.add(tumorLocationAndTypeTable.disclaimerTextTumorLocationBiopsyLocation().addStyle(reportResources.subTextStyle()));
 
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
 
-        reportDocument.add(createFailReasonDiv(failReport.failExplanation().reportReason(),
-                failReport.failExplanation().reportExplanation(),
-                failReport.failExplanation().sampleFailReasonComment()));
+        reportDocument.add(createFailReasonDiv(failReport.failedDatabase().reportReason(),
+                failReport.failedDatabase().reportExplanation(),
+                failReport.failedDatabase().sampleFailReasonComment()));
         reportDocument.add(LineDivider.createLineDivider(contentWidth()));
     }
 

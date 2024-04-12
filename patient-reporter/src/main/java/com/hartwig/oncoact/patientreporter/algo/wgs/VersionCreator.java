@@ -3,11 +3,12 @@ package com.hartwig.oncoact.patientreporter.algo.wgs;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.model.Version;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 class VersionCreator {
 
     static Version createVersion(
-            @NotNull String pipelineVersion,
+            @Nullable String pipelineVersion,
             @NotNull String udiDi,
             QsFormNumber qsFormNumber
     ) {

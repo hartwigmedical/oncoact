@@ -1,13 +1,5 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -21,10 +13,13 @@ import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.failedreasondb.FailedReason;
 import com.hartwig.oncoact.util.Formats;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.*;
 
 public class QCFailReporter {
 
@@ -88,7 +83,7 @@ public class QCFailReporter {
         LOGGER.info("  QC status: {}", Objects.toString(purpleQc));
 
         return QCFailReport.builder()
-                .qsFormNumber(reason.qcFormNumber())
+                //.qsFormNumber(reason.qcFormNumber())
                 .reason(reason)
                 .failExplanation(failedDatabase)
                 .wgsPurityString(wgsPurityString)

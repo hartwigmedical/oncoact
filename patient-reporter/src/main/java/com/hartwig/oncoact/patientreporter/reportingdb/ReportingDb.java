@@ -4,9 +4,10 @@ import com.google.gson.GsonBuilder;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.model.Genomic;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
+import com.hartwig.oncoact.patientreporter.model.WgsReportFailed;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -99,11 +100,12 @@ public class ReportingDb {
                         .toJson(payload));
     }
 
-    public void appendQCFailReport(@NotNull QCFailReport report, @NotNull String outputDirectory) throws IOException {
-        String reportType = report.reason().identifier();
+    public void appendQCFailReport(@NotNull WgsReportFailed report, @NotNull String outputDirectory,
+                                   @NotNull QCFailReason qcFailReason, boolean isCorrection, boolean isCorrectionExtern) throws IOException {
+        String reportType = qcFailReason.identifier();
 
-        if (report.isCorrectedReport()) {
-            if (report.isCorrectedReportExtern()) {
+        if (isCorrection) {
+            if (isCorrectionExtern) {
                 reportType = reportType + "_corrected_external";
             } else {
                 reportType = reportType + "_corrected_internal";

@@ -98,8 +98,8 @@ public enum QCFailReason {
     }
 
     @NotNull
-    public String qcFormNumber() {
-        return qsFormNumber.number;
+    public QsFormNumber qcFormNumber() {
+        return qsFormNumber;
     }
 
     @NotNull

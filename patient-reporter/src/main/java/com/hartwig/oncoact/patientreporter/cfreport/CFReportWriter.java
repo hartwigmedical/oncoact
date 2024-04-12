@@ -4,17 +4,22 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.GsonBuilder;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.OutputFileUtil;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.ReportWriter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed.*;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailDisclaimerChapter;
+import com.hartwig.oncoact.patientreporter.cfreport.chapters.failed.QCFailPGXChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.panel.*;
 import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
+import com.hartwig.oncoact.patientreporter.model.WgsReportFailed;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelReport;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import com.hartwig.oncoact.patientreporter.xml.ReportXML;
 import com.hartwig.oncoact.patientreporter.xml.XMLFactory;
 import com.itextpdf.kernel.events.PdfDocumentEvent;
@@ -30,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Set;
 
 public class CFReportWriter implements ReportWriter {
 
@@ -63,32 +69,32 @@ public class CFReportWriter implements ReportWriter {
     }
 
     @Override
-    public void writeQCFailReport(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException {
-//        ReportResources reportResources = ReportResources.create();
-//        if (report.reason().isDeepWGSDataAvailable()) {
-//            Set<PurpleQCStatus> purpleQCStatuses = report.purpleQC();
-//            if (purpleQCStatuses != null && !purpleQCStatuses.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
-//                writeReport(reportResources,
-//                        report,
-//                        new ReportChapter[]{new QCFailChapter(report, reportResources), new QCFailPGXChapter(report, reportResources),
-//                                new QCFailDisclaimerChapter(report, reportResources)},
-//                        outputFilePath);
-//            } else {
-//                writeReport(reportResources,
-//                        report,
-//                        new ReportChapter[]{new QCFailChapter(report, reportResources),
-//                                new QCFailDisclaimerChapter(report, reportResources)},
-//                        outputFilePath);
-//            }
-//
-//        } else {
-//            writeReport(reportResources,
-//                    report,
-//                    new ReportChapter[]{new QCFailChapter(report, reportResources),
-//                            new QCFailDisclaimerChapter(report, reportResources)},
-//                    outputFilePath);
-//        }
+    public void writeQCFailReport(@NotNull WgsReportFailed report, @NotNull String outputFilePath, @NotNull QCFailReason reason,
+                                  boolean isCorrection, @NotNull String companyLogo, @NotNull String logoRVAPath, @NotNull String signaturePath) throws IOException {
+        ReportResources reportResources = ReportResources.create();
+        if (reason.isDeepWGSDataAvailable()) {
+            Set<PurpleQCStatus> purpleQCStatuses = report.failGenomic().purpleQC();
+            if (purpleQCStatuses != null && !purpleQCStatuses.contains(PurpleQCStatus.FAIL_CONTAMINATION)) {
+                writeReport(reportResources,
+                        report,
+                        new ReportChapter[]{new QCFailChapter(report, reportResources, reason, isCorrection), new QCFailPGXChapter(report, reportResources),
+                                new QCFailDisclaimerChapter(report, reportResources, logoRVAPath, signaturePath, reason)},
+                        outputFilePath, companyLogo);
+            } else {
+                writeReport(reportResources,
+                        report,
+                        new ReportChapter[]{new QCFailChapter(report, reportResources, reason, isCorrection),
+                                new QCFailDisclaimerChapter(report, reportResources, logoRVAPath, signaturePath, reason)},
+                        outputFilePath, companyLogo);
+            }
 
+        } else {
+            writeReport(reportResources,
+                    report,
+                    new ReportChapter[]{new QCFailChapter(report, reportResources, reason, isCorrection),
+                            new QCFailDisclaimerChapter(report, reportResources, logoRVAPath, signaturePath, reason)},
+                    outputFilePath, companyLogo);
+        }
     }
 
     @Override
@@ -108,8 +114,8 @@ public class CFReportWriter implements ReportWriter {
         writePanel(reportResources, report, chapters, outputFilePath);
     }
 
-    public void writeJsonFailedFile(@NotNull QCFailReport report, @NotNull String outputFilePath) throws IOException {
-        // writeReportDataToJson(report, outputFilePath);
+    public void writeJsonFailedFile(@NotNull WgsReportFailed report, @NotNull String outputFilePath) throws IOException {
+        writeReportDataToJson(report, outputFilePath);
     }
 
     public void writeJsonAnalysedFile(@NotNull WgsReport report, @NotNull String outputFilePath) throws IOException {
@@ -120,7 +126,7 @@ public class CFReportWriter implements ReportWriter {
         if (writeToFile) {
 //            String outputFileData = outputDirData + File.separator + OutputFileUtil.generateOutputFileName(report) + ".json";
 //            BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileData));
-//            writer.write(convertToJson(report));
+////            writer.write(convertToJson(report));
 //            writer.close();
 //            LOGGER.info(" Created report data json file at {} ", outputFileData);
         }
@@ -157,7 +163,7 @@ public class CFReportWriter implements ReportWriter {
                 .toJson(report);
     }
 
-    private void writeReport(@NotNull ReportResources reportResources, @NotNull WgsReport patientReport,
+    private void writeReport(@NotNull ReportResources reportResources, @NotNull WgsPatientReport patientReport,
                              @NotNull ReportChapter[] chapters, @NotNull String outputFilePath, @NotNull String logoCompanyPath) throws IOException {
         Document doc = initializeReport(outputFilePath, writeToFile);
         PdfDocument pdfDocument = doc.getPdfDocument();

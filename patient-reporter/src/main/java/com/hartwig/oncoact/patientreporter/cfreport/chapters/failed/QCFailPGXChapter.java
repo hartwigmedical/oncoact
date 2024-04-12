@@ -1,43 +1,30 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
-import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
-import com.hartwig.oncoact.patientreporter.cfreport.data.Pharmacogenetics;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
+import com.hartwig.oncoact.patientreporter.model.HlaAlleleFail;
+import com.hartwig.oncoact.patientreporter.model.WgsReportFailed;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Div;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
-    private final QCFailReport failReport;
+    private final WgsReportFailed failReport;
     @NotNull
     private final ReportResources reportResources;
     @NotNull
     private final TableUtil tableUtil;
 
-    public QCFailPGXChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
+    public QCFailPGXChapter(@NotNull WgsReportFailed failReport, @NotNull ReportResources reportResources) {
         this.failReport = failReport;
         this.reportResources = reportResources;
         this.tableUtil = new TableUtil(reportResources);
@@ -57,10 +44,10 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        reportDocument.add(createPharmacogeneticsGenotypesTable(failReport.pharmacogeneticsGenotypes()));
-        reportDocument.add(createHlaTable(failReport.hlaAllelesReportingData()));
+        reportDocument.add(createPharmacogeneticsGenotypesTable(failReport.failGenomic().pharmacogenetics()));
+        reportDocument.add(createHlaTable(failReport.failGenomic().hlaAlleles(), failReport.failGenomic().hlaQc()));
 
-        Table table = new Table(UnitValue.createPercentArray(new float[] { 1 }));
+        Table table = new Table(UnitValue.createPercentArray(new float[]{1}));
         table.setWidth(contentWidth());
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
@@ -77,18 +64,18 @@ public class QCFailPGXChapter implements ReportChapter {
                         .add(new Text("."))
                         .addStyle(reportResources.subTextStyle())
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING)))
-                .add(createContentDiv(new String[] {
+                .add(createContentDiv(new String[]{
                         "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
                                 + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
                                 + "observed variants, then 'Unresolved Haplotype' is called.",
-                        "Wild type is assumed when no variants are observed." })));
+                        "Wild type is assumed when no variants are observed."})));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell(1, 1).setHeight(30));
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported HLA Alleles")));
 
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[] {"HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis."}))
+                .add(createContentDiv(new String[]{"HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis."}))
                 .add(createContentDivWithLinkThree("The IMGT/HLA ",
                         "database ",
                         "is used as a reference set of Human MHC class I alleles. HLA typing is done to 4-digits, which means it uniquely identifies a specific protein, but ignores synonymous variants (6 digits) and intronic differences (8 digits).",
@@ -97,81 +84,54 @@ public class QCFailPGXChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createHlaTable(@NotNull HlaAllelesReportingData lilac) {
+    private Table createHlaTable(@NotNull List<HlaAlleleFail> hlaAlleleFail, @NotNull String hlaQc) {
 
         String title = "HLA Alleles";
-        Table table = TableUtil.createReportContentTable(new float[] { 10, 10, 10 },
-                new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
-                        tableUtil.createHeaderCell("Germline copies") },
+        Table table = TableUtil.createReportContentTable(new float[]{10, 10, 10},
+                new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Germline allele"),
+                        tableUtil.createHeaderCell("Germline copies")},
                 ReportResources.CONTENT_WIDTH_WIDE_SMALL);
-        if (!lilac.hlaQC().equals("PASS")) {
+        if (!hlaQc.equals("PASS")) {
             String noConsent = "The QC of the HLA types do not meet the QC cut-offs";
             return tableUtil.createNoConsentReportTable(title,
                     noConsent,
                     TableUtil.TABLE_BOTTOM_MARGIN,
                     ReportResources.CONTENT_WIDTH_WIDE_SMALL);
-        } else if (lilac.hlaAllelesReporting().isEmpty()) {
+        } else if (hlaAlleleFail.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE_SMALL);
         } else {
-            Set<String> sortedAlleles = Sets.newTreeSet(lilac.hlaAllelesReporting().keySet().stream().collect(Collectors.toSet()));
-            for (String sortAllele : sortedAlleles) {
-                List<HlaReporting> allele = lilac.hlaAllelesReporting().get(sortAllele);
-                table.addCell(tableUtil.createContentCell(sortAllele));
-
-                Table tableGermlineAllele = new Table(new float[] { 1 });
-                Table tableGermlineCopies = new Table(new float[] { 1 });
-
-                for (HlaReporting hlaAlleleReporting : HLAAllele.sort(allele)) {
-                    tableGermlineAllele.addCell(tableUtil.createTransparentCell(hlaAlleleReporting.hlaAllele().germlineAllele()));
-                    tableGermlineCopies.addCell(tableUtil.createTransparentCell(String.valueOf(Math.round(hlaAlleleReporting.germlineCopies()))));
-                }
-
-                table.addCell(tableUtil.createContentCell(tableGermlineAllele));
-                table.addCell(tableUtil.createContentCell(tableGermlineCopies));
+            for (HlaAlleleFail hlaAllele : hlaAlleleFail) {
+                table.addCell(tableUtil.createContentCell(hlaAllele.gene()));
+                table.addCell(tableUtil.createTransparentCell(hlaAllele.germlineAllele()));
+                table.addCell(tableUtil.createTransparentCell(hlaAllele.germlineCopies()));
             }
         }
         return tableUtil.createWrappingReportTable(title, null, table, TableUtil.TABLE_BOTTOM_MARGIN);
     }
 
     @NotNull
-    private Table createPharmacogeneticsGenotypesTable(@NotNull Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes) {
+    private Table createPharmacogeneticsGenotypesTable(@NotNull List<com.hartwig.oncoact.patientreporter.model.Pharmacogenetics> pharmacogeneticsData) {
         String title = "Pharmacogenetics";
 
-        if (pharmacogeneticsGenotypes.isEmpty()) {
+        if (pharmacogeneticsData.isEmpty()) {
             return tableUtil.createNoneReportTable(title, null, TableUtil.TABLE_BOTTOM_MARGIN, ReportResources.CONTENT_WIDTH_WIDE);
         } else {
-            Table contentTable = TableUtil.createReportContentTable(new float[] { 60, 60, 60, 100, 60 },
-                    new Cell[] { tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
+            Table contentTable = TableUtil.createReportContentTable(new float[]{60, 60, 60, 100, 60},
+                    new Cell[]{tableUtil.createHeaderCell("Gene"), tableUtil.createHeaderCell("Genotype"),
                             tableUtil.createHeaderCell("Function"), tableUtil.createHeaderCell("Linked drugs"),
-                            tableUtil.createHeaderCell("Source") },
+                            tableUtil.createHeaderCell("Source")},
                     ReportResources.CONTENT_WIDTH_WIDE);
 
-            Set<String> sortedPharmacogenetics = Sets.newTreeSet(pharmacogeneticsGenotypes.keySet());
-            for (String sortPharmacogenetics : sortedPharmacogenetics) {
-                List<PeachGenotype> pharmacogeneticsGenotypeList = pharmacogeneticsGenotypes.get(sortPharmacogenetics);
-                contentTable.addCell(tableUtil.createContentCell(sortPharmacogenetics.equals("UGT1A1")
-                        ? sortPharmacogenetics + "#"
-                        : sortPharmacogenetics));
-
-                Table tableGenotype = new Table(new float[] { 1 });
-                Table tableFunction = new Table(new float[] { 1 });
-                Table tableLinkedDrugs = new Table(new float[] { 1 });
-                Table tableSource = new Table(new float[] { 1 });
-
-                for (PeachGenotype peachGenotype : pharmacogeneticsGenotypeList) {
-                    tableGenotype.addCell(tableUtil.createTransparentCell(peachGenotype.haplotype()));
-                    tableFunction.addCell(tableUtil.createTransparentCell(peachGenotype.function()));
-                    tableLinkedDrugs.addCell(tableUtil.createTransparentCell(peachGenotype.linkedDrugs()));
-                    tableSource.addCell(tableUtil.createTransparentCell(new Paragraph(Pharmacogenetics.sourceName(peachGenotype.urlPrescriptionInfo())).addStyle(
-                                    reportResources.dataHighlightLinksStyle()))
-                            .setAction(PdfAction.createURI(Pharmacogenetics.url(peachGenotype.urlPrescriptionInfo()))));
-                }
-
-                contentTable.addCell(tableUtil.createContentCell(tableGenotype));
-                contentTable.addCell(tableUtil.createContentCell(tableFunction));
-                contentTable.addCell(tableUtil.createContentCell(tableLinkedDrugs));
-                contentTable.addCell(tableUtil.createContentCell(tableSource));
+            for (com.hartwig.oncoact.patientreporter.model.Pharmacogenetics pharmacogenetics : pharmacogeneticsData) {
+                contentTable.addCell(tableUtil.createContentCell(pharmacogenetics.gene()));
+                contentTable.addCell(tableUtil.createTransparentCell(pharmacogenetics.genotype()));
+                contentTable.addCell(tableUtil.createTransparentCell(pharmacogenetics.function()));
+                contentTable.addCell(tableUtil.createTransparentCell(pharmacogenetics.linkedDrugs()));
+                contentTable.addCell(tableUtil.createTransparentCell(new Paragraph(pharmacogenetics.source().name()).addStyle(
+                                reportResources.dataHighlightLinksStyle()))
+                        .setAction(PdfAction.createURI(pharmacogenetics.source().url())));
             }
+
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                     .add(new Paragraph("\n #Note that we do not separately call the *36 allele. Dutch clinical "
                             + "guidelines consider the *36 allele to be clinically equivalent to the *1 allele.").addStyle(reportResources.subTextStyle()
@@ -196,7 +156,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-            @NotNull String link) {
+                                                   @NotNull String link) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
@@ -207,7 +167,7 @@ public class QCFailPGXChapter implements ReportChapter {
 
     @NotNull
     private Div createContentDivWithLinkThree(@NotNull String string1, @NotNull String string2, @NotNull String string3,
-            @NotNull String link) {
+                                              @NotNull String link) {
         Div div = new Div();
 
         div.add(createParaGraphWithLinkThree(string1, string2, string3, link));

@@ -28,6 +28,8 @@ class TumorSampleCreator {
                 .hospital(createHospital(lamaPatientData))
                 .biopsy(createBiopsy(lamaPatientData.getBiopsySite()))
                 .sop(lamaPatientData.getSopString())
+                .shallowPurity(lamaPatientData.getShallowPurity())
+                .purpleStatus(lamaPatientData.getPurpleStatus())
                 .build();
     }
 }

@@ -3,12 +3,12 @@ package com.hartwig.oncoact.patientreporter;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedReportData;
 import com.hartwig.oncoact.patientreporter.algo.wgs.WgsReportCreator;
+import com.hartwig.oncoact.patientreporter.algo.wgs.WgsReportCreatorFailed;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.model.ImmutableSummary;
-import com.hartwig.oncoact.patientreporter.model.ImmutableWgsReport;
-import com.hartwig.oncoact.patientreporter.model.WgsPatientReport;
-import com.hartwig.oncoact.patientreporter.model.WgsReport;
+import com.hartwig.oncoact.patientreporter.model.*;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
+import com.hartwig.oncoact.patientreporter.qcfail.QCFailReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -59,7 +59,7 @@ public class PatientReporterApplication {
 
         if (config.qcFail()) {
             LOGGER.info("Generating qc-fail report");
-            //  generateQCFail();
+            generateQCFail();
         } else {
             LOGGER.info("Generating patient report");
             generateAnalysedReport();
@@ -107,21 +107,31 @@ public class PatientReporterApplication {
     }
 
     private void generateQCFail() throws IOException {
-//        QCFailReporter reporter = new QCFailReporter(QCFailReportData.buildFromConfig(config));
-//        QCFailReport report = reporter.run(config);
-//
-//        ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
-//        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report);
-//
-//        reportWriter.writeQCFailReport(report, outputFilePath);
-//
-//        if (!config.onlyCreatePDF()) {
-//            LOGGER.debug("Updating reporting db and writing report data");
-//
-//            reportWriter.writeJsonFailedFile(report, config.outputDirData());
-//
-//            new ReportingDb().appendQCFailReport(report, config.outputDirReport());
-//        }
+        QCFailReportData reporter = QCFailReportData.buildFromConfig(config);
+        WgsReportCreatorFailed wgsReportCreator = new WgsReportCreatorFailed(reporter);
+        WgsReportFailed report = wgsReportCreator.run(config);
+
+        boolean isCorrection = Optional.ofNullable(reporter.correction()).map(Correction::isCorrectedReport).orElse(false);
+        boolean isCorrectionExtern = Optional.ofNullable(reporter.correction())
+                .map(Correction::isCorrectedReportExtern)
+                .orElse(false);
+
+        ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
+        String outputFilePath = generateOutputFilePathForPatientReport(config.outputDirReport(), report, false);
+
+        QCFailReason reason = config.qcFailReason();
+        assert reason != null;
+
+        reportWriter.writeQCFailReport(report, outputFilePath, reason, isCorrection, config.companyLogo(), config.rvaLogo(), config.signature());
+
+        if (!config.onlyCreatePDF()) {
+            LOGGER.debug("Updating reporting db and writing report data");
+
+            reportWriter.writeJsonFailedFile(report, config.outputDirData());
+
+
+            new ReportingDb().appendQCFailReport(report, config.outputDirReport(), reason, isCorrection, isCorrectionExtern);
+        }
     }
 
     @NotNull

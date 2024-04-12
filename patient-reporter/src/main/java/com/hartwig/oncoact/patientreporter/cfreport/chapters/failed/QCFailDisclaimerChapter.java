@@ -1,9 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.failed;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
@@ -11,8 +7,8 @@ import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.patientreporter.cfreport.components.ReportSignature;
 import com.hartwig.oncoact.patientreporter.cfreport.components.TableUtil;
 import com.hartwig.oncoact.patientreporter.lama.LamaInterpretation;
+import com.hartwig.oncoact.patientreporter.model.*;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
-import com.hartwig.oncoact.patientreporter.qcfail.QCFailReport;
 import com.hartwig.oncoact.util.Formats;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Div;
@@ -20,18 +16,34 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
 public class QCFailDisclaimerChapter implements ReportChapter {
     @NotNull
-    private final QCFailReport failReport;
+    private final WgsReportFailed failReport;
     private final ReportResources reportResources;
 
-    public QCFailDisclaimerChapter(@NotNull QCFailReport failReport, @NotNull ReportResources reportResources) {
+    @NotNull
+    private final String logoRVAPath;
+    @NotNull
+    private final String signaturePath;
+
+    @NotNull
+    private final QCFailReason reason;
+
+
+    public QCFailDisclaimerChapter(@NotNull WgsReportFailed failReport, @NotNull ReportResources reportResources,
+                                   @NotNull String logoRVAPath, @NotNull String signaturePath, @NotNull QCFailReason reason) {
         this.failReport = failReport;
         this.reportResources = reportResources;
+        this.logoRVAPath = logoRVAPath;
+        this.signaturePath = signaturePath;
+        this.reason = reason;
     }
 
     @NotNull
@@ -49,10 +61,10 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     @Override
     public void render(@NotNull Document reportDocument) {
         ReportSignature reportSignature = ReportSignature.create(reportResources);
-        var signatureDiv = reportSignature.createSignatureDiv(failReport.logoRVAPath(), failReport.signaturePath());
+        var signatureDiv = reportSignature.createSignatureDiv(logoRVAPath, signaturePath);
 
         var endOfReportIndication = reportSignature.createEndOfReportIndication();
-        var chapterTable = new Table(UnitValue.createPercentArray(new float[] { 1, 0.1f, 1 })).setWidth(contentWidth())
+        var chapterTable = new Table(UnitValue.createPercentArray(new float[]{1, 0.1f, 1})).setWidth(contentWidth())
                 .addCell(TableUtil.createLayoutCell().add(createSampleDetailsColumn()))
                 .addCell(TableUtil.createLayoutCell())
                 .addCell(TableUtil.createLayoutCell().add(createDisclaimerColumn()))
@@ -73,14 +85,14 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
         Div div = createSampleDetailsDiv();
         div.add(samplesAreEvaluatedAtHMFAndWithSampleID());
-        div.add(generateHMFAndPathologySampleIDParagraph(failReport));
+        div.add(generateHMFAndPathologySampleIDParagraph(failReport.tumorSample().reportingId()));
         div.add(resultsAreObtainedBetweenDates());
         div.add(reportIsBasedOnTumorSampleArrivedAt());
-        if (qcFailReasons.contains(failReport.reason())) {
+        if (qcFailReasons.contains(reason)) {
             div.add(reportIsBasedOnBloodSampleArrivedAt());
         }
 
-        if (failReport.reason() == QCFailReason.WGS_TCP_FAIL || failReport.reason() == QCFailReason.WGS_TCP_SHALLOW_FAIL) {
+        if (reason == QCFailReason.WGS_TCP_FAIL || reason == QCFailReason.WGS_TCP_SHALLOW_FAIL) {
             div.add(sampleHasMolecularTumorPercentage());
         }
         div.add(reportIsBasedOnBloodAndTumorSamples());
@@ -110,12 +122,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
     }
 
     @NotNull
-    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull QCFailReport failReport) {
-        String pathologyId = failReport.lamaPatientData().getPathologyNumber();
-        String reportingId = failReport.lamaPatientData().getReportingId();
+    private Paragraph generateHMFAndPathologySampleIDParagraph(@NotNull ReportingId reportingIdData) {
+        String pathologyId = reportingIdData.pathologyId();
+        String reportingId = reportingIdData.value();
 
         String interpretId;
-        if (failReport.lamaPatientData().getIsStudy()) {
+        if (reportingIdData.type() == ReportingIdType.STUDY) {
             interpretId = "The study ID is: ";
         } else {
             interpretId = "The hospital patient ID is: ";
@@ -130,8 +142,11 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph resultsAreObtainedBetweenDates() {
-        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(failReport.lamaPatientData().getReferenceArrivalDate(),
-                failReport.lamaPatientData().getTumorArrivalDate());
+        TumorSample tumorSample = failReport.tumorSample();
+        Sample referenceSample = failReport.referenceSample();
+
+        String earliestArrivalDate = LamaInterpretation.extractEarliestArrivalDate(referenceSample.arrivalDate(),
+                tumorSample.sample().arrivalDate());
         return createContentParagraphTwice("The results in this report have been obtained between ",
                 earliestArrivalDate != null ? earliestArrivalDate : Formats.NA_STRING,
                 " and ",
@@ -140,8 +155,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnTumorSampleArrivedAt() {
-        var dateString = Formats.formatDate(failReport.lamaPatientData().getTumorArrivalDate());
-        var tumorSampleBarcode = failReport.lamaPatientData().getTumorSampleBarcode();
+        TumorSample tumorSample = failReport.tumorSample();
+        var dateString = Formats.formatDate(tumorSample.sample().arrivalDate());
+        var tumorSampleBarcode = tumorSample.sample().sampleBarcode();
 
         return createContentParagraphTwice("This analysis is performed on the tumor sample as arrived on ",
                 dateString + " ",
@@ -151,8 +167,9 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsBasedOnBloodSampleArrivedAt() {
-        var dateString = Formats.formatDate(failReport.lamaPatientData().getReferenceArrivalDate());
-        var referenceSampleBarcode = failReport.lamaPatientData().getReferenceSampleBarcode();
+        Sample referenceSample = failReport.referenceSample();
+        var dateString = Formats.formatDate(referenceSample.arrivalDate());
+        var referenceSampleBarcode = referenceSample.sampleBarcode();
 
         if (referenceSampleBarcode == null) {
             return createContentParagraph("This analysis is performed on the reference sample as arrived on ", dateString);
@@ -171,12 +188,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph reportIsGeneratedByPatientReporterVersion() {
-        var pipelineVersion = failReport.pipelineVersion() == null ? "No pipeline version is known" : failReport.pipelineVersion();
-        if (failReport.reason().isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
+        var pipelineVersion = failReport.version().molecularPipeline() == null ? "No pipeline version is known" : failReport.version().molecularPipeline();
+        if (reason.isDeepWGSDataAvailable()) { // if orange is available, mention the molecular pipeline version.
             return createContentParagraphTwice("This report is generated using the molecular pipeline version ",
                     pipelineVersion + " ",
                     "and OncoAct reporting pipeline version ",
-                    "1.0");
+                    failReport.version().reportingPipeline());
         } else {
             return createContentParagraph("This report is generated using OncoAct reporting pipeline version ", "1.0");
         }
@@ -195,12 +212,12 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph sampleHasMolecularTumorPercentage() {
-        Integer shallowPurity = failReport.lamaPatientData().getShallowPurity();
-        String wgsPurity = failReport.wgsPurityString();
-        String purpleQcStatus = failReport.lamaPatientData().getPurpleStatus();
+        Integer shallowPurity = failReport.tumorSample().getShallowPurity();
+        String wgsPurity = failReport.failGenomic().purityString();
+        String purpleQcStatus = failReport.tumorSample().purpleStatus();
         String purpleQcStatusInt = purpleQcStatus != null ? purpleQcStatus : Strings.EMPTY;
 
-        var isFailedNoTumor = Objects.requireNonNullElse(failReport.purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
+        var isFailedNoTumor = Objects.requireNonNullElse(failReport.failGenomic().purpleQC(), new HashSet<>()).contains(PurpleQCStatus.FAIL_NO_TUMOR);
         if (isFailedNoTumor || purpleQcStatusInt.contains(PurpleQCStatus.FAIL_NO_TUMOR.name())) {
             return createContentParagraph("The tumor percentage based on molecular estimation", " could not be determined.");
         } else {
@@ -227,7 +244,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph testsArePerformedUnderUNI() {
-        return createContentParagraph("UDI-DI: ", failReport.udiDi());
+        return createContentParagraph("UDI-DI: ", failReport.version().udiDi());
     }
 
     @NotNull
@@ -270,7 +287,7 @@ public class QCFailDisclaimerChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createContentParagraphTwice(@NotNull String regularPart, @NotNull String boldPart, @NotNull String regularPart2,
-            @NotNull String boldPart2) {
+                                                  @NotNull String boldPart2) {
         return new Paragraph().add(new Text(regularPart))
                 .add(new Text(boldPart).addStyle(reportResources.smallBodyBoldTextStyle()))
                 .add(new Text(regularPart2))

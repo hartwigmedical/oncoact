@@ -31,6 +31,11 @@ public abstract class TumorSample {
     @NotNull
     public abstract String sop();
 
+    public abstract Integer getShallowPurity();
+
+    @NotNull
+    public abstract String purpleStatus();
+
     public static ImmutableTumorSample.Builder builder() {
         return ImmutableTumorSample.builder();
     }

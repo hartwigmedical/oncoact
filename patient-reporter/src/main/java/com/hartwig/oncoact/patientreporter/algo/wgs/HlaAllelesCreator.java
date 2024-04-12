@@ -6,6 +6,7 @@ import com.hartwig.oncoact.hla.HlaAllelesReportingData;
 import com.hartwig.oncoact.hla.HlaReporting;
 import com.hartwig.oncoact.patientreporter.cfreport.data.HLAAllele;
 import com.hartwig.oncoact.patientreporter.model.HlaAllele;
+import com.hartwig.oncoact.patientreporter.model.HlaAlleleFail;
 import com.hartwig.oncoact.patientreporter.model.HlaAlleleSummary;
 import com.hartwig.oncoact.util.Formats;
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +30,26 @@ class HlaAllelesCreator {
         return sort(createHlaAllelesList(hlaReportingData, hasReliablePurity));
     }
 
+    static List<HlaAlleleFail> createHlaAllelesFailed(
+            @NotNull HlaAllelesReportingData hlaReportingData,
+            boolean hasReliablePurity
+    ) {
+        return sortFailed(createHlaAllelesListFail(hlaReportingData, hasReliablePurity));
+    }
+
     @NotNull
     public static List<HlaAllele> sort(@NotNull List<HlaAllele> alleles) {
         return alleles.stream()
                 .sorted(Comparator.comparing(HlaAllele::gene)
                         .thenComparing(HlaAllele::germlineAllele))
+                .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public static List<HlaAlleleFail> sortFailed(@NotNull List<HlaAlleleFail> alleles) {
+        return alleles.stream()
+                .sorted(Comparator.comparing(HlaAlleleFail::gene)
+                        .thenComparing(HlaAlleleFail::germlineAllele))
                 .collect(Collectors.toList());
     }
 
@@ -74,6 +90,27 @@ class HlaAllelesCreator {
                             .tumorCopies(roundCopyNumber(hlaAlleleReporting.tumorCopies(), hasReliablePurity))
                             .numberSomaticMutations(hlaAlleleReporting.somaticMutations())
                             .interpretationPresenceInTumor(hlaAlleleReporting.interpretation())
+                            .build());
+                }
+            }
+        }
+        return hlaAlleleList;
+    }
+
+    private static List<HlaAlleleFail> createHlaAllelesListFail(@NotNull HlaAllelesReportingData hlaReportingData, boolean hasReliablePurity) {
+        List<HlaAlleleFail> hlaAlleleList = Lists.newArrayList();
+
+        if (hlaReportingData.hlaQC().equals("PASS")) {
+            Set<String> genes = Sets.newTreeSet(hlaReportingData.hlaAllelesReporting().keySet());
+            for (String gene : genes) {
+                List<HlaReporting> allele = hlaReportingData.hlaAllelesReporting().get(gene);
+
+                for (HlaReporting hlaAlleleReporting : allele) {
+
+                    hlaAlleleList.add(HlaAlleleFail.builder()
+                            .gene(gene)
+                            .germlineAllele(hlaAlleleReporting.hlaAllele().germlineAllele())
+                            .germlineCopies(roundCopyNumber(hlaAlleleReporting.germlineCopies(), hasReliablePurity))
                             .build());
                 }
             }
