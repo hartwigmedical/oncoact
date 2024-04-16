@@ -3,10 +3,10 @@ package com.hartwig.oncoact.patientreporter.reportingdb;
 import com.google.gson.GsonBuilder;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.model.Genomic;
+import com.hartwig.oncoact.patientreporter.model.PanelReportData;
 import com.hartwig.oncoact.patientreporter.model.WgsReport;
 import com.hartwig.oncoact.patientreporter.model.WgsReportFailed;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
-import com.hartwig.oncoact.patientreporter.panel.PanelReport;
 import com.hartwig.oncoact.patientreporter.qcfail.QCFailReason;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,11 +28,11 @@ public class ReportingDb {
     public ReportingDb() {
     }
 
-    public void appendPanelReport(@NotNull PanelReport report, @NotNull String outputDirectory) throws IOException {
+    public void appendPanelReport(@NotNull PanelReportData report, @NotNull String outputDirectory, boolean isCorrection, boolean isCorrectionExtern) throws IOException {
         String reportType = "panel_result_report";
 
-        if (report.isCorrectedReport()) {
-            if (report.isCorrectedReportExtern()) {
+        if (isCorrection) {
+            if (isCorrectionExtern) {
                 reportType = reportType + "_corrected_external";
             } else {
                 reportType = reportType + "_corrected_internal";

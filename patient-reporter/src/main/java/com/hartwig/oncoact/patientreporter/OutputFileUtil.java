@@ -14,7 +14,7 @@ public final class OutputFileUtil {
     }
 
     @NotNull
-    public static String generateOutputFileName(@NotNull PanelReport report) {
+    public static String generateOutputFileName(@NotNull WgsPatientReport report) {
         PatientReporterData lamaPatientData = report.lamaPatientData();
         var fileDate = Formats.convertToFileDate(report.reportDate());
         String extendedReportId = "getExtendedReportId(lamaPatientData);";

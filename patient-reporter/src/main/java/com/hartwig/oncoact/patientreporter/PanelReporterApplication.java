@@ -1,28 +1,29 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
 import com.hartwig.lama.client.model.PatientReporterData;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
+import com.hartwig.oncoact.patientreporter.algo.wgs.PanelReportCreator;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
 import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
+import com.hartwig.oncoact.patientreporter.model.PanelReportData;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
 import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
-
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 public class PanelReporterApplication {
 
@@ -70,8 +71,10 @@ public class PanelReporterApplication {
     }
 
     private void generatePanelAnalysedReport() throws IOException {
-        PanelReporter reporter = new PanelReporter(buildBasePanelReportData(config));
-        com.hartwig.oncoact.patientreporter.panel.PanelReport report = reporter.run(config.panelVCFname());
+        QCFailPanelReportData reportData = buildBasePanelReportData(config);
+        PanelReport panelReport = new PanelReporter(buildBasePanelReportData(config)).run(config.panelVCFname());
+        PanelReportCreator panelReportCreator = new PanelReportCreator(reportData);
+        PanelReportData report = panelReportCreator.run(config);
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
         String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
@@ -81,7 +84,7 @@ public class PanelReporterApplication {
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
             reportWriter.writeJsonPanelFile(report, config.outputDirData());
-            new ReportingDb().appendPanelReport(report, config.outputDirData());
+            new ReportingDb().appendPanelReport(report, config.outputDirData(), panelReport.isCorrectedReport(), panelReport.isCorrectedReportExtern());
         }
     }
 
@@ -90,9 +93,9 @@ public class PanelReporterApplication {
         PanelFailReport report = reporter.run(config.panelQcFailReason(), config.sampleFailReasonComment());
 
         ReportWriter reportWriter = CFReportWriter.createProductionReportWriter();
-        String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
+        // String outputFilePath = generateOutputFilePathForPanelResultReport(config.outputDirReport(), report);
 
-        reportWriter.writePanelQCFailReport(report, outputFilePath);
+        //  reportWriter.writePanelQCFailReport(report, outputFilePath);
 
         if (!config.onlyCreatePDF()) {
             LOGGER.debug("Updating reporting db and writing report data");
@@ -103,7 +106,7 @@ public class PanelReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-            @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
+                                                                     @NotNull PanelReportData panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName(panelReport) + ".pdf";
     }
 

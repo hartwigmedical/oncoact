@@ -15,7 +15,7 @@ public abstract class Version {
     @NotNull
     public abstract String reportingPipeline();
 
-    @NotNull
+    @Nullable
     public abstract String udiDi();
 
     @NotNull
