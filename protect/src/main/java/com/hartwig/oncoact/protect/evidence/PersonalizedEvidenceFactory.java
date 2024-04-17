@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import java.util.Objects;
-import java.util.Set;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.doid.DoidParents;
@@ -12,18 +9,19 @@ import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.CancerType;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.Set;
 
 public class PersonalizedEvidenceFactory {
 
@@ -52,7 +50,7 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
-            @Nullable Integer rangeRank) {
+                                                                 @Nullable Integer rangeRank) {
         return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)));
     }
 
@@ -63,13 +61,11 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
-            @NotNull Set<KnowledgebaseSource> protectSource) {
+                                                            @NotNull Set<KnowledgebaseSource> protectSource) {
+
         return ImmutableProtectEvidence.builder()
-                .treatment(ImmutableTreatment.builder()
-                        .name(actionable.treatment().name())
-                        .sourceRelevantTreatmentApproaches(actionable.treatment().sourceRelevantTreatmentApproaches())
-                        .relevantTreatmentApproaches(actionable.treatment().relevantTreatmentApproaches())
-                        .build())
+                .clinicalTrial(actionable.clinicalTrial())
+                .treatment(actionable.treatment())
                 .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().name()))
                 .level(actionable.level())
                 .direction(actionable.direction())
@@ -77,7 +73,7 @@ public class PersonalizedEvidenceFactory {
     }
 
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
-            @NotNull String treatment) {
+                             @NotNull String treatment) {
         return patientTumorDoids.contains(applicableCancerType.doid());
     }
 
@@ -116,7 +112,7 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable, @Nullable String range,
-            @Nullable Integer rangeRank) {
+                                                            @Nullable Integer rangeRank) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())

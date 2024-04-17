@@ -1,5 +1,14 @@
 package com.hartwig.oncoact.protect;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.util.CsvFileReader;
+import com.hartwig.serve.datamodel.*;
+import org.apache.logging.log4j.util.Strings;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,19 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.hartwig.oncoact.util.CsvFileReader;
-import com.hartwig.serve.datamodel.EvidenceDirection;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.Knowledgebase;
-
-import org.apache.logging.log4j.util.Strings;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class ProtectEvidenceFile {
 
@@ -63,6 +59,9 @@ public final class ProtectEvidenceFile {
                 .add("eventIsHighDriver")
                 .add("germline")
                 .add("reported")
+                .add("studyNctId")
+                .add("studyTitle")
+                .add("countriesOfStudy")
                 .add("treatment")
                 .add("sourceRelevantTreatmentApproach")
                 .add("relevantTreatmentApproach")
@@ -82,9 +81,12 @@ public final class ProtectEvidenceFile {
                 .add(nullToEmpty(evidence.eventIsHighDriver()))
                 .add(String.valueOf(evidence.germline()))
                 .add(String.valueOf(evidence.reported()))
+                .add(evidence.clinicalTrial().studyNctId())
+                .add(evidence.clinicalTrial().studyTitle())
+                .add(setToString(evidence.clinicalTrial().countriesOfStudy()))
                 .add(evidence.treatment().name())
-                .add(treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()))
-                .add(treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()))
+                .add(setToString(evidence.treatment().sourceRelevantTreatmentApproaches()))
+                .add(setToString(evidence.treatment().relevantTreatmentApproaches()))
                 .add(String.valueOf(evidence.onLabel()))
                 .add(evidence.level().toString())
                 .add(evidence.direction().toString())
@@ -104,12 +106,17 @@ public final class ProtectEvidenceFile {
                 .eventIsHighDriver(emptyToNullBoolean(values[fields.get("eventIsHighDriver")]))
                 .germline(Boolean.parseBoolean(values[fields.get("germline")]))
                 .reported(Boolean.parseBoolean(values[fields.get("reported")]))
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(values[fields.get("studyNctId")])
+                        .studyTitle(values[fields.get("studyTitle")])
+                        .countriesOfStudy(stringToSet(values[fields.get("countriesOfStudy")]))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name(values[fields.get("treatment")])
-                        .sourceRelevantTreatmentApproaches(fields.containsKey("sourceRelevantTreatmentApproach") ? stringToDrugClasses(
+                        .sourceRelevantTreatmentApproaches(fields.containsKey("sourceRelevantTreatmentApproach") ? stringToSet(
                                 values[fields.get("sourceRelevantTreatmentApproach")]) : Sets.newHashSet())
                         .relevantTreatmentApproaches(fields.containsKey("relevantTreatmentApproach")
-                                ? stringToDrugClasses(values[fields.get("relevantTreatmentApproach")])
+                                ? stringToSet(values[fields.get("relevantTreatmentApproach")])
                                 : Sets.newHashSet())
                         .build())
                 .onLabel(Boolean.parseBoolean(values[fields.get("onLabel")]))
@@ -120,7 +127,7 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
-    public static String treatmentApproachToString(@NotNull Set<String> treatmentApproaches) {
+    public static String setToString(@NotNull Set<String> treatmentApproaches) {
         StringJoiner joiner = new StringJoiner(TREATMENT_APPROACH_DELIMITER);
         for (String url : treatmentApproaches) {
             joiner.add(url);
@@ -129,7 +136,7 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
-    private static Set<String> stringToDrugClasses(@NotNull String fieldValue) {
+    private static Set<String> stringToSet(@NotNull String fieldValue) {
         return Sets.newHashSet(fieldValue.split(TREATMENT_APPROACH_DELIMITER));
     }
 

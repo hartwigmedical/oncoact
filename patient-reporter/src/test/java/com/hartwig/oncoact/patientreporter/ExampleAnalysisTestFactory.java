@@ -1,34 +1,13 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
-import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
-import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.*;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
-import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
+import com.hartwig.hmftools.datamodel.purple.*;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
@@ -39,40 +18,29 @@ import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.hla.HlaAllelesReportingData;
-import com.hartwig.oncoact.hla.HlaReporting;
-import com.hartwig.oncoact.hla.ImmutableHlaAllele;
-import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
-import com.hartwig.oncoact.hla.ImmutableHlaReporting;
+import com.hartwig.oncoact.hla.*;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
-import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
-import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
-import com.hartwig.oncoact.patientreporter.algo.QualityOverruleFunctions;
+import com.hartwig.oncoact.patientreporter.algo.*;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.protect.EvidenceType;
-import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
-import com.hartwig.oncoact.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.TestProtectFactory;
+import com.hartwig.oncoact.protect.*;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
-import com.hartwig.serve.datamodel.EvidenceDirection;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.Knowledgebase;
-
+import com.hartwig.serve.datamodel.*;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -86,7 +54,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
-            boolean withUnreliablePurityOverrule) {
+                                                              boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.33";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 183;
@@ -216,7 +184,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-            @NotNull PurpleQCStatus purpleQCStatus) {
+                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -235,7 +203,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> notifyAllGermlineVariants(@NotNull List<ReportableVariant> reportableVariants,
-            boolean flagGermlineOnReport) {
+                                                                             boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
         for (ReportableVariant variant : reportableVariants) {
             if (flagGermlineOnReport) {
@@ -257,7 +225,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome, @NotNull ChromosomeArm chromosomeArm,
-            double copyNumber) {
+                                                                     double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -316,8 +284,8 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer range,
-            @NotNull Set<String> evidenceUrls) {
+                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer range,
+                                                               @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
@@ -340,6 +308,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Atezolizumab + Cobimetinib + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)",
@@ -351,7 +324,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -368,6 +341,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Binimetinib + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -379,7 +357,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600X",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
@@ -387,14 +365,14 @@ public final class ExampleAnalysisTestFactory {
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
                                         "https://www.esmo.org/Guidelines",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/30959471")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -412,6 +390,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Cobimetinib + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)",
@@ -423,7 +406,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600X",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
@@ -431,13 +414,13 @@ public final class ExampleAnalysisTestFactory {
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
                                         "https://www.esmo.org/Guidelines",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -454,6 +437,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
@@ -462,20 +450,20 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202806",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/22735384")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600X",
                                 Sets.newHashSet("hhttps://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
@@ -490,6 +478,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -501,7 +494,7 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600X",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
@@ -509,20 +502,20 @@ public final class ExampleAnalysisTestFactory {
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx",
                                         "https://www.esmo.org/Guidelines",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/31566661")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551",
                                         "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202806")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -542,6 +535,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
@@ -550,7 +548,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -566,6 +564,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -574,7 +577,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -582,13 +585,13 @@ public final class ExampleAnalysisTestFactory {
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/21639808",
                                         "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&varApplNo=202429",
                                         "http://www.ncbi.nlm.nih.gov/pubmed/28961848")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600X",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
@@ -603,6 +606,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Binimetinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
@@ -611,7 +619,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -626,6 +634,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Binimetinib + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -634,7 +647,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -649,6 +662,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Nivolumab + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -660,7 +678,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -675,6 +693,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Pembrolizumab + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -686,7 +709,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -701,6 +724,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Spartalizumab + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -712,7 +740,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -727,6 +755,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Selumetinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
@@ -735,7 +768,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -750,6 +783,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Atezolizumab + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -758,7 +796,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -773,6 +811,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Binimetinib + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
@@ -781,7 +824,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF act mut",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=696"),
                         EvidenceType.ACTIVATION,
@@ -798,6 +841,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -806,7 +854,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -821,6 +869,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + KRT-232 + Trametinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -832,7 +885,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF 600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -847,6 +900,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -855,7 +913,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -870,6 +928,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Encorafenib + Ribociclib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
@@ -878,7 +941,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -893,6 +956,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Tovorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -901,7 +969,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -916,6 +984,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Vemurafenib + Voruciclib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -924,7 +997,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -939,6 +1012,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Temsirolimus")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -947,7 +1025,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN inact mut",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2095"),
                         EvidenceType.INACTIVATION,
@@ -963,6 +1041,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("GSK2636771")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -971,7 +1054,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN dec exp",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=13314"),
                         EvidenceType.UNDER_EXPRESSION,
@@ -986,6 +1069,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Onatasertib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -994,7 +1082,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(true)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN del",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2408"),
                         EvidenceType.DELETION,
@@ -1017,15 +1105,20 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("COLUMBUS-AD")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("COLUMBUS-AD")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600E",
                         Sets.newHashSet("https://trial-eye.com/hmf/15589"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1040,21 +1133,26 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("DRUP")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("DRUP")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF ACTIVATING MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.ACTIVATION,
                                 null,
                                 Sets.newHashSet()),
-                        createTestProtectSource(Knowledgebase.ICLUSION,
+                        createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF V600",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.CODON_MUTATION,
@@ -1069,15 +1167,20 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("EBIN (EORTC-1612-MG)")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("EBIN (EORTC-1612-MG)")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600",
                         Sets.newHashSet("https://trial-eye.com/hmf/11284"),
                         EvidenceType.CODON_MUTATION,
@@ -1092,15 +1195,20 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("KN-8701")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("KN-8701")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF ACTIVATING MUTATION",
                                 Sets.newHashSet("https://www.trial-eye.com/hmf/15876"),
                                 EvidenceType.ACTIVATION,
@@ -1121,15 +1229,20 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("NASAM")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("NASAM")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600E",
                         Sets.newHashSet("https://www.trial-eye.com/hmf/14995"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1144,21 +1257,26 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("DRUP")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("DRUP")
+                        .name("therapy")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.ICLUSION,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "PTEN LOSS",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.DELETION,
                                 null,
                                 Sets.newHashSet()),
-                        createTestProtectSource(Knowledgebase.ICLUSION,
+                        createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "PTEN INACTIVATION MUTATION",
                                 Sets.newHashSet("https://trial-eye.com/hmf/10299"),
                                 EvidenceType.INACTIVATION,
@@ -1181,6 +1299,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Cetuximab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1189,13 +1312,13 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -1210,6 +1333,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Cetuximab + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
@@ -1218,13 +1346,13 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -1242,6 +1370,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Encorafenib + Panitumumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
@@ -1250,7 +1383,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1265,6 +1398,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Panitumumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1273,13 +1411,13 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESISTANT)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet("https://www.nccn.org/professionals/physician_gls/default.aspx")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "BRAF V600E",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                                 EvidenceType.HOTSPOT_MUTATION,
@@ -1294,6 +1432,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Selumetinib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor", "MEK inhibitor (Pan)", "MEK1 Inhibitor"))
@@ -1302,7 +1445,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1317,6 +1460,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("inimetinib + Cetuximab + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("MEK2 Inhibitor",
@@ -1328,7 +1476,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.VICC_CIVIC,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1343,6 +1491,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("RAF Inhibitor (Pan)")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1351,7 +1504,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1366,6 +1519,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Cetuximab + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -1374,7 +1532,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600X",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
@@ -1389,6 +1547,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Ruxolitinib + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -1397,7 +1560,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1412,6 +1575,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Tovorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -1420,7 +1588,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1435,6 +1603,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Alpelisib + Cetuximab + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1443,7 +1616,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -1459,6 +1632,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Cetuximab + Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1467,7 +1645,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=465"),
                         EvidenceType.ANY_MUTATION,
@@ -1482,6 +1660,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Dabrafenib + Panitumumab")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1490,7 +1673,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1506,6 +1689,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Encorafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("BRAF Inhibitor"))
@@ -1514,7 +1702,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1529,6 +1717,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Erlotinib + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -1537,7 +1730,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1552,6 +1745,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Panitumumab + Vemurafenib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("RAF Inhibitor (Pan)"))
@@ -1560,7 +1758,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "BRAF V600E",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1"),
                         EvidenceType.HOTSPOT_MUTATION,
@@ -1575,6 +1773,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Palbociclib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1583,7 +1786,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "CDKN2A mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=4974"),
                         EvidenceType.ANY_MUTATION,
@@ -1598,6 +1801,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Palbociclib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1606,7 +1814,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "CDKN2A mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=4974"),
                         EvidenceType.ANY_MUTATION,
@@ -1621,6 +1829,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Abiraterone + Ipatasertib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
@@ -1629,7 +1842,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN loss",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                         EvidenceType.DELETION,
@@ -1646,6 +1859,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Apitolisib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1654,7 +1872,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN mutant",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1213"),
                         EvidenceType.ANY_MUTATION,
@@ -1669,6 +1887,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Capivasertib + Paclitaxel")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
@@ -1677,13 +1900,13 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "PTEN loss",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                                 EvidenceType.DELETION,
                                 null,
                                 Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/31841354")),
-                        createTestProtectSource(Knowledgebase.CKB,
+                        createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                                 "PTEN inact mut",
                                 Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=2095"),
                                 EvidenceType.INACTIVATION,
@@ -1698,6 +1921,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Ipatasertib + Paclitaxel")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
@@ -1706,7 +1934,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.B)
                 .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN dec exp",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=13314"),
                         EvidenceType.UNDER_EXPRESSION,
@@ -1721,6 +1949,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("AZD8186 + Vistusertib")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("PIK3CB inhibitor"))
@@ -1729,7 +1962,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN loss",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                         EvidenceType.DELETION,
@@ -1744,6 +1977,11 @@ public final class ExampleAnalysisTestFactory {
                 .eventIsHighDriver(true)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder()
                         .name("Gemcitabine + LY2780301")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("Akt Inhibitor (Pan)"))
@@ -1752,7 +1990,7 @@ public final class ExampleAnalysisTestFactory {
                 .onLabel(false)
                 .level(EvidenceLevel.C)
                 .direction(EvidenceDirection.RESPONSIVE)
-                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB,
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_EVIDENCE,
                         "PTEN loss",
                         Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=479"),
                         EvidenceType.DELETION,
@@ -1988,8 +2226,8 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static PurpleTranscriptImpact purpleTranscriptImpactClinical(@NotNull String transcript, @NotNull String hgvsCodingImpact,
-            @NotNull String hgvsProteinImpact, Integer codon, Integer exon, boolean spliceRegion,
-            @NotNull List<PurpleVariantEffect> effects, @NotNull PurpleCodingEffect effect) {
+                                                                         @NotNull String hgvsProteinImpact, Integer codon, Integer exon, boolean spliceRegion,
+                                                                         @NotNull List<PurpleVariantEffect> effects, @NotNull PurpleCodingEffect effect) {
         return ImmutablePurpleTranscriptImpact.builder()
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)

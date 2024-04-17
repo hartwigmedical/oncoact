@@ -1,11 +1,7 @@
 package com.hartwig.oncoact.protect;
 
 import com.google.common.collect.Sets;
-import com.hartwig.serve.datamodel.EvidenceDirection;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.Knowledgebase;
-
+import com.hartwig.serve.datamodel.*;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +16,11 @@ public final class TestProtectFactory {
                 .event(Strings.EMPTY)
                 .germline(false)
                 .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(Strings.EMPTY)
+                        .studyTitle(Strings.EMPTY)
+                        .countriesOfStudy(Sets.newHashSet())
+                        .build())
                 .treatment(ImmutableTreatment.builder().name(Strings.EMPTY).build())
                 .onLabel(false)
                 .level(EvidenceLevel.A)

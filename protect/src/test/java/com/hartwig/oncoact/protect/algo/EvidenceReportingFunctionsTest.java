@@ -1,25 +1,18 @@
 package com.hartwig.oncoact.protect.algo;
 
-import static com.hartwig.oncoact.protect.TestProtectFactory.builder;
-import static com.hartwig.oncoact.protect.algo.EvidenceReportingFunctions.highestReportableLevel;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
-import com.hartwig.serve.datamodel.EvidenceDirection;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.Knowledgebase;
-
+import com.hartwig.serve.datamodel.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+
+import static com.hartwig.oncoact.protect.TestProtectFactory.builder;
+import static com.hartwig.oncoact.protect.algo.EvidenceReportingFunctions.highestReportableLevel;
+import static org.junit.Assert.*;
 
 public class EvidenceReportingFunctionsTest {
 
@@ -55,16 +48,25 @@ public class EvidenceReportingFunctionsTest {
         assertEquals(3, viccFiltered.size());
         assertEquals(1, reported(viccFiltered).size());
 
-        List<ProtectEvidence> ckbEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.CKB);
+        List<ProtectEvidence> ckbEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.CKB_EVIDENCE);
         List<ProtectEvidence> ckbFiltered = EvidenceReportingFunctions.applyReportingAlgo(ckbEvidences);
         assertEquals(3, ckbFiltered.size());
         assertEquals(2, reported(ckbFiltered).size());
+
+        List<ProtectEvidence> ckbTrial = createTestEvidencesForKnowledgebase(Knowledgebase.CKB_TRIAL);
+        List<ProtectEvidence> ckbTrialFiltered = EvidenceReportingFunctions.applyReportingAlgo(ckbTrial);
+        assertEquals(3, ckbTrialFiltered.size());
+        assertEquals(1, reported(ckbTrialFiltered).size());
     }
 
     @NotNull
     private static List<ProtectEvidence> createTestEvidencesForKnowledgebase(@NotNull Knowledgebase knowledgebase) {
         return Lists.newArrayList(TestProtectFactory.builder()
                         .from(ON_LABEL_RESPONSIVE_B)
+                        .clinicalTrial(ImmutableClinicalTrial.builder()
+                                .studyNctId("nct1")
+                                .studyTitle("title")
+                                .countriesOfStudy(Sets.newHashSet("netherlands")).build())
                         .treatment(ImmutableTreatment.builder()
                                 .name("treatment A")
                                 .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
@@ -154,12 +156,12 @@ public class EvidenceReportingFunctionsTest {
         String event4 = "event4";
 
         ProtectEvidence evidence1 = builder().event(event1)
-                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB_TRIAL)))
                 .reported(true)
                 .onLabel(true)
                 .build();
         ProtectEvidence evidence2 = builder().event(event2)
-                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB_TRIAL)))
                 .reported(true)
                 .onLabel(false)
                 .build();
@@ -169,7 +171,7 @@ public class EvidenceReportingFunctionsTest {
                 .onLabel(false)
                 .build();
         ProtectEvidence evidence4 = builder().event(event4)
-                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.ICLUSION),
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB_TRIAL),
                         TestProtectFactory.createSource(Knowledgebase.VICC_CGI)))
                 .reported(true)
                 .onLabel(false)
@@ -215,12 +217,16 @@ public class EvidenceReportingFunctionsTest {
                 .onLabel(onLabel)
                 .level(level)
                 .direction(direction)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("title")
+                        .countriesOfStudy(Sets.newHashSet("netherlands")).build())
                 .treatment(ImmutableTreatment.builder()
                         .name("A")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
                         .relevantTreatmentApproaches(Sets.newHashSet("A"))
                         .build())
-                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB)))
+                .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB_EVIDENCE)))
                 .build();
     }
 }

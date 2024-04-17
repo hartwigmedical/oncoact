@@ -1,17 +1,17 @@
 package com.hartwig.oncoact.protect;
 
-import java.util.Set;
-
+import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.Treatment;
-
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
+
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public abstract class ProtectEvidence {
 
     @Nullable
@@ -32,6 +32,9 @@ public abstract class ProtectEvidence {
     public abstract boolean germline();
 
     public abstract boolean reported();
+
+    @NotNull
+    public abstract ClinicalTrial clinicalTrial();
 
     @NotNull
     public abstract Treatment treatment();

@@ -1,2 +1,2 @@
-gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
-EGFR	7	55241707	55279321	INFRAME	VICC_CGI	exon 21		Erlotinib			Lung Adeno	X		B	RESISTANT	http
+gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	studyNctId	studyTitle	countriesOfStudy	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
+EGFR	7	55241707	55279321	INFRAME	VICC_CGI	exon 21					Erlotinib			Lung Adeno	X		B	RESISTANT	http

@@ -1,22 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Set;
-
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.TestServeFactory;
-import com.hartwig.serve.datamodel.ActionableEvent;
-import com.hartwig.serve.datamodel.CancerType;
-import com.hartwig.serve.datamodel.EvidenceDirection;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableCancerType;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
-import com.hartwig.serve.datamodel.Knowledgebase;
+import com.hartwig.serve.datamodel.*;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -28,11 +15,14 @@ import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.hotspot.ImmutableActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
+
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class PersonalizedEvidenceFactoryTest {
 
@@ -127,15 +117,20 @@ public class PersonalizedEvidenceFactoryTest {
 
     @NotNull
     private static ActionableHotspot create(@NotNull String cancerType, @NotNull String doid, @Nullable String blacklistCancerType,
-            @Nullable String blacklistDoid) {
+                                            @Nullable String blacklistDoid) {
         Set<CancerType> blacklist = Sets.newHashSet();
         if (blacklistCancerType != null && blacklistDoid != null) {
             blacklist.add(ImmutableCancerType.builder().name(blacklistCancerType).doid(blacklistDoid).build());
         }
 
-        ActionableEvent event = TestServeFactory.create(Knowledgebase.CKB,
+        ActionableEvent event = TestServeFactory.create(Knowledgebase.CKB_EVIDENCE,
                 "amp",
                 Sets.newHashSet(),
+                ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("title")
+                        .countriesOfStudy(Sets.newHashSet("Netherlands"))
+                        .build(),
                 ImmutableTreatment.builder()
                         .name("treatment A")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
