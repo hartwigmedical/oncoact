@@ -1,8 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -10,9 +7,11 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.itextpdf.layout.Document;
-
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
 
 public class ClinicalEvidenceChapter implements ReportChapter {
 
@@ -74,7 +73,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
+                ClinicalEvidenceFunctions.buildTrialMap(evidences, flagGermline, true, "study");
         document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
                 onLabelTreatments,
                 contentWidth()));

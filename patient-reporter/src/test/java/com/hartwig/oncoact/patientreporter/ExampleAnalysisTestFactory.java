@@ -1263,7 +1263,41 @@ public final class ExampleAnalysisTestFactory {
                         .countriesOfStudy(Sets.newHashSet("netherlands"))
                         .build())
                 .treatment(ImmutableTreatment.builder()
-                        .name("therapy")
+                        .name("therapy1")
+                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
+                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .build())
+                .onLabel(true)
+                .level(EvidenceLevel.B)
+                .direction(EvidenceDirection.RESPONSIVE)
+                .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
+                                "PTEN LOSS",
+                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                EvidenceType.DELETION,
+                                null,
+                                Sets.newHashSet()),
+                        createTestProtectSource(Knowledgebase.CKB_TRIAL,
+                                "PTEN INACTIVATION MUTATION",
+                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                EvidenceType.INACTIVATION,
+                                null,
+                                Sets.newHashSet())))
+                .build());
+
+        trialsOnLabel.add(trialBuilder.gene("PTEN")
+                .transcript("ENST00000371953")
+                .isCanonical(true)
+                .event("deletion")
+                .eventIsHighDriver(true)
+                .germline(false)
+                .reported(true)
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("DRUP")
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
+                .treatment(ImmutableTreatment.builder()
+                        .name("therapy1")
                         .sourceRelevantTreatmentApproaches(Sets.newHashSet())
                         .relevantTreatmentApproaches(Sets.newHashSet())
                         .build())
