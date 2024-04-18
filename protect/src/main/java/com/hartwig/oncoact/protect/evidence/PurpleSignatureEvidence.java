@@ -1,26 +1,24 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleCharacteristics;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PurpleSignatureEvidence {
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-    private static final double DEFAULT_HIGH_TMB_CUTOFF = 16D;
+public class PurpleSignatureEvidence {
 
     static final Set<TumorCharacteristicType> PURPLE_CHARACTERISTICS = Sets.newHashSet(TumorCharacteristicType.MICROSATELLITE_UNSTABLE,
             TumorCharacteristicType.MICROSATELLITE_STABLE,
@@ -35,7 +33,7 @@ public class PurpleSignatureEvidence {
     private final List<ActionableCharacteristic> actionableSignatures;
 
     public PurpleSignatureEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-            @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
+                                   @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableSignatures =
                 actionableCharacteristics.stream().filter(x -> PURPLE_CHARACTERISTICS.contains(x.type())).collect(Collectors.toList());
@@ -95,7 +93,7 @@ public class PurpleSignatureEvidence {
     @Nullable
     private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenPerMb() >= DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.HIGH;
 
         return isMatch ? toEvidence(signature) : null;
     }
@@ -103,7 +101,7 @@ public class PurpleSignatureEvidence {
     @Nullable
     private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenPerMb() < DEFAULT_HIGH_TMB_CUTOFF;
+                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.LOW;
 
         return isMatch ? toEvidence(signature) : null;
     }
