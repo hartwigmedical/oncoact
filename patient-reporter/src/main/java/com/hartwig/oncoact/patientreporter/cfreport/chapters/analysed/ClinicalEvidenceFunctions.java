@@ -21,8 +21,6 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.VerticalAlignment;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,8 +41,6 @@ public class ClinicalEvidenceFunctions {
     }
 
     private static final String TREATMENT_DELIMITER = " + ";
-    private static final Logger LOGGER = LogManager.getLogger(ClinicalEvidenceFunctions.class);
-
     private static final String RESPONSE_SYMBOL = "\u25B2";
     private static final String RESISTANT_SYMBOL = "\u25BC";
     private static final String PREDICTED_SYMBOL = "P";
@@ -124,7 +120,9 @@ public class ClinicalEvidenceFunctions {
             if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
+                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -137,7 +135,9 @@ public class ClinicalEvidenceFunctions {
             if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
+                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -150,7 +150,9 @@ public class ClinicalEvidenceFunctions {
             if (evidence.treatment().relevantTreatmentApproaches().equals(evidenceToCheck.treatment().relevantTreatmentApproaches())
                     && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
+                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
+                        return true;
+                    }
                 }
             }
         }
@@ -217,50 +219,61 @@ public class ClinicalEvidenceFunctions {
         return p;
     }
 
-    private boolean addEvidenceWithMaxLevelStudy(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
+    private boolean addEvidenceWithMaxLevelStudy(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> trialMap,
                                                  @NotNull EvidenceLevel allowedHighestLevel) {
-        Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
+        Set<String> sortedTrials = Sets.newTreeSet(trialMap.keySet());
         boolean hasEvidence = false;
 
-        for (String treatment : sortedTreatments) {
-            List<ProtectEvidence> evidences = treatmentMap.get(treatment);
-            if (allowedHighestLevel == highestEvidence(treatmentMap.get(treatment))) {
-                boolean addTreatment = true;
+        for (String trial : sortedTrials) {
+            List<ProtectEvidence> evidencesTrials = trialMap.get(trial);
+            if (allowedHighestLevel == highestEvidence(trialMap.get(trial))) {
+                boolean addTrial = true;
 
-                for (ProtectEvidence responsive : sort(evidences)) {
-                    ClinicalTrial clinicalTrial = responsive.clinicalTrial();
-                    Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
+                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream().collect(Collectors.groupingBy(evidence -> evidence.treatment().name()));
+                Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
+                for (String treatment : sortedTreatments) {
+                    boolean addTreatment = true;
 
-                    Map<String, String> sourceUrls = Maps.newHashMap();
-                    Map<String, String> nctUrls = Maps.newHashMap();
+                    List<ProtectEvidence> evidencesTreatments = treatmentMap.get(treatment);
+                    for (ProtectEvidence responsive : evidencesTreatments) {
+                        ClinicalTrial clinicalTrial = responsive.clinicalTrial();
+                        Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
 
-                    for (KnowledgebaseSource source : responsive.sources()) {
-                        if (source.sourceUrls().size() >= 1) {
-                            sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
-                        } else {
-                            sourceUrls.put(determineEvidenceType(source), Strings.EMPTY);
+                        Map<String, String> sourceUrls = Maps.newHashMap();
+                        Map<String, String> nctUrls = Maps.newHashMap();
+
+                        for (KnowledgebaseSource source : responsive.sources()) {
+                            if (source.sourceUrls().size() >= 1) {
+                                sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
+                            } else {
+                                sourceUrls.put(determineEvidenceType(source), Strings.EMPTY);
+                            }
+
+                            if (source.sourceUrls().size() >= 1) {
+                                nctUrls.put(clinicalTrial.studyNctId(), source.sourceUrls().stream().iterator().next());
+                            } else {
+                                nctUrls.put(clinicalTrial.studyNctId(), Strings.EMPTY);
+                            }
+                        }
+                        if (addTrial) {
+                            table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(trial), evidencesTrials.size())
+                                    .setVerticalAlignment(VerticalAlignment.TOP));
+                            table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createLinksSource(
+                                    nctUrls), evidencesTrials.size()));
+                            String shortenTrial = EvidenceItems.shortenTrialName(clinicalTrial.studyTitle());
+                            table.addCell(tableUtil.createContentCellRowSpan(shortenTrial, evidencesTrials.size()));
+                            addTrial = false;
                         }
 
-                        if (source.sourceUrls().size() >= 1) {
-                            nctUrls.put(clinicalTrial.studyNctId(), source.sourceUrls().stream().iterator().next());
-                        } else {
-                            nctUrls.put(clinicalTrial.studyNctId(), Strings.EMPTY);
+                        if (addTreatment) {
+                            table.addCell(tableUtil.createContentCellRowSpan(treatment, evidencesTreatments.size()));
+                            addTreatment = false;
+
                         }
+                        table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
+                                sourceUrls))));
+                        table.addCell(tableUtil.createContentCell(cellGenomic));
                     }
-                    if (addTreatment) {
-                        table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(treatment), evidences.size())
-                                .setVerticalAlignment(VerticalAlignment.TOP));
-                        table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createLinksSource(
-                                nctUrls), evidences.size()));
-
-                        table.addCell(tableUtil.createContentCellRowSpan(clinicalTrial.studyTitle(), evidences.size()));
-                        addTreatment = false;
-                    }
-
-                    table.addCell(tableUtil.createContentCell(responsive.treatment().name()));
-                    table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
-                            sourceUrls))));
-                    table.addCell(tableUtil.createContentCell(cellGenomic));
                 }
                 hasEvidence = true;
             }

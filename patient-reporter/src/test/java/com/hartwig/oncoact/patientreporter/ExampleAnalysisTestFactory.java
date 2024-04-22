@@ -1107,7 +1107,7 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .clinicalTrial(ImmutableClinicalTrial.builder()
                         .studyNctId("nct1")
-                        .studyTitle("COLUMBUS-AD")
+                        .studyTitle("A Study of Imatinib Versus Nilotinib in Adult Patients With Newly Diagnosed Philadelphia Chromosome Positive (Ph+) Chronic Myelogenous Leukemia in Chronic Phase (CML-CP) (ENESTnd)")
                         .countriesOfStudy(Sets.newHashSet("netherlands"))
                         .build())
                 .treatment(ImmutableTreatment.builder()

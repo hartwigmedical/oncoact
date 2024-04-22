@@ -54,7 +54,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
 
         document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore"
                 + " patients with certain tumor types may not be eligible for the DRUP study.\n"));
-        document.add(clinicalEvidenceFunctions.note("The iClusion database is used to annotate genomic events for potential clinical"
+        document.add(clinicalEvidenceFunctions.note("The CKB database is used to annotate genomic events for potential clinical"
                 + " study eligibility. Please note that clinical study eligibility depends on multiple patient and tumor "
                 + "characteristics of which only the genomic events are considered in this report.\n"));
         document.add(clinicalEvidenceFunctions.noteEvidence());
