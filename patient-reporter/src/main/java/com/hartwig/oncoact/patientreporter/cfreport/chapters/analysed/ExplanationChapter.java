@@ -79,7 +79,7 @@ public class ExplanationChapter implements ReportChapter {
                         "CKB",
                         "https://ckbhome.jax.org/",
                         ") is used to annotate genomic events with clinical evidence and/or clinical studies. " +
-                                "The evidence and/or clinical studies is gathered from CKB without "
+                                "The evidence and/or clinical studies are gathered from CKB without "
                                 + "further checks or interpretation. More details about CKB can be found in their ",
                         "https://ckbhome.jax.org/about/glossaryOfTerms",
                         "Glossary Of Terms.")));
