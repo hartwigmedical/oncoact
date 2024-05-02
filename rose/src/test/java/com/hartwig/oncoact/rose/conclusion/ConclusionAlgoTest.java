@@ -17,17 +17,17 @@ import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
 import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptModelTestFactory;
 import com.hartwig.oncoact.drivergene.DriverCategory;
@@ -206,7 +206,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHomozygousDisruptionConclusion() {
-        Set<HomozygousDisruption> homozygousDisruptions =
+        Set<LinxHomozygousDisruption> homozygousDisruptions =
                 Sets.newHashSet(createHomozygousDisruption("PTEN"), createHomozygousDisruption("KRAS"));
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -226,7 +226,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateVirusOnlyVirusConclusion() {
-        Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
+        Set<VirusInterpreterEntry> viruses = createTestVirusInterpreterEntries();
         List<LilacAllele> alleles = Lists.newArrayList();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -243,7 +243,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHLAOnlyConclusion() {
-        Set<AnnotatedVirus> viruses = Sets.newHashSet();
+        Set<VirusInterpreterEntry> viruses = Sets.newHashSet();
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -257,7 +257,7 @@ public class ConclusionAlgoTest {
 
     @Test
     public void canGenerateHLAVirusBothConclusion() {
-        Set<AnnotatedVirus> viruses = createTestVirusInterpreterEntries();
+        Set<VirusInterpreterEntry> viruses = createTestVirusInterpreterEntries();
         List<LilacAllele> alleles = createTestLilacRecord().alleles();
         List<String> conclusion = Lists.newArrayList();
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
@@ -520,7 +520,7 @@ public class ConclusionAlgoTest {
                         .hgvsCodingImpact("c.172C>T")
                         .hgvsProteinImpact("p.Arg59*")
                         .transcript("transcript2")
-                        .spliceRegion(false)
+                        .inSpliceRegion(false)
                         .effects(Sets.newHashSet())
                         .codingEffect(PurpleCodingEffect.MISSENSE)
                         .build())
@@ -539,7 +539,7 @@ public class ConclusionAlgoTest {
                         .hgvsCodingImpact("c.1723C>T")
                         .hgvsProteinImpact("p.Arg59*")
                         .transcript("transcript2")
-                        .spliceRegion(false)
+                        .inSpliceRegion(false)
                         .effects(Sets.newHashSet())
                         .codingEffect(PurpleCodingEffect.MISSENSE)
                         .build())
@@ -591,19 +591,19 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static Set<AnnotatedVirus> createTestVirusInterpreterEntries() {
-        Set<AnnotatedVirus> virusEntries = Sets.newHashSet();
-        AnnotatedVirus virus1 = TestVirusInterpreterFactory.builder()
+    private static Set<VirusInterpreterEntry> createTestVirusInterpreterEntries() {
+        Set<VirusInterpreterEntry> virusEntries = Sets.newHashSet();
+        VirusInterpreterEntry virus1 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.EBV)
-                .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
+                .driverLikelihood(VirusLikelihoodType.LOW)
                 .build();
-        AnnotatedVirus virus2 = TestVirusInterpreterFactory.builder()
+        VirusInterpreterEntry virus2 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.HPV)
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .driverLikelihood(VirusLikelihoodType.HIGH)
                 .build();
-        AnnotatedVirus virus3 = TestVirusInterpreterFactory.builder()
+        VirusInterpreterEntry virus3 = TestVirusInterpreterFactory.builder()
                 .interpretation(VirusInterpretation.MCV)
-                .virusDriverLikelihoodType(VirusLikelihoodType.HIGH)
+                .driverLikelihood(VirusLikelihoodType.HIGH)
                 .build();
 
         virusEntries.add(virus1);
@@ -631,7 +631,7 @@ public class ConclusionAlgoTest {
     }
 
     @NotNull
-    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 

@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.HotspotType;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
@@ -37,7 +37,7 @@ public final class TestReportableVariantFactory {
                 .alleleCopyNumber(0D)
                 .minorAlleleCopyNumber(0D)
                 .tVAF(Strings.EMPTY)
-                .hotspot(Hotspot.HOTSPOT)
+                .hotspot(HotspotType.HOTSPOT)
                 .clonalLikelihood(0D)
                 .driverLikelihood(0D)
                 .biallelic(false);

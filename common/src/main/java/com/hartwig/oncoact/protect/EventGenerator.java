@@ -10,7 +10,6 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.variant.ReportableVariant;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,15 +35,14 @@ public final class EventGenerator {
     }
 
     @NotNull
-    public static String variantEvent(@NotNull Variant variant) {
-        if (variant instanceof ReportableVariant) {
-            return reportableVariant((ReportableVariant) variant);
-        } else if (variant instanceof PurpleVariant) {
-            PurpleTranscriptImpact purpleTranscriptImpact = ((PurpleVariant) variant).canonicalImpact();
+    public static String variantEvent(@NotNull PurpleVariant variant) {
+            PurpleTranscriptImpact purpleTranscriptImpact = variant.canonicalImpact();
             return determineVariantAnnotationClinical(purpleTranscriptImpact);
-        } else {
-            throw new IllegalArgumentException(String.format("Unexpected variant type. Variant was: %s", variant));
-        }
+    }
+
+    @NotNull
+    public static String variantEvent(@NotNull ReportableVariant variant) {
+        return reportableVariant(variant);
     }
 
     @NotNull

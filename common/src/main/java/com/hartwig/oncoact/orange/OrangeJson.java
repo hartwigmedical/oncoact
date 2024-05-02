@@ -2,12 +2,8 @@ package com.hartwig.oncoact.orange;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ServiceLoader;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangePlots;

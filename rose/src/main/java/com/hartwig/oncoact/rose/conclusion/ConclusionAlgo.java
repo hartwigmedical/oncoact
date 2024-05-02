@@ -21,17 +21,17 @@ import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaPrediction;
 import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
 import com.hartwig.hmftools.datamodel.hla.LilacAllele;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.drivergene.DriverCategory;
@@ -101,18 +101,18 @@ public final class ConclusionAlgo {
 
         List<LinxFusion> reportableFusions = rose.orange().linx().reportableSomaticFusions();
 
-        List<HomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
-        List<HomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions =
+        List<LinxHomozygousDisruption> somaticHomozygousDisruptions = rose.orange().linx().somaticHomozygousDisruptions();
+        List<LinxHomozygousDisruption> germlineHomozygousDisruptions = rose.orange().linx().germlineHomozygousDisruptions();
+        List<LinxHomozygousDisruption> homozygousDisruptions =
                 ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
-        List<AnnotatedVirus> reportableViruses =
+        List<VirusInterpreterEntry> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
         List<LilacAllele> lilac = rose.orange().lilac().alleles();
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
-        generatePurityConclusion(conclusion, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
+        generatePurityConclusion(conclusion, purple.fit().purity(), containsTumorCells(purple), actionabilityMap);
         generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
         generateVariantConclusion(conclusion,
                 reportableVariants,
@@ -122,7 +122,7 @@ public final class ConclusionAlgo {
                 actionable,
                 HRD,
                 rose.orange().chord());
-        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, purple.fit().containsTumorCells());
+        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, containsTumorCells(purple));
         generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
         generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
         generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
@@ -401,11 +401,11 @@ public final class ConclusionAlgo {
 
     @VisibleForTesting
     static void generateHomozygousDisruptionConclusion(@NotNull List<String> conclusion,
-            @NotNull Collection<HomozygousDisruption> homozygousDisruptions,
+            @NotNull Collection<LinxHomozygousDisruption> homozygousDisruptions,
             @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap, @NotNull Set<String> oncogenic,
             @NotNull Set<String> actionable) {
 
-        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             oncogenic.add("homozygousDisruption");
 
             ActionabilityKey keyHomozygousDisruption =
@@ -420,15 +420,15 @@ public final class ConclusionAlgo {
     }
 
     @VisibleForTesting
-    static void generateVirusHLAConclusion(@NotNull List<String> conclusion, @NotNull Collection<AnnotatedVirus> reportableViruses,
+    static void generateVirusHLAConclusion(@NotNull List<String> conclusion, @NotNull Collection<VirusInterpreterEntry> reportableViruses,
             @NotNull Collection<LilacAllele> lilac, @NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
             @NotNull Collection<String> oncogenic, @NotNull Collection<String> actionable) {
         final String hlaAlleleString = "A*02:01";
         boolean containsHlaAllele = lilac.stream().anyMatch(entry -> entry.allele().equals(hlaAlleleString));
 
         if (!reportableViruses.isEmpty()) {
-            for (AnnotatedVirus virus : reportableViruses) {
-                if (virus.interpretation() == null || virus.virusDriverLikelihoodType() != VirusLikelihoodType.HIGH) {
+            for (VirusInterpreterEntry virus : reportableViruses) {
+                if (virus.interpretation() == null || virus.driverLikelihood() != VirusLikelihoodType.HIGH) {
                     continue;
                 }
                 if (containsHlaAllele) {
@@ -568,5 +568,10 @@ public final class ConclusionAlgo {
     private static DecimalFormat decimalFormat(@NotNull String format) {
         // To make sure every decimal format uses a dot as separator rather than a comma.
         return new DecimalFormat(format, DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+    }
+
+    private static boolean containsTumorCells(@NotNull PurpleRecord purple) {
+        throw new UnsupportedOperationException("TODO implement");
+//        return purple.fit().containsTumorCells();
     }
 }

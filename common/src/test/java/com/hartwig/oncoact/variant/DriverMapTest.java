@@ -35,6 +35,6 @@ public class DriverMapTest {
 
     @NotNull
     private static ImmutablePurpleDriver.Builder mutationBuilder() {
-        return TestPurpleFactory.driverBuilder().driver(PurpleDriverType.MUTATION);
+        return TestPurpleFactory.driverBuilder().type(PurpleDriverType.MUTATION);
     }
 }

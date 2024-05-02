@@ -2,7 +2,6 @@ package com.hartwig.oncoact.protect.evidence;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
@@ -81,7 +80,7 @@ public class FusionEvidence {
                 .reported(false)
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
-                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))
+                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.driverLikelihood()))
                 .build();
     }
 
@@ -91,7 +90,7 @@ public class FusionEvidence {
                 .reported(fusion.reported())
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
-                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))
+                .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.driverLikelihood()))
                 .build();
     }
 

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public final class GeneDisruptionFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(GeneDisruptionFactory.class);
+    private static final String BREAKEND_ORIENTATION_UPSTREAM = "Upstream";
 
     private GeneDisruptionFactory() {
     }
@@ -44,10 +45,10 @@ public final class GeneDisruptionFactory {
                     LOGGER.warn("The disrupted copy number of a paired sv is not the same on {}", primaryBreakendLeft.gene());
                 }
                 reportableDisruptions.add(ImmutableGeneDisruption.builder()
-                        .location(primaryBreakendLeft.chromosome() + primaryBreakendLeft.chrBand())
+                        .location(primaryBreakendLeft.chromosome() + primaryBreakendLeft.chromosomeBand())
                         .gene(primaryBreakendLeft.gene())
-                        .transcriptId(primaryBreakendLeft.transcriptId())
-                        .isCanonical(primaryBreakendLeft.canonical())
+                        .transcriptId(primaryBreakendLeft.transcript())
+                        .isCanonical(primaryBreakendLeft.isCanonical())
                         .type(primaryBreakendLeft.type().toString())
                         .range(rangeField(pairedBreakend))
                         .junctionCopyNumber(primaryBreakendLeft.junctionCopyNumber())
@@ -57,10 +58,10 @@ public final class GeneDisruptionFactory {
                         .build());
             } else {
                 reportableDisruptions.add(ImmutableGeneDisruption.builder()
-                        .location(primaryBreakendLeft.chromosome() + primaryBreakendLeft.chrBand())
+                        .location(primaryBreakendLeft.chromosome() + primaryBreakendLeft.chromosomeBand())
                         .gene(primaryBreakendLeft.gene())
-                        .transcriptId(primaryBreakendLeft.transcriptId())
-                        .isCanonical(primaryBreakendLeft.canonical())
+                        .transcriptId(primaryBreakendLeft.transcript())
+                        .isCanonical(primaryBreakendLeft.isCanonical())
                         .type(primaryBreakendLeft.type().toString())
                         .range(rangeField(pairedBreakend))
                         .junctionCopyNumber(primaryBreakendLeft.junctionCopyNumber())
@@ -91,7 +92,7 @@ public final class GeneDisruptionFactory {
             @NotNull Iterable<LinxBreakend> breakends) {
         Map<SvAndTranscriptKey, List<LinxBreakend>> breakendsPerSvAndTranscript = Maps.newHashMap();
         for (LinxBreakend breakend : breakends) {
-            SvAndTranscriptKey key = new SvAndTranscriptKey(breakend.svId(), breakend.transcriptId());
+            SvAndTranscriptKey key = new SvAndTranscriptKey(breakend.svId(), breakend.transcript());
             List<LinxBreakend> currentBreakends = breakendsPerSvAndTranscript.get(key);
             if (currentBreakends == null) {
                 currentBreakends = Lists.newArrayList();
@@ -162,7 +163,7 @@ public final class GeneDisruptionFactory {
     }
 
     private static boolean isUpstream(@NotNull LinxBreakend breakend) {
-        return breakend.orientation() * breakend.strand() < 0;
+        return breakend.geneOrientation().equals(BREAKEND_ORIENTATION_UPSTREAM);
     }
 
     private static class SvAndTranscriptKey {

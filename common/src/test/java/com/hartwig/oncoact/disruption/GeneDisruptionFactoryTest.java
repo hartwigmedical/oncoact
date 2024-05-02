@@ -35,9 +35,9 @@ public class GeneDisruptionFactoryTest {
         ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder()
                 .svId(1)
                 .gene("ROPN1B")
-                .transcriptId("ENST1")
+                .transcript("ENST1")
                 .chromosome("3")
-                .chrBand("p12")
+                .chromosomeBand("p12")
                 .type(LinxBreakendType.INV)
                 .junctionCopyNumber(1.12);
         List<LinxBreakend> pairedBreakends =
@@ -65,9 +65,9 @@ public class GeneDisruptionFactoryTest {
     @Test
     public void doesNotPairBreakendsOnDifferentTranscripts() {
         ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder().svId(1);
-        List<LinxBreakend> pairedDisruptions = Lists.newArrayList(pairedBreakendBuilder.transcriptId("ENST 1").svId(1).build(),
-                pairedBreakendBuilder.transcriptId("ENST 2").svId(1).build(),
-                pairedBreakendBuilder.transcriptId("ENST 2").svId(1).build());
+        List<LinxBreakend> pairedDisruptions = Lists.newArrayList(pairedBreakendBuilder.transcript("ENST 1").svId(1).build(),
+                pairedBreakendBuilder.transcript("ENST 2").svId(1).build(),
+                pairedBreakendBuilder.transcript("ENST 2").svId(1).build());
 
         List<GeneDisruption> disruptions = GeneDisruptionFactory.convert(pairedDisruptions, Lists.newArrayList());
 

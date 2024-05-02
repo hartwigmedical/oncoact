@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -32,7 +32,7 @@ public final class WildTypeFactory {
     @NotNull
     public static List<WildTypeGene> determineWildTypeGenes(@NotNull Collection<ReportableVariant> reportableGermlineVariants,
             @NotNull Collection<ReportableVariant> reportableSomaticVariants, @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses,
-            @NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<HomozygousDisruption> homozygousDisruptions,
+            @NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxHomozygousDisruption> homozygousDisruptions,
             @NotNull Collection<LinxBreakend> reportableBreakends, @NotNull Collection<DriverGene> driverGenes) {
         List<WildTypeGene> wildTypeGenes = Lists.newArrayList();
 
@@ -66,7 +66,7 @@ public final class WildTypeFactory {
             }
 
             boolean hasHomozygousDisruption = false;
-            for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+            for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
                 if (driverGene.gene().equals(homozygousDisruption.gene())) {
                     hasFusion = true;
                 }

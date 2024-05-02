@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
@@ -32,10 +32,10 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull List<HomozygousDisruption> somaticHomozygousDisruptions,
-            @Nullable List<HomozygousDisruption> germlineHomozygousDisruptions) {
+    public List<ProtectEvidence> evidence(@NotNull List<LinxHomozygousDisruption> somaticHomozygousDisruptions,
+            @Nullable List<LinxHomozygousDisruption> germlineHomozygousDisruptions) {
         List<ProtectEvidence> result = Lists.newArrayList();
-        for (HomozygousDisruption homozygousDisruption : ListUtil.mergeListsDistinct(somaticHomozygousDisruptions,
+        for (LinxHomozygousDisruption homozygousDisruption : ListUtil.mergeListsDistinct(somaticHomozygousDisruptions,
                 germlineHomozygousDisruptions)) {
             result.addAll(evidence(homozygousDisruption));
         }
@@ -43,7 +43,7 @@ public class DisruptionEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull HomozygousDisruption homozygousDisruption) {
+    private List<ProtectEvidence> evidence(@NotNull LinxHomozygousDisruption homozygousDisruption) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(homozygousDisruption.gene())) {

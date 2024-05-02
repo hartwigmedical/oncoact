@@ -1,6 +1,6 @@
 package com.hartwig.oncoact.orange.virus;
 
-import com.hartwig.hmftools.datamodel.virus.ImmutableAnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.ImmutableVirusInterpreterEntry;
 import com.hartwig.hmftools.datamodel.virus.VirusBreakendQCStatus;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 
@@ -13,13 +13,13 @@ public final class TestVirusInterpreterFactory {
     }
 
     @NotNull
-    public static ImmutableAnnotatedVirus.Builder builder() {
-        return ImmutableAnnotatedVirus.builder()
+    public static ImmutableVirusInterpreterEntry.Builder builder() {
+        return ImmutableVirusInterpreterEntry.builder()
                 .reported(true)
                 .name(Strings.EMPTY)
                 .qcStatus(VirusBreakendQCStatus.NO_ABNORMALITIES)
                 .integrations(0)
-                .virusDriverLikelihoodType(VirusLikelihoodType.LOW)
+                .driverLikelihood(VirusLikelihoodType.LOW)
                 .meanCoverage(0)
                 .percentageCovered(0D);
     }

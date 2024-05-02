@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -39,7 +39,7 @@ public class WildTypeEvidence {
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermlineVariants,
             @NotNull Collection<ReportableVariant> reportableSomaticVariants,
             @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses, @NotNull Collection<LinxFusion> reportableFusions,
-            @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
+            @NotNull Collection<LinxHomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
             @NotNull Collection<PurpleQCStatus> purpleQCStatus) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         List<WildTypeGene> wildTypeGenes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
