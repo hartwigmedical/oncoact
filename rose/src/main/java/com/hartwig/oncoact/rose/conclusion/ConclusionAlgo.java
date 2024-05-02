@@ -25,9 +25,12 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.PurpleFit;
+import com.hartwig.hmftools.datamodel.purple.PurpleFittedPurityMethod;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
@@ -112,7 +115,7 @@ public final class ConclusionAlgo {
 
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
-        generatePurityConclusion(conclusion, purple.fit().purity(), containsTumorCells(purple), actionabilityMap);
+        generatePurityConclusion(conclusion, purple.fit().purity(), containsTumorCells(purple.fit()), actionabilityMap);
         generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
         generateVariantConclusion(conclusion,
                 reportableVariants,
@@ -122,7 +125,7 @@ public final class ConclusionAlgo {
                 actionable,
                 HRD,
                 rose.orange().chord());
-        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, containsTumorCells(purple));
+        generateCNVConclusion(conclusion, reportableGainLosses, actionabilityMap, oncogenic, actionable, containsTumorCells(purple.fit()));
         generateFusionConclusion(conclusion, reportableFusions, actionabilityMap, oncogenic, actionable);
         generateHomozygousDisruptionConclusion(conclusion, homozygousDisruptions, actionabilityMap, oncogenic, actionable);
         generateVirusHLAConclusion(conclusion, reportableViruses, lilac, actionabilityMap, oncogenic, actionable);
@@ -570,8 +573,8 @@ public final class ConclusionAlgo {
         return new DecimalFormat(format, DecimalFormatSymbols.getInstance(Locale.ENGLISH));
     }
 
-    private static boolean containsTumorCells(@NotNull PurpleRecord purple) {
-        throw new UnsupportedOperationException("TODO implement");
-//        return purple.fit().containsTumorCells();
+    private static boolean containsTumorCells(@NotNull PurpleFit purpleFit) {
+        return purpleFit.fittedPurityMethod() != PurpleFittedPurityMethod.NO_TUMOR
+                && !purpleFit.qc().status().contains(PurpleQCStatus.FAIL_NO_TUMOR);
     }
 }
