@@ -13,12 +13,12 @@ import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.HotspotType;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -29,8 +29,8 @@ import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.copynumber.Chromosome;
 import com.hartwig.oncoact.copynumber.ChromosomeArm;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
@@ -109,9 +109,9 @@ public final class ExampleAnalysisTestFactory {
                 notifyAllGermlineVariants(reportableVariants, reportData.lamaPatientData().getReportSettings().getFlagGermlineOnReport());
         List<PurpleGainLoss> gainsAndLosses = createCOLO829GainsLosses();
         List<LinxFusion> fusions = Lists.newArrayList();
-        List<HomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
+        List<LinxHomozygousDisruption> homozygousDisruptions = Lists.newArrayList();
         List<GeneDisruption> disruptions = createCOLO829Disruptions();
-        List<AnnotatedVirus> viruses = Lists.newArrayList();
+        List<VirusInterpreterEntry> viruses = Lists.newArrayList();
         Map<String, List<PeachGenotype>> pharmacogeneticsGenotypes = createTestPharmacogeneticsGenotypes();
         HlaAllelesReportingData hlaData = createTestHlaData();
         List<InterpretPurpleGeneCopyNumbers> LOHGenes = Lists.newArrayList();
@@ -220,8 +220,8 @@ public final class ExampleAnalysisTestFactory {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
-        List<AnnotatedVirus> viruses = createTestAnnotatedViruses();
-        List<HomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
+        List<VirusInterpreterEntry> viruses = createTestAnnotatedViruses();
+        List<LinxHomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
 
         GenomicAnalysis analysis = ImmutableGenomicAnalysis.builder()
                 .from(coloReport.genomicAnalysis())
@@ -1793,7 +1793,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(4.1)
                 .totalCopyNumber(6.02)
                 .minorAlleleCopyNumber(2.01)
-                .hotspot(Hotspot.HOTSPOT)
+                .hotspot(HotspotType.HOTSPOT)
                 .driverLikelihood(1D)
                 .clonalLikelihood(1D)
                 .biallelic(false)
@@ -1832,7 +1832,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.02)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
-                .hotspot(Hotspot.NEAR_HOTSPOT)
+                .hotspot(HotspotType.NEAR_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(1D)
                 .biallelic(true)
@@ -1864,7 +1864,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.02)
                 .minorAlleleCopyNumber(0.0)
                 .totalCopyNumber(2.0)
-                .hotspot(Hotspot.NEAR_HOTSPOT)
+                .hotspot(HotspotType.NEAR_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(1D)
                 .biallelic(true)
@@ -1941,7 +1941,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(2.03)
                 .minorAlleleCopyNumber(1.0)
                 .totalCopyNumber(3.02)
-                .hotspot(Hotspot.NON_HOTSPOT)
+                .hotspot(HotspotType.NON_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0.1459)
                 .biallelic(false)
@@ -1973,7 +1973,7 @@ public final class ExampleAnalysisTestFactory {
                 .alleleCopyNumber(1.68)
                 .minorAlleleCopyNumber(1.97)
                 .totalCopyNumber(3.98)
-                .hotspot(Hotspot.NON_HOTSPOT)
+                .hotspot(HotspotType.NON_HOTSPOT)
                 .clonalLikelihood(1D)
                 .driverLikelihood(0D)
                 .biallelic(false)
@@ -1996,7 +1996,7 @@ public final class ExampleAnalysisTestFactory {
                 .hgvsProteinImpact(hgvsProteinImpact)
                 .affectedCodon(codon)
                 .affectedExon(exon)
-                .spliceRegion(spliceRegion)
+                .inSpliceRegion(spliceRegion)
                 .effects(effects)
                 .codingEffect(effect)
                 .build();
@@ -2023,7 +2023,6 @@ public final class ExampleAnalysisTestFactory {
         LinxFusion fusion1 = TestLinxFactory.fusionBuilder()
                 .reported(true)
                 .reportedType(LinxFusionType.KNOWN_PAIR)
-                .name(Strings.EMPTY)
                 .geneStart("TMPRSS2")
                 .geneContextStart("Intron 5")
                 .geneTranscriptStart("ENST00000398585")
@@ -2032,7 +2031,7 @@ public final class ExampleAnalysisTestFactory {
                 .geneContextEnd("Intron 3")
                 .geneTranscriptEnd("ENST00000406427")
                 .fusedExonDown(7)
-                .likelihood(FusionLikelihoodType.HIGH)
+                .driverLikelihood(FusionLikelihoodType.HIGH)
                 .phased(FusionPhasedType.INFRAME)
                 .junctionCopyNumber(0.4)
                 .build();
@@ -2040,7 +2039,6 @@ public final class ExampleAnalysisTestFactory {
         LinxFusion fusion2 = TestLinxFactory.fusionBuilder()
                 .reported(true)
                 .reportedType(LinxFusionType.PROMISCUOUS_5)
-                .name(Strings.EMPTY)
                 .geneStart("CLCN6")
                 .geneContextStart("Intron 1")
                 .geneTranscriptStart("ENST00000346436")
@@ -2049,7 +2047,7 @@ public final class ExampleAnalysisTestFactory {
                 .geneContextEnd("Intron 8")
                 .geneTranscriptEnd("ENST00000288602")
                 .fusedExonDown(7)
-                .likelihood(FusionLikelihoodType.LOW)
+                .driverLikelihood(FusionLikelihoodType.LOW)
                 .phased(FusionPhasedType.SKIPPED_EXONS)
                 .junctionCopyNumber(1D)
                 .build();
@@ -2076,7 +2074,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
+    private static List<LinxHomozygousDisruption> createTestHomozygousDisruptions() {
         return Lists.newArrayList(TestLinxFactory.homozygousDisruptionBuilder()
                 .chromosome("8")
                 .chromosomeBand("p22")
@@ -2161,7 +2159,7 @@ public final class ExampleAnalysisTestFactory {
     }
 
     @NotNull
-    private static List<AnnotatedVirus> createTestAnnotatedViruses() {
+    private static List<VirusInterpreterEntry> createTestAnnotatedViruses() {
         return Lists.newArrayList(TestVirusInterpreterFactory.builder()
                 .reported(true)
                 .name("Human papillomavirus type 16")

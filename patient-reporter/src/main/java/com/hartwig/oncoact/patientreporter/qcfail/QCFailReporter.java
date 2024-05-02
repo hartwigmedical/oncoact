@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter.qcfail;
 
+import static com.hartwig.oncoact.purple.QcInterpretation.containsTumorCells;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -63,7 +65,7 @@ public class QCFailReporter {
             OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
             String formattedPurity = new DecimalFormat("#'%'").format(orange.purple().fit().purity() * 100);
-            hasReliablePurity = orange.purple().fit().containsTumorCells();
+            hasReliablePurity = containsTumorCells(orange.purple().fit());
 
             wgsPurityString = hasReliablePurity ? formattedPurity : "N/A";
             purpleQc = orange.purple().fit().qc().status();

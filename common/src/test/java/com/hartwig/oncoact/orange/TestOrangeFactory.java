@@ -8,6 +8,7 @@ import com.hartwig.hmftools.datamodel.chord.ChordRecord;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
 import com.hartwig.hmftools.datamodel.cuppa.CuppaData;
 import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaData;
+import com.hartwig.hmftools.datamodel.cuppa.ImmutableCuppaPrediction;
 import com.hartwig.hmftools.datamodel.flagstat.ImmutableFlagstat;
 import com.hartwig.hmftools.datamodel.hla.ImmutableLilacRecord;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
@@ -19,6 +20,7 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxRecord;
 import com.hartwig.hmftools.datamodel.metrics.ImmutableWGSMetrics;
+import com.hartwig.hmftools.datamodel.orange.ExperimentType;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeSample;
@@ -69,8 +71,9 @@ public final class TestOrangeFactory {
     public static OrangeRecord createMinimalTestOrangeRecord() {
         return ImmutableOrangeRecord.builder()
                 .sampleId("TEST")
-                .tumorSample(createMinimalOrangeSample())
                 .samplingDate(LocalDate.of(2022, 1, 20))
+                .experimentType(ExperimentType.WHOLE_GENOME)
+                .tumorSample(createMinimalOrangeSample())
                 .refGenomeVersion(OrangeRefGenomeVersion.V37)
                 .purple(createMinimalTestPurpleRecord())
                 .linx(ImmutableLinxRecord.builder().build())
@@ -133,6 +136,7 @@ public final class TestOrangeFactory {
                 .purpleVariantCopyNumberPlot(Strings.EMPTY)
                 .purplePurityRangePlot(Strings.EMPTY)
                 .purpleFinalCircosPlot(EMPTY_CIRCOS_PLOT)
+                .purpleKataegisPlot(Strings.EMPTY)
                 .build();
     }
 
@@ -326,8 +330,11 @@ public final class TestOrangeFactory {
 
     @NotNull
     private static CuppaData createTestCuppaRecord() {
+        ImmutableCuppaPrediction prediction =
+                TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.996).build();
         return ImmutableCuppaData.builder()
-                .addPredictions(TestCuppaFactory.builder().cancerType("Melanoma").likelihood(0.996).build())
+                .addPredictions(prediction)
+                .bestPrediction(prediction)
                 .simpleDups32To200B(0)
                 .maxComplexSize(0)
                 .telomericSGLs(0)

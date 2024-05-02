@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.rose.conclusion;
 
+import static com.hartwig.oncoact.purple.QcInterpretation.containsTumorCells;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
@@ -25,12 +27,9 @@ import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.PurpleFit;
-import com.hartwig.hmftools.datamodel.purple.PurpleFittedPurityMethod;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleRecord;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
@@ -571,10 +570,5 @@ public final class ConclusionAlgo {
     private static DecimalFormat decimalFormat(@NotNull String format) {
         // To make sure every decimal format uses a dot as separator rather than a comma.
         return new DecimalFormat(format, DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-    }
-
-    private static boolean containsTumorCells(@NotNull PurpleFit purpleFit) {
-        return purpleFit.fittedPurityMethod() != PurpleFittedPurityMethod.NO_TUMOR
-                && !purpleFit.qc().status().contains(PurpleQCStatus.FAIL_NO_TUMOR);
     }
 }

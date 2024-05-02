@@ -7,10 +7,10 @@ import java.util.Optional;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
@@ -188,10 +188,10 @@ public class XMLFactory {
         }
     }
 
-    public static void addHomozygousDisruptionsToXML(@NotNull List<HomozygousDisruption> homozygousDisruptions,
+    public static void addHomozygousDisruptionsToXML(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions,
             @NotNull List<KeyXML> xmlList) {
         int count = 1;
-        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
+        for (LinxHomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgshzy.line[" + count + "]gen")
                     .valuePath(Map.of("value", homozygousDisruption.gene()))
@@ -259,9 +259,9 @@ public class XMLFactory {
         }
     }
 
-    public static void addVirussesToXML(@NotNull List<AnnotatedVirus> annotatedVirusList, @NotNull List<KeyXML> xmlList) {
+    public static void addVirussesToXML(@NotNull List<VirusInterpreterEntry> annotatedVirusList, @NotNull List<KeyXML> xmlList) {
         int count = 1;
-        for (AnnotatedVirus virus : annotatedVirusList) {
+        for (VirusInterpreterEntry virus : annotatedVirusList) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsvrs.line[" + count + "]name")
                     .valuePath(Map.of("value", virus.name()))
@@ -276,7 +276,7 @@ public class XMLFactory {
         for (LinxFusion fusion : GeneFusions.sort(linxFusions)) {
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsfusie.line[" + count + "]name")
-                    .valuePath(Map.of("value", fusion.name()))
+                    .valuePath(Map.of("value", fusion.display()))
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsfusie.line[" + count + "]f5gen")
@@ -312,7 +312,7 @@ public class XMLFactory {
                     .build());
             xmlList.add(ImmutableKeyXML.builder()
                     .keyPath("importwgs.wgsfusie.line[" + count + "]driver")
-                    .valuePath(Map.of("value", fusion.likelihood().name()))
+                    .valuePath(Map.of("value", fusion.driverLikelihood().name()))
                     .build());
             count += 1;
         }

@@ -34,6 +34,7 @@ public final class OrangeJson {
                 .purpleCopyNumberPlot(getPlotPath(orangeBasePath, orange.plots().purpleCopyNumberPlot()))
                 .purpleVariantCopyNumberPlot(getPlotPath(orangeBasePath, orange.plots().purpleVariantCopyNumberPlot()))
                 .purplePurityRangePlot(getPlotPath(orangeBasePath, orange.plots().purplePurityRangePlot()))
+                .purpleKataegisPlot(getPlotPath(orangeBasePath, orange.plots().purpleKataegisPlot()))
                 .build();
         return ImmutableOrangeRecord.builder().from(orange).plots(fixedPlots).build();
     }

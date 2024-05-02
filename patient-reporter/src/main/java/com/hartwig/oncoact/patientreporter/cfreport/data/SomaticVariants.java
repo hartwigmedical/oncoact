@@ -12,9 +12,9 @@ import com.google.api.client.util.Lists;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.HotspotType;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
@@ -159,7 +159,7 @@ public final class SomaticVariants {
     }
 
     @NotNull
-    public static String hotspotString(@Nullable Hotspot hotspot) {
+    public static String hotspotString(@Nullable HotspotType hotspot) {
         if (hotspot == null) {
             return Strings.EMPTY;
         } else {
@@ -229,7 +229,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineMSIGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -245,7 +245,7 @@ public final class SomaticVariants {
             }
         }
 
-        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.MSI_GENES.contains(homozygousDisruption.gene())) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }
@@ -255,7 +255,7 @@ public final class SomaticVariants {
 
     @NotNull
     public static Set<String> determineHRDGenes(@NotNull List<ReportableVariant> reportableVariants,
-            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<HomozygousDisruption> homozygousDisruptions) {
+            @NotNull List<PurpleGainLoss> gainsAndLosses, @NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
         Set<String> genesDisplay = Sets.newTreeSet();
 
         for (ReportableVariant variant : reportableVariants) {
@@ -271,7 +271,7 @@ public final class SomaticVariants {
             }
         }
 
-        for (HomozygousDisruption homozygousDisruption : homozygousDisruptions) {
+        for (LinxHomozygousDisruption homozygousDisruption : homozygousDisruptions) {
             if (Genes.HRD_GENES.contains(homozygousDisruption.gene())) {
                 genesDisplay.add(CurationFunctions.curateGeneNamePdf(homozygousDisruption.gene()));
             }

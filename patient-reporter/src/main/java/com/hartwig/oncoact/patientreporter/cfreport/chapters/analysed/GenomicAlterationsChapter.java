@@ -6,12 +6,12 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.hla.HlaAllelesReportingData;
@@ -294,7 +294,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createHomozygousDisruptionsTable(@NotNull List<HomozygousDisruption> homozygousDisruptions) {
+    private Table createHomozygousDisruptionsTable(@NotNull List<LinxHomozygousDisruption> homozygousDisruptions) {
         String title = "Tumor observed homozygous disruptions";
         String subtitle = "Complete loss of wild type allele";
         if (homozygousDisruptions.isEmpty()) {
@@ -306,7 +306,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
                         tableUtil.createHeaderCell("Gene") },
                 ReportResources.CONTENT_WIDTH_WIDE);
 
-        for (HomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
+        for (LinxHomozygousDisruption homozygousDisruption : HomozygousDisruptions.sort(homozygousDisruptions)) {
             contentTable.addCell(tableUtil.createContentCell(homozygousDisruption.chromosome()));
             contentTable.addCell(tableUtil.createContentCell(homozygousDisruption.chromosomeBand()));
             contentTable.addCell(tableUtil.createContentCell(homozygousDisruption.gene()));
@@ -465,7 +465,7 @@ public class GenomicAlterationsChapter implements ReportChapter {
     }
 
     @NotNull
-    private Table createVirusTable(@NotNull List<AnnotatedVirus> viruses) {
+    private Table createVirusTable(@NotNull List<VirusInterpreterEntry> viruses) {
         String title = "Tumor observed viral insertions";
 
         if (viruses.isEmpty()) {
@@ -478,10 +478,10 @@ public class GenomicAlterationsChapter implements ReportChapter {
                             tableUtil.createHeaderCell("Driver").setTextAlignment(TextAlignment.CENTER) },
                     ReportResources.CONTENT_WIDTH_WIDE);
 
-            for (AnnotatedVirus virus : viruses) {
+            for (VirusInterpreterEntry virus : viruses) {
                 contentTable.addCell(tableUtil.createContentCell(ViralPresence.interpretVirusName(virus.name(),
                         virus.interpretation(),
-                        virus.virusDriverLikelihoodType())));
+                        virus.driverLikelihood())));
                 contentTable.addCell(tableUtil.createContentCell(ViralPresence.integrations(virus)).setTextAlignment(TextAlignment.CENTER));
                 contentTable.addCell(tableUtil.createContentCell(ViralPresence.percentageCovered(virus))
                         .setTextAlignment(TextAlignment.CENTER));
