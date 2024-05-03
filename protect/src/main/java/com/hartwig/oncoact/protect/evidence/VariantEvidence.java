@@ -74,40 +74,30 @@ public class VariantEvidence {
 
     @NotNull
     private List<ProtectEvidence> evidence(@NotNull ReportableVariant variant) {
-        boolean mayReport;
-        DriverInterpretation driverInterpretation;
-
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            mayReport = true;
-            driverInterpretation = reportable.driverLikelihoodInterpretation();
-        } else {
-            mayReport = false;
-            driverInterpretation = DriverInterpretation.LOW;
-        }
+        DriverInterpretation driverInterpretation = variant.driverLikelihoodInterpretation();
 
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableHotspot hotspot : hotspots) {
             if (hotspotMatch(variant, hotspot)) {
-                evidences.add(evidence(variant, hotspot, mayReport, "hotspot"));
+                evidences.add(evidence(variant, hotspot, true, "hotspot"));
             }
         }
 
         for (ActionableRange codon : codons) {
             if (rangeMatch(variant, codon)) {
-                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "codon"));
+                evidences.add(evidence(variant, codon, driverInterpretation == DriverInterpretation.HIGH, "codon"));
             }
         }
 
         for (ActionableRange exon : exons) {
             if (rangeMatch(variant, exon)) {
-                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "exon"));
+                evidences.add(evidence(variant, exon, driverInterpretation == DriverInterpretation.HIGH, "exon"));
             }
         }
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, "gene"));
+                evidences.add(evidence(variant, gene, driverInterpretation == DriverInterpretation.HIGH, "gene"));
             }
         }
 
@@ -116,40 +106,28 @@ public class VariantEvidence {
 
     @NotNull
     private List<ProtectEvidence> evidence(@NotNull PurpleVariant variant) {
-        boolean mayReport;
-        DriverInterpretation driverInterpretation;
-
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            mayReport = true;
-            driverInterpretation = reportable.driverLikelihoodInterpretation();
-        } else {
-            mayReport = false;
-            driverInterpretation = DriverInterpretation.LOW;
-        }
-
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableHotspot hotspot : hotspots) {
             if (hotspotMatch(variant, hotspot)) {
-                evidences.add(evidence(variant, hotspot, mayReport, "hotspot"));
+                evidences.add(evidence(variant, hotspot, false, "hotspot"));
             }
         }
 
         for (ActionableRange codon : codons) {
             if (rangeMatch(variant, codon)) {
-                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "codon"));
+                evidences.add(evidence(variant, codon, false, "codon"));
             }
         }
 
         for (ActionableRange exon : exons) {
             if (rangeMatch(variant, exon)) {
-                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "exon"));
+                evidences.add(evidence(variant, exon, false, "exon"));
             }
         }
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, "gene"));
+                evidences.add(evidence(variant, gene, false, "gene"));
             }
         }
 
@@ -163,24 +141,11 @@ public class VariantEvidence {
         String transcript;
         boolean isCanonical;
         Integer rangeRank;
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            isGermline =
-                    reportable.source() == ReportableVariantSource.GERMLINE || reportable.source() == ReportableVariantSource.GERMLINE_ONLY;
-            driverInterpretation = reportable.driverLikelihoodInterpretation();
-            transcript = reportable.transcript();
-            isCanonical = reportable.isCanonical();
-            rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
-        } else if (variant instanceof PurpleVariant) {
-            PurpleVariant purple = (PurpleVariant) variant;
-            isGermline = false;
-            driverInterpretation = DriverInterpretation.LOW;
-            transcript = purple.canonicalImpact().transcript();
-            isCanonical = true;
-            rangeRank = determineRangeRank(range, purple.canonicalImpact().affectedCodon(), purple.canonicalImpact().affectedExon());
-        } else {
-            throw new IllegalArgumentException(String.format("Variant of type '%s' not supported", variant.getClass().getName()));
-        }
+        isGermline = variant.source() == ReportableVariantSource.GERMLINE || variant.source() == ReportableVariantSource.GERMLINE_ONLY;
+        driverInterpretation = variant.driverLikelihoodInterpretation();
+        transcript = variant.transcript();
+        isCanonical = variant.isCanonical();
+        rangeRank = determineRangeRank(range, variant.affectedCodon(), variant.affectedExon());
 
         return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
                 .gene(variant.gene())
@@ -200,24 +165,12 @@ public class VariantEvidence {
         String transcript;
         boolean isCanonical;
         Integer rangeRank;
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            isGermline =
-                    reportable.source() == ReportableVariantSource.GERMLINE || reportable.source() == ReportableVariantSource.GERMLINE_ONLY;
-            driverInterpretation = reportable.driverLikelihoodInterpretation();
-            transcript = reportable.transcript();
-            isCanonical = reportable.isCanonical();
-            rangeRank = determineRangeRank(range, reportable.affectedCodon(), reportable.affectedExon());
-        } else if (variant instanceof PurpleVariant) {
-            PurpleVariant purple = (PurpleVariant) variant;
-            isGermline = false;
-            driverInterpretation = DriverInterpretation.LOW;
-            transcript = purple.canonicalImpact().transcript();
-            isCanonical = true;
-            rangeRank = determineRangeRank(range, purple.canonicalImpact().affectedCodon(), purple.canonicalImpact().affectedExon());
-        } else {
-            throw new IllegalArgumentException(String.format("Variant of type '%s' not supported", variant.getClass().getName()));
-        }
+
+        isGermline = false;
+        driverInterpretation = DriverInterpretation.LOW;
+        transcript = variant.canonicalImpact().transcript();
+        isCanonical = true;
+        rangeRank = determineRangeRank(range, variant.canonicalImpact().affectedCodon(), variant.canonicalImpact().affectedExon());
 
         return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
                 .gene(variant.gene())
@@ -226,7 +179,7 @@ public class VariantEvidence {
                 .event(EventGenerator.variantEvent(variant))
                 .germline(isGermline)
                 .reported(report)
-                .eventIsHighDriver(driverInterpretation == null ? null : EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
+                .eventIsHighDriver(EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
                 .build();
     }
 
@@ -278,15 +231,7 @@ public class VariantEvidence {
 
     private static boolean meetsMutationType(@NotNull ReportableVariant variant, @NotNull MutationType applicableMutationType) {
         PurpleCodingEffect effect;
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            effect = reportable.canonicalCodingEffect();
-        } else if (variant instanceof PurpleVariant) {
-            PurpleVariant purple = (PurpleVariant) variant;
-            effect = purple.canonicalImpact().codingEffect();
-        } else {
-            throw new IllegalArgumentException("Variant is defined in a wrong variant other than ReportableVariant and PurpleVariant");
-        }
+        effect = variant.canonicalCodingEffect();
 
         switch (applicableMutationType) {
             case NONSENSE_OR_FRAMESHIFT:
@@ -313,15 +258,7 @@ public class VariantEvidence {
 
     private static boolean meetsMutationType(@NotNull PurpleVariant variant, @NotNull MutationType applicableMutationType) {
         PurpleCodingEffect effect;
-        if (variant instanceof ReportableVariant) {
-            ReportableVariant reportable = (ReportableVariant) variant;
-            effect = reportable.canonicalCodingEffect();
-        } else if (variant instanceof PurpleVariant) {
-            PurpleVariant purple = (PurpleVariant) variant;
-            effect = purple.canonicalImpact().codingEffect();
-        } else {
-            throw new IllegalArgumentException("Variant is defined in a wrong variant other than ReportableVariant and PurpleVariant");
-        }
+        effect = variant.canonicalImpact().codingEffect();
 
         switch (applicableMutationType) {
             case NONSENSE_OR_FRAMESHIFT:
