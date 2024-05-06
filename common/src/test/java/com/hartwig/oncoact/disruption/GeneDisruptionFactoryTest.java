@@ -13,6 +13,7 @@ import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
 import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 public class GeneDisruptionFactoryTest {
@@ -72,5 +73,20 @@ public class GeneDisruptionFactoryTest {
         List<GeneDisruption> disruptions = GeneDisruptionFactory.convert(pairedDisruptions, Lists.newArrayList());
 
         assertEquals(2, disruptions.size());
+    }
+
+    @Test
+    public void canDetermineDisruptionOrientation() {
+        ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder().svId(1);
+        ImmutableLinxBreakend intactUpstream = pairedBreakendBuilder
+                .exonUp(2)
+                .exonDown(2)
+                .geneOrientation("Upstream")
+                .build();
+
+        assertEquals("Exon 2 Downstream", GeneDisruptionFactory.rangeField(Pair.of(intactUpstream, null)));
+
+        ImmutableLinxBreakend intactDownstream = intactUpstream.withGeneOrientation("Downstream");
+        assertEquals("Exon 2 Upstream", GeneDisruptionFactory.rangeField(Pair.of(intactDownstream, null)));
     }
 }

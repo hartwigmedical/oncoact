@@ -134,13 +134,14 @@ public final class GeneDisruptionFactory {
         return pairedMap;
     }
 
+    @VisibleForTesting
     @NotNull
-    private static String rangeField(@NotNull Pair<LinxBreakend, LinxBreakend> pairedBreakend) {
+    static String rangeField(@NotNull Pair<LinxBreakend, LinxBreakend> pairedBreakend) {
         LinxBreakend primary = pairedBreakend.getLeft();
         LinxBreakend secondary = pairedBreakend.getRight();
 
         if (secondary == null) {
-            return exonDescription(primary.exonUp(), primary.exonDown()) + (isUpstream(primary) ? " Upstream" : " Downstream");
+            return exonDescription(primary.exonUp(), primary.exonDown()) + (isDisruptedUpstream(primary) ? " Upstream" : " Downstream");
         } else {
             return exonDescription(primary.exonUp(), primary.exonDown()) + " -> " + exonDescription(secondary.exonUp(),
                     secondary.exonDown());
@@ -162,8 +163,8 @@ public final class GeneDisruptionFactory {
         return String.format("ERROR up=%d, down=%d", exonUp, exonDown);
     }
 
-    private static boolean isUpstream(@NotNull LinxBreakend breakend) {
-        return breakend.geneOrientation().equals(BREAKEND_ORIENTATION_UPSTREAM);
+    private static boolean isDisruptedUpstream(@NotNull LinxBreakend breakend) {
+        return !breakend.geneOrientation().equals(BREAKEND_ORIENTATION_UPSTREAM);
     }
 
     private static class SvAndTranscriptKey {
