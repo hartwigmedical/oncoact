@@ -8,7 +8,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
@@ -166,8 +166,8 @@ public class CurationFunctionsTest {
 
     @Test
     public void canCurateHomozygousDisruptions() {
-        List<HomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
-        List<HomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
+        List<LinxHomozygousDisruption> homozygousDisruptions = createTestHomozygousDisruptions();
+        List<LinxHomozygousDisruption> curated = CurationFunctions.curateHomozygousDisruptions(homozygousDisruptions);
 
         assertEquals(curated.size(), 3);
         assertEquals(findByGeneHomozygousDisruption(curated, "NRAS", true), "NRAS");
@@ -176,9 +176,9 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static String findByGeneHomozygousDisruption(@NotNull List<HomozygousDisruption> disruptions, @NotNull String gene,
+    private static String findByGeneHomozygousDisruption(@NotNull List<LinxHomozygousDisruption> disruptions, @NotNull String gene,
             boolean isCanonical) {
-        for (HomozygousDisruption disruption : disruptions) {
+        for (LinxHomozygousDisruption disruption : disruptions) {
             if (disruption.gene().equals(gene) && disruption.isCanonical() == isCanonical) {
                 return disruption.gene();
             }
@@ -285,10 +285,10 @@ public class CurationFunctionsTest {
     }
 
     @NotNull
-    private static List<HomozygousDisruption> createTestHomozygousDisruptions() {
-        HomozygousDisruption homozygousDisruption1 = TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption2 = TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
-        HomozygousDisruption homozygousDisruption3 =
+    private static List<LinxHomozygousDisruption> createTestHomozygousDisruptions() {
+        LinxHomozygousDisruption homozygousDisruption1 = TestLinxFactory.homozygousDisruptionBuilder().gene("NRAS").isCanonical(true).build();
+        LinxHomozygousDisruption homozygousDisruption2 = TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(true).build();
+        LinxHomozygousDisruption homozygousDisruption3 =
                 TestLinxFactory.homozygousDisruptionBuilder().gene("CDKN2A").isCanonical(false).build();
         return Lists.newArrayList(homozygousDisruption1, homozygousDisruption2, homozygousDisruption3);
     }

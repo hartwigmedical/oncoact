@@ -62,7 +62,7 @@ public final class ReportableVariantFactory {
     public static Set<ReportableVariant> toReportableGermlineVariants(@NotNull Collection<PurpleVariant> germlineVariants,
             @NotNull Collection<PurpleDriver> germlineDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> germlineMutationDrivers =
-                germlineDrivers.stream().filter(x -> x.driver() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
+                germlineDrivers.stream().filter(x -> x.type() == PurpleDriverType.GERMLINE_MUTATION).collect(Collectors.toList());
 
         //Extract germline only variants
         Collection<PurpleVariant> germlineVariantsOnly =
@@ -90,7 +90,7 @@ public final class ReportableVariantFactory {
     public static Set<ReportableVariant> toReportableSomaticVariants(@NotNull Collection<PurpleVariant> somaticVariants,
             @NotNull Collection<PurpleDriver> somaticDrivers, @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         List<PurpleDriver> somaticMutationDrivers =
-                somaticDrivers.stream().filter(x -> x.driver() == PurpleDriverType.MUTATION).collect(Collectors.toList());
+                somaticDrivers.stream().filter(x -> x.type() == PurpleDriverType.MUTATION).collect(Collectors.toList());
         return toReportableVariants(somaticVariants, somaticMutationDrivers, ReportableVariantSource.SOMATIC, clinicalTranscriptsModel);
     }
 
@@ -166,7 +166,7 @@ public final class ReportableVariantFactory {
         assert variant.reported();
 
         for (PurpleDriver driver : entries.values()) {
-            if (MUTATION_DRIVER_TYPES.contains(driver.driver()) && !driver.isCanonical()) {
+            if (MUTATION_DRIVER_TYPES.contains(driver.type()) && !driver.isCanonical()) {
                 return entries.get(DriverKey.create(variant.gene(), driver.transcript()));
             }
         }

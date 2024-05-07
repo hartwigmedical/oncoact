@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
@@ -55,7 +55,7 @@ public class SomaticVariantsTest {
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)
                 .hgvsProteinImpact(hgvsProteinImpact)
-                .spliceRegion(false)
+                .inSpliceRegion(false)
                 .codingEffect(PurpleCodingEffect.UNDEFINED)
                 .build();
     }
@@ -234,7 +234,7 @@ public class SomaticVariantsTest {
 
         List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
+        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("PMS2"));
 
         assertEquals(4, SomaticVariants.determineMSIGenes(variants, gainLosses, homozygousDisruption).size());
     }
@@ -265,13 +265,13 @@ public class SomaticVariantsTest {
 
         List<PurpleGainLoss> gainLosses = Lists.newArrayList(gainLoss1, gainLoss2, gainLoss3);
 
-        List<HomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
+        List<LinxHomozygousDisruption> homozygousDisruption = Lists.newArrayList(createHomozygousDisruption("RAD51C"));
 
         assertEquals(4, SomaticVariants.determineHRDGenes(variants, gainLosses, homozygousDisruption).size());
     }
 
     @NotNull
-    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 

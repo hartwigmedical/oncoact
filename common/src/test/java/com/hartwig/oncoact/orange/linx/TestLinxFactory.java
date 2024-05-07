@@ -4,9 +4,9 @@ import com.hartwig.hmftools.datamodel.gene.TranscriptCodingType;
 import com.hartwig.hmftools.datamodel.gene.TranscriptRegionType;
 import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
 import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
-import com.hartwig.hmftools.datamodel.linx.ImmutableHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
+import com.hartwig.hmftools.datamodel.linx.ImmutableLinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxSvAnnotation;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
@@ -45,8 +45,8 @@ public final class TestLinxFactory {
     }
 
     @NotNull
-    public static ImmutableHomozygousDisruption.Builder homozygousDisruptionBuilder() {
-        return ImmutableHomozygousDisruption.builder()
+    public static ImmutableLinxHomozygousDisruption.Builder homozygousDisruptionBuilder() {
+        return ImmutableLinxHomozygousDisruption.builder()
                 .chromosome(Strings.EMPTY)
                 .chromosomeBand(Strings.EMPTY)
                 .gene(Strings.EMPTY)
@@ -57,15 +57,15 @@ public final class TestLinxFactory {
     @NotNull
     public static ImmutableLinxBreakend.Builder breakendBuilder() {
         return ImmutableLinxBreakend.builder()
-                .reportedDisruption(true)
+                .reported(true)
                 .disruptive(false)
                 .id(0)
                 .svId(0)
                 .gene(Strings.EMPTY)
                 .chromosome(Strings.EMPTY)
-                .chrBand(Strings.EMPTY)
-                .transcriptId(Strings.EMPTY)
-                .canonical(false)
+                .chromosomeBand(Strings.EMPTY)
+                .transcript(Strings.EMPTY)
+                .isCanonical(false)
                 .type(LinxBreakendType.BND)
                 .junctionCopyNumber(0D)
                 .undisruptedCopyNumber(0D)
@@ -74,7 +74,6 @@ public final class TestLinxFactory {
                 .exonDown(0)
                 .geneOrientation(Strings.EMPTY)
                 .orientation(0)
-                .strand(0)
                 .regionType(TranscriptRegionType.INTRONIC)
                 .codingType(TranscriptCodingType.NON_CODING);
     }
@@ -84,7 +83,6 @@ public final class TestLinxFactory {
         return ImmutableLinxFusion.builder()
                 .reported(true)
                 .reportedType(LinxFusionType.NONE)
-                .name(Strings.EMPTY)
                 .geneStart(Strings.EMPTY)
                 .geneTranscriptStart(Strings.EMPTY)
                 .geneContextStart(Strings.EMPTY)
@@ -93,7 +91,7 @@ public final class TestLinxFactory {
                 .geneTranscriptEnd(Strings.EMPTY)
                 .geneContextEnd(Strings.EMPTY)
                 .fusedExonDown(0)
-                .likelihood(FusionLikelihoodType.LOW)
+                .driverLikelihood(FusionLikelihoodType.LOW)
                 .phased(FusionPhasedType.OUT_OF_FRAME)
                 .junctionCopyNumber(0D)
                 .chainLinks(0)

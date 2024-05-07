@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
+import static com.hartwig.oncoact.purple.QcInterpretation.containsTumorCells;
+import static com.hartwig.oncoact.purple.QcInterpretation.hasSufficientQuality;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,9 +11,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangeRefGenomeVersion;
@@ -88,9 +91,9 @@ public class GenomicAnalyzer {
         List<LinxFusion> geneFusions = orange.linx().reportableSomaticFusions();
 
         // homozygous disruptions
-        List<HomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
-        List<HomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
-        List<HomozygousDisruption> homozygousDisruptions =
+        List<LinxHomozygousDisruption> somaticHomozygousDisruptions = orange.linx().somaticHomozygousDisruptions();
+        List<LinxHomozygousDisruption> germlineHomozygousDisruptions = orange.linx().germlineHomozygousDisruptions();
+        List<LinxHomozygousDisruption> homozygousDisruptions =
                 ListUtil.mergeListsDistinct(somaticHomozygousDisruptions, germlineHomozygousDisruptions);
 
         //disruptions
@@ -124,8 +127,8 @@ public class GenomicAnalyzer {
         return ImmutableGenomicAnalysis.builder()
                 .purpleQCStatus(orange.purple().fit().qc().status())
                 .impliedPurity(orange.purple().fit().purity())
-                .hasReliablePurity(orange.purple().fit().containsTumorCells())
-                .hasReliableQuality(orange.purple().fit().hasSufficientQuality())
+                .hasReliablePurity(containsTumorCells(orange.purple().fit()))
+                .hasReliableQuality(hasSufficientQuality(orange.purple().fit()))
                 .averageTumorPloidy(orange.purple().fit().ploidy())
                 .tumorSpecificEvidence(nonTrialsOnLabel)
                 .clinicalTrials(trialsOnLabel)

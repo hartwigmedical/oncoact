@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -34,8 +34,8 @@ public class VirusEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreter) {
-        List<AnnotatedVirus> hpv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.HPV);
-        List<AnnotatedVirus> ebv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.EBV);
+        List<VirusInterpreterEntry> hpv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.HPV);
+        List<VirusInterpreterEntry> ebv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.EBV);
 
         boolean reportHPV = hasReportedWithHighDriverLikelihood(hpv);
         boolean reportEBV = hasReportedWithHighDriverLikelihood(ebv);
@@ -70,9 +70,9 @@ public class VirusEvidence {
         return result;
     }
 
-    private static boolean hasReportedWithHighDriverLikelihood(@NotNull List<AnnotatedVirus> viruses) {
-        for (AnnotatedVirus virus : viruses) {
-            if (virus.reported() && virus.virusDriverLikelihoodType() == VirusLikelihoodType.HIGH) {
+    private static boolean hasReportedWithHighDriverLikelihood(@NotNull List<VirusInterpreterEntry> viruses) {
+        for (VirusInterpreterEntry virus : viruses) {
+            if (virus.reported() && virus.driverLikelihood() == VirusLikelihoodType.HIGH) {
                 return true;
             }
         }
@@ -81,16 +81,16 @@ public class VirusEvidence {
     }
 
     @NotNull
-    private static List<AnnotatedVirus> virusesWithInterpretation(@NotNull VirusInterpreterData virusInterpreter,
+    private static List<VirusInterpreterEntry> virusesWithInterpretation(@NotNull VirusInterpreterData virusInterpreter,
             @NotNull VirusInterpretation interpretationToInclude) {
-        List<AnnotatedVirus> virusesWithInterpretation = Lists.newArrayList();
-        for (AnnotatedVirus virus : virusInterpreter.reportableViruses()) {
+        List<VirusInterpreterEntry> virusesWithInterpretation = Lists.newArrayList();
+        for (VirusInterpreterEntry virus : virusInterpreter.reportableViruses()) {
             if (virus.interpretation() == interpretationToInclude) {
                 virusesWithInterpretation.add(virus);
             }
         }
 
-        for (AnnotatedVirus virus : virusInterpreter.allViruses()) {
+        for (VirusInterpreterEntry virus : virusInterpreter.allViruses()) {
             if ((!virusInterpreter.reportableViruses().contains(virus) && virus.interpretation() == interpretationToInclude)) {
                 virusesWithInterpretation.add(virus);
             }

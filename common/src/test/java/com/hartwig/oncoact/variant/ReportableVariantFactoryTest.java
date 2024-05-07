@@ -40,7 +40,7 @@ public class ReportableVariantFactoryTest {
                 .gene("gene 1")
                 .transcript("transcript 1")
                 .driverLikelihood(0.6)
-                .driver(PurpleDriverType.MUTATION)
+                .type(PurpleDriverType.MUTATION)
                 .build();
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableSomaticVariants(variants,
@@ -64,10 +64,10 @@ public class ReportableVariantFactoryTest {
                 .gene("gene")
                 .driverLikelihood(0.6)
                 .transcript("transcript 1")
-                .driver(PurpleDriverType.GERMLINE_MUTATION)
+                .type(PurpleDriverType.GERMLINE_MUTATION)
                 .build();
         PurpleDriver driver2 =
-                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).driver(PurpleDriverType.GERMLINE_DELETION).build();
+                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).type(PurpleDriverType.GERMLINE_DELETION).build();
         Set<PurpleDriver> drivers = Sets.newHashSet(driver1, driver2);
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1),
@@ -90,10 +90,10 @@ public class ReportableVariantFactoryTest {
                 .gene("gene")
                 .driverLikelihood(0.6)
                 .transcript("transcript 1")
-                .driver(PurpleDriverType.GERMLINE_MUTATION)
+                .type(PurpleDriverType.GERMLINE_MUTATION)
                 .build();
         PurpleDriver driver2 =
-                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).driver(PurpleDriverType.GERMLINE_DELETION).build();
+                TestPurpleFactory.driverBuilder().from(driver1).driverLikelihood(1D).type(PurpleDriverType.GERMLINE_DELETION).build();
         Set<PurpleDriver> drivers = Sets.newHashSet(driver1, driver2);
 
         Set<ReportableVariant> reportable = ReportableVariantFactory.toReportableGermlineVariants(Sets.newHashSet(variant1),

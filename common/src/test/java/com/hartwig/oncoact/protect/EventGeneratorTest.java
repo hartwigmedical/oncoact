@@ -9,8 +9,8 @@ import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
-import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.variant.ReportableVariant;
@@ -42,7 +42,7 @@ public class EventGeneratorTest {
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)
                 .hgvsProteinImpact(hgvsProteinImpact)
-                .spliceRegion(false)
+                .inSpliceRegion(false)
                 .codingEffect(PurpleCodingEffect.UNDEFINED)
                 .build();
     }
@@ -91,18 +91,18 @@ public class EventGeneratorTest {
 
     @Test
     public void canGenerateEventForVariant() {
-        Variant base = TestPurpleFactory.variantBuilder()
+        PurpleVariant base = TestPurpleFactory.variantBuilder()
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().addEffects(PurpleVariantEffect.MISSENSE).build())
                 .build();
         assertEquals("missense", EventGenerator.variantEvent(base));
 
-        Variant coding = TestPurpleFactory.variantBuilder()
+        PurpleVariant coding = TestPurpleFactory.variantBuilder()
                 .from(base)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().hgvsCodingImpact("coding impact").build())
                 .build();
         assertEquals("coding impact", EventGenerator.variantEvent(coding));
 
-        Variant protein = TestPurpleFactory.variantBuilder()
+        PurpleVariant protein = TestPurpleFactory.variantBuilder()
                 .from(base)
                 .canonicalImpact(TestPurpleFactory.transcriptImpactBuilder().hgvsProteinImpact("protein impact").build())
                 .build();

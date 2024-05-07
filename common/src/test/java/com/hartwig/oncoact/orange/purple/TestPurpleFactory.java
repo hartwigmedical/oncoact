@@ -3,7 +3,7 @@ package com.hartwig.oncoact.orange.purple;
 import java.util.List;
 
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.HotspotType;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleAllelicDepth;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleCharacteristics;
 import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleCopyNumber;
@@ -36,8 +36,6 @@ public final class TestPurpleFactory {
     @NotNull
     public static ImmutablePurpleFit.Builder fitBuilder() {
         return ImmutablePurpleFit.builder()
-                .hasSufficientQuality(false)
-                .containsTumorCells(false)
                 .purity(0)
                 .minPurity(0)
                 .maxPurity(0)
@@ -77,7 +75,7 @@ public final class TestPurpleFactory {
         return ImmutablePurpleDriver.builder()
                 .gene(Strings.EMPTY)
                 .transcript(Strings.EMPTY)
-                .driver(PurpleDriverType.MUTATION)
+                .type(PurpleDriverType.MUTATION)
                 .likelihoodMethod(PurpleLikelihoodMethod.AMP)
                 .isCanonical(true)
                 .driverLikelihood(0D);
@@ -96,7 +94,7 @@ public final class TestPurpleFactory {
                 .adjustedCopyNumber(0D)
                 .minorAlleleCopyNumber(0D)
                 .variantCopyNumber(0D)
-                .hotspot(Hotspot.NON_HOTSPOT)
+                .hotspot(HotspotType.NON_HOTSPOT)
                 .tumorDepth(depthBuilder().build())
                 .subclonalLikelihood(0D)
                 .biallelic(false)
@@ -113,7 +111,7 @@ public final class TestPurpleFactory {
                 .transcript(Strings.EMPTY)
                 .hgvsCodingImpact(Strings.EMPTY)
                 .hgvsProteinImpact(Strings.EMPTY)
-                .spliceRegion(false)
+                .inSpliceRegion(false)
                 .codingEffect(PurpleCodingEffect.UNDEFINED);
     }
 
@@ -127,7 +125,7 @@ public final class TestPurpleFactory {
         return ImmutablePurpleGeneCopyNumber.builder()
                 .chromosome(Strings.EMPTY)
                 .chromosomeBand(Strings.EMPTY)
-                .geneName(Strings.EMPTY)
+                .gene(Strings.EMPTY)
                 .minCopyNumber(0D)
                 .minMinorAlleleCopyNumber(0D);
     }

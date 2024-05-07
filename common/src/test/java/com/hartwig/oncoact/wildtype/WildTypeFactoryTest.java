@@ -7,11 +7,11 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.drivergene.TestDriverGeneFactory;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
@@ -35,7 +35,7 @@ public class WildTypeFactoryTest {
 
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BRCA2"));
 
@@ -58,7 +58,7 @@ public class WildTypeFactoryTest {
         Set<ReportableVariant> reportableSomaticVariants = Sets.newHashSet();
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BRCA1"));
@@ -83,7 +83,7 @@ public class WildTypeFactoryTest {
                 TestPurpleFactory.gainLossBuilder().gene("APC").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet(reportableAmp, reportableDel);
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("APC", "KRAS"));
@@ -105,7 +105,7 @@ public class WildTypeFactoryTest {
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         LinxFusion reportedFusionMatch = createFusion("BAG4", "EGFR");
         Set<LinxFusion> reportableFusions = Sets.newHashSet(reportedFusionMatch);
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BAG4"));
@@ -127,7 +127,7 @@ public class WildTypeFactoryTest {
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         LinxFusion reportedFusionMatch = createFusion("EGFR", "BAG4");
         Set<LinxFusion> reportableFusions = Sets.newHashSet(reportedFusionMatch);
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("BAG4"));
@@ -148,8 +148,8 @@ public class WildTypeFactoryTest {
         Set<ReportableVariant> reportableSomaticVariants = Sets.newHashSet();
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
-        HomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
+        LinxHomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet();
 
         List<DriverGene> driverGenes = createDriverList(Lists.newArrayList("NRAS"));
@@ -170,7 +170,7 @@ public class WildTypeFactoryTest {
         Set<ReportableVariant> reportableSomaticVariants = Sets.newHashSet();
         Set<PurpleGainLoss> reportableSomaticGainsLosses = Sets.newHashSet();
         Set<LinxFusion> reportableFusions = Sets.newHashSet();
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet();
 
         LinxBreakend breakend = createBreakend("MYC");
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
@@ -206,8 +206,8 @@ public class WildTypeFactoryTest {
         LinxFusion reportedFusionMatch = createFusion("BAG4", "FGFR1");
         Set<LinxFusion> reportableFusions = Sets.newHashSet(reportedFusionMatch);
 
-        HomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
+        LinxHomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
 
         LinxBreakend breakend = createBreakend("MYC");
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
@@ -244,8 +244,8 @@ public class WildTypeFactoryTest {
         LinxFusion reportedFusionMatch = createFusion("BAG4", "FGFR1");
         Set<LinxFusion> reportableFusions = Sets.newHashSet(reportedFusionMatch);
 
-        HomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
-        Set<HomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
+        LinxHomozygousDisruption homozygousDisruption = createHomozygousDisruption("NRAS");
+        Set<LinxHomozygousDisruption> homozygousDisruptions = Sets.newHashSet(homozygousDisruption);
 
         LinxBreakend breakend = createBreakend("MYC");
         Set<LinxBreakend> reportableBreakends = Sets.newHashSet(breakend);
@@ -288,7 +288,7 @@ public class WildTypeFactoryTest {
     }
 
     @NotNull
-    private static HomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
+    private static LinxHomozygousDisruption createHomozygousDisruption(@NotNull String gene) {
         return TestLinxFactory.homozygousDisruptionBuilder().gene(gene).build();
     }
 

@@ -2,12 +2,8 @@ package com.hartwig.oncoact.orange;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ServiceLoader;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapterFactory;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangePlots;
 import com.hartwig.hmftools.datamodel.orange.ImmutableOrangeRecord;
 import com.hartwig.hmftools.datamodel.orange.OrangePlots;
@@ -38,6 +34,7 @@ public final class OrangeJson {
                 .purpleCopyNumberPlot(getPlotPath(orangeBasePath, orange.plots().purpleCopyNumberPlot()))
                 .purpleVariantCopyNumberPlot(getPlotPath(orangeBasePath, orange.plots().purpleVariantCopyNumberPlot()))
                 .purplePurityRangePlot(getPlotPath(orangeBasePath, orange.plots().purplePurityRangePlot()))
+                .purpleKataegisPlot(getPlotPath(orangeBasePath, orange.plots().purpleKataegisPlot()))
                 .build();
         return ImmutableOrangeRecord.builder().from(orange).plots(fixedPlots).build();
     }

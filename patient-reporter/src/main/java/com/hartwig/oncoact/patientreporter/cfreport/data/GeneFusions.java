@@ -31,14 +31,14 @@ public final class GeneFusions {
     @NotNull
     public static List<LinxFusion> sort(@NotNull List<LinxFusion> fusions) {
         return fusions.stream().sorted((fusion1, fusion2) -> {
-            if (fusion1.likelihood() == fusion2.likelihood()) {
+            if (fusion1.driverLikelihood() == fusion2.driverLikelihood()) {
                 if (fusion1.geneStart().equals(fusion2.geneStart())) {
                     return fusion1.geneEnd().compareTo(fusion2.geneEnd());
                 } else {
                     return fusion1.geneStart().compareTo(fusion2.geneStart());
                 }
             } else {
-                return fusion1.likelihood() == FusionLikelihoodType.HIGH ? -1 : 1;
+                return fusion1.driverLikelihood() == FusionLikelihoodType.HIGH ? -1 : 1;
             }
         }).collect(Collectors.toList());
     }
@@ -123,7 +123,7 @@ public final class GeneFusions {
 
     @NotNull
     public static String likelihood(@NotNull LinxFusion fusion) {
-        switch (fusion.likelihood()) {
+        switch (fusion.driverLikelihood()) {
             case HIGH: {
                 return "High";
             }

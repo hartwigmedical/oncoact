@@ -5,13 +5,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxHomozygousDisruption;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
-import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpreterEntry;
 import com.hartwig.oncoact.copynumber.CnPerChromosomeArmData;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -80,10 +80,10 @@ public abstract class GenomicAnalysis {
     public abstract List<GeneDisruption> geneDisruptions();
 
     @NotNull
-    public abstract List<HomozygousDisruption> homozygousDisruptions();
+    public abstract List<LinxHomozygousDisruption> homozygousDisruptions();
 
     @NotNull
-    public abstract List<AnnotatedVirus> reportableViruses();
+    public abstract List<VirusInterpreterEntry> reportableViruses();
 
     @NotNull
     public abstract List<InterpretPurpleGeneCopyNumbers> suspectGeneCopyNumbersWithLOH();

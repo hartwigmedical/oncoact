@@ -1,10 +1,10 @@
 package com.hartwig.oncoact.variant;
 
-import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.HotspotType;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
-import com.hartwig.hmftools.datamodel.purple.Variant;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 
 import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,24 @@ import org.jetbrains.annotations.Nullable;
 
 @Value.Immutable
 @Value.Style(passAnnotations = { NotNull.class, Nullable.class })
-public abstract class ReportableVariant implements Variant {
+public abstract class ReportableVariant{
+
+    @NotNull
+    public abstract PurpleVariantType type();
+
+    @NotNull
+    public abstract String gene();
+
+    @NotNull
+    public abstract String chromosome();
+
+    public abstract int position();
+
+    @NotNull
+    public abstract String ref();
+
+    @NotNull
+    public abstract String alt();
 
     @NotNull
     public abstract ReportableVariantSource source();
@@ -69,7 +86,7 @@ public abstract class ReportableVariant implements Variant {
     public abstract String tVAF();
 
     @Nullable
-    public abstract Hotspot hotspot();
+    public abstract HotspotType hotspot();
 
     @Nullable
     public abstract Double clonalLikelihood();

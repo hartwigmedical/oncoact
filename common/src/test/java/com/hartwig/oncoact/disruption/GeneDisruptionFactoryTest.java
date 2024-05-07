@@ -13,6 +13,7 @@ import com.hartwig.hmftools.datamodel.linx.LinxBreakendType;
 import com.hartwig.hmftools.datamodel.linx.LinxSvAnnotation;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 public class GeneDisruptionFactoryTest {
@@ -35,9 +36,9 @@ public class GeneDisruptionFactoryTest {
         ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder()
                 .svId(1)
                 .gene("ROPN1B")
-                .transcriptId("ENST1")
+                .transcript("ENST1")
                 .chromosome("3")
-                .chrBand("p12")
+                .chromosomeBand("p12")
                 .type(LinxBreakendType.INV)
                 .junctionCopyNumber(1.12);
         List<LinxBreakend> pairedBreakends =
@@ -65,12 +66,27 @@ public class GeneDisruptionFactoryTest {
     @Test
     public void doesNotPairBreakendsOnDifferentTranscripts() {
         ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder().svId(1);
-        List<LinxBreakend> pairedDisruptions = Lists.newArrayList(pairedBreakendBuilder.transcriptId("ENST 1").svId(1).build(),
-                pairedBreakendBuilder.transcriptId("ENST 2").svId(1).build(),
-                pairedBreakendBuilder.transcriptId("ENST 2").svId(1).build());
+        List<LinxBreakend> pairedDisruptions = Lists.newArrayList(pairedBreakendBuilder.transcript("ENST 1").svId(1).build(),
+                pairedBreakendBuilder.transcript("ENST 2").svId(1).build(),
+                pairedBreakendBuilder.transcript("ENST 2").svId(1).build());
 
         List<GeneDisruption> disruptions = GeneDisruptionFactory.convert(pairedDisruptions, Lists.newArrayList());
 
         assertEquals(2, disruptions.size());
+    }
+
+    @Test
+    public void canDetermineDisruptionOrientation() {
+        ImmutableLinxBreakend.Builder pairedBreakendBuilder = TestLinxFactory.breakendBuilder().svId(1);
+        ImmutableLinxBreakend intactUpstream = pairedBreakendBuilder
+                .exonUp(2)
+                .exonDown(2)
+                .geneOrientation("Upstream")
+                .build();
+
+        assertEquals("Exon 2 Downstream", GeneDisruptionFactory.rangeField(Pair.of(intactUpstream, null)));
+
+        ImmutableLinxBreakend intactDownstream = intactUpstream.withGeneOrientation("Downstream");
+        assertEquals("Exon 2 Upstream", GeneDisruptionFactory.rangeField(Pair.of(intactDownstream, null)));
     }
 }

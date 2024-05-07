@@ -1,10 +1,11 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleGeneCopyNumber;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class InterpretPurpleGeneCopyNumbersFactory {
 
@@ -19,7 +20,7 @@ public class InterpretPurpleGeneCopyNumbersFactory {
             InterpretLOHGenes.add(ImmutableInterpretPurpleGeneCopyNumbers.builder()
                     .chromosome(LOHGene.chromosome())
                     .chromosomeBand(LOHGene.chromosomeBand())
-                    .geneName(LOHGene.geneName())
+                    .geneName(LOHGene.gene())
                     .minCopyNumber(LOHGene.minCopyNumber())
                     .minMinorAlleleCopyNumber(LOHGene.minMinorAlleleCopyNumber())
                     .build());
