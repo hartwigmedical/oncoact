@@ -266,8 +266,8 @@ public class ClinicalEvidenceFunctions {
                         if (addTrial) {
                             table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(trial), evidencesTrials.size())
                                     .setVerticalAlignment(VerticalAlignment.TOP));
-                            table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createLinksSource(
-                                    nctUrls), evidencesTrials.size()));
+                            table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createClinicalTrialLink(
+                                    clinicalTrial.studyNctId()), evidencesTrials.size()));
                             String shortenTrial = EvidenceItems.shortenTrialName(clinicalTrial.studyTitle());
                             table.addCell(tableUtil.createContentCellRowSpan(shortenTrial, evidencesTrials.size()));
                             addTrial = false;

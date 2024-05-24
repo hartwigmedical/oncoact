@@ -22,7 +22,7 @@ public final class EvidenceItems {
     @NotNull
     public static String shortenTrialName(@NotNull String trialName) {
 
-        if (trialName.length() > 170) {
+        if (trialName.length() > 150) {
             return StringUtils.substringBeforeLast(trialName.substring(0, 85), " ") + " ... " + StringUtils.substringAfter(trialName.substring(trialName.length() - 85), " ");
         } else {
             return trialName;
@@ -84,6 +84,18 @@ public final class EvidenceItems {
                         .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
             }
         }
+        return paragraphSources;
+    }
+
+    @NotNull
+    public Paragraph createClinicalTrialLink(@NotNull String nctId) {
+        Paragraph paragraphSources = new Paragraph();
+        String link = "https://clinicaltrials.gov/study/" + nctId;
+
+        paragraphSources.add(new Text(nctId).addStyle(reportResources.urlStyle())
+                .setAction(PdfAction.createURI(link))).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
+
+
         return paragraphSources;
     }
 }
