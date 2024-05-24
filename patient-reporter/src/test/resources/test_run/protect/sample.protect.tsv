@@ -1,2 +1,2 @@
-gene	transcript	isCanonical	event	eventIsHighDriver	germline	reported	studyNctId	studyTitle	countriesOfStudy	treatment	sourceRelevantTreatmentApproach	relevantTreatmentApproach	onLabel	level	direction	sources
-BRAF	123	true	p.Val600Glu	true	false	true				Cetuximab + Encorafenib	BRAF Inhibitor		false	A	RESPONSIVE	CKB|BRAF V600E|https://ckbhome.jax.org|HOTSPOT_MUTATION||https://www.nccn.org/professionals/physician_gls/default.aspx;
+gene	transcript	isCanonical	event	eventIsHighDriver	germline	reported	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	treatment	sourceRelevantTreatmentApproach	relevantTreatmentApproach	onLabel	level	direction	sources
+BRAF	123	true	p.Val600Glu	true	false	true						Cetuximab + Encorafenib	BRAF Inhibitor		false	A	RESPONSIVE	CKB_EVIDENCE|BRAF V600E|https://ckbhome.jax.org|HOTSPOT_MUTATION||https://www.nccn.org/professionals/physician_gls/default.aspx;

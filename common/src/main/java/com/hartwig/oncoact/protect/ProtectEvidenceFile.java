@@ -12,10 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringJoiner;
+import java.util.*;
 
 public final class ProtectEvidenceFile {
 
@@ -61,6 +58,8 @@ public final class ProtectEvidenceFile {
                 .add("reported")
                 .add("studyNctId")
                 .add("studyTitle")
+                .add("studyAcronym")
+                .add("studyGender")
                 .add("countriesOfStudy")
                 .add("treatment")
                 .add("treatmentApproachesDrugClass")
@@ -73,6 +72,32 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
+    private static String therapyName(@Nullable ClinicalTrial clinicalTrial, @Nullable Treatment treatment) {
+        boolean isClinicalTrial = clinicalTrial != null;
+        boolean isTreatment = treatment != null;
+
+        if (isClinicalTrial && isTreatment) {
+            throw new IllegalStateException("An actionable event cannot be both a treatment and clinical trial");
+        }
+
+        if (isTreatment) {
+            return treatment.name();
+        } else {
+            assert clinicalTrial != null;
+            return setToField(clinicalTrial.therapyNames());
+        }
+    }
+
+    @NotNull
+    private static String setToField(@NotNull Set<String> strings) {
+        StringJoiner joiner = new StringJoiner(",");
+        for (String string : strings) {
+            joiner.add(string);
+        }
+        return joiner.toString();
+    }
+
+    @NotNull
     private static String toLine(@NotNull ProtectEvidence evidence) {
         return new StringJoiner(FIELD_DELIMITER).add(nullToEmpty(evidence.gene()))
                 .add(nullToEmpty(evidence.transcript()))
@@ -81,12 +106,14 @@ public final class ProtectEvidenceFile {
                 .add(nullToEmpty(evidence.eventIsHighDriver()))
                 .add(String.valueOf(evidence.germline()))
                 .add(String.valueOf(evidence.reported()))
-                .add(evidence.clinicalTrial().studyNctId())
-                .add(evidence.clinicalTrial().studyTitle())
-                .add(setToString(evidence.clinicalTrial().countriesOfStudy()))
-                .add(evidence.treatment().name())
-                .add(setToString(evidence.treatment().treatmentApproachesDrugClass()))
-                .add(setToString(evidence.treatment().treatmentApproachesTherapy()))
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyNctId() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyTitle() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null)
+                .add(evidence.clinicalTrial() != null ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy()) : null)
+                .add(therapyName(evidence.clinicalTrial(), evidence.treatment()))
+                .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass()) : null)
+                .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy()) : null)
                 .add(String.valueOf(evidence.onLabel()))
                 .add(evidence.level().toString())
                 .add(evidence.direction().toString())
@@ -109,7 +136,10 @@ public final class ProtectEvidenceFile {
                 .clinicalTrial(ImmutableClinicalTrial.builder()
                         .studyNctId(values[fields.get("studyNctId")])
                         .studyTitle(values[fields.get("studyTitle")])
+                        .studyAcronym(values[fields.get("studyAcronym")])
+                        .gender(values[fields.get("studyGender")])
                         .countriesOfStudy(stringToSet(values[fields.get("countriesOfStudy")]))
+                        .therapyNames(stringToSet(values[fields.get("treatment")]))
                         .build())
                 .treatment(ImmutableTreatment.builder()
                         .name(values[fields.get("treatment")])
@@ -237,5 +267,4 @@ public final class ProtectEvidenceFile {
     private static Integer NullToInteger(@Nullable String value) {
         return value != null && !value.equals(Strings.EMPTY) ? Integer.valueOf(value) : null;
     }
-
 }
