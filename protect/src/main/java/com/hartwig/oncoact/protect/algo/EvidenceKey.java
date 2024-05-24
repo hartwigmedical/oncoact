@@ -1,14 +1,13 @@
 package com.hartwig.oncoact.protect.algo;
 
-import java.util.Objects;
-import java.util.Set;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
+import java.util.Set;
 
 class EvidenceKey {
 
@@ -19,9 +18,9 @@ class EvidenceKey {
     @NotNull
     private final String treatment;
     @NotNull
-    private final Set<String> sourceTreatmentApproach;
+    private final Set<String> treatmentApproachesDrugClass;
     @NotNull
-    private final Set<String> relevantTreatmentApproach;
+    private final Set<String> treatmentApproachesTherapy;
 
     @NotNull
     public static Set<EvidenceKey> buildKeySet(@NotNull Iterable<ProtectEvidence> evidences) {
@@ -37,17 +36,17 @@ class EvidenceKey {
         return new EvidenceKey(evidence.gene(),
                 evidence.event(),
                 evidence.treatment().name(),
-                evidence.treatment().sourceRelevantTreatmentApproaches(),
-                evidence.treatment().relevantTreatmentApproaches());
+                evidence.treatment().treatmentApproachesDrugClass(),
+                evidence.treatment().treatmentApproachesTherapy());
     }
 
     private EvidenceKey(@Nullable final String gene, @NotNull final String event, @NotNull final String treatment,
-            @NotNull Set<String> sourceTreatmentApproach, @NotNull Set<String> relevantTreatmentApproach) {
+                        @NotNull Set<String> treatmentApproachesDrugClass, @NotNull Set<String> treatmentApproachesTherapy) {
         this.gene = gene;
         this.event = event;
         this.treatment = treatment;
-        this.sourceTreatmentApproach = sourceTreatmentApproach;
-        this.relevantTreatmentApproach = relevantTreatmentApproach;
+        this.treatmentApproachesDrugClass = treatmentApproachesDrugClass;
+        this.treatmentApproachesTherapy = treatmentApproachesTherapy;
     }
 
     @VisibleForTesting
@@ -69,27 +68,26 @@ class EvidenceKey {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final EvidenceKey evidenceKey = (EvidenceKey) o;
-        return Objects.equals(gene, evidenceKey.gene)&& event.equals(evidenceKey.event) && treatment.equals(evidenceKey.treatment)
-                && sourceTreatmentApproach.equals(evidenceKey.sourceTreatmentApproach)
-                && relevantTreatmentApproach.equals(evidenceKey.relevantTreatmentApproach);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EvidenceKey that = (EvidenceKey) o;
+        return Objects.equals(gene, that.gene) && Objects.equals(event, that.event) && Objects.equals(treatment, that.treatment) && Objects.equals(treatmentApproachesDrugClass, that.treatmentApproachesDrugClass) && Objects.equals(treatmentApproachesTherapy, that.treatmentApproachesTherapy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gene, event, treatment, sourceTreatmentApproach, relevantTreatmentApproach);
+        return Objects.hash(gene, event, treatment, treatmentApproachesDrugClass, treatmentApproachesTherapy);
     }
 
     @Override
     public String toString() {
-        return "EvidenceKey{" + "gene='" + gene + '\'' + ", event='" + event + '\'' + ", treatment='" + treatment + '\''
-                + ", sourceTreatmentApproach=" + sourceTreatmentApproach + ", relevantTreatmentApproach=" + relevantTreatmentApproach + '}';
+        return "EvidenceKey{" +
+                "gene='" + gene + '\'' +
+                ", event='" + event + '\'' +
+                ", treatment='" + treatment + '\'' +
+                ", treatmentApproachesDrugClass=" + treatmentApproachesDrugClass +
+                ", treatmentApproachesTherapy=" + treatmentApproachesTherapy +
+                '}';
     }
 }

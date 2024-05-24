@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.protect;
 
-import java.util.Comparator;
-import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
+import java.util.Objects;
 
 public class EvidenceComparator implements Comparator<ProtectEvidence> {
 
@@ -51,20 +51,20 @@ public class EvidenceComparator implements Comparator<ProtectEvidence> {
             return treatmentCompare;
         }
 
-        int sourceRelevantTreatmentApproachCompare = evidence1.treatment()
-                .sourceRelevantTreatmentApproaches()
+        int treatmentApproachesDrugClass = evidence1.treatment()
+                .treatmentApproachesDrugClass()
                 .toString()
-                .compareTo(evidence2.treatment().sourceRelevantTreatmentApproaches().toString());
-        if (sourceRelevantTreatmentApproachCompare != 0) {
-            return sourceRelevantTreatmentApproachCompare;
+                .compareTo(evidence2.treatment().treatmentApproachesDrugClass().toString());
+        if (treatmentApproachesDrugClass != 0) {
+            return treatmentApproachesDrugClass;
         }
 
-        int relevantTreatmentApproachCompare = evidence1.treatment()
-                .relevantTreatmentApproaches()
+        int treatmentApproachesTherapy = evidence1.treatment()
+                .treatmentApproachesTherapy()
                 .toString()
-                .compareTo(evidence2.treatment().relevantTreatmentApproaches().toString());
-        if (relevantTreatmentApproachCompare != 0) {
-            return relevantTreatmentApproachCompare;
+                .compareTo(evidence2.treatment().treatmentApproachesTherapy().toString());
+        if (treatmentApproachesTherapy != 0) {
+            return treatmentApproachesTherapy;
         }
 
         return evidence1.direction().compareTo(evidence2.direction());

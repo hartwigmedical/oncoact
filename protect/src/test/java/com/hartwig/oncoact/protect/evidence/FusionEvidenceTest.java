@@ -1,13 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
@@ -22,9 +14,14 @@ import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class FusionEvidenceTest {
 
@@ -33,57 +30,57 @@ public class FusionEvidenceTest {
         ActionableGene firstPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 1").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 1").build())
                 .build();
         ActionableGene secondPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("TP53")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 2").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 2").build())
                 .build();
         ActionableGene thirdPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("PTEN")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 3").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 3").build())
                 .build();
         ActionableGene fourthPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("BRAF")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 4").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 4").build())
                 .build();
         ActionableGene amp = TestServeFactory.geneBuilder()
                 .gene("KRAS")
                 .event(GeneEvent.AMPLIFICATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 5").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 5").build())
                 .build();
         ActionableFusion fusion = TestServeFactory.fusionBuilder()
                 .geneUp("EML4")
                 .geneDown("ALK")
-                .treatment(ImmutableTreatment.builder().name("treatment 6").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 6").build())
                 .build();
         ActionableGene other = TestServeFactory.geneBuilder()
                 .gene("AB")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 7").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 7").build())
                 .build();
         ActionableFusion igPair = TestServeFactory.fusionBuilder()
                 .geneUp("IGH")
                 .geneDown("BCL2")
-                .treatment(ImmutableTreatment.builder().name("treatment 8").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 8").build())
                 .build();
         ActionableGene igFusion = TestServeFactory.geneBuilder()
                 .gene("IGH")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 9").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 9").build())
                 .build();
         ActionableGene activation = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.ACTIVATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 10").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 10").build())
                 .build();
         ActionableGene anyMutation = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.ANY_MUTATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 11").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 11").build())
                 .build();
 
         FusionEvidence fusionEvidence = new FusionEvidence(TestPersonalizedEvidenceFactory.create(),
@@ -178,7 +175,7 @@ public class FusionEvidenceTest {
 
     @NotNull
     private static ProtectEvidence findByFusion(@NotNull List<ProtectEvidence> evidences, @NotNull LinxFusion fusion,
-            @NotNull String treatment) {
+                                                @NotNull String treatment) {
         return evidences.stream()
                 .filter(x -> Objects.equals(x.event(), EventGenerator.fusionEvent(fusion)) && Objects.equals(x.treatment().name(),
                         treatment))
@@ -234,7 +231,7 @@ public class FusionEvidenceTest {
 
     @NotNull
     private static ImmutableLinxFusion.Builder linxFusionBuilder(@NotNull String geneStart, @NotNull String geneEnd, boolean reported,
-            @NotNull LinxFusionType type) {
+                                                                 @NotNull LinxFusionType type) {
         return TestLinxFactory.fusionBuilder().geneStart(geneStart).geneEnd(geneEnd).reported(reported).reportedType(type);
     }
 }

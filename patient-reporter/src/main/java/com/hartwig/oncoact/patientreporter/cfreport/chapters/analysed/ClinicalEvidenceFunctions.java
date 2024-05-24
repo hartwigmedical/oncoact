@@ -52,6 +52,18 @@ public class ClinicalEvidenceFunctions {
     private static final Set<EvidenceDirection> PREDICTED =
             Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
 
+
+    @NotNull
+    public static Set<String> extractCombinedTreatmentApproaches(@NotNull Set<String> treatmentApproachesDrugClass, @NotNull Set<String> treatmentApproachesTherapy) {
+        Set<String> combinedTreatmentApproach = Sets.newHashSet();
+        if (!treatmentApproachesDrugClass.isEmpty()) {
+            combinedTreatmentApproach.addAll(treatmentApproachesDrugClass);
+        } else if (!treatmentApproachesTherapy.isEmpty()) {
+            combinedTreatmentApproach.addAll(treatmentApproachesTherapy);
+        }
+        return combinedTreatmentApproach;
+    }
+
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
                                                                        Boolean requireOnLabel, @NotNull String name) {
@@ -61,11 +73,11 @@ public class ClinicalEvidenceFunctions {
             if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
                 String treatment = Strings.EMPTY;
                 List<ProtectEvidence> treatmentEvidences = Lists.newArrayList();
-                Set<String> treatmentApproaches = evidence.treatment().sourceRelevantTreatmentApproaches();
+                Set<String> treatmentApproaches = extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(), evidence.treatment().treatmentApproachesTherapy());
                 String treatmentJoin = String.join(",", treatmentApproaches);
                 if (name.equals("treatmentApproach")) {
                     if (!treatmentJoin.isEmpty()) {
-                        List<String> treatentSort = Lists.newArrayList(evidence.treatment().sourceRelevantTreatmentApproaches());
+                        List<String> treatentSort = Lists.newArrayList(treatmentApproaches);
                         Collections.sort(treatentSort);
                         treatment = String.join(",", treatentSort);
                         treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
@@ -120,9 +132,7 @@ public class ClinicalEvidenceFunctions {
             if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
@@ -135,9 +145,8 @@ public class ClinicalEvidenceFunctions {
             if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
-                        return true;
-                    }
+                    return true;
+
                 }
             }
         }
@@ -147,12 +156,11 @@ public class ClinicalEvidenceFunctions {
     private static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
                                                                                 @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().relevantTreatmentApproaches().equals(evidenceToCheck.treatment().relevantTreatmentApproaches())
+            if (extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(), evidence.treatment().treatmentApproachesTherapy())
+                    .equals(extractCombinedTreatmentApproaches(evidenceToCheck.treatment().treatmentApproachesDrugClass(), evidenceToCheck.treatment().treatmentApproachesTherapy()))
                     && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                    if (!evidenceToCheck.direction().isHigher(evidence.direction())) {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }

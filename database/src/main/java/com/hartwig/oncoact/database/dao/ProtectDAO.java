@@ -1,6 +1,12 @@
 package com.hartwig.oncoact.database.dao;
 
-import static com.hartwig.oncoact.database.Tables.PROTECT;
+import com.google.common.collect.Iterables;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jooq.DSLContext;
+import org.jooq.InsertValuesStep21;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -8,14 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import com.google.common.collect.Iterables;
-import com.hartwig.oncoact.protect.KnowledgebaseSource;
-import com.hartwig.oncoact.protect.ProtectEvidence;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep21;
+import static com.hartwig.oncoact.database.Tables.PROTECT;
 
 @SuppressWarnings("rawtypes")
 class ProtectDAO {
@@ -64,7 +63,7 @@ class ProtectDAO {
     }
 
     private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStep21 inserter, @NotNull String sample,
-            @NotNull ProtectEvidence evidence) {
+                                  @NotNull ProtectEvidence evidence) {
         for (KnowledgebaseSource source : evidence.sources()) {
             StringJoiner sourceUrlJoiner = new StringJoiner(",");
             for (String sourceUrl : source.sourceUrls()) {
@@ -86,8 +85,8 @@ class ProtectDAO {
                     evidence.germline(),
                     evidence.reported(),
                     evidence.treatment().name(),
-                    treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()),
-                    treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()),
+                    treatmentApproachToString(evidence.treatment().treatmentApproachesDrugClass()),
+                    treatmentApproachToString(evidence.treatment().treatmentApproachesTherapy()),
                     evidence.onLabel(),
                     evidence.level().toString(),
                     evidence.direction().toString(),

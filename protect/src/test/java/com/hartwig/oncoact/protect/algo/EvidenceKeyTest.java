@@ -1,17 +1,16 @@
 package com.hartwig.oncoact.protect.algo;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
-
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
 
 public class EvidenceKeyTest {
 
@@ -24,8 +23,8 @@ public class EvidenceKeyTest {
                 .event("event 1")
                 .treatment(ImmutableTreatment.builder()
                         .name("treatment 1")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                        .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                        .treatmentApproachesTherapy(Sets.newHashSet("A"))
                         .build())
                 .build();
         evidences.add(evidence1);
@@ -41,8 +40,8 @@ public class EvidenceKeyTest {
 
         ProtectEvidence evidence2 = TestProtectFactory.builder().gene(null).event("event 2").treatment(ImmutableTreatment.builder()
                 .name("treatment 2")
-                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                .treatmentApproachesTherapy(Sets.newHashSet("A"))
                 .build()).build();
         evidences.add(evidence2);
         evidences.add(evidence2);

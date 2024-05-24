@@ -112,7 +112,6 @@ public final class TestServeFactory {
                 "source event",
                 Sets.newHashSet(),
                 ImmutableClinicalTrial.builder().studyNctId("nct1").studyTitle("title").countriesOfStudy(Sets.newHashSet("Netherlands")).build(),
-                ImmutableTreatment.builder().name(Strings.EMPTY).build(),
                 ImmutableCancerType.builder().name(Strings.EMPTY).doid(Strings.EMPTY).build(),
                 Sets.newHashSet(),
                 EvidenceLevel.D,
@@ -122,13 +121,12 @@ public final class TestServeFactory {
 
     @NotNull
     public static ActionableEvent create(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-                                         @NotNull ClinicalTrial clinicalTrial, @NotNull Treatment treatment, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+                                         @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
                                          @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
         return new ActionableEventImpl(source,
                 sourceEvent,
                 sourceUrls,
-                clinicalTrial,
-                treatment,
+                intervention,
                 applicableCancerType,
                 blacklistCancerTypes,
                 level,
@@ -145,9 +143,7 @@ public final class TestServeFactory {
         @NotNull
         private final Set<String> sourceUrls;
         @NotNull
-        private final ClinicalTrial clinicalTrial;
-        @NotNull
-        private final Treatment treatment;
+        private final Intervention intervention;
         @NotNull
         private final CancerType applicableCancerType;
         @NotNull
@@ -160,13 +156,12 @@ public final class TestServeFactory {
         private final Set<String> evidenceUrls;
 
         public ActionableEventImpl(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-                                   @NotNull ClinicalTrial clinicalTrial, @NotNull Treatment treatment, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+                                   @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
                                    @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
             this.source = source;
             this.sourceEvent = sourceEvent;
             this.sourceUrls = sourceUrls;
-            this.clinicalTrial = clinicalTrial;
-            this.treatment = treatment;
+            this.intervention = intervention;
             this.applicableCancerType = applicableCancerType;
             this.blacklistCancerTypes = blacklistCancerTypes;
             this.level = level;
@@ -194,14 +189,8 @@ public final class TestServeFactory {
 
         @NotNull
         @Override
-        public ClinicalTrial clinicalTrial() {
-            return clinicalTrial;
-        }
-
-        @NotNull
-        @Override
-        public Treatment treatment() {
-            return treatment;
+        public Intervention intervention() {
+            return intervention;
         }
 
         @NotNull
@@ -240,8 +229,7 @@ public final class TestServeFactory {
                     "source=" + source +
                     ", sourceEvent='" + sourceEvent + '\'' +
                     ", sourceUrls=" + sourceUrls +
-                    ", clinicalTrial=" + clinicalTrial +
-                    ", treatment=" + treatment +
+                    ", intervention=" + intervention +
                     ", applicableCancerType=" + applicableCancerType +
                     ", blacklistCancerTypes=" + blacklistCancerTypes +
                     ", level=" + level +
@@ -255,12 +243,12 @@ public final class TestServeFactory {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             ActionableEventImpl that = (ActionableEventImpl) o;
-            return source == that.source && Objects.equals(sourceEvent, that.sourceEvent) && Objects.equals(sourceUrls, that.sourceUrls) && Objects.equals(clinicalTrial, that.clinicalTrial) && Objects.equals(treatment, that.treatment) && Objects.equals(applicableCancerType, that.applicableCancerType) && Objects.equals(blacklistCancerTypes, that.blacklistCancerTypes) && level == that.level && direction == that.direction && Objects.equals(evidenceUrls, that.evidenceUrls);
+            return source == that.source && Objects.equals(sourceEvent, that.sourceEvent) && Objects.equals(sourceUrls, that.sourceUrls) && Objects.equals(intervention, that.intervention) && Objects.equals(applicableCancerType, that.applicableCancerType) && Objects.equals(blacklistCancerTypes, that.blacklistCancerTypes) && level == that.level && direction == that.direction && Objects.equals(evidenceUrls, that.evidenceUrls);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(source, sourceEvent, sourceUrls, clinicalTrial, treatment, applicableCancerType, blacklistCancerTypes, level, direction, evidenceUrls);
+            return Objects.hash(source, sourceEvent, sourceUrls, intervention, applicableCancerType, blacklistCancerTypes, level, direction, evidenceUrls);
         }
     }
 }

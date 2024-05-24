@@ -1,3 +1,3 @@
-gene	chromosome	position	ref	alt	source	sourceEvent	sourceUrls	studyNctId	studyTitle	countriesOfStudy	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
-BRAF	7	140453136	A	T	VICC_CGI	variant	http				Vemurafenib			Skin Melanoma	X		A	RESPONSIVE	http
-BRAF	7	140453137	A	T	VICC_CGI	variant	http				Vemurafenib			Skin Melanoma	X		C	RESISTANT	http
+gene	chromosome	position	ref	alt	source	sourceEvent	sourceUrls	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	treatment	treatmentApproachesDrugClass	treatmentApproachesTherapy	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
+BRAF	7	140453136	A	T	CKB_EVIDENCE	variant	http						Vemurafenib			Skin Melanoma	X		A	RESPONSIVE	http
+BRAF	7	140453137	A	T	CKB_TRIAL	variant	http	NCT1	study1	study11	female	Netherlands	Vemurafenib			Solid tumor	X		C	RESISTANT	http

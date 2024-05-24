@@ -33,10 +33,10 @@ public abstract class ProtectEvidence {
 
     public abstract boolean reported();
 
-    @NotNull
+    @Nullable
     public abstract ClinicalTrial clinicalTrial();
 
-    @NotNull
+    @Nullable
     public abstract Treatment treatment();
 
     public abstract boolean onLabel();

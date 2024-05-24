@@ -9,6 +9,8 @@ import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.CancerType;
+import com.hartwig.serve.datamodel.ClinicalTrial;
+import com.hartwig.serve.datamodel.Treatment;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
@@ -62,14 +64,32 @@ public class PersonalizedEvidenceFactory {
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
                                                             @NotNull Set<KnowledgebaseSource> protectSource) {
-
         return ImmutableProtectEvidence.builder()
-                .clinicalTrial(actionable.clinicalTrial())
-                .treatment(actionable.treatment())
-                .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), actionable.treatment().name()))
+                .clinicalTrial(extractOptionalClinicalTrial(actionable))
+                .treatment(extractOptionalTreatment(actionable))
+                .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), ""))
                 .level(actionable.level())
                 .direction(actionable.direction())
                 .sources(protectSource);
+    }
+
+    @Nullable
+    private static Treatment extractOptionalTreatment(@NotNull ActionableEvent event) {
+        Treatment treatment = null;
+        if (event.intervention() instanceof Treatment) {
+            treatment = (Treatment) event.intervention();
+        }
+        return treatment;
+    }
+
+    @Nullable
+    private static ClinicalTrial extractOptionalClinicalTrial(@NotNull ActionableEvent event) {
+        ClinicalTrial clinicalTrial = null;
+        if (event.intervention() instanceof ClinicalTrial) {
+            clinicalTrial = (ClinicalTrial) event.intervention();
+        }
+
+        return clinicalTrial;
     }
 
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
