@@ -1,31 +1,21 @@
 package com.hartwig.oncoact.protect.algo;
 
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.evidence.ChordEvidence;
-import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
-import com.hartwig.oncoact.protect.evidence.DisruptionEvidence;
-import com.hartwig.oncoact.protect.evidence.FusionEvidence;
-import com.hartwig.oncoact.protect.evidence.HlaEvidence;
-import com.hartwig.oncoact.protect.evidence.PersonalizedEvidenceFactory;
-import com.hartwig.oncoact.protect.evidence.PurpleSignatureEvidence;
-import com.hartwig.oncoact.protect.evidence.VariantEvidence;
-import com.hartwig.oncoact.protect.evidence.VirusEvidence;
-import com.hartwig.oncoact.protect.evidence.WildTypeEvidence;
+import com.hartwig.oncoact.protect.evidence.*;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.serve.datamodel.ActionableEvents;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Set;
 
 public class ProtectAlgo {
 
@@ -54,8 +44,8 @@ public class ProtectAlgo {
 
     @NotNull
     public static ProtectAlgo build(@NotNull ActionableEvents actionableEvents, @NotNull Set<String> patientTumorDoids,
-            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
-            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+                                    @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
+                                    @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         PersonalizedEvidenceFactory personalizedEvidenceFactory = new PersonalizedEvidenceFactory(patientTumorDoids, doidParentModel);
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
@@ -87,10 +77,10 @@ public class ProtectAlgo {
     }
 
     private ProtectAlgo(@NotNull final VariantEvidence variantEvidenceFactory, @NotNull final CopyNumberEvidence copyNumberEvidenceFactory,
-            @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
-            @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
-            @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
-            @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
+                        @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
+                        @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
+                        @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
+                        @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.variantEvidenceFactory = variantEvidenceFactory;
         this.copyNumberEvidenceFactory = copyNumberEvidenceFactory;
         this.disruptionEvidenceFactory = disruptionEvidenceFactory;
@@ -179,12 +169,7 @@ public class ProtectAlgo {
                 reportedCount(reported),
                 reportedCount(updatedForTrials));
 
-        List<ProtectEvidence> updatedForBlacklist = EvidenceReportingCuration.applyReportingBlacklist(updatedForTrials);
-        LOGGER.debug("Reduced reported evidence from {} items to {} items by blacklisting specific evidence for reporting",
-                reportedCount(updatedForTrials),
-                reportedCount(updatedForBlacklist));
-
-        return updatedForBlacklist;
+        return updatedForTrials;
     }
 
     private static void printExtraction(@NotNull String title, @NotNull List<ProtectEvidence> evidences) {
