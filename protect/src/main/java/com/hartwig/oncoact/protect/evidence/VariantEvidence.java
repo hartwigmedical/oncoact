@@ -6,7 +6,9 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.Genes;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -50,7 +52,7 @@ public class VariantEvidence {
         this.codons = codons;
         this.exons = exons;
         this.genes = genes.stream()
-                .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION
+                .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.ABSENCE_OF_PROTEIN
                         || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
@@ -108,7 +110,16 @@ public class VariantEvidence {
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, "gene", diagnosticPatientData));
+                boolean report = mayReport && driverInterpretation == DriverInterpretation.HIGH;
+                EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(gene, null);
+                if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                    if (Genes.MSI_GENES.contains(gene.gene())) {
+                        report = true;
+                    } else {
+                        report = false;
+                    }
+                }
+                evidences.add(evidence(variant, gene, report, "gene", diagnosticPatientData));
             }
         }
 
@@ -176,7 +187,7 @@ public class VariantEvidence {
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {
-        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION;
+        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION || gene.event() == GeneEvent.ABSENCE_OF_PROTEIN;
 
         return gene.gene().equals(variant.gene()) && meetsMutationType(variant, MutationType.ANY);
     }

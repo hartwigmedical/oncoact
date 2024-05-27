@@ -175,7 +175,7 @@ public class PersonalizedEvidenceFactory {
 
     @VisibleForTesting
     @NotNull
-    static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable, @Nullable String range) {
+    public static EvidenceType determineEvidenceType(@NotNull ActionableEvent actionable, @Nullable String range) {
         if (actionable instanceof ActionableHotspot) {
             return EvidenceType.HOTSPOT_MUTATION;
         } else if (actionable instanceof ActionableRange) {

@@ -220,20 +220,26 @@ public class VariantEvidenceTest {
                 TestServeFactory.geneBuilder().gene(inactivatedGene).event(GeneEvent.INACTIVATION).source(Knowledgebase.CKB_EVIDENCE).build();
         ActionableGene actionableGene3 =
                 TestServeFactory.geneBuilder().gene(amplifiedGene).event(GeneEvent.AMPLIFICATION).source(Knowledgebase.CKB_EVIDENCE).build();
+        ActionableGene actionableGene4 =
+                TestServeFactory.geneBuilder().gene("MLH1").event(GeneEvent.ABSENCE_OF_PROTEIN).source(Knowledgebase.CKB_EVIDENCE).build();
+        ActionableGene actionableGene5 =
+                TestServeFactory.geneBuilder().gene("KRAS").event(GeneEvent.ABSENCE_OF_PROTEIN).source(Knowledgebase.CKB_EVIDENCE).build();
 
         VariantEvidence variantEvidence = new VariantEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
                 Lists.newArrayList(),
-                Lists.newArrayList(actionableGene1, actionableGene2, actionableGene3));
+                Lists.newArrayList(actionableGene1, actionableGene2, actionableGene3, actionableGene4, actionableGene5));
 
         ReportableVariant driverOnActivatedGene = withGeneAndDriverLikelihood(activatedGene, 1D);
         ReportableVariant passengerOnInactivatedGene = withGeneAndDriverLikelihood(inactivatedGene, 0D);
         ReportableVariant driverOnAmplifiedGene = withGeneAndDriverLikelihood(amplifiedGene, 0D);
         ReportableVariant driverOnOtherGene = withGeneAndDriverLikelihood("other", 1D);
+        ReportableVariant driverMSI = withGeneAndDriverLikelihood("MLH1", 1D);
+        ReportableVariant variantKras = withGeneAndDriverLikelihood("KRAS", 1D);
 
         Set<ReportableVariant> reportableVariants =
-                Sets.newHashSet(driverOnActivatedGene, passengerOnInactivatedGene, driverOnAmplifiedGene, driverOnOtherGene);
+                Sets.newHashSet(driverOnActivatedGene, passengerOnInactivatedGene, driverOnAmplifiedGene, driverOnOtherGene, driverMSI, variantKras);
 
         Set<PurpleVariant> unreportedVariants = Sets.newHashSet(TestPurpleFactory.variantBuilder()
                 .reported(false)
@@ -244,7 +250,7 @@ public class VariantEvidenceTest {
         List<ProtectEvidence> evidences =
                 variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet(), null);
 
-        assertEquals(2, evidences.size());
+        assertEquals(4, evidences.size());
 
         ProtectEvidence actEvidence = findByGene(evidences, activatedGene);
         assertTrue(actEvidence.reported());
@@ -255,6 +261,16 @@ public class VariantEvidenceTest {
         assertFalse(inactEvidence.reported());
         assertEquals(inactEvidence.sources().size(), 1);
         assertEquals(EvidenceType.INACTIVATION, inactEvidence.sources().iterator().next().evidenceType());
+
+        ProtectEvidence MSIEvidence = findByGene(evidences, "MLH1");
+        assertTrue(MSIEvidence.reported());
+        assertEquals(MSIEvidence.sources().size(), 1);
+        assertEquals(EvidenceType.ABSENCE_OF_PROTEIN, MSIEvidence.sources().iterator().next().evidenceType());
+
+        ProtectEvidence absenceEvidence = findByGene(evidences, "KRAS");
+        assertFalse(absenceEvidence.reported());
+        assertEquals(absenceEvidence.sources().size(), 1);
+        assertEquals(EvidenceType.ABSENCE_OF_PROTEIN, absenceEvidence.sources().iterator().next().evidenceType());
     }
 
     @NotNull

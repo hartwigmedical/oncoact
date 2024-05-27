@@ -1,8 +1,8 @@
-package com.hartwig.oncoact.patientreporter.util;
-
-import java.util.Set;
+package com.hartwig.oncoact.util;
 
 import com.google.common.collect.Sets;
+
+import java.util.Set;
 
 public final class Genes {
 

@@ -6,7 +6,9 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleLossOfHeterozygosity;
 import com.hartwig.oncoact.copynumber.ReportablePurpleGainLoss;
 import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.Genes;
 import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
@@ -29,8 +31,9 @@ public class CopyNumberEvidence {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
-                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.DELETION
-                        || x.event() == GeneEvent.UNDEREXPRESSION || x.event() == GeneEvent.ANY_MUTATION)
+                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.PRESENCE_OF_PROTEIN
+                        || x.event() == GeneEvent.DELETION || x.event() == GeneEvent.UNDEREXPRESSION
+                        || x.event() == GeneEvent.ABSENCE_OF_PROTEIN || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +61,6 @@ public class CopyNumberEvidence {
                 result.addAll(evidence(gainLoss, false, diagnosticPatientData));
             }
         }
-
         return result;
     }
 
@@ -67,6 +69,15 @@ public class CopyNumberEvidence {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
+                EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
+                if (type.equals(EvidenceType.PRESENCE_OF_PROTEIN) || type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                    if (Genes.MSI_GENES.contains(actionable.gene())) {
+                        report = true;
+                    } else {
+                        report = false;
+                    }
+                }
+
                 ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, report)
                         .gene(gainLoss.gene())
                         .transcript(gainLoss.transcript())
@@ -85,10 +96,12 @@ public class CopyNumberEvidence {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:
+            case PRESENCE_OF_PROTEIN:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_GAIN
                         || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN;
             case INACTIVATION:
             case DELETION:
+            case ABSENCE_OF_PROTEIN:
             case UNDEREXPRESSION:
             case ANY_MUTATION:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_LOSS
