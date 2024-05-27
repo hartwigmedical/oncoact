@@ -239,7 +239,7 @@ public class ClinicalEvidenceFunctions {
 
                 Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream().collect(Collectors.groupingBy(evidence -> evidence.treatment().name()));
                 Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
-                for (String treatment : sortedTreatments) {
+                for (String treatment : sortedTreatments.size() >= 3 ? Sets.newHashSet("Multiple") : sortedTreatments) {
                     boolean addTreatment = true;
 
                     List<ProtectEvidence> evidencesTreatments = treatmentMap.get(treatment);
