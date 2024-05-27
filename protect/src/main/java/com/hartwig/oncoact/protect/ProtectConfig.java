@@ -1,12 +1,6 @@
 package com.hartwig.oncoact.protect;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Set;
-
 import com.google.common.collect.Sets;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -16,14 +10,20 @@ import org.immutables.value.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Set;
+
 @Value.Immutable
-@Value.Style(passAnnotations = { NotNull.class, Nullable.class })
+@Value.Style(passAnnotations = {NotNull.class, Nullable.class})
 public interface ProtectConfig {
 
     String DOID_SEPARATOR = ";";
 
     // General params needed for every analysis
     String ORANGE_JSON = "orange_json";
+    String DIAGNOSTIC_SILO_JSON = "diagnostic_silo_json";
     String PRIMARY_TUMOR_DOIDS = "primary_tumor_doids";
     String OUTPUT_DIRECTORY = "output_dir";
 
@@ -35,12 +35,15 @@ public interface ProtectConfig {
 
     // Some additional optional params and flags
     String LOG_DEBUG = "log_debug";
+    String IS_DIAGNOSTIC = "is_diagnostic";
+
 
     @NotNull
     static Options createOptions() {
         Options options = new Options();
 
         options.addOption(ORANGE_JSON, true, "The path towards the ORANGE json");
+        options.addOption(DIAGNOSTIC_SILO_JSON, true, "If provided, the path towards the diagnostic silo json of the patient information");
         options.addOption(PRIMARY_TUMOR_DOIDS, true, "A semicolon-separated list of DOIDs representing the primary tumor of patient.");
         options.addOption(OUTPUT_DIRECTORY, true, "Path to where the PROTECT output data will be written to.");
 
@@ -50,12 +53,16 @@ public interface ProtectConfig {
         options.addOption(CLINICAL_TRANSCRIPTS_TSV, true, "Path towards a TSV containing the clinical transcripts of that gene.");
 
         options.addOption(LOG_DEBUG, false, "If provided, set the log level to debug rather than default.");
+        options.addOption(IS_DIAGNOSTIC, false, "If provided, use diagnostic patient data ");
 
         return options;
     }
 
     @NotNull
     String orangeJson();
+
+    @Nullable
+    String diagnosticSiloJson();
 
     @NotNull
     Set<String> primaryTumorDoids();
@@ -83,6 +90,7 @@ public interface ProtectConfig {
 
         return ImmutableProtectConfig.builder()
                 .orangeJson(nonOptionalFile(cmd, ORANGE_JSON))
+                .diagnosticSiloJson(cmd.hasOption(IS_DIAGNOSTIC) ? nonOptionalFile(cmd, DIAGNOSTIC_SILO_JSON) : null)
                 .primaryTumorDoids(toStringSet(nonOptionalValue(cmd, PRIMARY_TUMOR_DOIDS), DOID_SEPARATOR))
                 .outputDir(outputDir(cmd, OUTPUT_DIRECTORY))
                 .serveActionabilityDir(nonOptionalDir(cmd, SERVE_ACTIONABILITY_DIRECTORY))

@@ -61,6 +61,7 @@ public final class ProtectEvidenceFile {
                 .add("studyAcronym")
                 .add("studyGender")
                 .add("countriesOfStudy")
+                .add("matchGender")
                 .add("treatment")
                 .add("treatmentApproachesDrugClass")
                 .add("treatmentApproachesTherapy")
@@ -111,6 +112,7 @@ public final class ProtectEvidenceFile {
                 .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null)
                 .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null)
                 .add(evidence.clinicalTrial() != null ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy()) : null)
+                .add(String.valueOf(evidence.matchGender()))
                 .add(therapyName(evidence.clinicalTrial(), evidence.treatment()))
                 .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass()) : null)
                 .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy()) : null)
@@ -141,6 +143,7 @@ public final class ProtectEvidenceFile {
                         .countriesOfStudy(stringToSet(values[fields.get("countriesOfStudy")]))
                         .therapyNames(stringToSet(values[fields.get("treatment")]))
                         .build())
+                .matchGender(Boolean.parseBoolean(values[fields.get("matchGender")]))
                 .treatment(ImmutableTreatment.builder()
                         .name(values[fields.get("treatment")])
                         .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(

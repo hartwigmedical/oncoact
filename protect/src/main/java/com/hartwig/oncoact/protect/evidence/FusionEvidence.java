@@ -1,10 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
@@ -14,9 +9,13 @@ import com.hartwig.serve.datamodel.ActionableEvent;
 import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FusionEvidence {
 
@@ -28,7 +27,7 @@ public class FusionEvidence {
     private final List<ActionableFusion> actionableFusions;
 
     public FusionEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-            @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<ActionableFusion> actionableFusions) {
+                          @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<ActionableFusion> actionableFusions) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionablePromiscuous = actionableGenes.stream()
                 .filter(x -> x.event().equals(GeneEvent.FUSION) || x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.ANY_MUTATION)
@@ -37,48 +36,47 @@ public class FusionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxFusion> allFusions) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxFusion> allFusions, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (LinxFusion reportable : reportableFusions) {
-            evidences.addAll(evidence(reportable));
+            evidences.addAll(evidence(reportable, diagnosticPatientData));
         }
 
         for (LinxFusion allFusion : allFusions) {
             if (!allFusion.reported()) {
-                evidences.addAll(evidence(allFusion));
+                evidences.addAll(evidence(allFusion, diagnosticPatientData));
             }
         }
         return evidences;
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull LinxFusion fusion) {
+    private List<ProtectEvidence> evidence(@NotNull LinxFusion fusion, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableGene promiscuous : actionablePromiscuous) {
             if (promiscuous.event().equals(GeneEvent.FUSION) && match(fusion, promiscuous)) {
-                evidences.add(evidence(fusion, promiscuous));
+                evidences.add(evidence(fusion, promiscuous, diagnosticPatientData));
             }
             if (promiscuous.event().equals(GeneEvent.ACTIVATION) && match(fusion, promiscuous)) {
-                evidences.add(unreportableEvidence(fusion, promiscuous));
+                evidences.add(unreportableEvidence(fusion, promiscuous, diagnosticPatientData));
             }
 
             if (promiscuous.event().equals(GeneEvent.ANY_MUTATION) && match(fusion, promiscuous)) {
-                evidences.add(unreportableEvidence(fusion, promiscuous));
+                evidences.add(unreportableEvidence(fusion, promiscuous, diagnosticPatientData));
             }
         }
 
         for (ActionableFusion actionableFusion : actionableFusions) {
             if (match(fusion, actionableFusion)) {
-                evidences.add(evidence(fusion, actionableFusion));
+                evidences.add(evidence(fusion, actionableFusion, diagnosticPatientData));
             }
         }
         return evidences;
     }
 
     @NotNull
-    private ProtectEvidence unreportableEvidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable) {
-        return personalizedEvidenceFactory.somaticEvidence(actionable)
-                .reported(false)
+    private ProtectEvidence unreportableEvidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData) {
+        return personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, false)
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))
@@ -86,9 +84,8 @@ public class FusionEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable) {
-        return personalizedEvidenceFactory.somaticEvidence(actionable)
-                .reported(fusion.reported())
+    private ProtectEvidence evidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData) {
+        return personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, fusion.reported())
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretFusion(fusion.likelihood()))

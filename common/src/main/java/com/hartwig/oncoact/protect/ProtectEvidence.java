@@ -37,6 +37,9 @@ public abstract class ProtectEvidence {
     public abstract ClinicalTrial clinicalTrial();
 
     @Nullable
+    public abstract Boolean matchGender();
+
+    @Nullable
     public abstract Treatment treatment();
 
     public abstract boolean onLabel();

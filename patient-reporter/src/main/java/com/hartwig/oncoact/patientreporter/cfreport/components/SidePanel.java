@@ -1,17 +1,12 @@
 package com.hartwig.oncoact.patientreporter.cfreport.components;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.Random;
-
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;
@@ -19,12 +14,16 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Div;
 import com.itextpdf.layout.element.Paragraph;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Random;
 
 public final class SidePanel {
 
@@ -69,8 +68,8 @@ public final class SidePanel {
     }
 
     public void renderSidePanel(@NotNull PdfPage page, @NotNull PatientReporterData lamaPatientData,
-            @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight,
-            boolean isFailure) {
+                                @Nullable PatientInformationResponse patientInformationData, @NotNull String reportDate, boolean fullHeight,
+                                boolean isFailure) {
         PdfCanvas canvas = new PdfCanvas(page.getLastContentStream(), page.getResources(), page.getDocument());
         Rectangle pageSize = page.getPageSize();
         renderBackgroundRect(fullHeight, canvas, pageSize, isFailure);
@@ -153,7 +152,7 @@ public final class SidePanel {
     }
 
     private static void renderBackgroundRect(boolean fullHeight, @NotNull PdfCanvas canvas, @NotNull Rectangle pageSize,
-            boolean isFailure) {
+                                             boolean isFailure) {
         if (isFailure) {
             canvas.rectangle(pageSize.getWidth(),
                     pageSize.getHeight(),

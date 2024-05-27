@@ -15,6 +15,7 @@ CREATE TABLE `protect`
     `studyAcronym` varchar(250),
     `studyGender` varchar(50),
     `countriesOfStudy` varchar(500),
+    `matchGender` BOOLEAN NOT NULL,
     `treatment` varchar(255) NOT NULL,
     `treatmentApproachesDrugClass` varchar(500),
     `treatmentApproachesTherapy` varchar(500),

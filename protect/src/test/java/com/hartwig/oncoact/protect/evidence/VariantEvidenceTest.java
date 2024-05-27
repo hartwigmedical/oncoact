@@ -78,7 +78,7 @@ public class VariantEvidenceTest {
         List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
                 Sets.newHashSet(),
                 Sets.newHashSet(unreportedMatch),
-                Sets.newHashSet());
+                Sets.newHashSet(), null);
 
         assertEquals(2, evidences.size());
 
@@ -185,7 +185,7 @@ public class VariantEvidenceTest {
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet());
+        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), null);
 
         assertEquals(3, evidences.size());
 
@@ -242,7 +242,7 @@ public class VariantEvidenceTest {
                 .build());
 
         List<ProtectEvidence> evidences =
-                variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet());
+                variantEvidence.evidence(reportableVariants, Sets.newHashSet(), unreportedVariants, Sets.newHashSet(), null);
 
         assertEquals(2, evidences.size());
 

@@ -1,8 +1,7 @@
-package com.hartwig.oncoact.patientreporter.diagnosticsilo;
+package com.hartwig.oncoact.diagnosticsilo;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;

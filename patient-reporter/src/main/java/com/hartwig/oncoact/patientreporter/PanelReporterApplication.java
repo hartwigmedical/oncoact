@@ -1,14 +1,10 @@
 package com.hartwig.oncoact.patientreporter;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
-
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;
@@ -16,13 +12,16 @@ import com.hartwig.oncoact.patientreporter.panel.PanelReporter;
 import com.hartwig.oncoact.patientreporter.panel.QCFailPanelReportData;
 import com.hartwig.oncoact.patientreporter.reportingdb.ReportingDb;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
-
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
 
 public class PanelReporterApplication {
 
@@ -103,7 +102,7 @@ public class PanelReporterApplication {
 
     @NotNull
     private static String generateOutputFilePathForPanelResultReport(@NotNull String outputDirReport,
-            @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
+                                                                     @NotNull com.hartwig.oncoact.patientreporter.PanelReport panelReport) {
         return outputDirReport + File.separator + OutputFileUtil.generateOutputFileName(panelReport) + ".pdf";
     }
 

@@ -10,9 +10,11 @@ import com.hartwig.oncoact.protect.evidence.*;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.serve.datamodel.ActionableEvents;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -94,7 +96,7 @@ public class ProtectAlgo {
     }
 
     @NotNull
-    public List<ProtectEvidence> run(@NotNull OrangeRecord orange) {
+    public List<ProtectEvidence> run(@NotNull OrangeRecord orange, @Nullable PatientInformationResponse diagnosticPatientData) {
         LOGGER.info("Evidence extraction started");
 
         Set<ReportableVariant> reportableGermlineVariants =
@@ -105,7 +107,7 @@ public class ProtectAlgo {
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().allSomaticVariants(),
-                orange.purple().allGermlineVariants());
+                orange.purple().allGermlineVariants(), diagnosticPatientData);
         printExtraction("somatic and germline variants", variantEvidence);
 
         List<ProtectEvidence> copyNumberEvidence = copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(),
@@ -113,27 +115,27 @@ public class ProtectAlgo {
                 orange.purple().reportableGermlineFullLosses(),
                 orange.purple().allGermlineFullLosses(),
                 orange.purple().reportableGermlineLossOfHeterozygosities(),
-                orange.purple().allGermlineLossOfHeterozygosities());
+                orange.purple().allGermlineLossOfHeterozygosities(), diagnosticPatientData);
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
         List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),
-                orange.linx().germlineHomozygousDisruptions());
+                orange.linx().germlineHomozygousDisruptions(), diagnosticPatientData);
         printExtraction("homozygous disruptions", disruptionEvidence);
 
         List<ProtectEvidence> fusionEvidence =
-                fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions());
+                fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions(), diagnosticPatientData);
         printExtraction("fusions", fusionEvidence);
 
-        List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics());
+        List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics(), diagnosticPatientData);
         printExtraction("purple signatures", purpleSignatureEvidence);
 
-        List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter());
+        List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter(), diagnosticPatientData);
         printExtraction("viruses", virusEvidence);
 
-        List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(orange.chord());
+        List<ProtectEvidence> chordEvidence = chordEvidenceFactory.evidence(orange.chord(), diagnosticPatientData);
         printExtraction("chord", chordEvidence);
 
-        List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac());
+        List<ProtectEvidence> hlaEvidence = hlaEvidenceFactory.evidence(orange.lilac(), diagnosticPatientData);
         printExtraction("hla", hlaEvidence);
 
         List<ProtectEvidence> wildTypeEvidence = wildTypeEvidenceFactory.evidence(reportableGermlineVariants,
@@ -142,7 +144,7 @@ public class ProtectAlgo {
                 orange.linx().reportableSomaticFusions(),
                 orange.linx().somaticHomozygousDisruptions(),
                 orange.linx().reportableSomaticBreakends(),
-                orange.purple().fit().qc().status());
+                orange.purple().fit().qc().status(), diagnosticPatientData);
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();

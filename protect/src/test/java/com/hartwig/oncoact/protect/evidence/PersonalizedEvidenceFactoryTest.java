@@ -49,6 +49,32 @@ public class PersonalizedEvidenceFactoryTest {
     }
 
     @Test
+    public void canDetermineMatchGender() {
+        assertNull(PersonalizedEvidenceFactory.matchGender(null, null));
+        assertNull(PersonalizedEvidenceFactory.matchGender("both", null));
+        assertNull(PersonalizedEvidenceFactory.matchGender(null, "female"));
+
+        assertTrue(PersonalizedEvidenceFactory.matchGender("female", "female"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("male", "male"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("both", "female"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("both", "male"));
+
+        assertFalse(PersonalizedEvidenceFactory.matchGender("female", "male"));
+        assertFalse(PersonalizedEvidenceFactory.matchGender("male", "female"));
+    }
+
+    @Test
+    public void canDetermineReportable() {
+        assertTrue(PersonalizedEvidenceFactory.isReportable(true, true));
+        assertTrue(PersonalizedEvidenceFactory.isReportable(null, true));
+
+        assertFalse(PersonalizedEvidenceFactory.isReportable(false, true));
+        assertFalse(PersonalizedEvidenceFactory.isReportable(false, false));
+        assertFalse(PersonalizedEvidenceFactory.isReportable(null, false));
+
+    }
+
+    @Test
     public void canDetermineBlacklistedEvidence() {
         PersonalizedEvidenceFactory factoryBlacklisted = TestPersonalizedEvidenceFactory.create("10283");
         ActionableHotspot hotspotBlacklisted = create("Cancer", "162", "Prostate", "10283");

@@ -1,14 +1,14 @@
 package com.hartwig.oncoact.patientreporter.diagnosticsilo;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.io.Resources;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJson;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import com.google.common.io.Resources;
-import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class DiagnosticSiloJsonTest {
 

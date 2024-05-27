@@ -1,11 +1,5 @@
 package com.hartwig.oncoact.protect.evidence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Objects;
-
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -15,9 +9,14 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
-
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Objects;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CopyNumberEvidenceTest {
 
@@ -52,7 +51,7 @@ public class CopyNumberEvidenceTest {
                 reportableGermlineGainLosses,
                 unreportedGermlineGainLosses,
                 Lists.newArrayList(),
-                Lists.newArrayList());
+                Lists.newArrayList(), null);
 
         assertEquals(3, evidences.size());
 

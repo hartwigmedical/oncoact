@@ -17,6 +17,7 @@ import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -41,31 +42,38 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder somaticEvidence(@NotNull ActionableEvent event) {
-        return evidenceBuilder(event).reported(false).germline(false);
+    public ImmutableProtectEvidence.Builder somaticEvidence(@NotNull ActionableEvent event, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        return evidenceBuilder(event, diagnosticPatientData, report).germline(false);
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder somaticReportableEvidence(@NotNull ActionableEvent event) {
-        return evidenceBuilder(event).reported(true).germline(false);
+    public ImmutableProtectEvidence.Builder somaticReportableEvidence(@NotNull ActionableEvent event, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        return evidenceBuilder(event, diagnosticPatientData, report).germline(false);
     }
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
-                                                                 @Nullable Integer rangeRank) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)));
+                                                                 @Nullable Integer rangeRank, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)), diagnosticPatientData, report);
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable) {
-        return evidenceBuilderRange(actionable, null, null);
+    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        return evidenceBuilderRange(actionable, null, null, diagnosticPatientData, report);
     }
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
-                                                            @NotNull Set<KnowledgebaseSource> protectSource) {
+                                                            @NotNull Set<KnowledgebaseSource> protectSource, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        ClinicalTrial clinicalTrial = extractOptionalClinicalTrial(actionable);
+        String genderCkb = clinicalTrial != null ? clinicalTrial.gender() : null;
+        String diagnosticGender = diagnosticPatientData != null ? diagnosticPatientData.getGender() : null;
+
+        Boolean matchGender = matchGender(genderCkb, diagnosticGender);
         return ImmutableProtectEvidence.builder()
+                .reported(isReportable(matchGender, report))
                 .clinicalTrial(extractOptionalClinicalTrial(actionable))
+                .matchGender(matchGender)
                 .treatment(extractOptionalTreatment(actionable))
                 .onLabel(isOnLabel(actionable.applicableCancerType(), actionable.blacklistCancerTypes(), ""))
                 .level(actionable.level())
@@ -91,6 +99,28 @@ public class PersonalizedEvidenceFactory {
 
         return clinicalTrial;
     }
+
+    public static boolean isReportable(@Nullable Boolean gender, boolean reportable) {
+        if (reportable) {
+            return gender == null || gender;
+        } else {
+            return false;
+        }
+    }
+
+    public static Boolean matchGender(@Nullable String genderCkb, @Nullable String diagnosticGender) {
+        if (diagnosticGender != null && genderCkb != null) {
+            if (genderCkb.equalsIgnoreCase(diagnosticGender)) {
+                return true;
+            } else if (genderCkb.equalsIgnoreCase("both")) {
+                return diagnosticGender.equalsIgnoreCase("female") || diagnosticGender.equalsIgnoreCase("male");
+            } else {
+                return false;
+            }
+        }
+        return null;
+    }
+
 
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
                              @NotNull String treatment) {

@@ -11,6 +11,7 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,25 +41,25 @@ public class PurpleSignatureEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull PurpleCharacteristics characteristics) {
+    public List<ProtectEvidence> evidence(@NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableCharacteristic signature : actionableSignatures) {
             ProtectEvidence evidence;
             switch (signature.type()) {
                 case MICROSATELLITE_UNSTABLE: {
-                    evidence = evaluateMSI(signature, characteristics);
+                    evidence = evaluateMSI(signature, characteristics, diagnosticPatientData);
                     break;
                 }
                 case MICROSATELLITE_STABLE: {
-                    evidence = evaluateMSS(signature, characteristics);
+                    evidence = evaluateMSS(signature, characteristics, diagnosticPatientData);
                     break;
                 }
                 case HIGH_TUMOR_MUTATIONAL_BURDEN: {
-                    evidence = evaluateHighTMB(signature, characteristics);
+                    evidence = evaluateHighTMB(signature, characteristics, diagnosticPatientData);
                     break;
                 }
                 case LOW_TUMOR_MUTATIONAL_BURDEN: {
-                    evidence = evaluateLowTMB(signature, characteristics);
+                    evidence = evaluateLowTMB(signature, characteristics, diagnosticPatientData);
                     break;
                 }
                 default: {
@@ -75,46 +76,46 @@ public class PurpleSignatureEvidence {
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI;
 
-        return isMatch ? toEvidence(signature) : null;
+        return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSS;
 
-        return isMatch ? toEvidence(signature) : null;
+        return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.HIGH;
 
-        return isMatch ? toEvidence(signature) : null;
+        return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics) {
+    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.LOW;
 
-        return isMatch ? toEvidence(signature) : null;
+        return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @NotNull
-    private ProtectEvidence toEvidence(@NotNull ActionableCharacteristic signature) {
+    private ProtectEvidence toEvidence(@NotNull ActionableCharacteristic signature, @Nullable PatientInformationResponse diagnosticPatientData) {
         ImmutableProtectEvidence.Builder builder;
         if (signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_LOAD
                 || signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_BURDEN
                 || signature.type() == TumorCharacteristicType.MICROSATELLITE_STABLE) {
-            builder = personalizedEvidenceFactory.somaticEvidence(signature);
+            builder = personalizedEvidenceFactory.somaticEvidence(signature, diagnosticPatientData, false);
         } else {
-            builder = personalizedEvidenceFactory.somaticReportableEvidence(signature);
+            builder = personalizedEvidenceFactory.somaticReportableEvidence(signature, diagnosticPatientData, true);
         }
 
         return builder.event(toEvent(signature.type())).eventIsHighDriver(null).build();

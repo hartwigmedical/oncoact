@@ -118,7 +118,7 @@ public class FusionEvidenceTest {
                 reportedIgPromiscuous,
                 reportedIgKnown);
         Set<LinxFusion> allFusions = Sets.newHashSet(unreportedPromiscuousMatch);
-        List<ProtectEvidence> evidences = fusionEvidence.evidence(reportableFusions, allFusions);
+        List<ProtectEvidence> evidences = fusionEvidence.evidence(reportableFusions, allFusions, null);
 
         assertEquals(10, evidences.size());
 
@@ -206,22 +206,22 @@ public class FusionEvidenceTest {
         ImmutableLinxFusion.Builder builder = linxFusionBuilder("EML4", "ALK", true, LinxFusionType.KNOWN_PAIR);
 
         Set<LinxFusion> onMinRange = Sets.newHashSet(builder.fusedExonUp(minExonUp).fusedExonDown(minExonDown).build());
-        assertEquals(1, fusionEvidence.evidence(onMinRange, Sets.newHashSet()).size());
+        assertEquals(1, fusionEvidence.evidence(onMinRange, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> onMaxRange = Sets.newHashSet(builder.fusedExonUp(maxExonUp).fusedExonDown(maxExonDown).build());
-        assertEquals(1, fusionEvidence.evidence(onMaxRange, Sets.newHashSet()).size());
+        assertEquals(1, fusionEvidence.evidence(onMaxRange, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> upGeneExonTooLow = Sets.newHashSet(builder.fusedExonUp(minExonUp - 1).fusedExonDown(minExonDown).build());
-        assertEquals(0, fusionEvidence.evidence(upGeneExonTooLow, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(upGeneExonTooLow, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> upGeneExonTooHigh = Sets.newHashSet(builder.fusedExonUp(maxExonUp + 1).fusedExonDown(minExonDown).build());
-        assertEquals(0, fusionEvidence.evidence(upGeneExonTooHigh, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(upGeneExonTooHigh, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> downGeneExonTooLow = Sets.newHashSet(builder.fusedExonUp(minExonUp).fusedExonDown(minExonDown - 1).build());
-        assertEquals(0, fusionEvidence.evidence(downGeneExonTooLow, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(downGeneExonTooLow, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> downGeneExonTooHigh = Sets.newHashSet(builder.fusedExonUp(maxExonUp).fusedExonDown(maxExonDown + 1).build());
-        assertEquals(0, fusionEvidence.evidence(downGeneExonTooHigh, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(downGeneExonTooHigh, Sets.newHashSet(), null).size());
     }
 
     @NotNull
