@@ -59,6 +59,7 @@ public final class ConclusionAlgo {
     @NotNull
     public static ActionabilityConclusion generateConclusion(@NotNull RoseData rose) {
         List<String> conclusion = Lists.newArrayList();
+        List<String> conclusionMerged = Lists.newArrayList();
         Set<String> oncogenic = Sets.newHashSet();
         Set<String> actionable = Sets.newHashSet();
         Set<String> HRD = Sets.newHashSet();
@@ -92,11 +93,8 @@ public final class ConclusionAlgo {
         List<AnnotatedVirus> reportableViruses =
                 Optional.ofNullable(rose.orange().virusInterpreter()).map(VirusInterpreterData::reportableViruses).orElseGet(List::of);
         List<LilacAllele> lilac = rose.orange().lilac().alleles();
-
         CuppaPrediction bestPrediction = bestPrediction(rose.orange().cuppa());
 
-        generatePurityConclusion(conclusion, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
-        generateCUPPAConclusion(conclusion, bestPrediction, actionabilityMap);
         generateVariantConclusion(conclusion,
                 reportableVariants,
                 actionabilityMap,
@@ -117,7 +115,14 @@ public final class ConclusionAlgo {
                 oncogenic,
                 actionable);
         generateTMBConclusion(conclusion, purple.characteristics().tumorMutationalLoadStatus(), purple.characteristics().tumorMutationalBurdenPerMb(), actionabilityMap, oncogenic, actionable);
-        generateTotalResults(conclusion, actionabilityMap, oncogenic, actionable);
+
+        //sort list on alphabetically order
+        generatePurityConclusion(conclusionMerged, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
+        generateCUPPAConclusion(conclusionMerged, bestPrediction, actionabilityMap);
+        Comparator<String> naturalComparator = Comparator.naturalOrder();
+        conclusion.sort(naturalComparator);
+        conclusionMerged.addAll(conclusion);
+        generateTotalResults(conclusionMerged, actionabilityMap, oncogenic, actionable);
 
         return ImmutableActionabilityConclusion.builder().conclusion(conclusion).build();
     }
@@ -169,10 +174,10 @@ public final class ConclusionAlgo {
             ActionabilityEntry entry = actionabilityMap.get(keyCuppaInconclusive);
             if (entry != null && entry.condition() == Condition.OTHER) {
                 if (bestPrediction.likelihood() >= 0.5) {
-                    conclusion.add(
+                    conclusion.add(conclusion.size(),
                             "- " + entry.conclusion().replace("xxx - xx%", bestPrediction.cancerType() + "-" + likelihoodPercentage));
                 } else {
-                    conclusion.add("- " + entry.conclusion().replace(" (highest likelihood: xxx - xx%)", ""));
+                    conclusion.add(conclusion.size(), "- " + entry.conclusion().replace(" (highest likelihood: xxx - xx%)", ""));
                 }
 
             }
@@ -181,7 +186,7 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyCuppa);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add("- " + entry.conclusion()
+                conclusion.add(conclusion.size(), "- " + entry.conclusion()
                         .replace("XXXX", bestPrediction.cancerType() + " (likelihood: " + likelihoodPercentage + ")"));
             }
         }
@@ -514,14 +519,14 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entryReliable = actionabilityMap.get(keyReliable);
             if (entryReliable != null && entryReliable.condition() == Condition.OTHER) {
-                conclusion.add("- " + entryReliable.conclusion() + "\n");
+                conclusion.add(conclusion.size(), "- " + entryReliable.conclusion() + "\n");
             }
         } else if (purity < PURITY_CUTOFF) {
             ActionabilityKey keyPurity = ImmutableActionabilityKey.builder().match("PURITY").type(TypeAlteration.PURITY).build();
 
             ActionabilityEntry entry = actionabilityMap.get(keyPurity);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add("- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
+                conclusion.add(conclusion.size(), "- " + entry.conclusion().replace("XX%", Formats.formatPercentageRound(purity)) + "\n");
             }
         }
     }
@@ -535,14 +540,14 @@ public final class ConclusionAlgo {
 
             ActionabilityEntry entry = actionabilityMap.get(keyOncogenic);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add("- " + entry.conclusion());
+                conclusion.add(conclusion.size(), "- " + entry.conclusion());
             }
         } else if (actionable.size() == 0) {
             ActionabilityKey keyActionable =
                     ImmutableActionabilityKey.builder().match("NO_ACTIONABLE").type(TypeAlteration.NO_ACTIONABLE).build();
             ActionabilityEntry entry = actionabilityMap.get(keyActionable);
             if (entry != null && entry.condition() == Condition.OTHER) {
-                conclusion.add("- " + entry.conclusion());
+                conclusion.add(conclusion.size(), "- " + entry.conclusion());
             }
         }
     }
