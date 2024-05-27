@@ -18,7 +18,6 @@ import com.hartwig.serve.datamodel.range.ActionableRange;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Set;
@@ -120,7 +119,6 @@ public class PersonalizedEvidenceFactoryTest {
     }
 
     @Test
-    @Ignore
     public void canDetermineEvidenceTypesFroAllGeneEvents() {
         ActionableGene base = TestServeFactory.createTestActionableGene();
         for (GeneEvent geneLevelEvent : GeneEvent.values()) {

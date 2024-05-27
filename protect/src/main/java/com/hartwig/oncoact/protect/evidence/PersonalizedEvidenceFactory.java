@@ -211,10 +211,14 @@ public class PersonalizedEvidenceFactory {
                 return EvidenceType.AMPLIFICATION;
             case OVEREXPRESSION:
                 return EvidenceType.OVER_EXPRESSION;
+            case PRESENCE_OF_PROTEIN:
+                return EvidenceType.PRESENCE_OF_PROTEIN;
             case DELETION:
                 return EvidenceType.DELETION;
             case UNDEREXPRESSION:
                 return EvidenceType.UNDER_EXPRESSION;
+            case ABSENCE_OF_PROTEIN:
+                return EvidenceType.ABSENCE_OF_PROTEIN;
             case ACTIVATION:
                 return EvidenceType.ACTIVATION;
             case INACTIVATION:
