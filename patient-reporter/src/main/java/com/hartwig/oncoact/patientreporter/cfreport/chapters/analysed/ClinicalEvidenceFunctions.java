@@ -126,12 +126,15 @@ public class ClinicalEvidenceFunctions {
         return evidencePerTreatmentMap;
     }
 
-    private static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
-                                                                        @NotNull ProtectEvidence evidenceToCheck) {
+    public static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
+                                                                       @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (!evidenceToCheck.level().isHigher(evidence.level())) {
+                if (evidenceToCheck.level().isHigher(evidence.level())) {
+                    return true;
+                }
+                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
                     return true;
                 }
             }
@@ -139,27 +142,32 @@ public class ClinicalEvidenceFunctions {
         return false;
     }
 
-    private static boolean hasHigherOrEqualEvidenceForEventAndTrial(@NotNull List<ProtectEvidence> evidences,
-                                                                    @NotNull ProtectEvidence evidenceToCheck) {
+    public static boolean hasHigherOrEqualEvidenceForEventAndTrial(@NotNull List<ProtectEvidence> evidences,
+                                                                   @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (!evidenceToCheck.level().isHigher(evidence.level())) {
+                if (evidenceToCheck.level().isHigher(evidence.level())) {
                     return true;
-
+                }
+                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                    return true;
                 }
             }
         }
         return false;
     }
 
-    private static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
-                                                                                @NotNull ProtectEvidence evidenceToCheck) {
+    public static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
+                                                                               @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(), evidence.treatment().treatmentApproachesTherapy())
                     .equals(extractCombinedTreatmentApproaches(evidenceToCheck.treatment().treatmentApproachesDrugClass(), evidenceToCheck.treatment().treatmentApproachesTherapy()))
                     && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (!evidenceToCheck.level().isHigher(evidence.level())) {
+                if (evidenceToCheck.level().isHigher(evidence.level())) {
+                    return true;
+                }
+                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
                     return true;
                 }
             }

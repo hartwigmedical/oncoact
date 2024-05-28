@@ -21,6 +21,7 @@ public final class TestProtectFactory {
                         .studyTitle(Strings.EMPTY)
                         .countriesOfStudy(Sets.newHashSet())
                         .build())
+                .matchGender(true)
                 .treatment(ImmutableTreatment.builder().name(Strings.EMPTY).build())
                 .onLabel(false)
                 .level(EvidenceLevel.A)
