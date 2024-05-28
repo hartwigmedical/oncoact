@@ -245,9 +245,9 @@ public class ClinicalEvidenceFunctions {
             if (allowedHighestLevel == highestEvidence(trialMap.get(trial))) {
                 boolean addTrial = true;
 
-                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream().collect(Collectors.groupingBy(evidence -> evidence.treatment().name()));
+                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream().collect(Collectors.groupingBy(evidence -> String.join(" | ", evidence.clinicalTrial().therapyNames())));
                 Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
-                for (String treatment : sortedTreatments.size() >= 3 ? Sets.newHashSet("Multiple") : sortedTreatments) {
+                for (String treatment : sortedTreatments) {
                     boolean addTreatment = true;
 
                     List<ProtectEvidence> evidencesTreatments = treatmentMap.get(treatment);
@@ -282,7 +282,8 @@ public class ClinicalEvidenceFunctions {
                         }
 
                         if (addTreatment) {
-                            table.addCell(tableUtil.createContentCellRowSpan(treatment, evidencesTreatments.size()));
+                            String therapyName = treatment.split("\\|").length > 3 ? "Multiple" : treatment;
+                            table.addCell(tableUtil.createContentCellRowSpan(therapyName, evidencesTreatments.size()));
                             addTreatment = false;
 
                         }
