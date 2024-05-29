@@ -475,7 +475,7 @@ public class ClinicalEvidenceFunctions {
                 .add("If the evidence matching is based on an amplification, evidence that corresponds with ‘overexpression’ of that gene "
                         + "is also matched. The same rule applies for deletions and 'underexpression'.\n")
                 .addStyle(reportResources.subTextStyle())
-                .add("For MMR genes only: If the evidence matching is based on an amplification, evidence that corresponds with ‘positive’ " +
+                .add("For MMR genes (MSH6, MSH2, MLH1, PMS2, EPCAM) only: If the evidence matching is based on an amplification, evidence that corresponds with ‘positive’ " +
                         "expression of that gene, mRNA, and protein is also matched. If the evidence matching is based on an " +
                         "inactivation or deletions, evidence that corresponds with ‘negative’ expression of that gene, mRNA, or protein is" +
                         " also matched. ")

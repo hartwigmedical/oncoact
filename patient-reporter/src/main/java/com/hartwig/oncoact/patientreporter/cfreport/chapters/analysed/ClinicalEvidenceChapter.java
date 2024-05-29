@@ -55,8 +55,8 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate " +
                 "genomic events for potential clinical study eligibility. Please note that clinical study eligibility " +
                 "depends on multiple patient and tumor characteristics of which only the genomic events are considered " +
-                "in this report. When the information is available, clinical studies are filtered on gender. " +
-                "Therefore, although a study is shown, the patient may still not be eligible. "));
+                "in this report. Therefore, although a study is shown, the patient may still not be eligible. " +
+                "When the information is available, clinical studies are filtered on gender."));
 
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
