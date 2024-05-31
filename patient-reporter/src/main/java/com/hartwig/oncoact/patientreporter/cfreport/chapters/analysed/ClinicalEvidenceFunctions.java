@@ -296,8 +296,7 @@ public class ClinicalEvidenceFunctions {
                             addTreatment = false;
 
                         }
-                        table.addCell(tableUtil.createContentCell(tableUtil.createTransparentCell(evidenceItems.createSourceIclusion(
-                                sourceUrls))));
+                        table.addCell(tableUtil.createContentCell(evidenceItems.createLinksSource(sourceUrls)));
                         table.addCell(tableUtil.createContentCell(cellGenomic));
                     }
                 }
