@@ -265,19 +265,12 @@ public class ClinicalEvidenceFunctions {
                         Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
 
                         Map<String, String> sourceUrls = Maps.newHashMap();
-                        Map<String, String> nctUrls = Maps.newHashMap();
 
                         for (KnowledgebaseSource source : responsive.sources()) {
                             if (source.sourceUrls().size() >= 1) {
                                 sourceUrls.put(determineEvidenceType(source), source.sourceUrls().stream().iterator().next());
                             } else {
                                 sourceUrls.put(determineEvidenceType(source), Strings.EMPTY);
-                            }
-
-                            if (source.sourceUrls().size() >= 1) {
-                                nctUrls.put(clinicalTrial.studyNctId(), source.sourceUrls().stream().iterator().next());
-                            } else {
-                                nctUrls.put(clinicalTrial.studyNctId(), Strings.EMPTY);
                             }
                         }
                         if (addTrial) {
