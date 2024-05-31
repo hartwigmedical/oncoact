@@ -32,9 +32,9 @@ public class CopyNumberEvidence {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
-                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.PRESENCE_OF_PROTEIN
-                        || x.event() == GeneEvent.DELETION || x.event() == GeneEvent.UNDEREXPRESSION
-                        || x.event() == GeneEvent.ABSENCE_OF_PROTEIN || x.event() == GeneEvent.ANY_MUTATION)
+                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.DELETION
+                        || x.event() == GeneEvent.UNDEREXPRESSION || x.event() == GeneEvent.ABSENCE_OF_PROTEIN
+                        || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +99,6 @@ public class CopyNumberEvidence {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:
-            case PRESENCE_OF_PROTEIN:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_GAIN
                         || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN;
             case INACTIVATION:
