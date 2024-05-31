@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
@@ -20,14 +24,11 @@ import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class VariantEvidence {
 
@@ -45,22 +46,22 @@ public class VariantEvidence {
     private final List<ActionableGene> genes;
 
     public VariantEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                           @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> codons,
-                           @NotNull final List<ActionableRange> exons, @NotNull final List<ActionableGene> genes) {
+            @NotNull final List<ActionableHotspot> hotspots, @NotNull final List<ActionableRange> codons,
+            @NotNull final List<ActionableRange> exons, @NotNull final List<ActionableGene> genes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.hotspots = hotspots;
         this.codons = codons;
         this.exons = exons;
         this.genes = genes.stream()
-                .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.ABSENCE_OF_PROTEIN
-                        || x.event() == GeneEvent.ANY_MUTATION)
+                .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION
+                        || x.event() == GeneEvent.ABSENCE_OF_PROTEIN || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
-                                          @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
-                                          @Nullable Collection<PurpleVariant> allGermlineVariants, @Nullable PatientInformationResponse diagnosticPatientData) {
+            @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
+            @Nullable Collection<PurpleVariant> allGermlineVariants, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
             evidences.addAll(evidence(reportableVariant, diagnosticPatientData));
@@ -98,13 +99,21 @@ public class VariantEvidence {
 
         for (ActionableRange codon : codons) {
             if (rangeMatch(variant, codon)) {
-                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "codon", diagnosticPatientData));
+                evidences.add(evidence(variant,
+                        codon,
+                        mayReport && driverInterpretation == DriverInterpretation.HIGH,
+                        "codon",
+                        diagnosticPatientData));
             }
         }
 
         for (ActionableRange exon : exons) {
             if (rangeMatch(variant, exon)) {
-                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "exon", diagnosticPatientData));
+                evidences.add(evidence(variant,
+                        exon,
+                        mayReport && driverInterpretation == DriverInterpretation.HIGH,
+                        "exon",
+                        diagnosticPatientData));
             }
         }
 
@@ -127,7 +136,8 @@ public class VariantEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report, @NotNull String range, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report, @NotNull String range,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
@@ -187,7 +197,8 @@ public class VariantEvidence {
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {
-        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION || gene.event() == GeneEvent.ABSENCE_OF_PROTEIN;
+        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION
+                || gene.event() == GeneEvent.ABSENCE_OF_PROTEIN;
 
         return gene.gene().equals(variant.gene()) && meetsMutationType(variant, MutationType.ANY);
     }

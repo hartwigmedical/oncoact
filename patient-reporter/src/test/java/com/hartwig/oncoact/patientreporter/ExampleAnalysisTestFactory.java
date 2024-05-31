@@ -1,13 +1,34 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.hartwig.hmftools.datamodel.chord.ChordStatus;
-import com.hartwig.hmftools.datamodel.linx.*;
+import com.hartwig.hmftools.datamodel.linx.FusionLikelihoodType;
+import com.hartwig.hmftools.datamodel.linx.FusionPhasedType;
+import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.hmftools.datamodel.linx.LinxFusion;
+import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
 import com.hartwig.hmftools.datamodel.peach.PeachGenotype;
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.Hotspot;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleGenotypeStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleQCStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.oncoact.copynumber.Chromosome;
@@ -18,29 +39,41 @@ import com.hartwig.oncoact.cuppa.ImmutableMolecularTissueOriginReporting;
 import com.hartwig.oncoact.cuppa.MolecularTissueOriginReporting;
 import com.hartwig.oncoact.disruption.GeneDisruption;
 import com.hartwig.oncoact.disruption.TestGeneDisruptionFactory;
-import com.hartwig.oncoact.hla.*;
+import com.hartwig.oncoact.hla.HlaAllelesReportingData;
+import com.hartwig.oncoact.hla.HlaReporting;
+import com.hartwig.oncoact.hla.ImmutableHlaAllele;
+import com.hartwig.oncoact.hla.ImmutableHlaAllelesReportingData;
+import com.hartwig.oncoact.hla.ImmutableHlaReporting;
 import com.hartwig.oncoact.orange.linx.TestLinxFactory;
 import com.hartwig.oncoact.orange.peach.TestPeachFactory;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
-import com.hartwig.oncoact.patientreporter.algo.*;
+import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableAnalysedPatientReport;
+import com.hartwig.oncoact.patientreporter.algo.ImmutableGenomicAnalysis;
+import com.hartwig.oncoact.patientreporter.algo.InterpretPurpleGeneCopyNumbers;
+import com.hartwig.oncoact.patientreporter.algo.QualityOverruleFunctions;
 import com.hartwig.oncoact.patientreporter.cfreport.MathUtil;
 import com.hartwig.oncoact.patientreporter.cfreport.data.TumorPurity;
-import com.hartwig.oncoact.protect.*;
+import com.hartwig.oncoact.protect.EvidenceType;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.oncoact.util.Formats;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
-import com.hartwig.serve.datamodel.*;
+import com.hartwig.serve.datamodel.EvidenceDirection;
+import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
+import com.hartwig.serve.datamodel.ImmutableTreatment;
+import com.hartwig.serve.datamodel.Knowledgebase;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 public final class ExampleAnalysisTestFactory {
 
@@ -54,7 +87,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createWithCOLO829Data(@NotNull ExampleAnalysisConfig config, @NotNull PurpleQCStatus purpleQCStatus,
-                                                              boolean withUnreliablePurityOverrule) {
+            boolean withUnreliablePurityOverrule) {
         String pipelineVersion = "5.33";
         double averageTumorPloidy = 3.1;
         int tumorMutationalLoad = 183;
@@ -184,7 +217,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static AnalysedPatientReport createAnalysisWithAllTablesFilledIn(@NotNull ExampleAnalysisConfig config,
-                                                                            @NotNull PurpleQCStatus purpleQCStatus) {
+            @NotNull PurpleQCStatus purpleQCStatus) {
         AnalysedPatientReport coloReport = createWithCOLO829Data(config, purpleQCStatus, false);
 
         List<LinxFusion> fusions = createTestFusions();
@@ -203,7 +236,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> notifyAllGermlineVariants(@NotNull List<ReportableVariant> reportableVariants,
-                                                                             boolean flagGermlineOnReport) {
+            boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
         for (ReportableVariant variant : reportableVariants) {
             if (flagGermlineOnReport) {
@@ -225,7 +258,7 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     public static CnPerChromosomeArmData buildCnPerChromosomeArmData(@NotNull Chromosome chromosome, @NotNull ChromosomeArm chromosomeArm,
-                                                                     double copyNumber) {
+            double copyNumber) {
         return ImmutableCnPerChromosomeArmData.builder().chromosome(chromosome).chromosomeArm(chromosomeArm).copyNumber(copyNumber).build();
     }
 
@@ -284,8 +317,8 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static KnowledgebaseSource createTestProtectSource(@NotNull Knowledgebase source, @NotNull String sourceEvent,
-                                                               @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer range,
-                                                               @NotNull Set<String> evidenceUrls) {
+            @NotNull Set<String> sourceUrls, @NotNull EvidenceType protectEvidenceType, @Nullable Integer range,
+            @NotNull Set<String> evidenceUrls) {
         return TestProtectFactory.sourceBuilder()
                 .name(source)
                 .sourceEvent(sourceEvent)
@@ -987,7 +1020,8 @@ public final class ExampleAnalysisTestFactory {
                 .reported(true)
                 .clinicalTrial(ImmutableClinicalTrial.builder()
                         .studyNctId("nct1")
-                        .studyTitle("A Study of Imatinib Versus Nilotinib in Adult Patients With Newly Diagnosed Philadelphia Chromosome Positive (Ph+) Chronic Myelogenous Leukemia in Chronic Phase (CML-CP) (ENESTnd)")
+                        .studyTitle(
+                                "A Study of Imatinib Versus Nilotinib in Adult Patients With Newly Diagnosed Philadelphia Chromosome Positive (Ph+) Chronic Myelogenous Leukemia in Chronic Phase (CML-CP) (ENESTnd)")
                         .countriesOfStudy(Sets.newHashSet("netherlands"))
                         .therapyNames(Sets.newHashSet("A"))
                         .build())
@@ -1992,8 +2026,8 @@ public final class ExampleAnalysisTestFactory {
 
     @NotNull
     private static PurpleTranscriptImpact purpleTranscriptImpactClinical(@NotNull String transcript, @NotNull String hgvsCodingImpact,
-                                                                         @NotNull String hgvsProteinImpact, Integer codon, Integer exon, boolean spliceRegion,
-                                                                         @NotNull List<PurpleVariantEffect> effects, @NotNull PurpleCodingEffect effect) {
+            @NotNull String hgvsProteinImpact, Integer codon, Integer exon, boolean spliceRegion,
+            @NotNull List<PurpleVariantEffect> effects, @NotNull PurpleCodingEffect effect) {
         return ImmutablePurpleTranscriptImpact.builder()
                 .transcript(transcript)
                 .hgvsCodingImpact(hgvsCodingImpact)

@@ -1,11 +1,11 @@
 package com.hartwig.oncoact.protect;
 
+import java.util.Comparator;
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Comparator;
-import java.util.Objects;
 
 public class EvidenceComparator implements Comparator<ProtectEvidence> {
 

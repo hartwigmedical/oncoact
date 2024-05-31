@@ -1,5 +1,10 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -20,14 +25,10 @@ import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class CurationFunctionsTest {
 
@@ -176,7 +177,7 @@ public class CurationFunctionsTest {
 
     @NotNull
     private static String findByGeneHomozygousDisruption(@NotNull List<HomozygousDisruption> disruptions, @NotNull String gene,
-                                                         boolean isCanonical) {
+            boolean isCanonical) {
         for (HomozygousDisruption disruption : disruptions) {
             if (disruption.gene().equals(gene) && disruption.isCanonical() == isCanonical) {
                 return disruption.gene();

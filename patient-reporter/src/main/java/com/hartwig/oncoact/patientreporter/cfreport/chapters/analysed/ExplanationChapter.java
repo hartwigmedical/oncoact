@@ -10,6 +10,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.UnitValue;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @Override
     public void render(@NotNull Document reportDocument) {
-        Table table = new Table(UnitValue.createPercentArray(new float[]{15, 2, 15, 2, 15,}));
+        Table table = new Table(UnitValue.createPercentArray(new float[] { 15, 2, 15, 2, 15, }));
         table.setWidth(contentWidth());
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the report in general")));
@@ -68,33 +69,33 @@ public class ExplanationChapter implements ReportChapter {
                         ". In general the canonical transcripts as defined by ",
                         "https://www.ensembl.org/info/about/index.html",
                         "Ensembl are used.")))
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "Genomic event detection in samples with lower tumor purity is less sensitive. The likelihood of failing to detect "
                                 + "potential events increases in case of a low (implied) tumor purity (< 20%).",
                         "The implied tumor purity is the percentage of tumor cells in the tumor material based on analysis of whole "
-                                + "genome data."})));
+                                + "genome data." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
                 .add(createParaGraphWithLinkTwo("\nThe Clinical Knowledgebase (",
                         "CKB",
                         "https://ckbhome.jax.org/",
-                        ") is used to annotate genomic events with clinical evidence and/or clinical studies. " +
-                                "The evidence and/or clinical studies are gathered from CKB without "
+                        ") is used to annotate genomic events with clinical evidence and/or clinical studies. "
+                                + "The evidence and/or clinical studies are gathered from CKB without "
                                 + "further checks or interpretation. More details about CKB can be found in their ",
                         "https://ckbhome.jax.org/about/glossaryOfTerms",
                         "Glossary Of Terms.")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "The 'Read depth' indicates the raw number of reads supporting the variant versus the total number of reads on "
-                                + "the mutated position."}))
-                .add(createContentDiv(new String[]{"The 'Copies' field indicates the number of alleles present in the tumor on this "
-                        + "particular mutated position."}))
-                .add(createContentDiv(new String[]{
-                        "The 'tVAF' field indicates the variant allele frequency corrected for the implied " + "tumor purity."}))
-                .add(createContentDiv(new String[]{
+                                + "the mutated position." }))
+                .add(createContentDiv(new String[] { "The 'Copies' field indicates the number of alleles present in the tumor on this "
+                        + "particular mutated position." }))
+                .add(createContentDiv(new String[] {
+                        "The 'tVAF' field indicates the variant allele frequency corrected for the implied " + "tumor purity." }))
+                .add(createContentDiv(new String[] {
                         "The 'Biallelic' field indicates whether the variant is present across all alleles in the tumor "
-                                + "(and is including variants with loss-of-heterozygosity)."}))
+                                + "(and is including variants with loss-of-heterozygosity)." }))
                 .add(createParaGraphHotspot("The 'Hotspot' field indicates whether a variant is part of the most sensitive calling "
                                 + "tier used in the analyses. The tiers are determined based on different knowledge databases including ",
                         "CIViC,",
@@ -104,16 +105,16 @@ public class ExplanationChapter implements ReportChapter {
                         "and",
                         " CGI.",
                         "https://www.cancergenomeinterpreter.org/about"))
-                .add(createContentDiv(new String[]{"The 'Driver' field indicates the driver probability on gene level and is calculated "
+                .add(createContentDiv(new String[] { "The 'Driver' field indicates the driver probability on gene level and is calculated "
                         + "using data in the Hartwig Medical Database. A variant in a gene with high driver likelihood is likely to be "
-                        + "positively selected during the oncogenic process."}))
+                        + "positively selected during the oncogenic process." }))
                 .add(createParaGraphClinvar("The external ",
                         "ClinVar database",
                         "https://www.ncbi.nlm.nih.gov/clinvar/intro/",
                         " is used to determine the pathogenicity of observed " + "germline variants."))
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "When the 'tVAF', 'Biallelic', 'Hotspot' and 'Driver' are not reported for a variant, there is uncertainty "
-                                + "about the presence of the variant in the tumor."})));
+                                + "about the presence of the variant in the tumor." })));
 
         table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
@@ -133,38 +134,38 @@ public class ExplanationChapter implements ReportChapter {
 
         table.addCell(TableUtil.createLayoutCell()
 
-                .add(createContentDiv(new String[]{"The lowest copy number value along the exonic regions of the canonical transcript is"
+                .add(createContentDiv(new String[] { "The lowest copy number value along the exonic regions of the canonical transcript is"
                         + " determined as a measure for the gene's copy number.",
                         "When applicable, copy numbers are corrected for the implied tumor purity and represent the number of copies in the tumor DNA.",
                         "Any gene with < 0.5 copies along the entire canonical transcript is reported as a full loss in the tumor. Any gene where only "
                                 + "a part along the canonical transcript has < 0.5 copies is reported as a partial loss in the tumor. \n"
                                 + "Any gene with ≥  3 times the average tumor ploidy in copies along the entire canonical transcript "
                                 + "is reported as a full gain in the tumor. Any gene where only a part of the canonical transcript has ≥ 3 "
-                                + "times the average tumor ploidy in copies is reported as a partial gain in the tumor.",})));
+                                + "times the average tumor ploidy in copies is reported as a partial gain in the tumor.", })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[]{
-                        "The canonical, or otherwise longest transcript that is validly fused, is reported. "}))
+                .add(createContentDiv(new String[] {
+                        "The canonical, or otherwise longest transcript that is validly fused, is reported. " }))
                 .add(new Div().add(createParaGraphWithLinkTwo("Reporting of fusions is restricted to a selection of known fusions and a "
                                 + "selection of pre-defined fusions where one partner is promiscuous in either the 5' or 3' position. "
                                 + "The full list of fusions can be downloaded from the ",
                         "resources",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
                         ".")))
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "The 'Driver' field is set to high in case the fusion is a known fusion, or a fusion where the promiscuous partner "
                                 + "is fused in an exon range that is typically observed in literature.",
-                        "All other fusions get assigned a low driver likelihood."})));
+                        "All other fusions get assigned a low driver likelihood." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "Genes are reported as being disrupted when their canonical transcript has been disrupted.",
                         "The range of the disruption is indicated by the intron/exon/promoter region of the break point "
                                 + "and the direction the disruption faces.",
                         "The type of disruption can be INV (inversion), DEL (deletion), DUP (duplication), INS "
                                 + "(insertion), SGL (single) or BND (translocation).",
                         "A gene for which no wild type exists anymore in the (tumor) DNA due to disruption(s) "
-                                + "is reported in a separate section called 'homozygous disruptions'."})));
+                                + "is reported in a separate section called 'homozygous disruptions'." })));
 
         // Is needed to set details on new page
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
@@ -195,16 +196,16 @@ public class ExplanationChapter implements ReportChapter {
                                 + "from the ",
                         "resources.",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip")))
-                .add(createContentDiv(new String[]{
+                .add(createContentDiv(new String[] {
                         "The called haplotypes for a gene are the simplest combination of haplotypes that perfectly explains all of the "
                                 + "observed variants for that gene. If no combination of haplotypes in the panel can perfectly explain the "
                                 + "observed variants, then 'Unresolved Haplotype' is called.",
-                        "Wild type is assumed when no variants are observed."})));
+                        "Wild type is assumed when no variants are observed." })));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
-                .add(createContentDiv(new String[]{"HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis, "
+                .add(createContentDiv(new String[] { "HLA Class I types (HLA-A, HLA-B and HLA-C) are reported based on germline analysis, "
                         + "but also  the tumor status of each of those alleles is indicated (somatic mutations, complete loss, and/or "
-                        + "allelic imbalance).\n"})
+                        + "allelic imbalance).\n" })
 
                         .add(new Div().add(createParaGraphWithLinkTwo("The",
                                 " IMGT/HLA database ",
@@ -223,7 +224,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphWithLinkTwo(@NotNull String string1, @NotNull String string2, @NotNull String link,
-                                                 @NotNull String string3) {
+            @NotNull String string3) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
@@ -234,7 +235,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphWithLinkTwo(@NotNull String string1, @NotNull String string2, @NotNull String link,
-                                                 @NotNull String string3, @NotNull String link1, @NotNull String string4) {
+            @NotNull String string3, @NotNull String link1, @NotNull String string4) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
@@ -246,7 +247,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphPGX(@NotNull String string1, @NotNull String string2, @NotNull String link1, @NotNull String string3,
-                                         @NotNull String string4, @NotNull String link2) {
+            @NotNull String string4, @NotNull String link2) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
@@ -259,7 +260,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphClinvar(@NotNull String string1, @NotNull String string2, @NotNull String link1,
-                                             @NotNull String string3) {
+            @NotNull String string3) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
@@ -270,7 +271,7 @@ public class ExplanationChapter implements ReportChapter {
 
     @NotNull
     private Paragraph createParaGraphHotspot(@NotNull String string1, @NotNull String string2, @NotNull String link1,
-                                             @NotNull String string3, @NotNull String link2, @NotNull String string4, @NotNull String string5, @NotNull String link3) {
+            @NotNull String string3, @NotNull String link2, @NotNull String string4, @NotNull String string5, @NotNull String link3) {
         return new Paragraph(string1).addStyle(reportResources.subTextStyle())
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))

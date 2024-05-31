@@ -1,23 +1,33 @@
 package com.hartwig.oncoact.protect.algo;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.protect.evidence.*;
+import com.hartwig.oncoact.protect.evidence.ChordEvidence;
+import com.hartwig.oncoact.protect.evidence.CopyNumberEvidence;
+import com.hartwig.oncoact.protect.evidence.DisruptionEvidence;
+import com.hartwig.oncoact.protect.evidence.FusionEvidence;
+import com.hartwig.oncoact.protect.evidence.HlaEvidence;
+import com.hartwig.oncoact.protect.evidence.PersonalizedEvidenceFactory;
+import com.hartwig.oncoact.protect.evidence.PurpleSignatureEvidence;
+import com.hartwig.oncoact.protect.evidence.VariantEvidence;
+import com.hartwig.oncoact.protect.evidence.VirusEvidence;
+import com.hartwig.oncoact.protect.evidence.WildTypeEvidence;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.serve.datamodel.ActionableEvents;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Set;
 
 public class ProtectAlgo {
 
@@ -46,8 +56,8 @@ public class ProtectAlgo {
 
     @NotNull
     public static ProtectAlgo build(@NotNull ActionableEvents actionableEvents, @NotNull Set<String> patientTumorDoids,
-                                    @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
-                                    @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
+            @NotNull List<DriverGene> driverGenes, @NotNull DoidParents doidParentModel,
+            @NotNull ClinicalTranscriptsModel clinicalTranscriptsModel) {
         PersonalizedEvidenceFactory personalizedEvidenceFactory = new PersonalizedEvidenceFactory(patientTumorDoids, doidParentModel);
 
         VariantEvidence variantEvidenceFactory = new VariantEvidence(personalizedEvidenceFactory,
@@ -79,10 +89,10 @@ public class ProtectAlgo {
     }
 
     private ProtectAlgo(@NotNull final VariantEvidence variantEvidenceFactory, @NotNull final CopyNumberEvidence copyNumberEvidenceFactory,
-                        @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
-                        @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
-                        @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
-                        @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
+            @NotNull final DisruptionEvidence disruptionEvidenceFactory, @NotNull final FusionEvidence fusionEvidenceFactory,
+            @NotNull final PurpleSignatureEvidence purpleSignatureEvidenceFactory, @NotNull final VirusEvidence virusEvidenceFactory,
+            @NotNull final ChordEvidence chordEvidenceFactory, @NotNull final HlaEvidence hlaEvidenceFactory,
+            @NotNull final WildTypeEvidence wildTypeEvidenceFactory, @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.variantEvidenceFactory = variantEvidenceFactory;
         this.copyNumberEvidenceFactory = copyNumberEvidenceFactory;
         this.disruptionEvidenceFactory = disruptionEvidenceFactory;
@@ -107,7 +117,8 @@ public class ProtectAlgo {
         List<ProtectEvidence> variantEvidence = variantEvidenceFactory.evidence(reportableGermlineVariants,
                 reportableSomaticVariants,
                 orange.purple().allSomaticVariants(),
-                orange.purple().allGermlineVariants(), diagnosticPatientData);
+                orange.purple().allGermlineVariants(),
+                diagnosticPatientData);
         printExtraction("somatic and germline variants", variantEvidence);
 
         List<ProtectEvidence> copyNumberEvidence = copyNumberEvidenceFactory.evidence(orange.purple().reportableSomaticGainsLosses(),
@@ -115,18 +126,22 @@ public class ProtectAlgo {
                 orange.purple().reportableGermlineFullLosses(),
                 orange.purple().allGermlineFullLosses(),
                 orange.purple().reportableGermlineLossOfHeterozygosities(),
-                orange.purple().allGermlineLossOfHeterozygosities(), diagnosticPatientData);
+                orange.purple().allGermlineLossOfHeterozygosities(),
+                diagnosticPatientData);
         printExtraction("amplifications and deletions", copyNumberEvidence);
 
         List<ProtectEvidence> disruptionEvidence = disruptionEvidenceFactory.evidence(orange.linx().somaticHomozygousDisruptions(),
-                orange.linx().germlineHomozygousDisruptions(), diagnosticPatientData);
+                orange.linx().germlineHomozygousDisruptions(),
+                diagnosticPatientData);
         printExtraction("homozygous disruptions", disruptionEvidence);
 
-        List<ProtectEvidence> fusionEvidence =
-                fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(), orange.linx().allSomaticFusions(), diagnosticPatientData);
+        List<ProtectEvidence> fusionEvidence = fusionEvidenceFactory.evidence(orange.linx().reportableSomaticFusions(),
+                orange.linx().allSomaticFusions(),
+                diagnosticPatientData);
         printExtraction("fusions", fusionEvidence);
 
-        List<ProtectEvidence> purpleSignatureEvidence = purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics(), diagnosticPatientData);
+        List<ProtectEvidence> purpleSignatureEvidence =
+                purpleSignatureEvidenceFactory.evidence(orange.purple().characteristics(), diagnosticPatientData);
         printExtraction("purple signatures", purpleSignatureEvidence);
 
         List<ProtectEvidence> virusEvidence = virusEvidenceFactory.evidence(orange.virusInterpreter(), diagnosticPatientData);
@@ -144,7 +159,8 @@ public class ProtectAlgo {
                 orange.linx().reportableSomaticFusions(),
                 orange.linx().somaticHomozygousDisruptions(),
                 orange.linx().reportableSomaticBreakends(),
-                orange.purple().fit().qc().status(), diagnosticPatientData);
+                orange.purple().fit().qc().status(),
+                diagnosticPatientData);
         printExtraction("wild-type", wildTypeEvidence);
 
         List<ProtectEvidence> result = Lists.newArrayList();

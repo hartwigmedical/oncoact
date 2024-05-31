@@ -1,13 +1,14 @@
 package com.hartwig.oncoact.protect;
 
-import com.google.common.collect.Lists;
-import com.hartwig.serve.datamodel.Knowledgebase;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.collect.Lists;
+import com.hartwig.serve.datamodel.Knowledgebase;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 public class KnowledgebaseSourceComparatorTest {
 

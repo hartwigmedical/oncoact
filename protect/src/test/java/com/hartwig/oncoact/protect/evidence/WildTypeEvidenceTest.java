@@ -1,5 +1,10 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
@@ -19,13 +24,9 @@ import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 public class WildTypeEvidenceTest {
 
@@ -72,7 +73,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
 
         assertEquals(0, evidencesWildTypeSomaticVariant.size());
 
@@ -88,7 +90,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeGermlineVariant.size());
 
         //Test wild-type with CNV
@@ -103,7 +106,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeCNV.size());
 
         //Test wild-type with fusion  5 prime
@@ -118,7 +122,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeFusion5.size());
 
         //Test wild-type with fusion  3 prime
@@ -133,7 +138,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeFusion3.size());
 
         //Test wild-type with homozygous disruption
@@ -150,7 +156,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeHomozygousDisruption.size());
 
         //Test wild-type with gene disruption
@@ -165,7 +172,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(0, evidencesWildTypeGeneDisruption.size());
 
         //Test calling wild type
@@ -180,7 +188,8 @@ public class WildTypeEvidenceTest {
                 reportableFusions,
                 homozygousDisruptions,
                 breakends,
-                purpleQCStatusSet, null);
+                purpleQCStatusSet,
+                null);
         assertEquals(1, evidencesWildType.size());
     }
 

@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
@@ -10,12 +14,9 @@ import com.hartwig.serve.datamodel.fusion.ActionableFusion;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FusionEvidence {
 
@@ -27,7 +28,7 @@ public class FusionEvidence {
     private final List<ActionableFusion> actionableFusions;
 
     public FusionEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                          @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<ActionableFusion> actionableFusions) {
+            @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<ActionableFusion> actionableFusions) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionablePromiscuous = actionableGenes.stream()
                 .filter(x -> x.event().equals(GeneEvent.FUSION) || x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.ANY_MUTATION)
@@ -36,7 +37,8 @@ public class FusionEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxFusion> allFusions, @Nullable PatientInformationResponse diagnosticPatientData) {
+    public List<ProtectEvidence> evidence(@NotNull Collection<LinxFusion> reportableFusions, @NotNull Collection<LinxFusion> allFusions,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (LinxFusion reportable : reportableFusions) {
             evidences.addAll(evidence(reportable, diagnosticPatientData));
@@ -75,7 +77,8 @@ public class FusionEvidence {
     }
 
     @NotNull
-    private ProtectEvidence unreportableEvidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence unreportableEvidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         return personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, false)
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
@@ -84,7 +87,8 @@ public class FusionEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence evidence(@NotNull LinxFusion fusion, @NotNull ActionableEvent actionable,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         return personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, fusion.reported())
                 .gene(geneFromActionable(actionable))
                 .event(EventGenerator.fusionEvent(fusion))
@@ -103,8 +107,8 @@ public class FusionEvidence {
     }
 
     private static boolean match(@NotNull LinxFusion fusion, @NotNull ActionableFusion actionable) {
-        if (fusion.reportedType().equals(LinxFusionType.KNOWN_PAIR) || fusion.reportedType().equals(LinxFusionType.EXON_DEL_DUP) || fusion.reportedType()
-                .equals(LinxFusionType.IG_KNOWN_PAIR)) {
+        if (fusion.reportedType().equals(LinxFusionType.KNOWN_PAIR) || fusion.reportedType().equals(LinxFusionType.EXON_DEL_DUP)
+                || fusion.reportedType().equals(LinxFusionType.IG_KNOWN_PAIR)) {
             if (!actionable.geneDown().equals(fusion.geneEnd())) {
                 return false;
             }

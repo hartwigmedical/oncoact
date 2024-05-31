@@ -1,9 +1,9 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import com.hartwig.serve.datamodel.EvidenceDirection;
-
 import java.util.Comparator;
 import java.util.EnumMap;
+
+import com.hartwig.serve.datamodel.EvidenceDirection;
 
 public class EvidenceDirectionComparator implements Comparator<EvidenceDirection> {
     private static final EnumMap<EvidenceDirection, Integer> evidenceDirectionOrder = new EnumMap<>(EvidenceDirection.class);

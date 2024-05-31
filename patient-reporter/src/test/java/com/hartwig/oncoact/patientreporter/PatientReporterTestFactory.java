@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.patientreporter;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+
 import com.google.common.io.Resources;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptsModel;
@@ -11,11 +14,9 @@ import com.hartwig.oncoact.patientreporter.germline.GermlineReportingFile;
 import com.hartwig.oncoact.patientreporter.germline.GermlineReportingModel;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.qcfail.ImmutableQCFailReportData;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
 
 public final class PatientReporterTestFactory {
 

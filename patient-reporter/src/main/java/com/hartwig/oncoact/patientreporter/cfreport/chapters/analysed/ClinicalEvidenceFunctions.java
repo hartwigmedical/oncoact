@@ -1,5 +1,13 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -20,13 +28,10 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Text;
 import com.itextpdf.layout.property.VerticalAlignment;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ClinicalEvidenceFunctions {
 
@@ -52,9 +57,9 @@ public class ClinicalEvidenceFunctions {
     private static final Set<EvidenceDirection> PREDICTED =
             Sets.newHashSet(EvidenceDirection.PREDICTED_RESISTANT, EvidenceDirection.PREDICTED_RESPONSIVE);
 
-
     @NotNull
-    public static Set<String> extractCombinedTreatmentApproaches(@NotNull Set<String> treatmentApproachesDrugClass, @NotNull Set<String> treatmentApproachesTherapy) {
+    public static Set<String> extractCombinedTreatmentApproaches(@NotNull Set<String> treatmentApproachesDrugClass,
+            @NotNull Set<String> treatmentApproachesTherapy) {
         Set<String> combinedTreatmentApproach = Sets.newHashSet();
         if (!treatmentApproachesDrugClass.isEmpty()) {
             combinedTreatmentApproach.addAll(treatmentApproachesDrugClass);
@@ -66,14 +71,15 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTreatmentMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-                                                                       Boolean requireOnLabel, @NotNull String name) {
+            Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
             if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
                 String treatment = Strings.EMPTY;
                 List<ProtectEvidence> treatmentEvidences = Lists.newArrayList();
-                Set<String> treatmentApproaches = extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(), evidence.treatment().treatmentApproachesTherapy());
+                Set<String> treatmentApproaches = extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(),
+                        evidence.treatment().treatmentApproachesTherapy());
                 String treatmentJoin = String.join(",", treatmentApproaches);
                 if (name.equals("treatmentApproach")) {
                     if (!treatmentJoin.isEmpty()) {
@@ -107,7 +113,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public static Map<String, List<ProtectEvidence>> buildTrialMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
-                                                                   Boolean requireOnLabel, @NotNull String name) {
+            Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
@@ -116,8 +122,7 @@ public class ClinicalEvidenceFunctions {
                 List<ProtectEvidence> trialEvidences = Lists.newArrayList();
                 trial = evidence.clinicalTrial().studyTitle();
                 trialEvidences = evidencePerTreatmentMap.getOrDefault(trial, new ArrayList<>());
-                if (!hasHigherOrEqualEvidenceForEventAndTrial(trialEvidences, evidence)
-                        && !trial.equals(Strings.EMPTY)) {
+                if (!hasHigherOrEqualEvidenceForEventAndTrial(trialEvidences, evidence) && !trial.equals(Strings.EMPTY)) {
                     trialEvidences.add(evidence);
                     evidencePerTreatmentMap.put(trial, trialEvidences);
                 }
@@ -127,14 +132,15 @@ public class ClinicalEvidenceFunctions {
     }
 
     public static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
-                                                                       @NotNull ProtectEvidence evidenceToCheck) {
+            @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
                     evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (evidenceToCheck.level().isHigher(evidence.level())) {
                     return true;
                 }
-                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                if (evidenceToCheck.level().equals(evidence.level())
+                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
                     return true;
                 }
             }
@@ -143,14 +149,15 @@ public class ClinicalEvidenceFunctions {
     }
 
     public static boolean hasHigherOrEqualEvidenceForEventAndTrial(@NotNull List<ProtectEvidence> evidences,
-                                                                   @NotNull ProtectEvidence evidenceToCheck) {
+            @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId()) && StringUtils.equals(evidence.gene(),
-                    evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
+            if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId())
+                    && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (evidenceToCheck.level().isHigher(evidence.level())) {
                     return true;
                 }
-                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                if (evidenceToCheck.level().equals(evidence.level())
+                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
                     return true;
                 }
             }
@@ -159,15 +166,18 @@ public class ClinicalEvidenceFunctions {
     }
 
     public static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
-                                                                               @NotNull ProtectEvidence evidenceToCheck) {
+            @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(), evidence.treatment().treatmentApproachesTherapy())
-                    .equals(extractCombinedTreatmentApproaches(evidenceToCheck.treatment().treatmentApproachesDrugClass(), evidenceToCheck.treatment().treatmentApproachesTherapy()))
-                    && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
+            if (extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(),
+                    evidence.treatment().treatmentApproachesTherapy()).equals(extractCombinedTreatmentApproaches(evidenceToCheck.treatment()
+                    .treatmentApproachesDrugClass(), evidenceToCheck.treatment().treatmentApproachesTherapy())) && StringUtils.equals(
+                    evidence.gene(),
+                    evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
                 if (evidenceToCheck.level().isHigher(evidence.level())) {
                     return true;
                 }
-                if (evidenceToCheck.level().equals(evidence.level()) && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                if (evidenceToCheck.level().equals(evidence.level())
+                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
                     return true;
                 }
             }
@@ -177,11 +187,11 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public Table createTreatmentApproachTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                              float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[]{25, 100, 50, 80, 25, 15, 40, 100},
-                new Cell[]{tableUtil.createHeaderCell("Drug type", 2), tableUtil.createHeaderCell("Tumor type specific", 1),
+            float contentWidth) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 25, 100, 50, 80, 25, 15, 40, 100 },
+                new Cell[] { tableUtil.createHeaderCell("Drug type", 2), tableUtil.createHeaderCell("Tumor type specific", 1),
                         tableUtil.createHeaderCell("Match", 1), tableUtil.createHeaderCell("Level", 1),
-                        tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1)},
+                        tableUtil.createHeaderCell("Response", 2), tableUtil.createHeaderCell("Genomic event", 1) },
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "treatmentApproach");
@@ -189,13 +199,11 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                  float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[]{20, 50, 170, 50, 80, 170},
-                new Cell[]{tableUtil.createHeaderCell("nct ID", 2), tableUtil.createHeaderCell("Trial", 1),
-                        tableUtil.createHeaderCell("Treatment", 1),
-                        tableUtil.createHeaderCell("Match", 1),
-                        tableUtil.createHeaderCell("Genomic event", 1)},
+    public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 50, 170, 50, 80, 170 },
+                new Cell[] { tableUtil.createHeaderCell("nct ID", 2), tableUtil.createHeaderCell("Trial", 1),
+                        tableUtil.createHeaderCell("Treatment", 1), tableUtil.createHeaderCell("Match", 1),
+                        tableUtil.createHeaderCell("Genomic event", 1) },
                 contentWidth);
 
         treatmentTable = addDataIntoTable(treatmentTable, treatmentMap, title, "trial");
@@ -204,7 +212,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     private Table addDataIntoTable(@NotNull Table treatmentTable, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                   @NotNull String title, @NotNull String evidenceType) {
+            @NotNull String title, @NotNull String evidenceType) {
         boolean hasEvidence = false;
         for (EvidenceLevel level : EvidenceLevel.values()) {
             if (evidenceType.equals("trial")) {
@@ -236,7 +244,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private boolean addEvidenceWithMaxLevelStudy(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> trialMap,
-                                                 @NotNull EvidenceLevel allowedHighestLevel) {
+            @NotNull EvidenceLevel allowedHighestLevel) {
         Set<String> sortedTrials = Sets.newTreeSet(trialMap.keySet());
         boolean hasEvidence = false;
 
@@ -245,7 +253,8 @@ public class ClinicalEvidenceFunctions {
             if (allowedHighestLevel == highestEvidence(trialMap.get(trial))) {
                 boolean addTrial = true;
 
-                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream().collect(Collectors.groupingBy(evidence -> String.join(" | ", evidence.clinicalTrial().therapyNames())));
+                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream()
+                        .collect(Collectors.groupingBy(evidence -> String.join(" | ", evidence.clinicalTrial().therapyNames())));
                 Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
                 for (String treatment : sortedTreatments) {
                     boolean addTreatment = true;
@@ -274,8 +283,8 @@ public class ClinicalEvidenceFunctions {
                         if (addTrial) {
                             table.addCell(tableUtil.createContentCellRowSpan(createTreatmentIcons(trial), evidencesTrials.size())
                                     .setVerticalAlignment(VerticalAlignment.TOP));
-                            table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createClinicalTrialLink(
-                                    clinicalTrial.studyNctId()), evidencesTrials.size()));
+                            table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createClinicalTrialLink(clinicalTrial.studyNctId()),
+                                    evidencesTrials.size()));
                             String shortenTrial = EvidenceItems.shortenTrialName(clinicalTrial.studyTitle());
                             table.addCell(tableUtil.createContentCellRowSpan(shortenTrial, evidencesTrials.size()));
                             addTrial = false;
@@ -299,7 +308,7 @@ public class ClinicalEvidenceFunctions {
     }
 
     private boolean addEvidenceWithMaxLevel(@NotNull Table table, @NotNull Map<String, List<ProtectEvidence>> treatmentMap,
-                                            @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
+            @NotNull EvidenceLevel allowedHighestLevel, @NotNull String evidenceType) {
         Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
         boolean hasEvidence = false;
         for (String treatment : sortedTreatments) {
@@ -475,10 +484,10 @@ public class ClinicalEvidenceFunctions {
                 .add("If the evidence matching is based on an amplification, evidence that corresponds with ‘overexpression’ of that gene "
                         + "is also matched. The same rule applies for deletions and 'underexpression'.\n")
                 .addStyle(reportResources.subTextStyle())
-                .add("For MMR genes (MSH6, MSH2, MLH1, PMS2, EPCAM) only: If the evidence matching is based on an amplification, evidence that corresponds with ‘positive’ " +
-                        "expression of that gene, mRNA, and protein is also matched. If the evidence matching is based on an " +
-                        "inactivation or deletions, evidence that corresponds with ‘negative’ expression of that gene, mRNA, or protein is" +
-                        " also matched. ")
+                .add("For MMR genes (MSH6, MSH2, MLH1, PMS2, EPCAM) only: If the evidence matching is based on an amplification, evidence that corresponds with ‘positive’ "
+                        + "expression of that gene, mRNA, and protein is also matched. If the evidence matching is based on an "
+                        + "inactivation or deletions, evidence that corresponds with ‘negative’ expression of that gene, mRNA, or protein is"
+                        + " also matched. ")
                 .addStyle(reportResources.subTextStyle());
     }
 

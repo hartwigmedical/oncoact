@@ -1,5 +1,12 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Objects;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -9,13 +16,9 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.Assert.*;
 
 public class CopyNumberEvidenceTest {
 
@@ -31,12 +34,19 @@ public class CopyNumberEvidenceTest {
 
         ActionableGene reportablePresenceProtein = TestServeFactory.geneBuilder().gene("MLH1").event(GeneEvent.PRESENCE_OF_PROTEIN).build();
         ActionableGene reportableAbsenceProtein = TestServeFactory.geneBuilder().gene("KRAS").event(GeneEvent.ABSENCE_OF_PROTEIN).build();
-        ActionableGene unreportablePresenceProtein = TestServeFactory.geneBuilder().gene("BRAF").event(GeneEvent.PRESENCE_OF_PROTEIN).build();
+        ActionableGene unreportablePresenceProtein =
+                TestServeFactory.geneBuilder().gene("BRAF").event(GeneEvent.PRESENCE_OF_PROTEIN).build();
         ActionableGene unreportableAbsenceProtein = TestServeFactory.geneBuilder().gene("MLH2").event(GeneEvent.ABSENCE_OF_PROTEIN).build();
 
-        CopyNumberEvidence copyNumberEvidence =
-                new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(amp, inactivation, fusion, deletion,
-                        reportablePresenceProtein, reportableAbsenceProtein, unreportablePresenceProtein, unreportableAbsenceProtein));
+        CopyNumberEvidence copyNumberEvidence = new CopyNumberEvidence(TestPersonalizedEvidenceFactory.create(),
+                Lists.newArrayList(amp,
+                        inactivation,
+                        fusion,
+                        deletion,
+                        reportablePresenceProtein,
+                        reportableAbsenceProtein,
+                        unreportablePresenceProtein,
+                        unreportableAbsenceProtein));
 
         PurpleGainLoss reportableAmp =
                 TestPurpleFactory.gainLossBuilder().gene(geneAmp).interpretation(CopyNumberInterpretation.FULL_GAIN).build();
@@ -54,7 +64,13 @@ public class CopyNumberEvidenceTest {
                 TestPurpleFactory.gainLossBuilder().gene("BRAF").interpretation(CopyNumberInterpretation.FULL_GAIN).build();
         PurpleGainLoss reportableLossMSI2 =
                 TestPurpleFactory.gainLossBuilder().gene("MLH2").interpretation(CopyNumberInterpretation.FULL_LOSS).build();
-        List<PurpleGainLoss> reportableSomaticGainLosses = Lists.newArrayList(reportableAmp, reportableDel, ampOnOtherGene, reportableMSIGeneLoss, reportableAmpMSI, reportableMSIGeneAmp2, reportableLossMSI2);
+        List<PurpleGainLoss> reportableSomaticGainLosses = Lists.newArrayList(reportableAmp,
+                reportableDel,
+                ampOnOtherGene,
+                reportableMSIGeneLoss,
+                reportableAmpMSI,
+                reportableMSIGeneAmp2,
+                reportableLossMSI2);
         List<PurpleGainLoss> reportableGermlineGainLosses = Lists.newArrayList(reportableGermlineDel);
         List<PurpleGainLoss> unreportedGainLosses = Lists.newArrayList();
         List<PurpleGainLoss> unreportedGermlineGainLosses = Lists.newArrayList();
@@ -64,7 +80,8 @@ public class CopyNumberEvidenceTest {
                 reportableGermlineGainLosses,
                 unreportedGermlineGainLosses,
                 Lists.newArrayList(),
-                Lists.newArrayList(), null);
+                Lists.newArrayList(),
+                null);
 
         assertEquals(7, evidences.size());
 
@@ -102,7 +119,6 @@ public class CopyNumberEvidenceTest {
         assertFalse(absenceOfProteinUnreport.reported());
         assertEquals(absenceOfProteinUnreport.sources().size(), 1);
         assertEquals(EvidenceType.ABSENCE_OF_PROTEIN, absenceOfProteinUnreport.sources().iterator().next().evidenceType());
-
 
     }
 

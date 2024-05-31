@@ -1,5 +1,13 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
@@ -16,14 +24,9 @@ import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class VariantEvidenceTest {
 
@@ -78,7 +81,8 @@ public class VariantEvidenceTest {
         List<ProtectEvidence> evidences = variantEvidence.evidence(Sets.newHashSet(variantMatch, variantWrongAlt, variantWrongPosition),
                 Sets.newHashSet(),
                 Sets.newHashSet(unreportedMatch),
-                Sets.newHashSet(), null);
+                Sets.newHashSet(),
+                null);
 
         assertEquals(2, evidences.size());
 
@@ -185,7 +189,8 @@ public class VariantEvidenceTest {
                 variantOutsideRange,
                 variantWrongGene,
                 variantWrongMutationType);
-        List<ProtectEvidence> evidences = variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), null);
+        List<ProtectEvidence> evidences =
+                variantEvidence.evidence(reportable, Sets.newHashSet(), Sets.newHashSet(), Sets.newHashSet(), null);
 
         assertEquals(3, evidences.size());
 
@@ -216,10 +221,16 @@ public class VariantEvidenceTest {
 
         ActionableGene actionableGene1 =
                 TestServeFactory.geneBuilder().gene(activatedGene).event(GeneEvent.ACTIVATION).source(Knowledgebase.CKB_EVIDENCE).build();
-        ActionableGene actionableGene2 =
-                TestServeFactory.geneBuilder().gene(inactivatedGene).event(GeneEvent.INACTIVATION).source(Knowledgebase.CKB_EVIDENCE).build();
-        ActionableGene actionableGene3 =
-                TestServeFactory.geneBuilder().gene(amplifiedGene).event(GeneEvent.AMPLIFICATION).source(Knowledgebase.CKB_EVIDENCE).build();
+        ActionableGene actionableGene2 = TestServeFactory.geneBuilder()
+                .gene(inactivatedGene)
+                .event(GeneEvent.INACTIVATION)
+                .source(Knowledgebase.CKB_EVIDENCE)
+                .build();
+        ActionableGene actionableGene3 = TestServeFactory.geneBuilder()
+                .gene(amplifiedGene)
+                .event(GeneEvent.AMPLIFICATION)
+                .source(Knowledgebase.CKB_EVIDENCE)
+                .build();
         ActionableGene actionableGene4 =
                 TestServeFactory.geneBuilder().gene("MLH1").event(GeneEvent.ABSENCE_OF_PROTEIN).source(Knowledgebase.CKB_EVIDENCE).build();
         ActionableGene actionableGene5 =
@@ -238,8 +249,12 @@ public class VariantEvidenceTest {
         ReportableVariant driverMSI = withGeneAndDriverLikelihood("MLH1", 1D);
         ReportableVariant variantKras = withGeneAndDriverLikelihood("KRAS", 1D);
 
-        Set<ReportableVariant> reportableVariants =
-                Sets.newHashSet(driverOnActivatedGene, passengerOnInactivatedGene, driverOnAmplifiedGene, driverOnOtherGene, driverMSI, variantKras);
+        Set<ReportableVariant> reportableVariants = Sets.newHashSet(driverOnActivatedGene,
+                passengerOnInactivatedGene,
+                driverOnAmplifiedGene,
+                driverOnOtherGene,
+                driverMSI,
+                variantKras);
 
         Set<PurpleVariant> unreportedVariants = Sets.newHashSet(TestPurpleFactory.variantBuilder()
                 .reported(false)

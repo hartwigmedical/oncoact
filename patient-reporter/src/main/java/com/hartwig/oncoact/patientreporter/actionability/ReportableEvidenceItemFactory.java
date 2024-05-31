@@ -1,15 +1,16 @@
 package com.hartwig.oncoact.patientreporter.actionability;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.Knowledgebase;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
 public final class ReportableEvidenceItemFactory {
 

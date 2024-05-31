@@ -1,17 +1,22 @@
 package com.hartwig.oncoact.protect.algo;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.hartwig.oncoact.protect.*;
-import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.Knowledgebase;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.hartwig.oncoact.protect.EvidenceComparator;
+import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
+import com.hartwig.oncoact.protect.KnowledgebaseSource;
+import com.hartwig.oncoact.protect.KnowledgebaseSourceComparator;
+import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.Knowledgebase;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class EvidenceReportingFunctions {
 
@@ -44,10 +49,7 @@ public final class EvidenceReportingFunctions {
                         .sources(knowledgebaseSourceSort)
                         .build());
             } else {
-                result.add(ImmutableProtectEvidence.builder()
-                        .from(evidence)
-                        .sources(knowledgebaseSourceSort)
-                        .build());
+                result.add(ImmutableProtectEvidence.builder().from(evidence).sources(knowledgebaseSourceSort).build());
             }
         }
         return result;
@@ -111,7 +113,7 @@ public final class EvidenceReportingFunctions {
     }
 
     private static boolean reportEvidence(@NotNull ProtectEvidence evidence, @Nullable EvidenceLevel highestOnLabel,
-                                          @Nullable EvidenceLevel highestOffLabel) {
+            @Nullable EvidenceLevel highestOffLabel) {
         if (evidence.reported()) {
             if (evidence.onLabel()) {
                 assert highestOnLabel != null;

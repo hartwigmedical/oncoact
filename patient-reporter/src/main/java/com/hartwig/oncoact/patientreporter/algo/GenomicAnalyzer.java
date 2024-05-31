@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.patientreporter.algo;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -28,13 +32,10 @@ import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
 import com.hartwig.oncoact.variant.ReportableVariantSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class GenomicAnalyzer {
 
@@ -47,14 +48,14 @@ public class GenomicAnalyzer {
     private final ClinicalTranscriptsModel clinicalTranscriptsModel;
 
     public GenomicAnalyzer(@NotNull final GermlineReportingModel germlineReportingModel,
-                           @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
+            @NotNull final ClinicalTranscriptsModel clinicalTranscriptsModel) {
         this.germlineReportingModel = germlineReportingModel;
         this.clinicalTranscriptsModel = clinicalTranscriptsModel;
     }
 
     @NotNull
     public GenomicAnalysis run(@NotNull OrangeRecord orange, @NotNull List<ProtectEvidence> reportableEvidences,
-                               boolean flagGermlineOnReport) {
+            boolean flagGermlineOnReport) {
 
         // variants
         Set<ReportableVariant> reportableGermlineVariants =
@@ -148,7 +149,7 @@ public class GenomicAnalyzer {
 
     @NotNull
     private static Map<ReportableVariant, Boolean> determineNotify(@NotNull List<ReportableVariant> reportableVariants,
-                                                                   @NotNull GermlineReportingModel germlineReportingModel, boolean flagGermlineOnReport) {
+            @NotNull GermlineReportingModel germlineReportingModel, boolean flagGermlineOnReport) {
         Map<ReportableVariant, Boolean> notifyGermlineStatusPerVariant = Maps.newHashMap();
 
         Set<String> germlineGenesWithIndependentHits = Sets.newHashSet();
@@ -172,7 +173,7 @@ public class GenomicAnalyzer {
 
     @VisibleForTesting
     static boolean hasOtherGermlineVariantWithDifferentPhaseSet(@NotNull List<ReportableVariant> variants,
-                                                                @NotNull ReportableVariant variantToCompareWith) {
+            @NotNull ReportableVariant variantToCompareWith) {
         Integer phaseSetToCompareWith = variantToCompareWith.localPhaseSet();
         for (ReportableVariant variant : variants) {
             if (!variant.equals(variantToCompareWith) && variant.gene().equals(variantToCompareWith.gene()) && (

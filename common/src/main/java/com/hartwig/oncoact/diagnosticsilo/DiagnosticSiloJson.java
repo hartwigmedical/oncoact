@@ -1,12 +1,13 @@
 package com.hartwig.oncoact.diagnosticsilo;
 
-import com.hartwig.silo.diagnostic.DiagnosticSiloClient;
-import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import com.hartwig.silo.diagnostic.DiagnosticSiloClient;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
+import org.jetbrains.annotations.Nullable;
 
 public final class DiagnosticSiloJson {
 

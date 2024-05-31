@@ -1,18 +1,29 @@
 package com.hartwig.oncoact.protect;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.util.CsvFileReader;
-import com.hartwig.serve.datamodel.*;
+import com.hartwig.serve.datamodel.ClinicalTrial;
+import com.hartwig.serve.datamodel.EvidenceDirection;
+import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
+import com.hartwig.serve.datamodel.ImmutableTreatment;
+import com.hartwig.serve.datamodel.Knowledgebase;
+import com.hartwig.serve.datamodel.Treatment;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
 
 public final class ProtectEvidenceFile {
 
@@ -111,11 +122,17 @@ public final class ProtectEvidenceFile {
                 .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyTitle() : null)
                 .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null)
                 .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null)
-                .add(evidence.clinicalTrial() != null ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy()) : null)
+                .add(evidence.clinicalTrial() != null
+                        ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy())
+                        : null)
                 .add(String.valueOf(evidence.matchGender()))
                 .add(therapyName(evidence.clinicalTrial(), evidence.treatment()))
-                .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass()) : null)
-                .add(evidence.treatment() != null ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy()) : null)
+                .add(evidence.treatment() != null
+                        ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass())
+                        : null)
+                .add(evidence.treatment() != null
+                        ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy())
+                        : null)
                 .add(String.valueOf(evidence.onLabel()))
                 .add(evidence.level().toString())
                 .add(evidence.direction().toString())
@@ -146,11 +163,10 @@ public final class ProtectEvidenceFile {
                 .matchGender(Boolean.parseBoolean(values[fields.get("matchGender")]))
                 .treatment(ImmutableTreatment.builder()
                         .name(values[fields.get("treatment")])
-                        .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(
-                                values[fields.get("treatmentApproachesDrugClass")]) : Sets.newHashSet())
-                        .treatmentApproachesTherapy(fields.containsKey("treatmentApproachesTherapy")
-                                ? stringToSet(values[fields.get("treatmentApproachesTherapy")])
-                                : Sets.newHashSet())
+                        .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(values[fields.get(
+                                "treatmentApproachesDrugClass")]) : Sets.newHashSet())
+                        .treatmentApproachesTherapy(fields.containsKey("treatmentApproachesTherapy") ? stringToSet(values[fields.get(
+                                "treatmentApproachesTherapy")]) : Sets.newHashSet())
                         .build())
                 .onLabel(Boolean.parseBoolean(values[fields.get("onLabel")]))
                 .level(EvidenceLevel.valueOf(values[fields.get("level")]))

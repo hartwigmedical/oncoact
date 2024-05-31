@@ -1,5 +1,13 @@
 package com.hartwig.oncoact.rose.conclusion;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -13,7 +21,12 @@ import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.ImmutableLinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusion;
 import com.hartwig.hmftools.datamodel.linx.LinxFusionType;
-import com.hartwig.hmftools.datamodel.purple.*;
+import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
+import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
+import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
+import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
+import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
@@ -30,18 +43,18 @@ import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.orange.virus.TestVirusInterpreterFactory;
 import com.hartwig.oncoact.rose.ImmutableRoseData;
 import com.hartwig.oncoact.rose.RoseData;
-import com.hartwig.oncoact.rose.actionability.*;
+import com.hartwig.oncoact.rose.actionability.ActionabilityEntry;
+import com.hartwig.oncoact.rose.actionability.ActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.Condition;
+import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityEntry;
+import com.hartwig.oncoact.rose.actionability.ImmutableActionabilityKey;
+import com.hartwig.oncoact.rose.actionability.TypeAlteration;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.TestReportableVariantFactory;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class ConclusionAlgoTest {
 
@@ -319,7 +332,12 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, PurpleTumorMutationalStatus.HIGH, 17, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion,
+                PurpleTumorMutationalStatus.HIGH,
+                17,
+                actionabilityMap,
+                Sets.newHashSet(),
+                Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
         assertEquals(conclusion.get(0), "- TMB (17) TMB");
@@ -331,7 +349,12 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, PurpleTumorMutationalStatus.LOW, 9, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion,
+                PurpleTumorMutationalStatus.LOW,
+                9,
+                actionabilityMap,
+                Sets.newHashSet(),
+                Sets.newHashSet());
         assertEquals(0, conclusion.size());
     }
 
@@ -397,15 +420,15 @@ public class ConclusionAlgoTest {
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> create(@NotNull String gene, @NotNull TypeAlteration typeAlteration,
-                                                                    @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
+            @NotNull String match, @NotNull Condition condition, @NotNull String conclusion) {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap = Maps.newHashMap();
         return append(actionabilityMap, gene, typeAlteration, match, condition, conclusion);
     }
 
     @NotNull
     private static Map<ActionabilityKey, ActionabilityEntry> append(@NotNull Map<ActionabilityKey, ActionabilityEntry> actionabilityMap,
-                                                                    @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
-                                                                    @NotNull String conclusion) {
+            @NotNull String gene, @NotNull TypeAlteration typeAlteration, @NotNull String match, @NotNull Condition condition,
+            @NotNull String conclusion) {
         ActionabilityKey key = ImmutableActionabilityKey.builder().match(gene).type(typeAlteration).build();
         ActionabilityEntry entry =
                 ImmutableActionabilityEntry.builder().match(match).type(typeAlteration).condition(condition).conclusion(conclusion).build();

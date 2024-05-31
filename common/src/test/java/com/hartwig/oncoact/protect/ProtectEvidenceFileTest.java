@@ -1,17 +1,18 @@
 package com.hartwig.oncoact.protect;
 
-import com.google.common.collect.Sets;
-import com.google.common.io.Resources;
-import com.hartwig.serve.datamodel.Knowledgebase;
-import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.Sets;
+import com.google.common.io.Resources;
+import com.hartwig.serve.datamodel.Knowledgebase;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.Test;
 
 public class ProtectEvidenceFileTest {
 
@@ -110,7 +111,7 @@ public class ProtectEvidenceFileTest {
 
     @NotNull
     private static ProtectEvidence findByTreatmentAndEvent(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String treatment,
-                                                           @NotNull String event) {
+            @NotNull String event) {
         for (ProtectEvidence evidence : evidences) {
             if (evidence.treatment().name().equals(treatment) && evidence.event().equals(event)) {
                 return evidence;

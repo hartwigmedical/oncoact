@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
@@ -9,11 +12,9 @@ import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class VirusEvidence {
 
@@ -26,7 +27,7 @@ public class VirusEvidence {
     private final List<ActionableCharacteristic> actionableViruses;
 
     public VirusEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                         @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
+            @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableViruses = actionableCharacteristics.stream()
                 .filter(x -> x.type() == TumorCharacteristicType.HPV_POSITIVE || x.type() == TumorCharacteristicType.EBV_POSITIVE)
@@ -34,7 +35,8 @@ public class VirusEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreter, @Nullable PatientInformationResponse diagnosticPatientData) {
+    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreter,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<AnnotatedVirus> hpv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.HPV);
         List<AnnotatedVirus> ebv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.EBV);
 
@@ -81,7 +83,7 @@ public class VirusEvidence {
 
     @NotNull
     private static List<AnnotatedVirus> virusesWithInterpretation(@NotNull VirusInterpreterData virusInterpreter,
-                                                                  @NotNull VirusInterpretation interpretationToInclude) {
+            @NotNull VirusInterpretation interpretationToInclude) {
         List<AnnotatedVirus> virusesWithInterpretation = Lists.newArrayList();
         for (AnnotatedVirus virus : virusInterpreter.reportableViruses()) {
             if (virus.interpretation() == interpretationToInclude) {

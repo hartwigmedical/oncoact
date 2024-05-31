@@ -1,18 +1,26 @@
 package com.hartwig.oncoact.protect.algo;
 
+import static com.hartwig.oncoact.protect.TestProtectFactory.builder;
+import static com.hartwig.oncoact.protect.algo.EvidenceReportingFunctions.highestReportableLevel;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.oncoact.protect.TestProtectFactory;
-import com.hartwig.serve.datamodel.*;
+import com.hartwig.serve.datamodel.EvidenceDirection;
+import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
+import com.hartwig.serve.datamodel.ImmutableTreatment;
+import com.hartwig.serve.datamodel.Knowledgebase;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
-import java.util.List;
-
-import static com.hartwig.oncoact.protect.TestProtectFactory.builder;
-import static com.hartwig.oncoact.protect.algo.EvidenceReportingFunctions.highestReportableLevel;
-import static org.junit.Assert.*;
 
 public class EvidenceReportingFunctionsTest {
 
@@ -66,7 +74,8 @@ public class EvidenceReportingFunctionsTest {
                         .clinicalTrial(ImmutableClinicalTrial.builder()
                                 .studyNctId("nct1")
                                 .studyTitle("title")
-                                .countriesOfStudy(Sets.newHashSet("netherlands")).build())
+                                .countriesOfStudy(Sets.newHashSet("netherlands"))
+                                .build())
                         .treatment(ImmutableTreatment.builder()
                                 .name("treatment A")
                                 .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
@@ -220,7 +229,8 @@ public class EvidenceReportingFunctionsTest {
                 .clinicalTrial(ImmutableClinicalTrial.builder()
                         .studyNctId("nct1")
                         .studyTitle("title")
-                        .countriesOfStudy(Sets.newHashSet("netherlands")).build())
+                        .countriesOfStudy(Sets.newHashSet("netherlands"))
+                        .build())
                 .sources(Sets.newHashSet(TestProtectFactory.createSource(Knowledgebase.CKB_EVIDENCE)))
                 .build();
     }

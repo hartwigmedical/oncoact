@@ -1,14 +1,15 @@
 package com.hartwig.oncoact.patientreporter.cfreport.data;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.Set;
 
 public final class EvidenceItems {
 
@@ -23,7 +24,8 @@ public final class EvidenceItems {
     public static String shortenTrialName(@NotNull String trialName) {
 
         if (trialName.length() > 150) {
-            return StringUtils.substringBeforeLast(trialName.substring(0, 85), " ") + " ... " + StringUtils.substringAfter(trialName.substring(trialName.length() - 85), " ");
+            return StringUtils.substringBeforeLast(trialName.substring(0, 85), " ") + " ... "
+                    + StringUtils.substringAfter(trialName.substring(trialName.length() - 85), " ");
         } else {
             return trialName;
         }
@@ -92,9 +94,8 @@ public final class EvidenceItems {
         Paragraph paragraphSources = new Paragraph();
         String link = "https://clinicaltrials.gov/study/" + nctId;
 
-        paragraphSources.add(new Text(nctId).addStyle(reportResources.urlStyle())
-                .setAction(PdfAction.createURI(link))).setFixedLeading(ReportResources.BODY_TEXT_LEADING);
-
+        paragraphSources.add(new Text(nctId).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING);
 
         return paragraphSources;
     }

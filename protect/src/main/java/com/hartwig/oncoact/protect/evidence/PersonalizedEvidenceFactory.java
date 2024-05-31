@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Objects;
+import java.util.Set;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.doid.DoidParents;
@@ -18,13 +21,11 @@ import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.Set;
 
 public class PersonalizedEvidenceFactory {
 
@@ -42,29 +43,35 @@ public class PersonalizedEvidenceFactory {
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder somaticEvidence(@NotNull ActionableEvent event, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+    public ImmutableProtectEvidence.Builder somaticEvidence(@NotNull ActionableEvent event,
+            @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
         return evidenceBuilder(event, diagnosticPatientData, report).germline(false);
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder somaticReportableEvidence(@NotNull ActionableEvent event, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+    public ImmutableProtectEvidence.Builder somaticReportableEvidence(@NotNull ActionableEvent event,
+            @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
         return evidenceBuilder(event, diagnosticPatientData, report).germline(false);
     }
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilderRange(@NotNull ActionableEvent actionable, @Nullable String range,
-                                                                 @Nullable Integer rangeRank, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
-        return evidenceBuilder(actionable, Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)), diagnosticPatientData, report);
+            @Nullable Integer rangeRank, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+        return evidenceBuilder(actionable,
+                Sets.newHashSet(resolveProtectSource(actionable, range, rangeRank)),
+                diagnosticPatientData,
+                report);
     }
 
     @NotNull
-    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+    public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
+            @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
         return evidenceBuilderRange(actionable, null, null, diagnosticPatientData, report);
     }
 
     @NotNull
     public ImmutableProtectEvidence.Builder evidenceBuilder(@NotNull ActionableEvent actionable,
-                                                            @NotNull Set<KnowledgebaseSource> protectSource, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
+            @NotNull Set<KnowledgebaseSource> protectSource, @Nullable PatientInformationResponse diagnosticPatientData, boolean report) {
         ClinicalTrial clinicalTrial = extractOptionalClinicalTrial(actionable);
         String genderCkb = clinicalTrial != null ? clinicalTrial.gender() : null;
         String diagnosticGender = diagnosticPatientData != null ? diagnosticPatientData.getGender() : null;
@@ -121,9 +128,8 @@ public class PersonalizedEvidenceFactory {
         return null;
     }
 
-
     public boolean isOnLabel(@NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
-                             @NotNull String treatment) {
+            @NotNull String treatment) {
         return patientTumorDoids.contains(applicableCancerType.doid());
     }
 
@@ -162,7 +168,7 @@ public class PersonalizedEvidenceFactory {
 
     @NotNull
     private static KnowledgebaseSource resolveProtectSource(@NotNull ActionableEvent actionable, @Nullable String range,
-                                                            @Nullable Integer rangeRank) {
+            @Nullable Integer rangeRank) {
         return ImmutableKnowledgebaseSource.builder()
                 .name(actionable.source())
                 .sourceEvent(actionable.sourceEvent())

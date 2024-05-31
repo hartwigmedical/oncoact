@@ -1,13 +1,14 @@
 package com.hartwig.oncoact.protect.algo;
 
+import java.util.Objects;
+import java.util.Set;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.Set;
 
 class EvidenceKey {
 
@@ -41,7 +42,7 @@ class EvidenceKey {
     }
 
     private EvidenceKey(@Nullable final String gene, @NotNull final String event, @NotNull final String treatment,
-                        @NotNull Set<String> treatmentApproachesDrugClass, @NotNull Set<String> treatmentApproachesTherapy) {
+            @NotNull Set<String> treatmentApproachesDrugClass, @NotNull Set<String> treatmentApproachesTherapy) {
         this.gene = gene;
         this.event = event;
         this.treatment = treatment;
@@ -69,10 +70,17 @@ class EvidenceKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         EvidenceKey that = (EvidenceKey) o;
-        return Objects.equals(gene, that.gene) && Objects.equals(event, that.event) && Objects.equals(treatment, that.treatment) && Objects.equals(treatmentApproachesDrugClass, that.treatmentApproachesDrugClass) && Objects.equals(treatmentApproachesTherapy, that.treatmentApproachesTherapy);
+        return Objects.equals(gene, that.gene) && Objects.equals(event, that.event) && Objects.equals(treatment, that.treatment)
+                && Objects.equals(treatmentApproachesDrugClass, that.treatmentApproachesDrugClass) && Objects.equals(
+                treatmentApproachesTherapy,
+                that.treatmentApproachesTherapy);
     }
 
     @Override
@@ -82,12 +90,8 @@ class EvidenceKey {
 
     @Override
     public String toString() {
-        return "EvidenceKey{" +
-                "gene='" + gene + '\'' +
-                ", event='" + event + '\'' +
-                ", treatment='" + treatment + '\'' +
-                ", treatmentApproachesDrugClass=" + treatmentApproachesDrugClass +
-                ", treatmentApproachesTherapy=" + treatmentApproachesTherapy +
-                '}';
+        return "EvidenceKey{" + "gene='" + gene + '\'' + ", event='" + event + '\'' + ", treatment='" + treatment + '\''
+                + ", treatmentApproachesDrugClass=" + treatmentApproachesDrugClass + ", treatmentApproachesTherapy="
+                + treatmentApproachesTherapy + '}';
     }
 }

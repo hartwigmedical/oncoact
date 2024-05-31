@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
 import com.hartwig.hmftools.datamodel.linx.LinxBreakend;
@@ -14,12 +18,9 @@ import com.hartwig.oncoact.wildtype.WildTypeGene;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class WildTypeEvidence {
 
@@ -31,17 +32,17 @@ public class WildTypeEvidence {
     private final List<DriverGene> driverGenes;
 
     public WildTypeEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                            @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<DriverGene> driverGenes) {
+            @NotNull final List<ActionableGene> actionableGenes, @NotNull final List<DriverGene> driverGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream().filter(x -> x.event() == GeneEvent.WILD_TYPE).collect(Collectors.toList());
         this.driverGenes = driverGenes;
     }
 
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermlineVariants,
-                                          @NotNull Collection<ReportableVariant> reportableSomaticVariants,
-                                          @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses, @NotNull Collection<LinxFusion> reportableFusions,
-                                          @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
-                                          @NotNull Collection<PurpleQCStatus> purpleQCStatus, @Nullable PatientInformationResponse diagnosticPatientData) {
+            @NotNull Collection<ReportableVariant> reportableSomaticVariants,
+            @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses, @NotNull Collection<LinxFusion> reportableFusions,
+            @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
+            @NotNull Collection<PurpleQCStatus> purpleQCStatus, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         List<WildTypeGene> wildTypeGenes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,

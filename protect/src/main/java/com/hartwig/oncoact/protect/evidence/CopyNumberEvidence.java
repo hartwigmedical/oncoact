@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.CopyNumberInterpretation;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
@@ -13,11 +16,9 @@ import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class CopyNumberEvidence {
 
@@ -27,7 +28,7 @@ public class CopyNumberEvidence {
     private final List<ActionableGene> actionableGenes;
 
     public CopyNumberEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                              @NotNull final List<ActionableGene> actionableGenes) {
+            @NotNull final List<ActionableGene> actionableGenes) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
@@ -39,9 +40,10 @@ public class CopyNumberEvidence {
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull List<PurpleGainLoss> reportableSomaticGainLosses,
-                                          @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
-                                          @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> reportableGermlineLOHs,
-                                          @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities, @Nullable PatientInformationResponse diagnosticPatientData) {
+            @NotNull List<PurpleGainLoss> allSomaticGainLosses, @Nullable List<PurpleGainLoss> reportableGermlineLosses,
+            @Nullable List<PurpleGainLoss> allGermlineLosses, @Nullable List<PurpleLossOfHeterozygosity> reportableGermlineLOHs,
+            @Nullable List<PurpleLossOfHeterozygosity> allGermlineLossOfHeterozygosities,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         List<PurpleGainLoss> allReportableGainsLosses = ListUtil.mergeListsDistinct(reportableSomaticGainLosses,
@@ -65,7 +67,8 @@ public class CopyNumberEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull PurpleGainLoss gainLoss, boolean report, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private List<ProtectEvidence> evidence(@NotNull PurpleGainLoss gainLoss, boolean report,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {

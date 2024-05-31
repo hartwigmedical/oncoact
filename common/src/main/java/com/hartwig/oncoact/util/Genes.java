@@ -1,8 +1,8 @@
 package com.hartwig.oncoact.util;
 
-import com.google.common.collect.Sets;
-
 import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 public final class Genes {
 

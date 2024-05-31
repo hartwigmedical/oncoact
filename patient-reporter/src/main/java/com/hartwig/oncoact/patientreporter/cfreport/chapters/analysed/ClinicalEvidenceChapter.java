@@ -1,5 +1,8 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.collect.Lists;
 import com.hartwig.oncoact.patientreporter.algo.AnalysedPatientReport;
 import com.hartwig.oncoact.patientreporter.algo.GenomicAnalysis;
@@ -7,11 +10,9 @@ import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
 import com.hartwig.oncoact.patientreporter.cfreport.chapters.ReportChapter;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.itextpdf.layout.Document;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Map;
 
 public class ClinicalEvidenceChapter implements ReportChapter {
 
@@ -52,11 +53,11 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         addTreatmentSection(document, allEvidences);
         document.add(clinicalEvidenceFunctions.noteEvidence());
         addTrialSection(document, reportedStudies);
-        document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate " +
-                "genomic events for potential clinical study eligibility. Please note that clinical study eligibility " +
-                "depends on multiple patient and tumor characteristics of which only the genomic events are considered " +
-                "in this report. Therefore, although a study is shown, the patient may still not be eligible. " +
-                "When the information is available, clinical studies are filtered on gender."));
+        document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate "
+                + "genomic events for potential clinical study eligibility. Please note that clinical study eligibility "
+                + "depends on multiple patient and tumor characteristics of which only the genomic events are considered "
+                + "in this report. Therefore, although a study is shown, the patient may still not be eligible. "
+                + "When the information is available, clinical studies are filtered on gender."));
 
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }

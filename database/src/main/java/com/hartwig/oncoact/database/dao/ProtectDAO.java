@@ -1,19 +1,24 @@
 package com.hartwig.oncoact.database.dao;
 
+import static com.hartwig.oncoact.database.Tables.PROTECT;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringJoiner;
+
 import com.google.common.collect.Iterables;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.Treatment;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
 import org.jooq.InsertValuesStepN;
-
-import java.sql.Timestamp;
-import java.util.*;
-
-import static com.hartwig.oncoact.database.Tables.PROTECT;
 
 @SuppressWarnings("rawtypes")
 class ProtectDAO {
@@ -55,7 +60,6 @@ class ProtectDAO {
         return joiner.toString();
     }
 
-
     void write(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
         deleteEvidenceForSample(sample);
 
@@ -95,7 +99,7 @@ class ProtectDAO {
     }
 
     private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStepN inserter, @NotNull String sample,
-                                  @NotNull ProtectEvidence evidence) {
+            @NotNull ProtectEvidence evidence) {
         for (KnowledgebaseSource source : evidence.sources()) {
             StringJoiner sourceUrlJoiner = new StringJoiner(",");
             for (String sourceUrl : source.sourceUrls()) {
@@ -123,8 +127,10 @@ class ProtectDAO {
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy() : null,
                     evidence.matchGender(),
                     therapyName(evidence.clinicalTrial(), evidence.treatment()),
-                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass()) : null,
-                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy()) : null,
+                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
+                            .treatmentApproachesDrugClass()) : null,
+                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
+                            .treatmentApproachesTherapy()) : null,
                     evidence.onLabel(),
                     evidence.level().toString(),
                     evidence.direction().toString(),

@@ -1,5 +1,9 @@
 package com.hartwig.oncoact.protect.evidence;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -12,12 +16,9 @@ import com.hartwig.oncoact.protect.characteristic.CharacteristicsFunctions;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class PurpleSignatureEvidence {
 
@@ -34,14 +35,15 @@ public class PurpleSignatureEvidence {
     private final List<ActionableCharacteristic> actionableSignatures;
 
     public PurpleSignatureEvidence(@NotNull final PersonalizedEvidenceFactory personalizedEvidenceFactory,
-                                   @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
+            @NotNull final List<ActionableCharacteristic> actionableCharacteristics) {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableSignatures =
                 actionableCharacteristics.stream().filter(x -> PURPLE_CHARACTERISTICS.contains(x.type())).collect(Collectors.toList());
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
+    public List<ProtectEvidence> evidence(@NotNull PurpleCharacteristics characteristics,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableCharacteristic signature : actionableSignatures) {
             ProtectEvidence evidence;
@@ -76,7 +78,8 @@ public class PurpleSignatureEvidence {
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence evaluateMSI(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSI;
 
@@ -84,7 +87,8 @@ public class PurpleSignatureEvidence {
     }
 
     @Nullable
-    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence evaluateMSS(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
                 characteristics.microsatelliteIndelsPerMb()) : characteristics.microsatelliteStatus() == PurpleMicrosatelliteStatus.MSS;
 
@@ -92,23 +96,30 @@ public class PurpleSignatureEvidence {
     }
 
     @Nullable
-    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.HIGH;
+    private ProtectEvidence evaluateHighTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
+        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
+                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
+                characteristics.tumorMutationalBurdenPerMb())
+                : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.HIGH;
 
         return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @Nullable
-    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics, @Nullable PatientInformationResponse diagnosticPatientData) {
-        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature) ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
-                characteristics.tumorMutationalBurdenPerMb()) : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.LOW;
+    private ProtectEvidence evaluateLowTMB(@NotNull ActionableCharacteristic signature, @NotNull PurpleCharacteristics characteristics,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
+        boolean isMatch = CharacteristicsFunctions.hasExplicitCutoff(signature)
+                ? CharacteristicsFunctions.evaluateVersusCutoff(signature,
+                characteristics.tumorMutationalBurdenPerMb())
+                : characteristics.tumorMutationalBurdenStatus() == PurpleTumorMutationalStatus.LOW;
 
         return isMatch ? toEvidence(signature, diagnosticPatientData) : null;
     }
 
     @NotNull
-    private ProtectEvidence toEvidence(@NotNull ActionableCharacteristic signature, @Nullable PatientInformationResponse diagnosticPatientData) {
+    private ProtectEvidence toEvidence(@NotNull ActionableCharacteristic signature,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         ImmutableProtectEvidence.Builder builder;
         if (signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_LOAD
                 || signature.type() == TumorCharacteristicType.LOW_TUMOR_MUTATIONAL_BURDEN

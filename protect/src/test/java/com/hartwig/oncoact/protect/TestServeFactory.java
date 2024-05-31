@@ -1,7 +1,18 @@
 package com.hartwig.oncoact.protect;
 
+import java.util.Objects;
+import java.util.Set;
+
 import com.google.common.collect.Sets;
-import com.hartwig.serve.datamodel.*;
+import com.hartwig.serve.datamodel.ActionableEvent;
+import com.hartwig.serve.datamodel.CancerType;
+import com.hartwig.serve.datamodel.EvidenceDirection;
+import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableCancerType;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
+import com.hartwig.serve.datamodel.Intervention;
+import com.hartwig.serve.datamodel.Knowledgebase;
+import com.hartwig.serve.datamodel.MutationType;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -16,11 +27,9 @@ import com.hartwig.serve.datamodel.immuno.ActionableHLA;
 import com.hartwig.serve.datamodel.immuno.ImmutableActionableHLA;
 import com.hartwig.serve.datamodel.range.ActionableRange;
 import com.hartwig.serve.datamodel.range.ImmutableActionableRange;
+
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.Set;
 
 public final class TestServeFactory {
 
@@ -111,7 +120,11 @@ public final class TestServeFactory {
         return create(source,
                 "source event",
                 Sets.newHashSet(),
-                ImmutableClinicalTrial.builder().studyNctId("nct1").studyTitle("title").countriesOfStudy(Sets.newHashSet("Netherlands")).build(),
+                ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("title")
+                        .countriesOfStudy(Sets.newHashSet("Netherlands"))
+                        .build(),
                 ImmutableCancerType.builder().name(Strings.EMPTY).doid(Strings.EMPTY).build(),
                 Sets.newHashSet(),
                 EvidenceLevel.D,
@@ -121,8 +134,8 @@ public final class TestServeFactory {
 
     @NotNull
     public static ActionableEvent create(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-                                         @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
-                                         @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
+            @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+            @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
         return new ActionableEventImpl(source,
                 sourceEvent,
                 sourceUrls,
@@ -156,8 +169,8 @@ public final class TestServeFactory {
         private final Set<String> evidenceUrls;
 
         public ActionableEventImpl(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-                                   @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
-                                   @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
+                @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+                @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
             this.source = source;
             this.sourceEvent = sourceEvent;
             this.sourceUrls = sourceUrls;
@@ -225,30 +238,37 @@ public final class TestServeFactory {
 
         @Override
         public String toString() {
-            return "ActionableEventImpl{" +
-                    "source=" + source +
-                    ", sourceEvent='" + sourceEvent + '\'' +
-                    ", sourceUrls=" + sourceUrls +
-                    ", intervention=" + intervention +
-                    ", applicableCancerType=" + applicableCancerType +
-                    ", blacklistCancerTypes=" + blacklistCancerTypes +
-                    ", level=" + level +
-                    ", direction=" + direction +
-                    ", evidenceUrls=" + evidenceUrls +
-                    '}';
+            return "ActionableEventImpl{" + "source=" + source + ", sourceEvent='" + sourceEvent + '\'' + ", sourceUrls=" + sourceUrls
+                    + ", intervention=" + intervention + ", applicableCancerType=" + applicableCancerType + ", blacklistCancerTypes="
+                    + blacklistCancerTypes + ", level=" + level + ", direction=" + direction + ", evidenceUrls=" + evidenceUrls + '}';
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             ActionableEventImpl that = (ActionableEventImpl) o;
-            return source == that.source && Objects.equals(sourceEvent, that.sourceEvent) && Objects.equals(sourceUrls, that.sourceUrls) && Objects.equals(intervention, that.intervention) && Objects.equals(applicableCancerType, that.applicableCancerType) && Objects.equals(blacklistCancerTypes, that.blacklistCancerTypes) && level == that.level && direction == that.direction && Objects.equals(evidenceUrls, that.evidenceUrls);
+            return source == that.source && Objects.equals(sourceEvent, that.sourceEvent) && Objects.equals(sourceUrls, that.sourceUrls)
+                    && Objects.equals(intervention, that.intervention) && Objects.equals(applicableCancerType, that.applicableCancerType)
+                    && Objects.equals(blacklistCancerTypes, that.blacklistCancerTypes) && level == that.level && direction == that.direction
+                    && Objects.equals(evidenceUrls, that.evidenceUrls);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(source, sourceEvent, sourceUrls, intervention, applicableCancerType, blacklistCancerTypes, level, direction, evidenceUrls);
+            return Objects.hash(source,
+                    sourceEvent,
+                    sourceUrls,
+                    intervention,
+                    applicableCancerType,
+                    blacklistCancerTypes,
+                    level,
+                    direction,
+                    evidenceUrls);
         }
     }
 }
