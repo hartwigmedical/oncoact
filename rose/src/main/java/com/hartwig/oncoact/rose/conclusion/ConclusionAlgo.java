@@ -138,12 +138,10 @@ public final class ConclusionAlgo {
                 actionabilityMap,
                 oncogenic,
                 actionable);
+        conclusion.sort(Comparator.naturalOrder());  // sort list alphabetically
 
-        //sort list on alphabetically order
         generatePurityConclusion(conclusionMerged, purple.fit().purity(), purple.fit().containsTumorCells(), actionabilityMap);
         generateCUPPAConclusion(conclusionMerged, bestPrediction, actionabilityMap);
-        Comparator<String> naturalComparator = Comparator.naturalOrder();
-        conclusion.sort(naturalComparator);
         conclusionMerged.addAll(conclusion);
         generateTotalResults(conclusionMerged, actionabilityMap, oncogenic, actionable);
 
