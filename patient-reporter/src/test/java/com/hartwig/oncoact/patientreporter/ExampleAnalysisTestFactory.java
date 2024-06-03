@@ -1030,7 +1030,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600E",
-                        Sets.newHashSet("https://trial-eye.com/hmf/15589"),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
                         Sets.newHashSet())))
@@ -1054,13 +1054,13 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF ACTIVATING MUTATION",
-                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.ACTIVATION,
                                 null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF V600",
-                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.CODON_MUTATION,
                                 600,
                                 Sets.newHashSet())))
@@ -1084,7 +1084,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600",
-                        Sets.newHashSet("https://trial-eye.com/hmf/11284"),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.CODON_MUTATION,
                         600,
                         Sets.newHashSet())))
@@ -1108,13 +1108,13 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "BRAF ACTIVATING MUTATION",
-                                Sets.newHashSet("https://www.trial-eye.com/hmf/15876"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.ACTIVATION,
                                 null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.ICLUSION,
                                 "BRAF V600E",
-                                Sets.newHashSet("https://www.trial-eye.com/hmf/15876"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.HOTSPOT_MUTATION,
                                 null,
                                 Sets.newHashSet())))
@@ -1138,7 +1138,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                         "BRAF V600E",
-                        Sets.newHashSet("https://www.trial-eye.com/hmf/14995"),
+                        Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                         EvidenceType.HOTSPOT_MUTATION,
                         null,
                         Sets.newHashSet())))
@@ -1162,7 +1162,7 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "PTEN LOSS",
-                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.DELETION,
                                 null,
                                 Sets.newHashSet()),
@@ -1192,13 +1192,13 @@ public final class ExampleAnalysisTestFactory {
                 .direction(EvidenceDirection.RESPONSIVE)
                 .sources(Lists.newArrayList(createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "PTEN LOSS",
-                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
-                                EvidenceType.DELETION,
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
+                                EvidenceType.ABSENCE_OF_PROTEIN,
                                 null,
                                 Sets.newHashSet()),
                         createTestProtectSource(Knowledgebase.CKB_TRIAL,
                                 "PTEN INACTIVATION MUTATION",
-                                Sets.newHashSet("https://trial-eye.com/hmf/10299"),
+                                Sets.newHashSet("https://ckbhome.jax.org/profileResponse/advancedEvidenceFind?molecularProfileId=1186"),
                                 EvidenceType.INACTIVATION,
                                 null,
                                 Sets.newHashSet())))
