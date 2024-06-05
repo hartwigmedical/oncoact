@@ -49,7 +49,7 @@ public class ClinicalEvidenceFunctionsTest {
     }
 
     @NotNull
-    public List<ProtectEvidence> createProtectEvidenceList(@NotNull EvidenceLevel level, @NotNull EvidenceDirection direction) {
+    private List<ProtectEvidence> createProtectEvidenceList(@NotNull EvidenceLevel level, @NotNull EvidenceDirection direction) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         evidences.add(createProtectEvidence(level, direction));
         return evidences;

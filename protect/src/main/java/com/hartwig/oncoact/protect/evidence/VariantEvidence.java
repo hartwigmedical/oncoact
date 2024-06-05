@@ -122,11 +122,7 @@ public class VariantEvidence {
                 boolean report = mayReport && driverInterpretation == DriverInterpretation.HIGH;
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(gene, null);
                 if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
-                    if (Genes.MSI_GENES.contains(gene.gene())) {
-                        report = true;
-                    } else {
-                        report = false;
-                    }
+                    report = Genes.MSI_GENES.contains(gene.gene());
                 }
                 evidences.add(evidence(variant, gene, report, "gene", diagnosticPatientData));
             }

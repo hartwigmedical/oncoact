@@ -74,11 +74,7 @@ public class CopyNumberEvidence {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
                 if (type.equals(EvidenceType.PRESENCE_OF_PROTEIN) || type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
-                    if (Genes.MSI_GENES.contains(actionable.gene())) {
-                        report = true;
-                    } else {
-                        report = false;
-                    }
+                    report = Genes.MSI_GENES.contains(actionable.gene());
                 }
 
                 ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, report)

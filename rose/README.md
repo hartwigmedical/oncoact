@@ -1,7 +1,6 @@
 # Relevant Oncogenic Summary of Eligibility
 
-ROSE makes an actionability summary of the clinical relevant (for the Netherlands) genomic events and signatures as
-determined by the
+ROSE makes an actionability summary of the clinical relevant (for the Netherlands) genomic events and signatures as determined by the
 Hartwig pipeline.
 
 ## Contents
