@@ -62,13 +62,17 @@ public class ExplanationChapter implements ReportChapter {
                         "Genome Reference Consortium",
                         "https://www.ncbi.nlm.nih.gov/grc/human",
                         ").")))
-                .add(new Div().add(createParaGraphWithLinkTwo(
+                .add(new Div().add(createParaGraphWithLinkMultiple(
                         "The genes and related gene transcripts used for reporting can be downloaded from the ",
                         "resources",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        " or the OncoAct WGS specification sheet can be downloaded from ",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
                         ". In general the canonical transcripts as defined by ",
                         "https://www.ensembl.org/info/about/index.html",
-                        "Ensembl are used.")))
+                        "Ensembl",
+                        " are used.")))
                 .add(createContentDiv(new String[] {
                         "Genomic event detection in samples with lower tumor purity is less sensitive. The likelihood of failing to detect "
                                 + "potential events increases in case of a low (implied) tumor purity (< 20%).",
@@ -114,15 +118,21 @@ public class ExplanationChapter implements ReportChapter {
                         " is used to determine the pathogenicity of observed " + "germline variants."))
                 .add(createContentDiv(new String[] {
                         "When the 'tVAF', 'Biallelic', 'Hotspot' and 'Driver' are not reported for a variant, there is uncertainty "
-                                + "about the presence of the variant in the tumor." })));
+                                + "about the presence of the variant in the tumor." }))
+                .add(new Div().add(createParaGraphWithLinkAdd(
+                        "For most genes normal DNA is used as a reference and only somatic variants in tumor"
+                                + " DNA are reported. For the genes (which can be download from the ",
+                        "resources",
+                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        " or the OncoAct WGS specification sheet can be downloaded from ",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        ") both germline and somatic variants are reported because "
+                                + "they are potential therapeutic targets. In some cases, the OncoAct result may be a reason for referral to "
+                                + "a clinical geneticist for germline testing. Whether your patient's specific OncoAct result is reason to "
+                                + "consider germline testing should be discussed in a Molecular Tumor Board (multidisciplinary meeting of "
+                                + "cancer experts) with the participation of a clinical laboratory geneticist/clinical geneticist."))));
 
-        table.addCell(TableUtil.createLayoutCell(1, 8).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed gains & losses")));
@@ -141,16 +151,26 @@ public class ExplanationChapter implements ReportChapter {
                                 + "a part along the canonical transcript has < 0.5 copies is reported as a partial loss in the tumor. \n"
                                 + "Any gene with ≥  3 times the average tumor ploidy in copies along the entire canonical transcript "
                                 + "is reported as a full gain in the tumor. Any gene where only a part of the canonical transcript has ≥ 3 "
-                                + "times the average tumor ploidy in copies is reported as a partial gain in the tumor.", })));
+                                + "times the average tumor ploidy in copies is reported as a partial gain in the tumor.", }))
+                .add(new Div().add(createParaGraphWithLinkAdd("The reported loss and gains genes can be downloaded from the ",
+                        "resources",
+                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        " or the OncoAct WGS specification sheet can be downloaded from ",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "."))));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {
                         "The canonical, or otherwise longest transcript that is validly fused, is reported. " }))
-                .add(new Div().add(createParaGraphWithLinkTwo("Reporting of fusions is restricted to a selection of known fusions and a "
+                .add(new Div().add(createParaGraphWithLinkAdd("Reporting of fusions is restricted to a selection of known fusions and a "
                                 + "selection of pre-defined fusions where one partner is promiscuous in either the 5' or 3' position. "
                                 + "The full list of fusions can be downloaded from the ",
                         "resources",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        " or the OncoAct WGS specification sheet can be downloaded from ",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
                         ".")))
                 .add(createContentDiv(new String[] {
                         "The 'Driver' field is set to high in case the fusion is a known fusion, or a fusion where the promiscuous partner "
@@ -165,12 +185,17 @@ public class ExplanationChapter implements ReportChapter {
                         "The type of disruption can be INV (inversion), DEL (deletion), DUP (duplication), INS "
                                 + "(insertion), SGL (single) or BND (translocation).",
                         "A gene for which no wild type exists anymore in the (tumor) DNA due to disruption(s) "
-                                + "is reported in a separate section called 'homozygous disruptions'." })));
+                                + "is reported in a separate section called 'homozygous disruptions'." }))
+                .add(new Div().add(createParaGraphWithLinkAdd("The reported homozygous/disrupted genes can be downloaded from the ",
+                        "resources",
+                        "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
+                        " or the OncoAct WGS specification sheet can be downloaded from ",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "https://www.oncoact.nl/specsheetOncoActWGS",
+                        "."))));
 
-        // Is needed to set details on new page
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-
+        
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed viral insertions")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
@@ -220,6 +245,39 @@ public class ExplanationChapter implements ReportChapter {
     @NotNull
     private Paragraph createSectionTitle(@NotNull String sectionTitle) {
         return new Paragraph(sectionTitle).addStyle(reportResources.smallBodyHeadingStyle());
+    }
+
+    @NotNull
+    private Paragraph createParaGraphWithLinkMultiple(@NotNull String string1, @NotNull String string2, @NotNull String link,
+            @NotNull String string3, @NotNull String string4, @NotNull String link1, @NotNull String string5, @NotNull String link2,
+            @NotNull String string6, @NotNull String string7) {
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string3))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link1)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string5))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string6).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string7));
+    }
+
+    @NotNull
+    private Paragraph createParaGraphWithLinkAdd(@NotNull String string1, @NotNull String string2, @NotNull String link,
+            @NotNull String string3, @NotNull String string4, @NotNull String link2, @NotNull String string5) {
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string3))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string5));
     }
 
     @NotNull
