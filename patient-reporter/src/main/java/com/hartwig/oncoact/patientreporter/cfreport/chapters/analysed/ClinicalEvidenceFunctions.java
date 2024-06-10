@@ -477,7 +477,7 @@ public class ClinicalEvidenceFunctions {
                         + "is also matched. The same rule applies for deletions and 'underexpression'.\n")
                 .addStyle(reportResources.subTextStyle())
                 .add("For MMR genes only: If the evidence matching is based on an inactivation or deletion, evidence that corresponds "
-                        + "with ‘absence of expression' of that gene, mRNA, or protein is also matched.")
+                        + "with ‘absence of protein' expression of that gene, mRNA, or protein is also matched.")
                 .addStyle(reportResources.subTextStyle());
     }
 
