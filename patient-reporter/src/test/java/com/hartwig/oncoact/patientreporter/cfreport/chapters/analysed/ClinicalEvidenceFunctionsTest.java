@@ -3,9 +3,9 @@ package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.List;
 
-import com.google.api.client.util.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.ProtectEvidence;
@@ -50,9 +50,7 @@ public class ClinicalEvidenceFunctionsTest {
 
     @NotNull
     private List<ProtectEvidence> createProtectEvidenceList(@NotNull EvidenceLevel level, @NotNull EvidenceDirection direction) {
-        List<ProtectEvidence> evidences = Lists.newArrayList();
-        evidences.add(createProtectEvidence(level, direction));
-        return evidences;
+        return Collections.singletonList(createProtectEvidence(level, direction));
     }
 
     @NotNull

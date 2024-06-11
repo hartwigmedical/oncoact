@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.actionability;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -24,12 +25,15 @@ public final class ClinicalTrialFactory {
             Set<KnowledgebaseSource> protectSources = Sets.newHashSet();
             ClinicalTrial clinicalTrial = evidence.clinicalTrial();
 
-            for (KnowledgebaseSource protectSource : evidence.sources()) {
-                if (protectSource.name() == Knowledgebase.CKB_TRIAL && evidence.onLabel()) {
-                    Set<String> countries = clinicalTrial.countriesOfStudy();
-                    // We want to report only NL studies
-                    if (countries.contains("netherlands")) {
-                        protectSources.add(protectSource);
+            if (clinicalTrial != null) {
+                for (KnowledgebaseSource protectSource : evidence.sources()) {
+                    if (protectSource.name() == Knowledgebase.CKB_TRIAL && evidence.onLabel()) {
+                        Set<String> countries =
+                                clinicalTrial.countriesOfStudy().stream().map(String::toLowerCase).collect(Collectors.toSet());
+                        // We want to report only NL studies
+                        if (countries.contains("netherlands")) {
+                            protectSources.add(protectSource);
+                        }
                     }
                 }
             }

@@ -22,6 +22,7 @@ import com.hartwig.oncoact.util.AminoAcids;
 import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.Treatment;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
@@ -75,37 +76,39 @@ public class ClinicalEvidenceFunctions {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
-            if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
-                String treatment = Strings.EMPTY;
-                List<ProtectEvidence> treatmentEvidences = Lists.newArrayList();
-                Set<String> treatmentApproaches = extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(),
-                        evidence.treatment().treatmentApproachesTherapy());
-                String treatmentJoin = String.join(",", treatmentApproaches);
-                if (name.equals("treatmentApproach")) {
-                    if (!treatmentJoin.isEmpty()) {
-                        List<String> treatentSort = Lists.newArrayList(treatmentApproaches);
-                        Collections.sort(treatentSort);
-                        treatment = String.join(",", treatentSort);
-                        treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
-                        if (!hasHigherOrEqualEvidenceForEventAndTreatmentApproach(treatmentEvidences, evidence)
-                                && !treatment.equals(Strings.EMPTY)) {
-                            treatmentEvidences.add(evidence);
-                            evidencePerTreatmentMap.put(treatment, treatmentEvidences);
-                        }
-                    }
-                } else {
-                    if (treatmentJoin.isEmpty()) {
-                        treatment = evidence.treatment().name();
-                        treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
-                        if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)
-                                && !treatment.equals(Strings.EMPTY)) {
-                            treatmentEvidences.add(evidence);
-                            evidencePerTreatmentMap.put(treatment, treatmentEvidences);
-                        }
+            Treatment treatmentModel = evidence.treatment();
+            if (treatmentModel != null) {
+                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
+                    String treatment = Strings.EMPTY;
+                    List<ProtectEvidence> treatmentEvidences = Lists.newArrayList();
 
+                    Set<String> treatmentApproaches = extractCombinedTreatmentApproaches(treatmentModel.treatmentApproachesDrugClass(),
+                            treatmentModel.treatmentApproachesTherapy());
+                    String treatmentJoin = String.join(",", treatmentApproaches);
+                    if (name.equals("treatmentApproach")) {
+                        if (!treatmentJoin.isEmpty()) {
+                            List<String> treatentSort = Lists.newArrayList(treatmentApproaches);
+                            Collections.sort(treatentSort);
+                            treatment = String.join(",", treatentSort);
+                            treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
+                            if (!hasHigherOrEqualEvidenceForEventAndTreatmentApproach(treatmentEvidences, evidence) && !treatment.equals(
+                                    Strings.EMPTY)) {
+                                treatmentEvidences.add(evidence);
+                                evidencePerTreatmentMap.put(treatment, treatmentEvidences);
+                            }
+                        }
+                    } else {
+                        if (treatmentJoin.isEmpty()) {
+                            treatment = treatmentModel.name();
+                            treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
+                            if (!hasHigherOrEqualEvidenceForEventAndTreatment(treatmentEvidences, evidence)
+                                    && !treatment.equals(Strings.EMPTY)) {
+                                treatmentEvidences.add(evidence);
+                                evidencePerTreatmentMap.put(treatment, treatmentEvidences);
+                            }
+                        }
                     }
                 }
-
             }
         }
         return evidencePerTreatmentMap;
@@ -117,14 +120,20 @@ public class ClinicalEvidenceFunctions {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
         for (ProtectEvidence evidence : evidences) {
-            if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
-                String trial = Strings.EMPTY;
-                List<ProtectEvidence> trialEvidences = Lists.newArrayList();
-                trial = evidence.clinicalTrial().studyTitle();
-                trialEvidences = evidencePerTreatmentMap.getOrDefault(trial, new ArrayList<>());
-                if (!hasHigherOrEqualEvidenceForEventAndTrial(trialEvidences, evidence) && !trial.equals(Strings.EMPTY)) {
-                    trialEvidences.add(evidence);
-                    evidencePerTreatmentMap.put(trial, trialEvidences);
+            ClinicalTrial clinicalTrialModel = evidence.clinicalTrial();
+
+            if (clinicalTrialModel != null) {
+                String trial = clinicalTrialModel.studyTitle();
+                if ((reportGermline || !evidence.germline()) && (requireOnLabel == null || evidence.onLabel() == requireOnLabel)) {
+                    if (!trial.equals(Strings.EMPTY)) {
+
+                        List<ProtectEvidence> trialEvidences = Lists.newArrayList();
+                        trialEvidences = evidencePerTreatmentMap.getOrDefault(trial, new ArrayList<>());
+                        if (!hasHigherOrEqualEvidenceForEventAndTrial(trialEvidences, evidence)) {
+                            trialEvidences.add(evidence);
+                            evidencePerTreatmentMap.put(trial, trialEvidences);
+                        }
+                    }
                 }
             }
         }

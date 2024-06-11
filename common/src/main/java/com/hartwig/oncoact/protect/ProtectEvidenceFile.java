@@ -12,14 +12,13 @@ import java.util.StringJoiner;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.hartwig.oncoact.util.ActionabilityIntervation;
 import com.hartwig.oncoact.util.CsvFileReader;
-import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
-import com.hartwig.serve.datamodel.Treatment;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -84,32 +83,6 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
-    private static String therapyName(@Nullable ClinicalTrial clinicalTrial, @Nullable Treatment treatment) {
-        boolean isClinicalTrial = clinicalTrial != null;
-        boolean isTreatment = treatment != null;
-
-        if (isClinicalTrial && isTreatment) {
-            throw new IllegalStateException("An actionable event cannot be both a treatment and clinical trial");
-        }
-
-        if (isTreatment) {
-            return treatment.name();
-        } else {
-            assert clinicalTrial != null;
-            return setToField(clinicalTrial.therapyNames());
-        }
-    }
-
-    @NotNull
-    private static String setToField(@NotNull Set<String> strings) {
-        StringJoiner joiner = new StringJoiner(",");
-        for (String string : strings) {
-            joiner.add(string);
-        }
-        return joiner.toString();
-    }
-
-    @NotNull
     private static String toLine(@NotNull ProtectEvidence evidence) {
         return new StringJoiner(FIELD_DELIMITER).add(nullToEmpty(evidence.gene()))
                 .add(nullToEmpty(evidence.transcript()))
@@ -126,7 +99,7 @@ public final class ProtectEvidenceFile {
                         ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy())
                         : null)
                 .add(String.valueOf(evidence.matchGender()))
-                .add(therapyName(evidence.clinicalTrial(), evidence.treatment()))
+                .add(ActionabilityIntervation.therapyName(evidence.clinicalTrial(), evidence.treatment()))
                 .add(evidence.treatment() != null
                         ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass())
                         : null)

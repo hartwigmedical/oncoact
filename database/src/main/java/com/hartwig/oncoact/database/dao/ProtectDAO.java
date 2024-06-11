@@ -12,8 +12,7 @@ import java.util.StringJoiner;
 import com.google.common.collect.Iterables;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.serve.datamodel.ClinicalTrial;
-import com.hartwig.serve.datamodel.Treatment;
+import com.hartwig.oncoact.util.ActionabilityIntervation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,32 +31,6 @@ class ProtectDAO {
 
     ProtectDAO(@NotNull final DSLContext context) {
         this.context = context;
-    }
-
-    @NotNull
-    private static String therapyName(@Nullable ClinicalTrial clinicalTrial, @Nullable Treatment treatment) {
-        boolean isClinicalTrial = clinicalTrial != null;
-        boolean isTreatment = treatment != null;
-
-        if (isClinicalTrial && isTreatment) {
-            throw new IllegalStateException("An actionable event cannot be both a treatment and clinical trial");
-        }
-
-        if (isTreatment) {
-            return treatment.name();
-        } else {
-            assert clinicalTrial != null;
-            return setToField(clinicalTrial.therapyNames());
-        }
-    }
-
-    @NotNull
-    private static String setToField(@NotNull Set<String> strings) {
-        StringJoiner joiner = new StringJoiner(",");
-        for (String string : strings) {
-            joiner.add(string);
-        }
-        return joiner.toString();
     }
 
     void write(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
@@ -126,7 +99,7 @@ class ProtectDAO {
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null,
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy() : null,
                     evidence.matchGender(),
-                    therapyName(evidence.clinicalTrial(), evidence.treatment()),
+                    ActionabilityIntervation.therapyName(evidence.clinicalTrial(), evidence.treatment()),
                     evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
                             .treatmentApproachesDrugClass()) : null,
                     evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
