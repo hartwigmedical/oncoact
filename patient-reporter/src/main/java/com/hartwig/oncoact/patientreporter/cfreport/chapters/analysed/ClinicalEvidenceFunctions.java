@@ -1,5 +1,7 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
+import static com.hartwig.oncoact.util.ActionabilityIntervation.setToField;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -456,7 +458,7 @@ public class ClinicalEvidenceFunctions {
 
             if (clinicalTrial1 != null && clinicalTrial2 != null) {
                 if (clinicalTrial1.studyNctId().equals(clinicalTrial2.studyNctId())) {
-                    if (clinicalTrial1.therapyNames().toString().equals(clinicalTrial2.therapyNames().toString())) {
+                    if (setToField(clinicalTrial1.therapyNames()).equals(setToField(clinicalTrial2.therapyNames()))) {
                         if (item1.level().equals(item2.level())) {
                             if (item1.direction().equals(item2.direction())) {
                                 return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
@@ -467,7 +469,7 @@ public class ClinicalEvidenceFunctions {
                             return item1.level().compareTo(item2.level());
                         }
                     } else {
-                        return clinicalTrial1.therapyNames().toString().compareTo(clinicalTrial2.therapyNames().toString());
+                        return setToField(clinicalTrial1.therapyNames()).compareTo(setToField(clinicalTrial2.therapyNames()));
                     }
                 } else {
                     return clinicalTrial1.studyNctId().compareTo(clinicalTrial2.studyNctId());

@@ -30,7 +30,7 @@ public class ActionabilityIntervation {
     }
 
     @NotNull
-    private static String setToField(@NotNull Set<String> strings) {
+    public static String setToField(@NotNull Set<String> strings) {
         StringJoiner joiner = new StringJoiner(",");
         for (String string : strings) {
             joiner.add(string);
