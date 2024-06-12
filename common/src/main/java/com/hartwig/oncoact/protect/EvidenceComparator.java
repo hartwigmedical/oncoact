@@ -3,6 +3,10 @@ package com.hartwig.oncoact.protect;
 import java.util.Comparator;
 import java.util.Objects;
 
+import com.hartwig.oncoact.util.ActionabilityIntervation;
+import com.hartwig.serve.datamodel.ClinicalTrial;
+import com.hartwig.serve.datamodel.Treatment;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,23 +50,35 @@ public class EvidenceComparator implements Comparator<ProtectEvidence> {
             return onLabelCompare;
         }
 
-        int treatmentCompare = evidence1.treatment().name().compareTo(evidence2.treatment().name());
+        ClinicalTrial clinicalTrial1 = evidence1.clinicalTrial();
+        ClinicalTrial clinicalTrial2 = evidence2.clinicalTrial();
+        Treatment treatment1 = evidence1.treatment();
+        Treatment treatment2 = evidence2.treatment();
+
+        String therapy1 = ActionabilityIntervation.therapyName(clinicalTrial1, treatment1);
+        String therapy2 = ActionabilityIntervation.therapyName(clinicalTrial2, treatment2);
+
+        int clinicalTrialCompare =
+                clinicalTrial1 != null && clinicalTrial2 != null ? clinicalTrial1.studyNctId().compareTo(clinicalTrial2.studyNctId()) : 0;
+        if (clinicalTrialCompare != 0) {
+            return clinicalTrialCompare;
+        }
+
+        int treatmentCompare = therapy1.compareTo(therapy2);
         if (treatmentCompare != 0) {
             return treatmentCompare;
         }
 
-        int treatmentApproachesDrugClass = evidence1.treatment()
-                .treatmentApproachesDrugClass()
+        int treatmentApproachesDrugClass = treatment1 != null && treatment2 != null ? treatment1.treatmentApproachesDrugClass()
                 .toString()
-                .compareTo(evidence2.treatment().treatmentApproachesDrugClass().toString());
+                .compareTo(treatment2.treatmentApproachesDrugClass().toString()) : 0;
         if (treatmentApproachesDrugClass != 0) {
             return treatmentApproachesDrugClass;
         }
 
-        int treatmentApproachesTherapy = evidence1.treatment()
-                .treatmentApproachesTherapy()
+        int treatmentApproachesTherapy = treatment1 != null && treatment2 != null ? treatment1.treatmentApproachesTherapy()
                 .toString()
-                .compareTo(evidence2.treatment().treatmentApproachesTherapy().toString());
+                .compareTo(treatment2.treatmentApproachesTherapy().toString()) : 0;
         if (treatmentApproachesTherapy != 0) {
             return treatmentApproachesTherapy;
         }
