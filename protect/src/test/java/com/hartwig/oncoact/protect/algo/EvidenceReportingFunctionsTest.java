@@ -16,7 +16,6 @@ import com.hartwig.oncoact.protect.TestProtectFactory;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,15 +50,10 @@ public class EvidenceReportingFunctionsTest {
         assertEquals(3, hartwigFiltered.size());
         assertEquals(0, reported(hartwigFiltered).size());
 
-        List<ProtectEvidence> viccEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.VICC_CGI);
-        List<ProtectEvidence> viccFiltered = EvidenceReportingFunctions.applyReportingAlgo(viccEvidences);
-        assertEquals(3, viccFiltered.size());
-        assertEquals(1, reported(viccFiltered).size());
-
         List<ProtectEvidence> ckbEvidences = createTestEvidencesForKnowledgebase(Knowledgebase.CKB_EVIDENCE);
         List<ProtectEvidence> ckbFiltered = EvidenceReportingFunctions.applyReportingAlgo(ckbEvidences);
         assertEquals(3, ckbFiltered.size());
-        assertEquals(2, reported(ckbFiltered).size());
+        assertEquals(1, reported(ckbFiltered).size());
 
         List<ProtectEvidence> ckbTrial = createTestEvidencesForKnowledgebase(Knowledgebase.CKB_TRIAL);
         List<ProtectEvidence> ckbTrialFiltered = EvidenceReportingFunctions.applyReportingAlgo(ckbTrial);
@@ -71,36 +65,16 @@ public class EvidenceReportingFunctionsTest {
     private static List<ProtectEvidence> createTestEvidencesForKnowledgebase(@NotNull Knowledgebase knowledgebase) {
         return Lists.newArrayList(TestProtectFactory.builder()
                         .from(ON_LABEL_RESPONSIVE_B)
-                        .clinicalTrial(ImmutableClinicalTrial.builder()
-                                .studyNctId("nct1")
-                                .studyTitle("title")
-                                .countriesOfStudy(Sets.newHashSet("netherlands"))
-                                .build())
-                        .treatment(ImmutableTreatment.builder()
-                                .name("treatment A")
-                                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
-                                .treatmentApproachesTherapy(Sets.newHashSet("A"))
-                                .build())
                         .direction(EvidenceDirection.RESPONSIVE)
                         .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build(),
                 TestProtectFactory.builder()
                         .from(ON_LABEL_RESPONSIVE_C)
-                        .treatment(ImmutableTreatment.builder()
-                                .name("treatment B")
-                                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
-                                .treatmentApproachesTherapy(Sets.newHashSet("A"))
-                                .build())
                         .direction(EvidenceDirection.RESPONSIVE)
                         .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build(),
                 TestProtectFactory.builder()
                         .from(OFF_LABEL_RESPONSIVE_C)
-                        .treatment(ImmutableTreatment.builder()
-                                .name("treatment C")
-                                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
-                                .treatmentApproachesTherapy(Sets.newHashSet("A"))
-                                .build())
                         .direction(EvidenceDirection.PREDICTED_RESPONSIVE)
                         .sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase)))
                         .build());

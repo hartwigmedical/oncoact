@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ActionabilityIntervation;
 import com.hartwig.oncoact.util.AminoAcids;
 import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
@@ -263,7 +265,8 @@ public class ClinicalEvidenceFunctions {
                 boolean addTrial = true;
 
                 Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream()
-                        .collect(Collectors.groupingBy(evidence -> String.join(" | ", evidence.clinicalTrial().therapyNames())));
+                        .collect(Collectors.groupingBy(evidence -> evidence.clinicalTrial() != null ? String.join(" | ",
+                                Objects.requireNonNull(evidence.clinicalTrial()).therapyNames()) : Strings.EMPTY));
                 Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
                 for (String treatment : sortedTreatments) {
                     boolean addTreatment = true;
@@ -433,7 +436,15 @@ public class ClinicalEvidenceFunctions {
     @NotNull
     private static List<ProtectEvidence> sort(@NotNull List<ProtectEvidence> evidenceItems) {
         return evidenceItems.stream().sorted((item1, item2) -> {
-            if (item1.treatment().equals(item2.treatment())) {
+            Treatment treatment1 = item1.treatment();
+            Treatment treatment2 = item2.treatment();
+            ClinicalTrial clinicalTrial1 = item1.clinicalTrial();
+            ClinicalTrial clinicalTrial2 = item2.clinicalTrial();
+
+            String therapy1 = ActionabilityIntervation.therapyName(clinicalTrial1, treatment1);
+            String therapy2 = ActionabilityIntervation.therapyName(clinicalTrial2, treatment2);
+
+            if (therapy1.equals(therapy2)) {
                 if (item1.level().equals(item2.level())) {
                     if (item1.direction().equals(item2.direction())) {
                         return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
@@ -444,7 +455,7 @@ public class ClinicalEvidenceFunctions {
                     return item1.level().compareTo(item2.level());
                 }
             } else {
-                return item1.treatment().name().compareTo(item2.treatment().name());
+                return therapy1.compareTo(therapy2);
             }
         }).collect(Collectors.toList());
     }

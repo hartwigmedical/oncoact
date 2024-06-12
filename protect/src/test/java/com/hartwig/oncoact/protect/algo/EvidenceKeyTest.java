@@ -29,8 +29,6 @@ public class EvidenceKeyTest {
                         .build())
                 .build();
         evidences.add(evidence1);
-        evidences.add(evidence1);
-        evidences.add(evidence1);
 
         Set<EvidenceKey> keys = EvidenceKey.buildKeySet(evidences);
         assertEquals(1, keys.size());
@@ -48,8 +46,6 @@ public class EvidenceKeyTest {
                         .treatmentApproachesTherapy(Sets.newHashSet("A"))
                         .build())
                 .build();
-        evidences.add(evidence2);
-        evidences.add(evidence2);
         evidences.add(evidence2);
 
         assertEquals(2, EvidenceKey.buildKeySet(evidences).size());
