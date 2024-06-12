@@ -89,9 +89,9 @@ public class ClinicalEvidenceFunctions {
                     String treatmentJoin = String.join(",", treatmentApproaches);
                     if (name.equals("treatmentApproach")) {
                         if (!treatmentJoin.isEmpty()) {
-                            List<String> treatentSort = Lists.newArrayList(treatmentApproaches);
-                            Collections.sort(treatentSort);
-                            treatment = String.join(",", treatentSort);
+                            List<String> treatmentSort = Lists.newArrayList(treatmentApproaches);
+                            Collections.sort(treatmentSort);
+                            treatment = String.join(",", treatmentSort);
                             treatmentEvidences = evidencePerTreatmentMap.getOrDefault(treatment, new ArrayList<>());
                             if (!hasHigherOrEqualEvidenceForEventAndTreatmentApproach(treatmentEvidences, evidence) && !treatment.equals(
                                     Strings.EMPTY)) {
@@ -145,14 +145,20 @@ public class ClinicalEvidenceFunctions {
     public static boolean hasHigherOrEqualEvidenceForEventAndTreatment(@NotNull List<ProtectEvidence> evidences,
             @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.treatment().name().equals(evidenceToCheck.treatment().name()) && StringUtils.equals(evidence.gene(),
-                    evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
-                }
-                if (evidenceToCheck.level().equals(evidence.level())
-                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
-                    return true;
+
+            Treatment treatment = evidence.treatment();
+            Treatment evidenceToCheckTreatment = evidenceToCheck.treatment();
+
+            if (treatment != null && evidenceToCheckTreatment != null) {
+                if (treatment.name().equals(evidenceToCheckTreatment.name()) && StringUtils.equals(evidence.gene(), evidenceToCheck.gene())
+                        && evidence.event().equals(evidenceToCheck.event())) {
+                    if (evidenceToCheck.level().isHigher(evidence.level())) {
+                        return true;
+                    }
+                    if (evidenceToCheck.level().equals(evidence.level())
+                            && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -162,16 +168,22 @@ public class ClinicalEvidenceFunctions {
     public static boolean hasHigherOrEqualEvidenceForEventAndTrial(@NotNull List<ProtectEvidence> evidences,
             @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.clinicalTrial().studyNctId().equals(evidenceToCheck.clinicalTrial().studyNctId())
-                    && StringUtils.equals(evidence.gene(), evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
-                }
-                if (evidenceToCheck.level().equals(evidence.level())
-                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
-                    return true;
+            ClinicalTrial clinicalTrial = evidence.clinicalTrial();
+            ClinicalTrial evidenceToCheckTrial = evidenceToCheck.clinicalTrial();
+
+            if (clinicalTrial != null && evidenceToCheckTrial != null) {
+                if (clinicalTrial.studyNctId().equals(evidenceToCheckTrial.studyNctId()) && StringUtils.equals(evidence.gene(),
+                        evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
+                    if (evidenceToCheck.level().isHigher(evidence.level())) {
+                        return true;
+                    }
+                    if (evidenceToCheck.level().equals(evidence.level())
+                            && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                        return true;
+                    }
                 }
             }
+
         }
         return false;
     }
@@ -179,17 +191,21 @@ public class ClinicalEvidenceFunctions {
     public static boolean hasHigherOrEqualEvidenceForEventAndTreatmentApproach(@NotNull List<ProtectEvidence> evidences,
             @NotNull ProtectEvidence evidenceToCheck) {
         for (ProtectEvidence evidence : evidences) {
-            if (extractCombinedTreatmentApproaches(evidence.treatment().treatmentApproachesDrugClass(),
-                    evidence.treatment().treatmentApproachesTherapy()).equals(extractCombinedTreatmentApproaches(evidenceToCheck.treatment()
-                    .treatmentApproachesDrugClass(), evidenceToCheck.treatment().treatmentApproachesTherapy())) && StringUtils.equals(
-                    evidence.gene(),
-                    evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                if (evidenceToCheck.level().isHigher(evidence.level())) {
-                    return true;
-                }
-                if (evidenceToCheck.level().equals(evidence.level())
-                        && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
-                    return true;
+            Treatment treatment = evidence.treatment();
+            Treatment evidenceToCheckTreatment = evidenceToCheck.treatment();
+
+            if (treatment != null && evidenceToCheckTreatment != null) {
+                if (extractCombinedTreatmentApproaches(treatment.treatmentApproachesDrugClass(),
+                        treatment.treatmentApproachesTherapy()).equals(extractCombinedTreatmentApproaches(evidenceToCheckTreatment.treatmentApproachesDrugClass(),
+                        evidenceToCheckTreatment.treatmentApproachesTherapy())) && StringUtils.equals(evidence.gene(),
+                        evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
+                    if (evidenceToCheck.level().isHigher(evidence.level())) {
+                        return true;
+                    }
+                    if (evidenceToCheck.level().equals(evidence.level())
+                            && EvidenceDirectionComparator.INSTANCE.compare(evidenceToCheck.direction(), evidence.direction()) < 0) {
+                        return true;
+                    }
                 }
             }
         }
