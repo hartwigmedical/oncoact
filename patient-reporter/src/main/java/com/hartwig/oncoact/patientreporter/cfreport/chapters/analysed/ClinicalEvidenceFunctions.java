@@ -19,7 +19,6 @@ import com.hartwig.oncoact.patientreporter.cfreport.data.EvidenceItems;
 import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
-import com.hartwig.oncoact.util.ActionabilityIntervation;
 import com.hartwig.oncoact.util.AminoAcids;
 import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
@@ -280,7 +279,7 @@ public class ClinicalEvidenceFunctions {
             if (allowedHighestLevel == highestEvidence(trialMap.get(trial))) {
                 boolean addTrial = true;
 
-                Map<String, List<ProtectEvidence>> treatmentMap = sort(evidencesTrials).stream()
+                Map<String, List<ProtectEvidence>> treatmentMap = sortTrial(evidencesTrials).stream()
                         .collect(Collectors.groupingBy(evidence -> evidence.clinicalTrial() != null ? String.join(" | ",
                                 Objects.requireNonNull(evidence.clinicalTrial()).therapyNames()) : Strings.EMPTY));
                 Set<String> sortedTreatments = Sets.newTreeSet(treatmentMap.keySet());
@@ -336,7 +335,7 @@ public class ClinicalEvidenceFunctions {
             if (allowedHighestLevel == highestEvidence(treatmentMap.get(treatment))) {
 
                 boolean addTreatment = true;
-                for (ProtectEvidence responsive : sort(evidences)) {
+                for (ProtectEvidence responsive : sortEvidence(evidences)) {
                     Cell cellGenomic = tableUtil.createTransparentCell(display(responsive));
 
                     String onLabel = responsive.onLabel() ? "Yes" : "No";
@@ -450,29 +449,56 @@ public class ClinicalEvidenceFunctions {
     }
 
     @NotNull
-    private static List<ProtectEvidence> sort(@NotNull List<ProtectEvidence> evidenceItems) {
+    private static List<ProtectEvidence> sortTrial(@NotNull List<ProtectEvidence> evidenceItems) {
         return evidenceItems.stream().sorted((item1, item2) -> {
-            Treatment treatment1 = item1.treatment();
-            Treatment treatment2 = item2.treatment();
             ClinicalTrial clinicalTrial1 = item1.clinicalTrial();
             ClinicalTrial clinicalTrial2 = item2.clinicalTrial();
 
-            String therapy1 = ActionabilityIntervation.therapyName(clinicalTrial1, treatment1);
-            String therapy2 = ActionabilityIntervation.therapyName(clinicalTrial2, treatment2);
-
-            if (therapy1.equals(therapy2)) {
-                if (item1.level().equals(item2.level())) {
-                    if (item1.direction().equals(item2.direction())) {
-                        return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
+            if (clinicalTrial1 != null && clinicalTrial2 != null) {
+                if (clinicalTrial1.studyNctId().equals(clinicalTrial2.studyNctId())) {
+                    if (clinicalTrial1.therapyNames().toString().equals(clinicalTrial2.therapyNames().toString())) {
+                        if (item1.level().equals(item2.level())) {
+                            if (item1.direction().equals(item2.direction())) {
+                                return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
+                            } else {
+                                return item1.direction().compareTo(item2.direction());
+                            }
+                        } else {
+                            return item1.level().compareTo(item2.level());
+                        }
                     } else {
-                        return item1.direction().compareTo(item2.direction());
+                        return clinicalTrial1.therapyNames().toString().compareTo(clinicalTrial2.therapyNames().toString());
                     }
                 } else {
-                    return item1.level().compareTo(item2.level());
+                    return clinicalTrial1.studyNctId().compareTo(clinicalTrial2.studyNctId());
                 }
-            } else {
-                return therapy1.compareTo(therapy2);
             }
+            return 0;
+        }).collect(Collectors.toList());
+    }
+
+    @NotNull
+    private static List<ProtectEvidence> sortEvidence(@NotNull List<ProtectEvidence> evidenceItems) {
+        return evidenceItems.stream().sorted((item1, item2) -> {
+            Treatment treatment1 = item1.treatment();
+            Treatment treatment2 = item2.treatment();
+
+            if (treatment1 != null && treatment2 != null) {
+                if (treatment1.name().equals(treatment2.name())) {
+                    if (item1.level().equals(item2.level())) {
+                        if (item1.direction().equals(item2.direction())) {
+                            return compareOnNaturalOrder(item1.onLabel(), item2.onLabel());
+                        } else {
+                            return item1.direction().compareTo(item2.direction());
+                        }
+                    } else {
+                        return item1.level().compareTo(item2.level());
+                    }
+                } else {
+                    return treatment1.name().compareTo(treatment2.name());
+                }
+            }
+            return 0;
         }).collect(Collectors.toList());
     }
 

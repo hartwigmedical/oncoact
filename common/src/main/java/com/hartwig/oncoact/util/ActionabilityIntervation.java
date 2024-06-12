@@ -17,7 +17,8 @@ public class ActionabilityIntervation {
         boolean isTreatment = treatment != null;
 
         if (isClinicalTrial && isTreatment) {
-            throw new IllegalStateException("An actionable event cannot be both a treatment and clinical trial");
+            throw new IllegalStateException(
+                    "An actionable event cannot be both a treatment: " + treatment + " and clinical trial: " + clinicalTrial);
         }
 
         if (isTreatment) {
