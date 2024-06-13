@@ -24,12 +24,10 @@ public class EvidenceKeyTest {
                 .event("event 1")
                 .treatment(ImmutableTreatment.builder()
                         .name("treatment 1")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                        .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                        .treatmentApproachesTherapy(Sets.newHashSet("A"))
                         .build())
                 .build();
-        evidences.add(evidence1);
-        evidences.add(evidence1);
         evidences.add(evidence1);
 
         Set<EvidenceKey> keys = EvidenceKey.buildKeySet(evidences);
@@ -39,13 +37,15 @@ public class EvidenceKeyTest {
         assertEquals("event 1", key.event());
         assertEquals("treatment 1", key.treatment());
 
-        ProtectEvidence evidence2 = TestProtectFactory.builder().gene(null).event("event 2").treatment(ImmutableTreatment.builder()
-                .name("treatment 2")
-                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                .relevantTreatmentApproaches(Sets.newHashSet("A"))
-                .build()).build();
-        evidences.add(evidence2);
-        evidences.add(evidence2);
+        ProtectEvidence evidence2 = TestProtectFactory.builder()
+                .gene(null)
+                .event("event 2")
+                .treatment(ImmutableTreatment.builder()
+                        .name("treatment 2")
+                        .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                        .treatmentApproachesTherapy(Sets.newHashSet("A"))
+                        .build())
+                .build();
         evidences.add(evidence2);
 
         assertEquals(2, EvidenceKey.buildKeySet(evidences).size());

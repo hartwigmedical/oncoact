@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.util;
+package com.hartwig.oncoact.util;
 
 import java.util.Set;
 

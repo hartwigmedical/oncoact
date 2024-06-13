@@ -38,7 +38,7 @@ public class ChordEvidenceTest {
                 new ChordEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(signature1, signature2, signature3));
 
         ChordRecord hrDeficient = create(ChordStatus.HR_DEFICIENT, 0.5);
-        List<ProtectEvidence> evidence = chordEvidence.evidence(hrDeficient);
+        List<ProtectEvidence> evidence = chordEvidence.evidence(hrDeficient, null);
         assertEquals(1, evidence.size());
 
         ProtectEvidence evidence1 = evidence.get(0);
@@ -46,16 +46,16 @@ public class ChordEvidenceTest {
         assertEquals(ChordEvidence.HR_DEFICIENCY_EVENT, evidence1.event());
 
         ChordRecord hrProficientWithHighScore = create(ChordStatus.HR_PROFICIENT, 0.85);
-        assertEquals(0, chordEvidence.evidence(hrProficientWithHighScore).size());
+        assertEquals(0, chordEvidence.evidence(hrProficientWithHighScore, null).size());
 
         ChordRecord hrProficientWithLowScore = create(ChordStatus.HR_PROFICIENT, 0.2);
-        assertEquals(0, chordEvidence.evidence(hrProficientWithLowScore).size());
+        assertEquals(0, chordEvidence.evidence(hrProficientWithLowScore, null).size());
 
         ChordRecord hrCannotBeDeterminedWithLowScore = create(ChordStatus.CANNOT_BE_DETERMINED, 0.2);
-        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithLowScore).size());
+        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithLowScore, null).size());
 
         ChordRecord hrCannotBeDeterminedWithHighScore = create(ChordStatus.CANNOT_BE_DETERMINED, 0.9);
-        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithHighScore).size());
+        assertEquals(0, chordEvidence.evidence(hrCannotBeDeterminedWithHighScore, null).size());
     }
 
     @NotNull

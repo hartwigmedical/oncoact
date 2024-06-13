@@ -33,57 +33,57 @@ public class FusionEvidenceTest {
         ActionableGene firstPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 1").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 1").build())
                 .build();
         ActionableGene secondPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("TP53")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 2").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 2").build())
                 .build();
         ActionableGene thirdPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("PTEN")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 3").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 3").build())
                 .build();
         ActionableGene fourthPromiscuous3 = TestServeFactory.geneBuilder()
                 .gene("BRAF")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 4").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 4").build())
                 .build();
         ActionableGene amp = TestServeFactory.geneBuilder()
                 .gene("KRAS")
                 .event(GeneEvent.AMPLIFICATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 5").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 5").build())
                 .build();
         ActionableFusion fusion = TestServeFactory.fusionBuilder()
                 .geneUp("EML4")
                 .geneDown("ALK")
-                .treatment(ImmutableTreatment.builder().name("treatment 6").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 6").build())
                 .build();
         ActionableGene other = TestServeFactory.geneBuilder()
                 .gene("AB")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 7").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 7").build())
                 .build();
         ActionableFusion igPair = TestServeFactory.fusionBuilder()
                 .geneUp("IGH")
                 .geneDown("BCL2")
-                .treatment(ImmutableTreatment.builder().name("treatment 8").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 8").build())
                 .build();
         ActionableGene igFusion = TestServeFactory.geneBuilder()
                 .gene("IGH")
                 .event(GeneEvent.FUSION)
-                .treatment(ImmutableTreatment.builder().name("treatment 9").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 9").build())
                 .build();
         ActionableGene activation = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.ACTIVATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 10").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 10").build())
                 .build();
         ActionableGene anyMutation = TestServeFactory.geneBuilder()
                 .gene("EGFR")
                 .event(GeneEvent.ANY_MUTATION)
-                .treatment(ImmutableTreatment.builder().name("treatment 11").build())
+                .intervention(ImmutableTreatment.builder().name("treatment 11").build())
                 .build();
 
         FusionEvidence fusionEvidence = new FusionEvidence(TestPersonalizedEvidenceFactory.create(),
@@ -121,7 +121,7 @@ public class FusionEvidenceTest {
                 reportedIgPromiscuous,
                 reportedIgKnown);
         Set<LinxFusion> allFusions = Sets.newHashSet(unreportedPromiscuousMatch);
-        List<ProtectEvidence> evidences = fusionEvidence.evidence(reportableFusions, allFusions);
+        List<ProtectEvidence> evidences = fusionEvidence.evidence(reportableFusions, allFusions, null);
 
         assertEquals(10, evidences.size());
 
@@ -209,22 +209,22 @@ public class FusionEvidenceTest {
         ImmutableLinxFusion.Builder builder = linxFusionBuilder("EML4", "ALK", true, LinxFusionType.KNOWN_PAIR);
 
         Set<LinxFusion> onMinRange = Sets.newHashSet(builder.fusedExonUp(minExonUp).fusedExonDown(minExonDown).build());
-        assertEquals(1, fusionEvidence.evidence(onMinRange, Sets.newHashSet()).size());
+        assertEquals(1, fusionEvidence.evidence(onMinRange, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> onMaxRange = Sets.newHashSet(builder.fusedExonUp(maxExonUp).fusedExonDown(maxExonDown).build());
-        assertEquals(1, fusionEvidence.evidence(onMaxRange, Sets.newHashSet()).size());
+        assertEquals(1, fusionEvidence.evidence(onMaxRange, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> upGeneExonTooLow = Sets.newHashSet(builder.fusedExonUp(minExonUp - 1).fusedExonDown(minExonDown).build());
-        assertEquals(0, fusionEvidence.evidence(upGeneExonTooLow, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(upGeneExonTooLow, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> upGeneExonTooHigh = Sets.newHashSet(builder.fusedExonUp(maxExonUp + 1).fusedExonDown(minExonDown).build());
-        assertEquals(0, fusionEvidence.evidence(upGeneExonTooHigh, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(upGeneExonTooHigh, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> downGeneExonTooLow = Sets.newHashSet(builder.fusedExonUp(minExonUp).fusedExonDown(minExonDown - 1).build());
-        assertEquals(0, fusionEvidence.evidence(downGeneExonTooLow, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(downGeneExonTooLow, Sets.newHashSet(), null).size());
 
         Set<LinxFusion> downGeneExonTooHigh = Sets.newHashSet(builder.fusedExonUp(maxExonUp).fusedExonDown(maxExonDown + 1).build());
-        assertEquals(0, fusionEvidence.evidence(downGeneExonTooHigh, Sets.newHashSet()).size());
+        assertEquals(0, fusionEvidence.evidence(downGeneExonTooHigh, Sets.newHashSet(), null).size());
     }
 
     @NotNull

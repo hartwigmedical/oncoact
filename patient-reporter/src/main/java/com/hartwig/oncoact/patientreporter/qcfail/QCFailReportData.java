@@ -2,10 +2,10 @@ package com.hartwig.oncoact.patientreporter.qcfail;
 
 import java.io.IOException;
 
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.PatientReporterConfig;
 import com.hartwig.oncoact.patientreporter.ReportData;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 
 import org.immutables.value.Value;

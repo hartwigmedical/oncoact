@@ -2,18 +2,19 @@ package com.hartwig.oncoact.patientreporter.actionability;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.protect.ImmutableProtectEvidence;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.jetbrains.annotations.NotNull;
 
 public final class ClinicalTrialFactory {
-
     private ClinicalTrialFactory() {
     }
 
@@ -22,9 +23,18 @@ public final class ClinicalTrialFactory {
         List<ProtectEvidence> trials = Lists.newArrayList();
         for (ProtectEvidence evidence : evidenceItems) {
             Set<KnowledgebaseSource> protectSources = Sets.newHashSet();
-            for (KnowledgebaseSource protectSource: evidence.sources()) {
-                if (protectSource.name() == Knowledgebase.ICLUSION && evidence.onLabel()) {
-                    protectSources.add(protectSource);
+            ClinicalTrial clinicalTrial = evidence.clinicalTrial();
+
+            if (clinicalTrial != null) {
+                for (KnowledgebaseSource protectSource : evidence.sources()) {
+                    if (protectSource.name() == Knowledgebase.CKB_TRIAL && evidence.onLabel()) {
+                        Set<String> countries =
+                                clinicalTrial.countriesOfStudy().stream().map(String::toLowerCase).collect(Collectors.toSet());
+                        // We want to report only NL studies
+                        if (countries.contains("netherlands")) {
+                            protectSources.add(protectSource);
+                        }
+                    }
                 }
             }
 

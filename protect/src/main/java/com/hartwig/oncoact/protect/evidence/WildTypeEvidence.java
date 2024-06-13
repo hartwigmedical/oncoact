@@ -17,8 +17,10 @@ import com.hartwig.oncoact.wildtype.WildTypeFactory;
 import com.hartwig.oncoact.wildtype.WildTypeGene;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class WildTypeEvidence {
 
@@ -40,7 +42,7 @@ public class WildTypeEvidence {
             @NotNull Collection<ReportableVariant> reportableSomaticVariants,
             @NotNull Collection<PurpleGainLoss> reportableSomaticGainsLosses, @NotNull Collection<LinxFusion> reportableFusions,
             @NotNull Collection<HomozygousDisruption> homozygousDisruptions, @NotNull Collection<LinxBreakend> reportableBreakends,
-            @NotNull Collection<PurpleQCStatus> purpleQCStatus) {
+            @NotNull Collection<PurpleQCStatus> purpleQCStatus, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         List<WildTypeGene> wildTypeGenes = WildTypeFactory.determineWildTypeGenes(reportableGermlineVariants,
                 reportableSomaticVariants,
@@ -55,7 +57,7 @@ public class WildTypeEvidence {
         for (ActionableGene actionable : actionableGenes) {
             for (WildTypeGene wildType : wildTypeGenesFilter) {
                 if (wildType.gene().equals(actionable.gene())) {
-                    evidences.add(evidence(actionable));
+                    evidences.add(evidence(actionable, diagnosticPatientData));
                 }
             }
         }
@@ -63,9 +65,8 @@ public class WildTypeEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull ActionableGene actionable) {
-        return personalizedEvidenceFactory.somaticEvidence(actionable)
-                .reported(false)
+    private ProtectEvidence evidence(@NotNull ActionableGene actionable, @Nullable PatientInformationResponse diagnosticPatientData) {
+        return personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, false)
                 .gene(actionable.gene())
                 .event(actionable.gene() + " wild type")
                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretWildType())

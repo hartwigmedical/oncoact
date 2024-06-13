@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.purple.PurpleCharacteristics;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.oncoact.orange.purple.TestPurpleFactory;
 import com.hartwig.oncoact.protect.TestServeFactory;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
@@ -24,8 +25,9 @@ public class PurpleSignatureEvidenceTest {
         PurpleSignatureEvidence purpleSignatureEvidence =
                 new PurpleSignatureEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(nonPurple));
 
-        PurpleCharacteristics characteristics = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 4.0, 0.0);
-        assertEquals(0, purpleSignatureEvidence.evidence(characteristics).size());
+        PurpleCharacteristics characteristics =
+                createCharacteristics(PurpleMicrosatelliteStatus.MSI, 4.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(0, purpleSignatureEvidence.evidence(characteristics, null).size());
     }
 
     @Test
@@ -42,14 +44,14 @@ public class PurpleSignatureEvidenceTest {
         PurpleSignatureEvidence purpleSignatureEvidence = new PurpleSignatureEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(signatureDefault, signatureWithCutoff));
 
-        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 4.0, 0.0);
-        assertEquals(2, purpleSignatureEvidence.evidence(both).size());
+        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 4.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(2, purpleSignatureEvidence.evidence(both, null).size());
 
-        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 3.0, 0.0);
-        assertEquals(1, purpleSignatureEvidence.evidence(one).size());
+        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 3.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(1, purpleSignatureEvidence.evidence(one, null).size());
 
-        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 3.0, 0.0);
-        assertEquals(0, purpleSignatureEvidence.evidence(none).size());
+        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 3.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(0, purpleSignatureEvidence.evidence(none, null).size());
     }
 
     @Test
@@ -66,14 +68,14 @@ public class PurpleSignatureEvidenceTest {
         PurpleSignatureEvidence purpleSignatureEvidence = new PurpleSignatureEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(signatureDefault, signatureWithCutoff));
 
-        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 2.0, 0.0);
-        assertEquals(2, purpleSignatureEvidence.evidence(both).size());
+        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 2.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(2, purpleSignatureEvidence.evidence(both, null).size());
 
-        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 5.0, 0.0);
-        assertEquals(1, purpleSignatureEvidence.evidence(one).size());
+        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 5.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(1, purpleSignatureEvidence.evidence(one, null).size());
 
-        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 0.0);
-        assertEquals(0, purpleSignatureEvidence.evidence(none).size());
+        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 0.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(0, purpleSignatureEvidence.evidence(none, null).size());
     }
 
     @Test
@@ -84,17 +86,17 @@ public class PurpleSignatureEvidenceTest {
         ActionableCharacteristic signatureWithCutoff = TestServeFactory.characteristicBuilder()
                 .type(TumorCharacteristicType.HIGH_TUMOR_MUTATIONAL_BURDEN)
                 .cutoffType(TumorCharacteristicCutoffType.EQUAL_OR_GREATER)
-                .cutoff(16D)
+                .cutoff(10D)
                 .build();
 
         PurpleSignatureEvidence purpleSignatureEvidence = new PurpleSignatureEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(signatureDefault, signatureWithCutoff));
 
-        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 2.0, 18);
-        assertEquals(2, purpleSignatureEvidence.evidence(both).size());
+        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 18, PurpleTumorMutationalStatus.HIGH);
+        assertEquals(2, purpleSignatureEvidence.evidence(both, null).size());
 
-        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 8.0);
-        assertEquals(0, purpleSignatureEvidence.evidence(none).size());
+        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 8.0, PurpleTumorMutationalStatus.LOW);
+        assertEquals(0, purpleSignatureEvidence.evidence(none, null).size());
     }
 
     @Test
@@ -111,14 +113,14 @@ public class PurpleSignatureEvidenceTest {
         PurpleSignatureEvidence purpleSignatureEvidence = new PurpleSignatureEvidence(TestPersonalizedEvidenceFactory.create(),
                 Lists.newArrayList(signatureDefault, signatureWithCutoff));
 
-        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 2.0, 7D);
-        assertEquals(2, purpleSignatureEvidence.evidence(both).size());
+        PurpleCharacteristics both = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 2.0, 7D, PurpleTumorMutationalStatus.LOW);
+        assertEquals(2, purpleSignatureEvidence.evidence(both, null).size());
 
-        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 3.0, 9D);
-        assertEquals(1, purpleSignatureEvidence.evidence(one).size());
+        PurpleCharacteristics one = createCharacteristics(PurpleMicrosatelliteStatus.MSS, 3.0, 9D, PurpleTumorMutationalStatus.LOW);
+        assertEquals(1, purpleSignatureEvidence.evidence(one, null).size());
 
-        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 17D);
-        assertEquals(0, purpleSignatureEvidence.evidence(none).size());
+        PurpleCharacteristics none = createCharacteristics(PurpleMicrosatelliteStatus.MSI, 5.0, 17D, PurpleTumorMutationalStatus.HIGH);
+        assertEquals(0, purpleSignatureEvidence.evidence(none, null).size());
     }
 
     @Test
@@ -128,11 +130,12 @@ public class PurpleSignatureEvidenceTest {
 
     @NotNull
     private static PurpleCharacteristics createCharacteristics(@NotNull PurpleMicrosatelliteStatus msStatus,
-            double microsatelliteIndelsPerMb, double tumorMutationalBurden) {
+            double microsatelliteIndelsPerMb, double tumorMutationalBurden, @NotNull PurpleTumorMutationalStatus status) {
         return TestPurpleFactory.characteristicsBuilder()
                 .microsatelliteIndelsPerMb(microsatelliteIndelsPerMb)
                 .microsatelliteStatus(msStatus)
                 .tumorMutationalBurdenPerMb(tumorMutationalBurden)
+                .tumorMutationalBurdenStatus(status)
                 .build();
     }
 }

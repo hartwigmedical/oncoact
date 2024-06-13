@@ -7,8 +7,10 @@ import com.hartwig.hmftools.datamodel.hla.LilacAllele;
 import com.hartwig.hmftools.datamodel.hla.LilacRecord;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.immuno.ActionableHLA;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HlaEvidence {
 
@@ -23,24 +25,24 @@ public class HlaEvidence {
         this.actionableHLA = actionableHLA;
     }
 
-    public List<ProtectEvidence> evidence(@NotNull LilacRecord lilac) {
+    public List<ProtectEvidence> evidence(@NotNull LilacRecord lilac, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (LilacAllele lilacAllele : lilac.alleles()) {
-            result.addAll(evidence(lilacAllele, lilac.qc()));
+            result.addAll(evidence(lilacAllele, lilac.qc(), diagnosticPatientData));
         }
 
         return result;
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull LilacAllele lilacAllele, @NotNull String lilacQc) {
+    private List<ProtectEvidence> evidence(@NotNull LilacAllele lilacAllele, @NotNull String lilacQc,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> result = Lists.newArrayList();
 
         for (ActionableHLA hla : actionableHLA) {
             if (hla.hlaAllele().equals(lilacAllele.allele().split(":")[0])) {
-                ProtectEvidence evidence = personalizedEvidenceFactory.evidenceBuilder(hla)
+                ProtectEvidence evidence = personalizedEvidenceFactory.evidenceBuilder(hla, diagnosticPatientData, lilacQc.equals("PASS"))
                         .event(lilacAllele.allele())
-                        .reported(lilacQc.equals("PASS"))
                         .germline(false)
                         .build();
                 result.add(evidence);

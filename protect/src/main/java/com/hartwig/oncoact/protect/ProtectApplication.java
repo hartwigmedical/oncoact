@@ -8,6 +8,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.hartwig.hmftools.datamodel.orange.OrangeRecord;
 import com.hartwig.oncoact.clinicaltransript.ClinicalTranscriptFile;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.doid.DiseaseOntology;
 import com.hartwig.oncoact.doid.DoidParents;
 import com.hartwig.oncoact.drivergene.DriverGene;
@@ -17,6 +18,7 @@ import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.protect.algo.ProtectAlgo;
 import com.hartwig.oncoact.protect.serve.ServeOutput;
 import com.hartwig.serve.datamodel.ActionableEvents;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
@@ -61,6 +63,7 @@ public class ProtectApplication {
         LOGGER.info("Loading ORANGE file from {}", config.orangeJson());
         OrangeRecord orange = OrangeJson.read(config.orangeJson());
 
+        PatientInformationResponse diagnosticPatientData = DiagnosticSiloJson.read(config.diagnosticSiloJson());
         LOGGER.info("Loading DOID file from {}", config.doidJsonFile());
         DoidParents doidParentModel = DoidParents.fromEdges(DiseaseOntology.readDoidOwlEntryFromDoidJson(config.doidJsonFile()).edges());
 
@@ -76,7 +79,7 @@ public class ProtectApplication {
                 driverGenes,
                 doidParentModel,
                 ClinicalTranscriptFile.buildFromTsv(config.clinicalTranscriptsTsv()));
-        List<ProtectEvidence> evidences = algo.run(orange);
+        List<ProtectEvidence> evidences = algo.run(orange, diagnosticPatientData);
 
         String filename = config.outputDir() + File.separator + "protect.tsv";
         LOGGER.info("Writing {} evidence items to file: {}", evidences.size(), filename);

@@ -2,6 +2,7 @@ package com.hartwig.oncoact.patientreporter.diagnosticsilo;
 
 import static org.junit.Assert.assertEquals;
 
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.apache.logging.log4j.util.Strings;

@@ -5,15 +5,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.hartwig.oncoact.util.ActionabilityIntervation;
 import com.hartwig.oncoact.util.CsvFileReader;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
@@ -63,9 +66,15 @@ public final class ProtectEvidenceFile {
                 .add("eventIsHighDriver")
                 .add("germline")
                 .add("reported")
+                .add("studyNctId")
+                .add("studyTitle")
+                .add("studyAcronym")
+                .add("studyGender")
+                .add("countriesOfStudy")
+                .add("matchGender")
                 .add("treatment")
-                .add("sourceRelevantTreatmentApproach")
-                .add("relevantTreatmentApproach")
+                .add("treatmentApproachesDrugClass")
+                .add("treatmentApproachesTherapy")
                 .add("onLabel")
                 .add("level")
                 .add("direction")
@@ -82,9 +91,21 @@ public final class ProtectEvidenceFile {
                 .add(nullToEmpty(evidence.eventIsHighDriver()))
                 .add(String.valueOf(evidence.germline()))
                 .add(String.valueOf(evidence.reported()))
-                .add(evidence.treatment().name())
-                .add(treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()))
-                .add(treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()))
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyNctId() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyTitle() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null)
+                .add(evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null)
+                .add(evidence.clinicalTrial() != null
+                        ? setToString(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy())
+                        : null)
+                .add(String.valueOf(evidence.matchGender()))
+                .add(ActionabilityIntervation.therapyName(evidence.clinicalTrial(), evidence.treatment()))
+                .add(evidence.treatment() != null
+                        ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass())
+                        : null)
+                .add(evidence.treatment() != null
+                        ? setToString(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy())
+                        : null)
                 .add(String.valueOf(evidence.onLabel()))
                 .add(evidence.level().toString())
                 .add(evidence.direction().toString())
@@ -104,13 +125,21 @@ public final class ProtectEvidenceFile {
                 .eventIsHighDriver(emptyToNullBoolean(values[fields.get("eventIsHighDriver")]))
                 .germline(Boolean.parseBoolean(values[fields.get("germline")]))
                 .reported(Boolean.parseBoolean(values[fields.get("reported")]))
+                .clinicalTrial(ImmutableClinicalTrial.builder()
+                        .studyNctId(values[fields.get("studyNctId")])
+                        .studyTitle(values[fields.get("studyTitle")])
+                        .studyAcronym(values[fields.get("studyAcronym")])
+                        .gender(values[fields.get("studyGender")])
+                        .countriesOfStudy(stringToSet(values[fields.get("countriesOfStudy")]))
+                        .therapyNames(stringToSet(values[fields.get("treatment")]))
+                        .build())
+                .matchGender(Boolean.parseBoolean(values[fields.get("matchGender")]))
                 .treatment(ImmutableTreatment.builder()
                         .name(values[fields.get("treatment")])
-                        .sourceRelevantTreatmentApproaches(fields.containsKey("sourceRelevantTreatmentApproach") ? stringToDrugClasses(
-                                values[fields.get("sourceRelevantTreatmentApproach")]) : Sets.newHashSet())
-                        .relevantTreatmentApproaches(fields.containsKey("relevantTreatmentApproach")
-                                ? stringToDrugClasses(values[fields.get("relevantTreatmentApproach")])
-                                : Sets.newHashSet())
+                        .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(values[fields.get(
+                                "treatmentApproachesDrugClass")]) : Sets.newHashSet())
+                        .treatmentApproachesTherapy(fields.containsKey("treatmentApproachesTherapy") ? stringToSet(values[fields.get(
+                                "treatmentApproachesTherapy")]) : Sets.newHashSet())
                         .build())
                 .onLabel(Boolean.parseBoolean(values[fields.get("onLabel")]))
                 .level(EvidenceLevel.valueOf(values[fields.get("level")]))
@@ -120,7 +149,7 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
-    public static String treatmentApproachToString(@NotNull Set<String> treatmentApproaches) {
+    public static String setToString(@NotNull Set<String> treatmentApproaches) {
         StringJoiner joiner = new StringJoiner(TREATMENT_APPROACH_DELIMITER);
         for (String url : treatmentApproaches) {
             joiner.add(url);
@@ -129,7 +158,7 @@ public final class ProtectEvidenceFile {
     }
 
     @NotNull
-    private static Set<String> stringToDrugClasses(@NotNull String fieldValue) {
+    private static Set<String> stringToSet(@NotNull String fieldValue) {
         return Sets.newHashSet(fieldValue.split(TREATMENT_APPROACH_DELIMITER));
     }
 
@@ -230,5 +259,4 @@ public final class ProtectEvidenceFile {
     private static Integer NullToInteger(@Nullable String value) {
         return value != null && !value.equals(Strings.EMPTY) ? Integer.valueOf(value) : null;
     }
-
 }

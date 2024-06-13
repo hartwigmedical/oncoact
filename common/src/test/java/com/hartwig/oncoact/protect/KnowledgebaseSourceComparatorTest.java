@@ -14,9 +14,9 @@ public class KnowledgebaseSourceComparatorTest {
 
     @Test
     public void canSortKnowledgebaseSources() {
-        KnowledgebaseSource source1 = create(Knowledgebase.CKB, "event 1", EvidenceType.ANY_MUTATION);
-        KnowledgebaseSource source2 = create(Knowledgebase.CKB, "event 1", EvidenceType.WILD_TYPE);
-        KnowledgebaseSource source3 = create(Knowledgebase.CKB, "event 2", EvidenceType.ANY_MUTATION);
+        KnowledgebaseSource source1 = create(Knowledgebase.CKB_EVIDENCE, "event 1", EvidenceType.ANY_MUTATION);
+        KnowledgebaseSource source2 = create(Knowledgebase.CKB_EVIDENCE, "event 1", EvidenceType.WILD_TYPE);
+        KnowledgebaseSource source3 = create(Knowledgebase.CKB_EVIDENCE, "event 2", EvidenceType.ANY_MUTATION);
         KnowledgebaseSource source4 = create(Knowledgebase.VICC_CGI, "event 1", EvidenceType.ANY_MUTATION);
 
         List<KnowledgebaseSource> sources = Lists.newArrayList(source1, source3, source2, source4);

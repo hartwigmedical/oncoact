@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
-import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
-import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
+import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpreterData;
+import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class VirusEvidence {
 
@@ -33,7 +35,8 @@ public class VirusEvidence {
     }
 
     @NotNull
-    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreter) {
+    public List<ProtectEvidence> evidence(@NotNull VirusInterpreterData virusInterpreter,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         List<AnnotatedVirus> hpv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.HPV);
         List<AnnotatedVirus> ebv = virusesWithInterpretation(virusInterpreter, VirusInterpretation.EBV);
 
@@ -45,8 +48,7 @@ public class VirusEvidence {
             switch (virus.type()) {
                 case HPV_POSITIVE: {
                     if (!hpv.isEmpty()) {
-                        ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(virus)
-                                .reported(reportHPV)
+                        ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(virus, diagnosticPatientData, reportHPV)
                                 .event(HPV_POSITIVE_EVENT)
                                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretVirus())
                                 .build();
@@ -56,8 +58,7 @@ public class VirusEvidence {
                 }
                 case EBV_POSITIVE: {
                     if (!ebv.isEmpty()) {
-                        ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(virus)
-                                .reported(reportEBV)
+                        ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(virus, diagnosticPatientData, reportEBV)
                                 .event(EBV_POSITIVE_EVENT)
                                 .eventIsHighDriver(EvidenceDriverLikelihood.interpretVirus())
                                 .build();

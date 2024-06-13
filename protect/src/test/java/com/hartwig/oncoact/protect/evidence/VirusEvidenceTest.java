@@ -35,7 +35,7 @@ public class VirusEvidenceTest {
 
         VirusEvidence virusEvidence = new VirusEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(hpv, ebv));
 
-        List<ProtectEvidence> evidences = virusEvidence.evidence(testRecord);
+        List<ProtectEvidence> evidences = virusEvidence.evidence(testRecord, null);
         assertEquals(2, evidences.size());
 
         // The test data has a reportable HPV virus

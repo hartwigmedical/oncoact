@@ -51,14 +51,14 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         allEvidences.addAll(reportedOffLabel);
 
         addTreatmentSection(document, allEvidences);
-        addTrialSection(document, reportedStudies);
-
-        document.add(clinicalEvidenceFunctions.note("Potential eligibility for DRUP is dependent on tumor type details therefore"
-                + " patients with certain tumor types may not be eligible for the DRUP study.\n"));
-        document.add(clinicalEvidenceFunctions.note("The iClusion database is used to annotate genomic events for potential clinical"
-                + " study eligibility. Please note that clinical study eligibility depends on multiple patient and tumor "
-                + "characteristics of which only the genomic events are considered in this report.\n"));
         document.add(clinicalEvidenceFunctions.noteEvidence());
+        addTrialSection(document, reportedStudies);
+        document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate "
+                + "genomic events for potential clinical study eligibility. Please note that clinical study eligibility "
+                + "depends on multiple patient and tumor characteristics of which only the genomic events are considered "
+                + "in this report. Therefore, although a study is shown, the patient may still not be eligible. "
+                + "When the information is available, clinical studies are filtered on gender."));
+
         document.add(clinicalEvidenceFunctions.noteEvidenceMatching());
     }
 
@@ -74,7 +74,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         boolean flagGermline = report.lamaPatientData().getReportSettings().getFlagGermlineOnReport();
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
-                ClinicalEvidenceFunctions.buildTreatmentMap(evidences, flagGermline, true, "study");
+                ClinicalEvidenceFunctions.buildTrialMap(evidences, flagGermline, true, "study");
         document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
                 onLabelTreatments,
                 contentWidth()));

@@ -7,11 +7,11 @@ import java.util.Random;
 
 import com.hartwig.lama.client.model.BiopsySite;
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.oncoact.patientreporter.PanelReport;
 import com.hartwig.oncoact.patientreporter.PatientReport;
 import com.hartwig.oncoact.patientreporter.QsFormNumber;
 import com.hartwig.oncoact.patientreporter.cfreport.ReportResources;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJsonInterpretation;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfPage;

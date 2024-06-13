@@ -35,9 +35,7 @@ public class ConsentFilterFunctionsTest {
         notifyGermlineVariants.put(germlineVariant, true);
 
         List<ReportableVariantWithNotify> variantsWithNotify =
-                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant),
-                        notifyGermlineVariants,
-                        true);
+                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant), notifyGermlineVariants, true);
         assertEquals(2, variantsWithNotify.size());
         assertEquals(1, variantsWithNotify.stream().filter(x -> x.variant().source() == ReportableVariantSource.GERMLINE).count());
         assertEquals(1, variantsWithNotify.stream().filter(x -> x.notifyVariant()).count());
@@ -47,17 +45,13 @@ public class ConsentFilterFunctionsTest {
         noNotifyGermlineVariants.put(germlineVariant, false);
 
         List<ReportableVariantWithNotify> variantsWithoutNotify =
-                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant),
-                        noNotifyGermlineVariants,
-                        true);
+                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant), noNotifyGermlineVariants, true);
         assertEquals(2, variantsWithoutNotify.size());
         assertEquals(0, variantsWithoutNotify.stream().filter(x -> x.variant().source() == ReportableVariantSource.GERMLINE).count());
         assertEquals(0, variantsWithoutNotify.stream().filter(x -> x.notifyVariant()).count());
 
         List<ReportableVariantWithNotify> noGermlineReporting =
-                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant),
-                        notifyGermlineVariants,
-                        false);
+                ConsentFilterFunctions.filterVariants(Lists.newArrayList(somaticVariant, germlineVariant), notifyGermlineVariants, false);
         assertEquals(1, noGermlineReporting.size());
         assertEquals(0, noGermlineReporting.stream().filter(x -> x.variant().source() == ReportableVariantSource.GERMLINE).count());
         assertEquals(0, noGermlineReporting.stream().filter(x -> x.notifyVariant()).count());
@@ -71,8 +65,8 @@ public class ConsentFilterFunctionsTest {
                 .reported(true)
                 .treatment(ImmutableTreatment.builder()
                         .name("TryMe")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet())
-                        .relevantTreatmentApproaches(Sets.newHashSet())
+                        .treatmentApproachesDrugClass(Sets.newHashSet())
+                        .treatmentApproachesTherapy(Sets.newHashSet())
                         .build())
                 .onLabel(true)
                 .level(EvidenceLevel.B)
@@ -85,14 +79,11 @@ public class ConsentFilterFunctionsTest {
                         .build()))
                 .build();
 
-        List<ProtectEvidence> withNotify = ConsentFilterFunctions.filterEvidenceForGermlineConsent(Lists.newArrayList(evidence),
-                false);
+        List<ProtectEvidence> withNotify = ConsentFilterFunctions.filterEvidenceForGermlineConsent(Lists.newArrayList(evidence), false);
         assertEquals(1, withNotify.size());
         assertEquals(0, withNotify.stream().filter(x -> x.germline()).count());
 
         //TODO; fix test
-        assertEquals(0,
-                ConsentFilterFunctions.filterEvidenceForGermlineConsent(Lists.newArrayList(evidence),
-                        true).size());
+        assertEquals(0, ConsentFilterFunctions.filterEvidenceForGermlineConsent(Lists.newArrayList(evidence), true).size());
     }
 }

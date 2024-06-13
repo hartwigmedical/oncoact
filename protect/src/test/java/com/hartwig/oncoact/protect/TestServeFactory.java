@@ -9,10 +9,10 @@ import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableCancerType;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
+import com.hartwig.serve.datamodel.Intervention;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.MutationType;
-import com.hartwig.serve.datamodel.Treatment;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.TumorCharacteristicType;
@@ -120,7 +120,11 @@ public final class TestServeFactory {
         return create(source,
                 "source event",
                 Sets.newHashSet(),
-                ImmutableTreatment.builder().name(Strings.EMPTY).build(),
+                ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("title")
+                        .countriesOfStudy(Sets.newHashSet("Netherlands"))
+                        .build(),
                 ImmutableCancerType.builder().name(Strings.EMPTY).doid(Strings.EMPTY).build(),
                 Sets.newHashSet(),
                 EvidenceLevel.D,
@@ -130,12 +134,12 @@ public final class TestServeFactory {
 
     @NotNull
     public static ActionableEvent create(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-            @NotNull Treatment treatment, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+            @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
             @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
         return new ActionableEventImpl(source,
                 sourceEvent,
                 sourceUrls,
-                treatment,
+                intervention,
                 applicableCancerType,
                 blacklistCancerTypes,
                 level,
@@ -152,7 +156,7 @@ public final class TestServeFactory {
         @NotNull
         private final Set<String> sourceUrls;
         @NotNull
-        private final Treatment treatment;
+        private final Intervention intervention;
         @NotNull
         private final CancerType applicableCancerType;
         @NotNull
@@ -165,12 +169,12 @@ public final class TestServeFactory {
         private final Set<String> evidenceUrls;
 
         public ActionableEventImpl(@NotNull Knowledgebase source, @NotNull String sourceEvent, @NotNull Set<String> sourceUrls,
-                @NotNull Treatment treatment, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
+                @NotNull Intervention intervention, @NotNull CancerType applicableCancerType, @NotNull Set<CancerType> blacklistCancerTypes,
                 @NotNull EvidenceLevel level, @NotNull EvidenceDirection direction, @NotNull Set<String> evidenceUrls) {
             this.source = source;
             this.sourceEvent = sourceEvent;
             this.sourceUrls = sourceUrls;
-            this.treatment = treatment;
+            this.intervention = intervention;
             this.applicableCancerType = applicableCancerType;
             this.blacklistCancerTypes = blacklistCancerTypes;
             this.level = level;
@@ -198,8 +202,8 @@ public final class TestServeFactory {
 
         @NotNull
         @Override
-        public Treatment treatment() {
-            return treatment;
+        public Intervention intervention() {
+            return intervention;
         }
 
         @NotNull
@@ -233,18 +237,25 @@ public final class TestServeFactory {
         }
 
         @Override
-        public boolean equals(final Object o) {
+        public String toString() {
+            return "ActionableEventImpl{" + "source=" + source + ", sourceEvent='" + sourceEvent + '\'' + ", sourceUrls=" + sourceUrls
+                    + ", intervention=" + intervention + ", applicableCancerType=" + applicableCancerType + ", blacklistCancerTypes="
+                    + blacklistCancerTypes + ", level=" + level + ", direction=" + direction + ", evidenceUrls=" + evidenceUrls + '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            final ActionableEventImpl that = (ActionableEventImpl) o;
-            return source == that.source && sourceEvent.equals(that.sourceEvent) && sourceUrls.equals(that.sourceUrls) && treatment.equals(
-                    that.treatment) && applicableCancerType.equals(that.applicableCancerType)
-                    && blacklistCancerTypes.equals(that.blacklistCancerTypes) && level == that.level && direction == that.direction
-                    && evidenceUrls.equals(that.evidenceUrls);
+            ActionableEventImpl that = (ActionableEventImpl) o;
+            return source == that.source && Objects.equals(sourceEvent, that.sourceEvent) && Objects.equals(sourceUrls, that.sourceUrls)
+                    && Objects.equals(intervention, that.intervention) && Objects.equals(applicableCancerType, that.applicableCancerType)
+                    && Objects.equals(blacklistCancerTypes, that.blacklistCancerTypes) && level == that.level && direction == that.direction
+                    && Objects.equals(evidenceUrls, that.evidenceUrls);
         }
 
         @Override
@@ -252,19 +263,12 @@ public final class TestServeFactory {
             return Objects.hash(source,
                     sourceEvent,
                     sourceUrls,
-                    treatment,
+                    intervention,
                     applicableCancerType,
                     blacklistCancerTypes,
                     level,
                     direction,
                     evidenceUrls);
-        }
-
-        @Override
-        public String toString() {
-            return "ActionableEventImpl{" + "source=" + source + ", sourceEvent='" + sourceEvent + '\'' + ", sourceUrls=" + sourceUrls
-                    + ", treatment=" + treatment + ", applicableCancerType=" + applicableCancerType + ", blacklistCancerTypes="
-                    + blacklistCancerTypes + ", level=" + level + ", direction=" + direction + ", evidenceUrls=" + evidenceUrls + '}';
         }
     }
 }

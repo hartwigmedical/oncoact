@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.diagnosticsilo;
+package com.hartwig.oncoact.diagnosticsilo;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;

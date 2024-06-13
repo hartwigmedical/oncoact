@@ -1,2 +1,3 @@
-hlaAllele	source	sourceEvent	sourceUrls	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
-A*02	ICLUSION	A*02	http	MNivolumab			All cancer types	X	Hematologic cancer;2531	A	RESPONSIVE	http
+hlaAllele	source	sourceEvent	sourceUrls	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	treatment	treatmentApproachesDrugClass	treatmentApproachesTherapy	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
+A*02	CKB_TRIAL	A*02	http	NCT1	study1	study1	female	Netherlands	Nivolumab			Skin melanoma	X	Hematologic cancer;2531	A	RESPONSIVE	http
+A*02	CKB_EVIDENCE	A*02	http						Nivolumab			All cancer types	X	Hematologic cancer;2531	A	RESPONSIVE	http

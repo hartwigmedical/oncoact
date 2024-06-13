@@ -3,7 +3,6 @@ package com.hartwig.oncoact.protect;
 import com.google.common.collect.Sets;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
 
 import org.apache.logging.log4j.util.Strings;
@@ -20,7 +19,7 @@ public final class TestProtectFactory {
                 .event(Strings.EMPTY)
                 .germline(false)
                 .reported(true)
-                .treatment(ImmutableTreatment.builder().name(Strings.EMPTY).build())
+                .matchGender(true)
                 .onLabel(false)
                 .level(EvidenceLevel.A)
                 .direction(EvidenceDirection.RESPONSIVE)

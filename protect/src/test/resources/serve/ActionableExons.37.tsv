@@ -1,2 +1,3 @@
-gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
-EGFR	7	55241707	55279321	INFRAME	VICC_CGI	exon 21		Erlotinib			Lung Adeno	X		B	RESISTANT	http
+gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	treatment	treatmentApproachesDrugClass	treatmentApproachesTherapy	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
+EGFR	7	55241707	55279321	INFRAME	CKB_TRIAL	exon 21		NCT1	study1			Belgium	Erlotinib			Pancreas	X		B	RESISTANT	http
+EGFR	7	55241707	55279321	INFRAME	CKB_EVIDENCE	exon 21							Erlotinib			Lung Adeno	X		B	RESISTANT	http

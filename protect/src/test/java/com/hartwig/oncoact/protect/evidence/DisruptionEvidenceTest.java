@@ -40,7 +40,7 @@ public class DisruptionEvidenceTest {
         HomozygousDisruption nonMatch = create("other gene");
 
         List<ProtectEvidence> evidences =
-                disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch), Lists.newArrayList());
+                disruptionEvidence.evidence(Lists.newArrayList(matchAmp, matchInact, nonMatch), Lists.newArrayList(), null);
 
         assertEquals(1, evidences.size());
         ProtectEvidence evidence = evidences.get(0);

@@ -5,17 +5,19 @@ import static com.hartwig.oncoact.database.Tables.PROTECT;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 
 import com.google.common.collect.Iterables;
 import com.hartwig.oncoact.protect.KnowledgebaseSource;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.ActionabilityIntervation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
-import org.jooq.InsertValuesStep21;
+import org.jooq.InsertValuesStepN;
 
 @SuppressWarnings("rawtypes")
 class ProtectDAO {
@@ -36,7 +38,7 @@ class ProtectDAO {
 
         Timestamp timestamp = new Timestamp(new Date().getTime());
         for (List<ProtectEvidence> batch : Iterables.partition(evidence, DB_BATCH_INSERT_SIZE)) {
-            InsertValuesStep21 inserter = context.insertInto(PROTECT,
+            InsertValuesStepN inserter = context.insertInto(PROTECT,
                     PROTECT.SAMPLEID,
                     PROTECT.GENE,
                     PROTECT.TRANSCRIPT,
@@ -45,9 +47,15 @@ class ProtectDAO {
                     PROTECT.EVENTISHIGHDRIVER,
                     PROTECT.GERMLINE,
                     PROTECT.REPORTED,
+                    PROTECT.STUDYNCTID,
+                    PROTECT.STUDYTITLE,
+                    PROTECT.STUDYACRONYM,
+                    PROTECT.STUDYGENDER,
+                    PROTECT.COUNTRIESOFSTUDY,
+                    PROTECT.MATCHGENDER,
                     PROTECT.TREATMENT,
-                    PROTECT.SOURCETREATMENTAPPROACH,
-                    PROTECT.TREATMENTAPPROACH,
+                    PROTECT.TREATMENTAPPROACHESDRUGCLASS,
+                    PROTECT.TREATMENTAPPROACHESTHERAPY,
                     PROTECT.ONLABEL,
                     PROTECT.LEVEL,
                     PROTECT.DIRECTION,
@@ -63,7 +71,7 @@ class ProtectDAO {
         }
     }
 
-    private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStep21 inserter, @NotNull String sample,
+    private static void addRecord(@NotNull Timestamp timestamp, @NotNull InsertValuesStepN inserter, @NotNull String sample,
             @NotNull ProtectEvidence evidence) {
         for (KnowledgebaseSource source : evidence.sources()) {
             StringJoiner sourceUrlJoiner = new StringJoiner(",");
@@ -85,9 +93,17 @@ class ProtectDAO {
                     evidence.eventIsHighDriver(),
                     evidence.germline(),
                     evidence.reported(),
-                    evidence.treatment().name(),
-                    treatmentApproachToString(evidence.treatment().sourceRelevantTreatmentApproaches()),
-                    treatmentApproachToString(evidence.treatment().relevantTreatmentApproaches()),
+                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyNctId() : null,
+                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyTitle() : null,
+                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null,
+                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null,
+                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy() : null,
+                    evidence.matchGender(),
+                    ActionabilityIntervation.therapyName(evidence.clinicalTrial(), evidence.treatment()),
+                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
+                            .treatmentApproachesDrugClass()) : null,
+                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
+                            .treatmentApproachesTherapy()) : null,
                     evidence.onLabel(),
                     evidence.level().toString(),
                     evidence.direction().toString(),

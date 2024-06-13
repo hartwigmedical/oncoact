@@ -19,8 +19,8 @@ import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantEffect;
 import com.hartwig.oncoact.patientreporter.algo.CurationFunctions;
-import com.hartwig.oncoact.patientreporter.util.Genes;
 import com.hartwig.oncoact.util.Formats;
+import com.hartwig.oncoact.util.Genes;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 

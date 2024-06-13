@@ -25,11 +25,11 @@ public class HlaEvidenceTest {
         HlaEvidence hlaEvidence = new HlaEvidence(TestPersonalizedEvidenceFactory.create(), Lists.newArrayList(hla));
 
         LilacRecord lilacRecordActionable = createTestLilacRecord("Allele 1");
-        List<ProtectEvidence> evidenceActionable = hlaEvidence.evidence(lilacRecordActionable);
+        List<ProtectEvidence> evidenceActionable = hlaEvidence.evidence(lilacRecordActionable, null);
         assertEquals(1, evidenceActionable.size());
 
         LilacRecord lilacRecordNonActionable = createTestLilacRecord("Allele 2");
-        List<ProtectEvidence> evidenceNonActionable = hlaEvidence.evidence(lilacRecordNonActionable);
+        List<ProtectEvidence> evidenceNonActionable = hlaEvidence.evidence(lilacRecordNonActionable, null);
         assertEquals(0, evidenceNonActionable.size());
     }
 

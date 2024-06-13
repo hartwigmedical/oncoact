@@ -27,7 +27,7 @@ public class ProtectEvidenceFileTest {
         ProtectEvidence evidence1 = findByTreatmentAndEvent(evidences, "Cobimetinib + Vemurafenib", "p.Val600Glu");
         assertEquals(1, evidence1.sources().size());
 
-        KnowledgebaseSource evidence1Source = findBySource(evidence1.sources(), Knowledgebase.VICC_CGI);
+        KnowledgebaseSource evidence1Source = findBySource(evidence1.sources(), Knowledgebase.CKB_EVIDENCE);
         assertEquals("hotspot", evidence1Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence1Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence1Source.evidenceType());
@@ -37,7 +37,7 @@ public class ProtectEvidenceFileTest {
         ProtectEvidence evidence2 = findByTreatmentAndEvent(evidences, "Dabrafenib", "p.Val600Glu");
         assertEquals(1, evidence2.sources().size());
 
-        KnowledgebaseSource evidence2Source = findBySource(evidence2.sources(), Knowledgebase.VICC_CGI);
+        KnowledgebaseSource evidence2Source = findBySource(evidence2.sources(), Knowledgebase.CKB_EVIDENCE);
         assertEquals("hotspot", evidence2Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA", "https://www.google.com/#q=NCCN"), evidence2Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence2Source.evidenceType());
@@ -47,14 +47,14 @@ public class ProtectEvidenceFileTest {
         ProtectEvidence evidence3 = findByTreatmentAndEvent(evidences, "Dabrafenib + Trametinib", "p.Val600Glu");
         assertEquals(2, evidence3.sources().size());
 
-        KnowledgebaseSource evidence3Source1 = findBySource(evidence3.sources(), Knowledgebase.VICC_CGI);
+        KnowledgebaseSource evidence3Source1 = findBySource(evidence3.sources(), Knowledgebase.CKB_EVIDENCE);
         assertEquals("hotspot", evidence3Source1.sourceEvent());
         assertTrue(evidence3Source1.sourceUrls().isEmpty());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence3Source1.evidenceType());
         assertEquals(Sets.newHashSet("http://www.ncbi.nlm.nih.gov/pubmed/25399551", "http://www.ncbi.nlm.nih.gov/pubmed/27283860"),
                 evidence3Source1.evidenceUrls());
 
-        KnowledgebaseSource evidence3Source2 = findBySource(evidence3.sources(), Knowledgebase.VICC_CIVIC);
+        KnowledgebaseSource evidence3Source2 = findBySource(evidence3.sources(), Knowledgebase.CKB_TRIAL);
         assertEquals("hotspot", evidence3Source2.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence3Source2.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence3Source2.evidenceType());
@@ -64,7 +64,7 @@ public class ProtectEvidenceFileTest {
         ProtectEvidence evidence4 = findByTreatmentAndEvent(evidences, "Vemurafenib", "p.Val600Glu");
         assertEquals(1, evidence4.sources().size());
 
-        KnowledgebaseSource evidence4Source = findBySource(evidence4.sources(), Knowledgebase.VICC_CGI);
+        KnowledgebaseSource evidence4Source = findBySource(evidence4.sources(), Knowledgebase.CKB_EVIDENCE);
         assertEquals("hotspot", evidence4Source.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence4Source.sourceUrls());
         assertEquals(EvidenceType.HOTSPOT_MUTATION, evidence4Source.evidenceType());
@@ -74,7 +74,7 @@ public class ProtectEvidenceFileTest {
         ProtectEvidence evidence5 = findByTreatmentAndEvent(evidences, "Vemurafenib", "some mutation");
         assertEquals(1, evidence5.sources().size());
 
-        KnowledgebaseSource evidence5Source1 = findBySource(evidence5.sources(), Knowledgebase.VICC_CGI);
+        KnowledgebaseSource evidence5Source1 = findBySource(evidence5.sources(), Knowledgebase.CKB_EVIDENCE);
         assertEquals("hotspot", evidence5Source1.sourceEvent());
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence5Source1.sourceUrls());
         assertEquals(EvidenceType.SIGNATURE, evidence5Source1.evidenceType());

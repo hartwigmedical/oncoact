@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.hartwig.lama.client.model.PatientReporterData;
+import com.hartwig.oncoact.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.parser.CliAndPropertyParser;
 import com.hartwig.oncoact.patientreporter.cfreport.CFReportWriter;
 import com.hartwig.oncoact.patientreporter.correction.Correction;
-import com.hartwig.oncoact.patientreporter.diagnosticsilo.DiagnosticSiloJson;
 import com.hartwig.oncoact.patientreporter.lama.LamaJson;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReport;
 import com.hartwig.oncoact.patientreporter.panel.PanelFailReporter;

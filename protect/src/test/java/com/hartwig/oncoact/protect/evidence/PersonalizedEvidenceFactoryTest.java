@@ -3,6 +3,7 @@ package com.hartwig.oncoact.protect.evidence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -15,7 +16,7 @@ import com.hartwig.serve.datamodel.CancerType;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableCancerType;
-import com.hartwig.serve.datamodel.ImmutableTreatment;
+import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
 import com.hartwig.serve.datamodel.Knowledgebase;
 import com.hartwig.serve.datamodel.characteristic.ActionableCharacteristic;
 import com.hartwig.serve.datamodel.characteristic.ImmutableActionableCharacteristic;
@@ -55,6 +56,32 @@ public class PersonalizedEvidenceFactoryTest {
         assertFalse(factoryBlacklisted.isOnLabel(hotspotBlacklisted.applicableCancerType(),
                 hotspotBlacklisted.blacklistCancerTypes(),
                 "treatment"));
+    }
+
+    @Test
+    public void canDetermineMatchGender() {
+        assertNull(PersonalizedEvidenceFactory.matchGender(null, null));
+        assertNull(PersonalizedEvidenceFactory.matchGender("both", null));
+        assertNull(PersonalizedEvidenceFactory.matchGender(null, "female"));
+
+        assertTrue(PersonalizedEvidenceFactory.matchGender("female", "female"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("male", "male"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("both", "female"));
+        assertTrue(PersonalizedEvidenceFactory.matchGender("both", "male"));
+
+        assertFalse(PersonalizedEvidenceFactory.matchGender("female", "male"));
+        assertFalse(PersonalizedEvidenceFactory.matchGender("male", "female"));
+    }
+
+    @Test
+    public void canDetermineReportable() {
+        assertTrue(PersonalizedEvidenceFactory.isReportable(true, true));
+        assertTrue(PersonalizedEvidenceFactory.isReportable(null, true));
+
+        assertFalse(PersonalizedEvidenceFactory.isReportable(false, true));
+        assertFalse(PersonalizedEvidenceFactory.isReportable(false, false));
+        assertFalse(PersonalizedEvidenceFactory.isReportable(null, false));
+
     }
 
     @Test
@@ -133,13 +160,13 @@ public class PersonalizedEvidenceFactoryTest {
             blacklist.add(ImmutableCancerType.builder().name(blacklistCancerType).doid(blacklistDoid).build());
         }
 
-        ActionableEvent event = TestServeFactory.create(Knowledgebase.CKB,
+        ActionableEvent event = TestServeFactory.create(Knowledgebase.CKB_EVIDENCE,
                 "amp",
                 Sets.newHashSet(),
-                ImmutableTreatment.builder()
-                        .name("treatment A")
-                        .sourceRelevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
-                        .relevantTreatmentApproaches(Sets.newHashSet("drugClasses"))
+                ImmutableClinicalTrial.builder()
+                        .studyNctId("nct1")
+                        .studyTitle("title")
+                        .countriesOfStudy(Sets.newHashSet("Netherlands"))
                         .build(),
                 ImmutableCancerType.builder().name(cancerType).doid(doid).build(),
                 blacklist,

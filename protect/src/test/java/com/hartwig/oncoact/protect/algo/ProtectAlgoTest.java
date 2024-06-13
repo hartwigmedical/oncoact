@@ -19,14 +19,14 @@ public class ProtectAlgoTest {
     public void canRunProtectAlgoOnMinimalTestData() {
         ProtectAlgo algo = createTestAlgo();
 
-        assertNotNull(algo.run(TestOrangeFactory.createMinimalTestOrangeRecord()));
+        assertNotNull(algo.run(TestOrangeFactory.createMinimalTestOrangeRecord(), null));
     }
 
     @Test
     public void canRunProtectAlgoOnProperTestData() {
         ProtectAlgo algo = createTestAlgo();
 
-        assertNotNull(algo.run(TestOrangeFactory.createProperTestOrangeRecord()));
+        assertNotNull(algo.run(TestOrangeFactory.createProperTestOrangeRecord(), null));
     }
 
     @NotNull

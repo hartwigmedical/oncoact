@@ -79,16 +79,11 @@ public class ExplanationChapter implements ReportChapter {
                 .add(createParaGraphWithLinkTwo("\nThe Clinical Knowledgebase (",
                         "CKB",
                         "https://ckbhome.jax.org/",
-                        ") is used to annotate genomic events with clinical evidence. The evidence is gathered from CKB without "
+                        ") is used to annotate genomic events with clinical evidence and/or clinical studies. "
+                                + "The evidence and/or clinical studies are gathered from CKB without "
                                 + "further checks or interpretation. More details about CKB can be found in their ",
                         "https://ckbhome.jax.org/about/glossaryOfTerms",
-                        "Glossary Of Terms."))
-
-                .add(createParaGraphWithLinkTwo("\nThe ",
-                        "iClusion database",
-                        "https://www.trial-eye.com/",
-                        " is used to annotate genomic events for potential clinical study eligibility. The studies are gathered "
-                                + "from the iClusion database without further checks or interpretation. \n")));
+                        "Glossary Of Terms.")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell()
                 .add(createContentDiv(new String[] {

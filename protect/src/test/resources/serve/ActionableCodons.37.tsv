@@ -1,2 +1,3 @@
-gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	treatment	sourceRelevantTreatmentApproaches	relevantTreatmentApproaches	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
-BRAF	7	140453136	140453137	MISSENSE	VICC_CGI	600X		Vemurafenib			Skin Melanoma	X		A	RESPONSIVE	http
+gene	chromosome	start	end	applicableMutationType	source	sourceEvent	sourceUrls	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	treatment	treatmentApproachesDrugClass	treatmentApproachesTherapy	applicableCancerType	applicableDoid	blacklistCancerTypes	level	direction	evidenceUrls
+BRAF	7	140453136	140453137	MISSENSE	CKB_TRIAL	600X	NCT1	study1	study1		netherlands		Vemurafenib			Breast cancer	X		A	RESPONSIVE	http
+BRAF	7	140453136	140453137	MISSENSE	CKB_EVIDENCE	600X							Vemurafenib			Skin Melanoma	X		A	RESPONSIVE	http

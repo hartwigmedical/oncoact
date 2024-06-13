@@ -2,6 +2,7 @@ package com.hartwig.oncoact.protect;
 
 import java.util.Set;
 
+import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.Treatment;
@@ -33,7 +34,13 @@ public abstract class ProtectEvidence {
 
     public abstract boolean reported();
 
-    @NotNull
+    @Nullable
+    public abstract ClinicalTrial clinicalTrial();
+
+    @Nullable
+    public abstract Boolean matchGender();
+
+    @Nullable
     public abstract Treatment treatment();
 
     public abstract boolean onLabel();

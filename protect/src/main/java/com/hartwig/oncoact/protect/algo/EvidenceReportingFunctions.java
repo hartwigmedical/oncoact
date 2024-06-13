@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class EvidenceReportingFunctions {
 
-    private static final Set<Knowledgebase> TRIAL_SOURCES = Sets.newHashSet(Knowledgebase.ICLUSION);
+    private static final Set<Knowledgebase> TRIAL_SOURCES = Sets.newHashSet(Knowledgebase.CKB_TRIAL);
 
     private EvidenceReportingFunctions() {
     }
@@ -49,10 +49,7 @@ public final class EvidenceReportingFunctions {
                         .sources(knowledgebaseSourceSort)
                         .build());
             } else {
-                result.add(ImmutableProtectEvidence.builder()
-                        .from(evidence)
-                        .sources(knowledgebaseSourceSort)
-                        .build());
+                result.add(ImmutableProtectEvidence.builder().from(evidence).sources(knowledgebaseSourceSort).build());
             }
         }
         return result;
@@ -91,7 +88,7 @@ public final class EvidenceReportingFunctions {
                     .collect(Collectors.toList())));
 
             result.addAll(reportHighestPerEventTreatmentDirection(evidences.stream()
-                    .filter(x -> !x.direction().isResistant() &&  !x.direction().isResponsive())
+                    .filter(x -> !x.direction().isResistant() && !x.direction().isResponsive())
                     .filter(x -> EvidenceKey.create(x).equals(event))
                     .collect(Collectors.toList())));
         }

@@ -10,7 +10,9 @@ import com.hartwig.hmftools.datamodel.purple.PurpleVariant;
 import com.hartwig.hmftools.datamodel.purple.PurpleVariantType;
 import com.hartwig.hmftools.datamodel.purple.Variant;
 import com.hartwig.oncoact.protect.EventGenerator;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.Genes;
 import com.hartwig.oncoact.variant.DriverInterpretation;
 import com.hartwig.oncoact.variant.ReportableVariant;
 import com.hartwig.oncoact.variant.ReportableVariantFactory;
@@ -21,6 +23,7 @@ import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.serve.datamodel.hotspot.ActionableHotspot;
 import com.hartwig.serve.datamodel.range.ActionableRange;
+import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,22 +54,22 @@ public class VariantEvidence {
         this.exons = exons;
         this.genes = genes.stream()
                 .filter(x -> x.event() == GeneEvent.ACTIVATION || x.event() == GeneEvent.INACTIVATION
-                        || x.event() == GeneEvent.ANY_MUTATION)
+                        || x.event() == GeneEvent.ABSENCE_OF_PROTEIN || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
     @NotNull
     public List<ProtectEvidence> evidence(@NotNull Collection<ReportableVariant> reportableGermline,
             @NotNull Collection<ReportableVariant> reportableSomatic, @NotNull Collection<PurpleVariant> allSomaticVariants,
-            @Nullable Collection<PurpleVariant> allGermlineVariants) {
+            @Nullable Collection<PurpleVariant> allGermlineVariants, @Nullable PatientInformationResponse diagnosticPatientData) {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ReportableVariant reportableVariant : ReportableVariantFactory.mergeVariantLists(reportableGermline, reportableSomatic)) {
-            evidences.addAll(evidence(reportableVariant));
+            evidences.addAll(evidence(reportableVariant, diagnosticPatientData));
         }
 
         for (PurpleVariant somaticVariant : ReportableVariantFactory.mergeAllVariantLists(allSomaticVariants, allGermlineVariants)) {
             if (!somaticVariant.reported()) {
-                evidences.addAll(evidence(somaticVariant));
+                evidences.addAll(evidence(somaticVariant, diagnosticPatientData));
             }
         }
 
@@ -74,7 +77,7 @@ public class VariantEvidence {
     }
 
     @NotNull
-    private List<ProtectEvidence> evidence(@NotNull Variant variant) {
+    private List<ProtectEvidence> evidence(@NotNull Variant variant, @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean mayReport;
         DriverInterpretation driverInterpretation;
 
@@ -90,25 +93,38 @@ public class VariantEvidence {
         List<ProtectEvidence> evidences = Lists.newArrayList();
         for (ActionableHotspot hotspot : hotspots) {
             if (hotspotMatch(variant, hotspot)) {
-                evidences.add(evidence(variant, hotspot, mayReport, "hotspot"));
+                evidences.add(evidence(variant, hotspot, mayReport, "hotspot", diagnosticPatientData));
             }
         }
 
         for (ActionableRange codon : codons) {
             if (rangeMatch(variant, codon)) {
-                evidences.add(evidence(variant, codon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "codon"));
+                evidences.add(evidence(variant,
+                        codon,
+                        mayReport && driverInterpretation == DriverInterpretation.HIGH,
+                        "codon",
+                        diagnosticPatientData));
             }
         }
 
         for (ActionableRange exon : exons) {
             if (rangeMatch(variant, exon)) {
-                evidences.add(evidence(variant, exon, mayReport && driverInterpretation == DriverInterpretation.HIGH, "exon"));
+                evidences.add(evidence(variant,
+                        exon,
+                        mayReport && driverInterpretation == DriverInterpretation.HIGH,
+                        "exon",
+                        diagnosticPatientData));
             }
         }
 
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
-                evidences.add(evidence(variant, gene, mayReport && driverInterpretation == DriverInterpretation.HIGH, "gene"));
+                boolean report = mayReport && driverInterpretation == DriverInterpretation.HIGH;
+                EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(gene, null);
+                if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                    report = Genes.MSI_GENES.contains(gene.gene());
+                }
+                evidences.add(evidence(variant, gene, report, "gene", diagnosticPatientData));
             }
         }
 
@@ -116,7 +132,8 @@ public class VariantEvidence {
     }
 
     @NotNull
-    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report, @NotNull String range) {
+    private ProtectEvidence evidence(@NotNull Variant variant, @NotNull ActionableEvent actionable, boolean report, @NotNull String range,
+            @Nullable PatientInformationResponse diagnosticPatientData) {
         boolean isGermline;
         DriverInterpretation driverInterpretation;
         String transcript;
@@ -141,13 +158,12 @@ public class VariantEvidence {
             throw new IllegalArgumentException(String.format("Variant of type '%s' not supported", variant.getClass().getName()));
         }
 
-        return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank)
+        return personalizedEvidenceFactory.evidenceBuilderRange(actionable, range, rangeRank, diagnosticPatientData, report)
                 .gene(variant.gene())
                 .transcript(transcript)
                 .isCanonical(isCanonical)
                 .event(EventGenerator.variantEvent(variant))
                 .germline(isGermline)
-                .reported(report)
                 .eventIsHighDriver(driverInterpretation == null ? null : EvidenceDriverLikelihood.interpretVariant(driverInterpretation))
                 .build();
     }
@@ -177,7 +193,8 @@ public class VariantEvidence {
     }
 
     private static boolean geneMatch(@NotNull Variant variant, @NotNull ActionableGene gene) {
-        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION;
+        assert gene.event() == GeneEvent.ACTIVATION || gene.event() == GeneEvent.INACTIVATION || gene.event() == GeneEvent.ANY_MUTATION
+                || gene.event() == GeneEvent.ABSENCE_OF_PROTEIN;
 
         return gene.gene().equals(variant.gene()) && meetsMutationType(variant, MutationType.ANY);
     }

@@ -30,18 +30,18 @@ public class EvidenceConsolidationTest {
 
         ProtectEvidence evidence1 = builder().treatment(ImmutableTreatment.builder()
                 .name(treatment1)
-                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                .treatmentApproachesTherapy(Sets.newHashSet("A"))
                 .build()).sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase1))).build();
         ProtectEvidence evidence2 = builder().treatment(ImmutableTreatment.builder()
                 .name(treatment1)
-                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                .treatmentApproachesTherapy(Sets.newHashSet("A"))
                 .build()).sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase2))).build();
         ProtectEvidence evidence3 = builder().treatment(ImmutableTreatment.builder()
                 .name(treatment2)
-                .sourceRelevantTreatmentApproaches(Sets.newHashSet("AA"))
-                .relevantTreatmentApproaches(Sets.newHashSet("A"))
+                .treatmentApproachesDrugClass(Sets.newHashSet("AA"))
+                .treatmentApproachesTherapy(Sets.newHashSet("A"))
                 .build()).sources(Sets.newHashSet(TestProtectFactory.createSource(knowledgebase2))).build();
 
         List<ProtectEvidence> consolidated = EvidenceConsolidation.consolidate(Lists.newArrayList(evidence1, evidence2, evidence3));

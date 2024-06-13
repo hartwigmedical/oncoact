@@ -1,4 +1,4 @@
-package com.hartwig.oncoact.patientreporter.diagnosticsilo;
+package com.hartwig.oncoact.diagnosticsilo;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

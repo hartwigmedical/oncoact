@@ -26,6 +26,7 @@ import com.hartwig.hmftools.datamodel.purple.ImmutablePurpleTranscriptImpact;
 import com.hartwig.hmftools.datamodel.purple.PurpleCodingEffect;
 import com.hartwig.hmftools.datamodel.purple.PurpleGainLoss;
 import com.hartwig.hmftools.datamodel.purple.PurpleMicrosatelliteStatus;
+import com.hartwig.hmftools.datamodel.purple.PurpleTumorMutationalStatus;
 import com.hartwig.hmftools.datamodel.virus.AnnotatedVirus;
 import com.hartwig.hmftools.datamodel.virus.VirusInterpretation;
 import com.hartwig.hmftools.datamodel.virus.VirusLikelihoodType;
@@ -331,7 +332,12 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, 17, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion,
+                PurpleTumorMutationalStatus.HIGH,
+                17,
+                actionabilityMap,
+                Sets.newHashSet(),
+                Sets.newHashSet());
 
         assertEquals(1, conclusion.size());
         assertEquals(conclusion.get(0), "- TMB (17) TMB");
@@ -343,7 +349,12 @@ public class ConclusionAlgoTest {
         Map<ActionabilityKey, ActionabilityEntry> actionabilityMap =
                 create("High-TMB", TypeAlteration.POSITIVE, "High-TMB", Condition.ALWAYS, "TMB");
 
-        ConclusionAlgo.generateTMBConclusion(conclusion, 13, actionabilityMap, Sets.newHashSet(), Sets.newHashSet());
+        ConclusionAlgo.generateTMBConclusion(conclusion,
+                PurpleTumorMutationalStatus.LOW,
+                9,
+                actionabilityMap,
+                Sets.newHashSet(),
+                Sets.newHashSet());
         assertEquals(0, conclusion.size());
     }
 
