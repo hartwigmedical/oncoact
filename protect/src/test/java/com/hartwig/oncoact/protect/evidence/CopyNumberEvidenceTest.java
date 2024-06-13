@@ -83,7 +83,7 @@ public class CopyNumberEvidenceTest {
                 Lists.newArrayList(),
                 null);
 
-        assertEquals(5, evidences.size());
+        assertEquals(7, evidences.size());
 
         ProtectEvidence ampEvidence = find(evidences, geneAmp);
         assertTrue(ampEvidence.reported());
@@ -109,6 +109,16 @@ public class CopyNumberEvidenceTest {
         assertFalse(absenceOfProteinUnreport.reported());
         assertEquals(absenceOfProteinUnreport.sources().size(), 1);
         assertEquals(EvidenceType.ABSENCE_OF_PROTEIN, absenceOfProteinUnreport.sources().iterator().next().evidenceType());
+
+        ProtectEvidence presenceOfProteinUnreport = find(evidences, "MLH1");
+        assertFalse(presenceOfProteinUnreport.reported());
+        assertEquals(presenceOfProteinUnreport.sources().size(), 1);
+        assertEquals(EvidenceType.PRESENCE_OF_PROTEIN, presenceOfProteinUnreport.sources().iterator().next().evidenceType());
+
+        ProtectEvidence presenceOfProteinUnreport2 = find(evidences, "BRAF");
+        assertFalse(presenceOfProteinUnreport2.reported());
+        assertEquals(presenceOfProteinUnreport2.sources().size(), 1);
+        assertEquals(EvidenceType.PRESENCE_OF_PROTEIN, presenceOfProteinUnreport2.sources().iterator().next().evidenceType());
 
     }
 

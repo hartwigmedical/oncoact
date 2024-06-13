@@ -32,9 +32,9 @@ public class CopyNumberEvidence {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.AMPLIFICATION
-                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.DELETION
-                        || x.event() == GeneEvent.UNDEREXPRESSION || x.event() == GeneEvent.ABSENCE_OF_PROTEIN
-                        || x.event() == GeneEvent.ANY_MUTATION)
+                        || x.event() == GeneEvent.OVEREXPRESSION || x.event() == GeneEvent.PRESENCE_OF_PROTEIN
+                        || x.event() == GeneEvent.DELETION || x.event() == GeneEvent.UNDEREXPRESSION
+                        || x.event() == GeneEvent.ABSENCE_OF_PROTEIN || x.event() == GeneEvent.ANY_MUTATION)
                 .collect(Collectors.toList());
     }
 
@@ -73,8 +73,10 @@ public class CopyNumberEvidence {
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
-                if (type.equals(EvidenceType.PRESENCE_OF_PROTEIN) || type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
                     report = Genes.MSI_GENES.contains(actionable.gene());
+                } else if (type.equals(EvidenceType.PRESENCE_OF_PROTEIN)) {
+                    report = false;
                 }
 
                 ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, report)
@@ -95,6 +97,7 @@ public class CopyNumberEvidence {
         switch (actionable.event()) {
             case AMPLIFICATION:
             case OVEREXPRESSION:
+            case PRESENCE_OF_PROTEIN:
                 return reportable.interpretation() == CopyNumberInterpretation.FULL_GAIN
                         || reportable.interpretation() == CopyNumberInterpretation.PARTIAL_GAIN;
             case INACTIVATION:
