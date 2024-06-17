@@ -32,12 +32,12 @@
 
         <common.version>local-SNAPSHOT</common.version>
 
-        <oncoact-database.version>1.0</oncoact-database.version>
-        <patient-reporter.version>8.0.2</patient-reporter.version>
-        <protect.version>3.0.1</protect.version>
-        <rose.version>2.0.1</rose.version>
+        <oncoact-database.version>1.1</oncoact-database.version>
+        <patient-reporter.version>8.0.3</patient-reporter.version>
+        <protect.version>3.0.2</protect.version>
+        <rose.version>2.0.2</rose.version>
 
-        <serve.version>4.0.1-beta.2</serve.version>
+        <serve.version>4.0.1</serve.version>
         <orange-datamodel.version>1.3.3</orange-datamodel.version>
         <lama-client.version>2.3.7</lama-client.version>
         <silo-diagnostic-client.version>3.0.6</silo-diagnostic-client.version>
