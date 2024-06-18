@@ -123,7 +123,7 @@ public class VariantEvidence {
                 boolean reportInterpret = false;
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(gene, null);
                 if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
-                    reportInterpret = report & Genes.MSI_GENES.contains(gene.gene());
+                    reportInterpret = report && Genes.MSI_GENES.contains(gene.gene());
                 } else {
                     reportInterpret = report;
                 }
