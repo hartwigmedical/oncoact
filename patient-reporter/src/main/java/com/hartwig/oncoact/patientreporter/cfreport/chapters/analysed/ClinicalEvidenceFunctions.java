@@ -228,7 +228,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 50, 170, 50, 80, 170 },
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 60, 150, 80, 80, 160 },
                 new Cell[] { tableUtil.createHeaderCell("nct ID", 2), tableUtil.createHeaderCell("Trial", 1),
                         tableUtil.createHeaderCell("Treatment", 1), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Genomic event", 1) },
@@ -307,7 +307,10 @@ public class ClinicalEvidenceFunctions {
                                     .setVerticalAlignment(VerticalAlignment.TOP));
                             table.addCell(tableUtil.createContentCellRowSpan(evidenceItems.createClinicalTrialLink(clinicalTrial.studyNctId()),
                                     evidencesTrials.size()));
-                            String shortenTrial = EvidenceItems.shortenTrialName(clinicalTrial.studyTitle());
+                            String shortenTrial = clinicalTrial.studyAcronym() != null
+                                    ? clinicalTrial.studyAcronym()
+                                    : EvidenceItems.shortenTrialName(clinicalTrial.studyTitle());
+                            assert shortenTrial != null;
                             table.addCell(tableUtil.createContentCellRowSpan(shortenTrial, evidencesTrials.size()));
                             addTrial = false;
                         }
