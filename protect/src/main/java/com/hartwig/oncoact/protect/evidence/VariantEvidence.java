@@ -120,11 +120,15 @@ public class VariantEvidence {
         for (ActionableGene gene : genes) {
             if (geneMatch(variant, gene)) {
                 boolean report = mayReport && driverInterpretation == DriverInterpretation.HIGH;
+                boolean reportInterpret = false;
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(gene, null);
                 if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
-                    report = Genes.MSI_GENES.contains(gene.gene());
+                    reportInterpret = report && Genes.MSI_GENES.contains(gene.gene());
+                } else {
+                    reportInterpret = report;
                 }
-                evidences.add(evidence(variant, gene, report, "gene", diagnosticPatientData));
+
+                evidences.add(evidence(variant, gene, reportInterpret, "gene", diagnosticPatientData));
             }
         }
 

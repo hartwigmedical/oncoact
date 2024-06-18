@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.hartwig.hmftools.datamodel.linx.HomozygousDisruption;
+import com.hartwig.oncoact.protect.EvidenceType;
 import com.hartwig.oncoact.protect.ProtectEvidence;
+import com.hartwig.oncoact.util.Genes;
 import com.hartwig.oncoact.util.ListUtil;
 import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
@@ -28,7 +30,7 @@ public class DisruptionEvidence {
         this.personalizedEvidenceFactory = personalizedEvidenceFactory;
         this.actionableGenes = actionableGenes.stream()
                 .filter(x -> x.event() == GeneEvent.ANY_MUTATION || x.event() == GeneEvent.INACTIVATION || x.event() == GeneEvent.DELETION
-                        || x.event() == GeneEvent.UNDEREXPRESSION)
+                        || x.event() == GeneEvent.UNDEREXPRESSION || x.event() == GeneEvent.ABSENCE_OF_PROTEIN)
                 .collect(Collectors.toList());
     }
 
@@ -50,7 +52,18 @@ public class DisruptionEvidence {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(homozygousDisruption.gene())) {
-                ProtectEvidence evidence = personalizedEvidenceFactory.somaticReportableEvidence(actionable, diagnosticPatientData, true)
+
+                boolean report = false;
+                if (Genes.MSI_GENES.contains(actionable.gene())) {
+                    EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
+                    if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                        report = true;
+                    }
+                } else {
+                    report = true;
+                }
+
+                ProtectEvidence evidence = personalizedEvidenceFactory.somaticReportableEvidence(actionable, diagnosticPatientData, report)
                         .gene(homozygousDisruption.gene())
                         .transcript(homozygousDisruption.transcript())
                         .isCanonical(homozygousDisruption.isCanonical())
