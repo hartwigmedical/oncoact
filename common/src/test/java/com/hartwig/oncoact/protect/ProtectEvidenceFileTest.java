@@ -1,6 +1,7 @@
 package com.hartwig.oncoact.protect;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class ProtectEvidenceFileTest {
     @Test
     public void canReadProtectEvidenceFile() throws IOException {
         List<ProtectEvidence> evidences = ProtectEvidenceFile.read(EVIDENCE_TSV);
-        assertEquals(5, evidences.size());
+        assertEquals(7, evidences.size());
 
         // evidences 1
         ProtectEvidence evidence1 = findByTreatmentAndEvent(evidences, "Cobimetinib + Vemurafenib", "p.Val600Glu");
@@ -79,6 +80,38 @@ public class ProtectEvidenceFileTest {
         assertEquals(Sets.newHashSet("https://www.google.com/#q=FDA"), evidence5Source1.sourceUrls());
         assertEquals(EvidenceType.SIGNATURE, evidence5Source1.evidenceType());
         assertTrue(evidence5Source1.evidenceUrls().isEmpty());
+
+        // evidences 6
+        ProtectEvidence evidence6 = findByTrial(evidences, "NCT1");
+        assertEquals(1, evidence6.sources().size());
+        assertEquals("NCT1", evidence6.clinicalTrial().studyNctId());
+        assertEquals("study1", evidence6.clinicalTrial().studyTitle());
+        assertEquals("study1", evidence6.clinicalTrial().studyAcronym());
+        assertEquals("both", evidence6.clinicalTrial().gender());
+        assertEquals(Sets.newHashSet("Netherlands"), evidence6.clinicalTrial().countriesOfStudy());
+        assertEquals(Sets.newHashSet("Talazoparib"), evidence6.clinicalTrial().therapyNames());
+
+        KnowledgebaseSource evidence6Source1 = findBySource(evidence6.sources(), Knowledgebase.CKB_TRIAL);
+        assertEquals("HRD pos", evidence6Source1.sourceEvent());
+        assertEquals(Sets.newHashSet("https://ckbhome.jax.org"), evidence6Source1.sourceUrls());
+        assertEquals(EvidenceType.SIGNATURE, evidence6Source1.evidenceType());
+        assertTrue(evidence6Source1.evidenceUrls().isEmpty());
+
+        // evidences 7
+        ProtectEvidence evidence7 = findByTrial(evidences, "NCT2");
+        assertEquals(1, evidence7.sources().size());
+        assertEquals("NCT2", evidence7.clinicalTrial().studyNctId());
+        assertEquals("study2", evidence7.clinicalTrial().studyTitle());
+        assertNull(evidence7.clinicalTrial().studyAcronym());
+        assertEquals("both", evidence7.clinicalTrial().gender());
+        assertEquals(ProtectEvidenceFile.stringToSet("Belgium,Netherlands"), evidence7.clinicalTrial().countriesOfStudy());
+        assertEquals(Sets.newHashSet("Dabrafenib"), evidence7.clinicalTrial().therapyNames());
+
+        KnowledgebaseSource evidence7Source1 = findBySource(evidence7.sources(), Knowledgebase.CKB_TRIAL);
+        assertEquals("HRD pos", evidence7Source1.sourceEvent());
+        assertEquals(Sets.newHashSet("https://ckbhome.jax.org"), evidence7Source1.sourceUrls());
+        assertEquals(EvidenceType.SIGNATURE, evidence7Source1.evidenceType());
+        assertTrue(evidence7Source1.evidenceUrls().isEmpty());
     }
 
     @Test
@@ -107,6 +140,17 @@ public class ProtectEvidenceFileTest {
                 .build());
 
         assertEquals(sources, ProtectEvidenceFile.stringToSources(ProtectEvidenceFile.sourcesToString(sources)));
+    }
+
+    @NotNull
+    private static ProtectEvidence findByTrial(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String trial) {
+        for (ProtectEvidence evidence : evidences) {
+            if (evidence.clinicalTrial().studyNctId().equals(trial)) {
+                return evidence;
+            }
+        }
+
+        throw new IllegalStateException("Could not find evidence with trial: " + trial);
     }
 
     @NotNull

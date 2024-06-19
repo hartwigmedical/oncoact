@@ -1,6 +1,8 @@
-gene	transcript	isCanonical	event	eventIsHighDriver	germline	reported	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	matchGender	treatment	onLabel	level	direction	sources
-BRAF	123	true	p.Val600Glu	true	false	true							Cobimetinib + Vemurafenib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
-BRAF	123	true	p.Val600Glu	true	false	true							Dabrafenib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA,https://www.google.com/#q=NCCN|HOTSPOT_MUTATION|
-BRAF	123	true	p.Val600Glu	true	false	true							Dabrafenib + Trametinib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot||HOTSPOT_MUTATION|http://www.ncbi.nlm.nih.gov/pubmed/25399551,http://www.ncbi.nlm.nih.gov/pubmed/27283860;CKB_TRIAL|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
-BRAF	123	true	p.Val600Glu	true	false	true							Vemurafenib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
-			some mutation	false	false	true							Vemurafenib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|SIGNATURE|
+gene	transcript	isCanonical	event	eventIsHighDriver	germline	reported	studyNctId	studyTitle	studyAcronym	studyGender	countriesOfStudy	matchGender	treatment	sourceRelevantTreatmentApproach	relevantTreatmentApproach	onLabel	level	direction	sources
+BRAF	123	true	p.Val600Glu	true	false	true							Cobimetinib + Vemurafenib	BRAF inibitor		false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
+BRAF	123	true	p.Val600Glu	true	false	true							Dabrafenib		Dabrafenib	false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA,https://www.google.com/#q=NCCN|HOTSPOT_MUTATION|
+BRAF	123	true	p.Val600Glu	true	false	true							Dabrafenib + Trametinib			false	A	RESPONSIVE	CKB_EVIDENCE|hotspot||HOTSPOT_MUTATION|http://www.ncbi.nlm.nih.gov/pubmed/25399551,http://www.ncbi.nlm.nih.gov/pubmed/27283860;CKB_TRIAL|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
+BRAF	123	true	p.Val600Glu	true	false	true							Vemurafenib			false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|HOTSPOT_MUTATION|
+			some mutation	false	false	true							Vemurafenib			false	A	RESPONSIVE	CKB_EVIDENCE|hotspot|https://www.google.com/#q=FDA|SIGNATURE|
+			HR deficiency		false	false	NCT1	study1	study1	both	Netherlands		Talazoparib			false	B	RESPONSIVE	CKB_TRIAL|HRD pos|https://ckbhome.jax.org|SIGNATURE||
+			HR deficiency		false	true	NCT2	study2		both	Belgium,Netherlands		Dabrafenib			true	B	RESPONSIVE	CKB_TRIAL|HRD pos|https://ckbhome.jax.org|SIGNATURE||
