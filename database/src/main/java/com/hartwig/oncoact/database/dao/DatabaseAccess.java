@@ -43,9 +43,8 @@ public class DatabaseAccess implements AutoCloseable {
             throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
-        String password = System.getenv().get(passwordEnvVariable);
 
-        this.connection = DriverManager.getConnection(url, userName, password);
+        this.connection = DriverManager.getConnection(url, userName, passwordEnvVariable);
         String catalog = connection.getCatalog();
         LOGGER.debug("Connecting to database '{}'", catalog);
         DSLContext context = DSL.using(connection, SQLDialect.MYSQL, settings(catalog));
@@ -93,9 +92,8 @@ public class DatabaseAccess implements AutoCloseable {
             return null;
         }
 
-        return new Settings()
-                .withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG).withOutput(catalog)))
-                .withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
+        return new Settings().withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG)
+                .withOutput(catalog))).withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
     }
 
     public void writeProtectEvidence(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
