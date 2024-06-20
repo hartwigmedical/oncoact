@@ -5,6 +5,7 @@ import static com.hartwig.oncoact.util.ActionabilityIntervation.setToField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +57,8 @@ public class ClinicalEvidenceFunctions {
     private static final String PREDICTED_SYMBOL = "P";
     private static final EnumMap<EvidenceDirection, Integer> DIRECTION_PRIORITY_MAP =
             EvidenceDirectionComparator.generateDirectionPriorityMap();
+    private static final HashMap<Boolean, Integer> TUMOR_TYPE_PRIORITY_MAP =
+            EvidenceTumorTypeSpecificComparator.generateTumorTypePriorityMap();
 
     private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
             Sets.newHashSet(EvidenceDirection.RESISTANT, EvidenceDirection.PREDICTED_RESISTANT);
@@ -200,14 +203,30 @@ public class ClinicalEvidenceFunctions {
     }
 
     public static boolean priorityEvidence(@NotNull ProtectEvidence evidence, @NotNull ProtectEvidence evidenceToCheck) {
-        if (evidence.level().equals(evidenceToCheck.level())) {
-            if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
+        //To determine highest evidence:
+        // - On label is higher than off label onless level/direction
+        // - When on-label is the same determine highest level and direction
+        if (TUMOR_TYPE_PRIORITY_MAP.get(evidence.onLabel()) < TUMOR_TYPE_PRIORITY_MAP.get(evidenceToCheck.onLabel())) {
+            if (evidence.level().equals(evidenceToCheck.level())) {
+                if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
+                    return true;
+                } else {
+                    return DIRECTION_PRIORITY_MAP.get(evidence.direction()) > DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
+                }
+            } else if (evidenceToCheck.level().isHigher(evidence.level())) {
                 return true;
-            } else {
-                return DIRECTION_PRIORITY_MAP.get(evidence.direction()) < DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
             }
-        } else if (!evidenceToCheck.level().isHigher(evidence.level())) {
-            return true;
+
+        } else {
+            if (evidence.level().equals(evidenceToCheck.level())) {
+                if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
+                    return true;
+                } else {
+                    return DIRECTION_PRIORITY_MAP.get(evidence.direction()) < DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
+                }
+            } else if (!evidenceToCheck.level().isHigher(evidence.level())) {
+                return true;
+            }
         }
         return false;
     }
