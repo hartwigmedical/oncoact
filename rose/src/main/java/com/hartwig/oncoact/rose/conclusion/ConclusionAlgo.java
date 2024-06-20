@@ -145,7 +145,7 @@ public final class ConclusionAlgo {
         conclusionMerged.addAll(conclusion);
         generateTotalResults(conclusionMerged, actionabilityMap, oncogenic, actionable);
 
-        return ImmutableActionabilityConclusion.builder().conclusion(conclusion).build();
+        return ImmutableActionabilityConclusion.builder().conclusion(conclusionMerged).build();
     }
 
     @NotNull

@@ -145,8 +145,10 @@ public class ProtectEvidenceFileTest {
     @NotNull
     private static ProtectEvidence findByTrial(@NotNull Iterable<ProtectEvidence> evidences, @NotNull String trial) {
         for (ProtectEvidence evidence : evidences) {
-            if (evidence.clinicalTrial().studyNctId().equals(trial)) {
-                return evidence;
+            if (evidence.clinicalTrial() != null) {
+                if (evidence.clinicalTrial().studyNctId().equals(trial)) {
+                    return evidence;
+                }
             }
         }
 

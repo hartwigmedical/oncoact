@@ -54,13 +54,16 @@ public class DisruptionEvidence {
             if (actionable.gene().equals(homozygousDisruption.gene())) {
 
                 boolean report = false;
+                EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
+
                 if (Genes.MSI_GENES.contains(actionable.gene())) {
-                    EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
                     if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
                         report = true;
                     }
                 } else {
-                    report = true;
+                    if (!type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
+                        report = true;
+                    }
                 }
 
                 ProtectEvidence evidence = personalizedEvidenceFactory.somaticReportableEvidence(actionable, diagnosticPatientData, report)

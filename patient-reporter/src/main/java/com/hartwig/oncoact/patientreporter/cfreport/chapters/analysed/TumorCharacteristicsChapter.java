@@ -188,7 +188,7 @@ public class TumorCharacteristicsChapter implements ReportChapter {
         reportDocument.add(createCharacteristicDiv("Tumor mutational burden",
                 mutationalBurdenString,
                 "The tumor mutational burden score represents the number of all somatic variants across the whole genome of the "
-                        + "tumor per Mb. Patients with a mutational burden over 16 could be eligible for immunotherapy studies.",
+                        + "tumor per Mb. Patients with a mutational burden over 10 could be eligible for immunotherapy studies.",
                 mutationalBurdenChart,
                 Strings.EMPTY,
                 false));

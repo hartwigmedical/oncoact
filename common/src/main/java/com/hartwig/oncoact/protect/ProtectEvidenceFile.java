@@ -14,11 +14,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.hartwig.oncoact.util.ActionabilityIntervation;
 import com.hartwig.oncoact.util.CsvFileReader;
+import com.hartwig.serve.datamodel.ClinicalTrial;
 import com.hartwig.serve.datamodel.EvidenceDirection;
 import com.hartwig.serve.datamodel.EvidenceLevel;
 import com.hartwig.serve.datamodel.ImmutableClinicalTrial;
 import com.hartwig.serve.datamodel.ImmutableTreatment;
 import com.hartwig.serve.datamodel.Knowledgebase;
+import com.hartwig.serve.datamodel.Treatment;
 
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -125,6 +127,46 @@ public final class ProtectEvidenceFile {
     private static ProtectEvidence fromLine(@NotNull Map<String, Integer> fields, @NotNull String line) {
         String[] values = line.split(FIELD_DELIMITER, -1);
 
+        boolean isClinicalTrial = fields.containsKey("studyNctId") && !values[fields.get("studyNctId")].isEmpty();
+        boolean isTreatment = !isClinicalTrial && fields.containsKey("treatment") && !values[fields.get("treatment")].isEmpty();
+
+        Treatment treatment = null;
+        ClinicalTrial clinicalTrial = null;
+        if (isTreatment) {
+            treatment = ImmutableTreatment.builder()
+                    .name(values[fields.get("treatment")])
+                    .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") && !values[fields.get(
+                            "treatmentApproachesDrugClass")].isEmpty()
+                            ? stringToSet(values[fields.get("treatmentApproachesDrugClass")])
+                            : Sets.newHashSet())
+                    .treatmentApproachesTherapy(
+                            fields.containsKey("treatmentApproachesTherapy") && !values[fields.get("treatmentApproachesTherapy")].isEmpty()
+                                    ? stringToSet(values[fields.get("treatmentApproachesTherapy")])
+                                    : Sets.newHashSet())
+                    .build();
+        } else if (isClinicalTrial) {
+            clinicalTrial = ImmutableClinicalTrial.builder()
+                    .studyNctId(fields.containsKey("studyNctId") && !values[fields.get("studyNctId")].isEmpty()
+                            ? values[fields.get("studyNctId")]
+                            : Strings.EMPTY)
+                    .studyTitle(fields.containsKey("studyTitle") && !values[fields.get("studyTitle")].isEmpty()
+                            ? values[fields.get("studyTitle")]
+                            : Strings.EMPTY)
+                    .studyAcronym(fields.containsKey("studyAcronym") && !values[fields.get("studyAcronym")].isEmpty()
+                            ? emptyToNullString(values[fields.get("studyAcronym")])
+                            : null)
+                    .gender(fields.containsKey("studyGender") && !values[fields.get("studyGender")].isEmpty()
+                            ? emptyToNullString(values[fields.get("studyGender")])
+                            : null)
+                    .countriesOfStudy(fields.containsKey("countriesOfStudy") && !values[fields.get("countriesOfStudy")].isEmpty()
+                            ? stringToSet(values[fields.get("countriesOfStudy")])
+                            : Sets.newHashSet())
+                    .therapyNames(
+                            fields.containsKey("treatment") && !values[fields.get("treatment")].isEmpty() ? stringToSet(values[fields.get(
+                                    "treatment")]) : Sets.newHashSet())
+                    .build();
+        }
+
         return ImmutableProtectEvidence.builder()
                 .gene(emptyToNullString(values[fields.get("gene")]))
                 .transcript(emptyToNullString(values[fields.get("transcript")]))
@@ -133,24 +175,9 @@ public final class ProtectEvidenceFile {
                 .eventIsHighDriver(emptyToNullBoolean(values[fields.get("eventIsHighDriver")]))
                 .germline(Boolean.parseBoolean(values[fields.get("germline")]))
                 .reported(Boolean.parseBoolean(values[fields.get("reported")]))
-                .clinicalTrial(ImmutableClinicalTrial.builder()
-                        .studyNctId(fields.containsKey("studyNctId") ? values[fields.get("studyNctId")] : Strings.EMPTY)
-                        .studyTitle(fields.containsKey("studyTitle") ? values[fields.get("studyTitle")] : Strings.EMPTY)
-                        .studyAcronym(fields.containsKey("studyAcronym") ? emptyToNullString(values[fields.get("studyAcronym")]) : null)
-                        .gender(fields.containsKey("studyGender") ? emptyToNullString(values[fields.get("studyGender")]) : null)
-                        .countriesOfStudy(fields.containsKey("countriesOfStudy")
-                                ? stringToSet(values[fields.get("countriesOfStudy")])
-                                : Sets.newHashSet())
-                        .therapyNames(fields.containsKey("treatment") ? stringToSet(values[fields.get("treatment")]) : Sets.newHashSet())
-                        .build())
+                .clinicalTrial(clinicalTrial)
                 .matchGender(emptyToNullBoolean(values[fields.get("matchGender")]))
-                .treatment(ImmutableTreatment.builder()
-                        .name(values[fields.get("treatment")])
-                        .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(values[fields.get(
-                                "treatmentApproachesDrugClass")]) : Sets.newHashSet())
-                        .treatmentApproachesTherapy(fields.containsKey("treatmentApproachesTherapy") ? stringToSet(values[fields.get(
-                                "treatmentApproachesTherapy")]) : Sets.newHashSet())
-                        .build())
+                .treatment(treatment)
                 .onLabel(Boolean.parseBoolean(values[fields.get("onLabel")]))
                 .level(EvidenceLevel.valueOf(values[fields.get("level")]))
                 .direction(EvidenceDirection.valueOf(values[fields.get("direction")]))

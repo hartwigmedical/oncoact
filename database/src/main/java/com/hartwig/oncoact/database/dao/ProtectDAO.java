@@ -97,13 +97,17 @@ class ProtectDAO {
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyTitle() : null,
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).studyAcronym() : null,
                     evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).gender() : null,
-                    evidence.clinicalTrial() != null ? Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy() : null,
+                    evidence.clinicalTrial() != null
+                            ? setTostring(Objects.requireNonNull(evidence.clinicalTrial()).countriesOfStudy())
+                            : null,
                     evidence.matchGender(),
                     ActionabilityIntervation.therapyName(evidence.clinicalTrial(), evidence.treatment()),
-                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
-                            .treatmentApproachesDrugClass()) : null,
-                    evidence.treatment() != null ? treatmentApproachToString(Objects.requireNonNull(evidence.treatment())
-                            .treatmentApproachesTherapy()) : null,
+                    evidence.treatment() != null
+                            ? setTostring(Objects.requireNonNull(evidence.treatment()).treatmentApproachesDrugClass())
+                            : null,
+                    evidence.treatment() != null
+                            ? setTostring(Objects.requireNonNull(evidence.treatment()).treatmentApproachesTherapy())
+                            : null,
                     evidence.onLabel(),
                     evidence.level().toString(),
                     evidence.direction().toString(),
@@ -118,7 +122,7 @@ class ProtectDAO {
     }
 
     @Nullable
-    private static String treatmentApproachToString(@NotNull Set<String> treatmentApproaches) {
+    private static String setTostring(@NotNull Set<String> treatmentApproaches) {
         StringJoiner joiner = new StringJoiner(TREATMENT_APPROACH_DELIMITER);
         for (String url : treatmentApproaches) {
             joiner.add(url);

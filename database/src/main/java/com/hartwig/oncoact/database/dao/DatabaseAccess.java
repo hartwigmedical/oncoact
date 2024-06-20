@@ -93,9 +93,8 @@ public class DatabaseAccess implements AutoCloseable {
             return null;
         }
 
-        return new Settings()
-                .withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG).withOutput(catalog)))
-                .withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
+        return new Settings().withRenderMapping(new RenderMapping().withSchemata(new MappedSchema().withInput(DEV_CATALOG)
+                .withOutput(catalog))).withRenderQuotedNames(RenderQuotedNames.EXPLICIT_DEFAULT_UNQUOTED);
     }
 
     public void writeProtectEvidence(@NotNull String sample, @NotNull List<ProtectEvidence> evidence) {
