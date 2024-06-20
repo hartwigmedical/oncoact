@@ -43,8 +43,9 @@ public class DatabaseAccess implements AutoCloseable {
             throws SQLException {
         System.setProperty("org.jooq.no-logo", "true");
         System.setProperty("org.jooq.no-tips", "true");
+        String password = System.getenv().get(passwordEnvVariable);
 
-        this.connection = DriverManager.getConnection(url, userName, passwordEnvVariable);
+        this.connection = DriverManager.getConnection(url, userName, password);
         String catalog = connection.getCatalog();
         LOGGER.debug("Connecting to database '{}'", catalog);
         DSLContext context = DSL.using(connection, SQLDialect.MYSQL, settings(catalog));
