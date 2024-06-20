@@ -135,21 +135,35 @@ public final class ProtectEvidenceFile {
         if (isTreatment) {
             treatment = ImmutableTreatment.builder()
                     .name(values[fields.get("treatment")])
-                    .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") ? stringToSet(values[fields.get(
-                            "treatmentApproachesDrugClass")]) : Sets.newHashSet())
-                    .treatmentApproachesTherapy(fields.containsKey("treatmentApproachesTherapy") ? stringToSet(values[fields.get(
-                            "treatmentApproachesTherapy")]) : Sets.newHashSet())
+                    .treatmentApproachesDrugClass(fields.containsKey("treatmentApproachesDrugClass") && !values[fields.get(
+                            "treatmentApproachesDrugClass")].isEmpty()
+                            ? stringToSet(values[fields.get("treatmentApproachesDrugClass")])
+                            : Sets.newHashSet())
+                    .treatmentApproachesTherapy(
+                            fields.containsKey("treatmentApproachesTherapy") && !values[fields.get("treatmentApproachesTherapy")].isEmpty()
+                                    ? stringToSet(values[fields.get("treatmentApproachesTherapy")])
+                                    : Sets.newHashSet())
                     .build();
         } else if (isClinicalTrial) {
             clinicalTrial = ImmutableClinicalTrial.builder()
-                    .studyNctId(fields.containsKey("studyNctId") ? values[fields.get("studyNctId")] : Strings.EMPTY)
-                    .studyTitle(fields.containsKey("studyTitle") ? values[fields.get("studyTitle")] : Strings.EMPTY)
-                    .studyAcronym(fields.containsKey("studyAcronym") ? emptyToNullString(values[fields.get("studyAcronym")]) : null)
-                    .gender(fields.containsKey("studyGender") ? emptyToNullString(values[fields.get("studyGender")]) : null)
-                    .countriesOfStudy(fields.containsKey("countriesOfStudy")
+                    .studyNctId(fields.containsKey("studyNctId") && !values[fields.get("studyNctId")].isEmpty()
+                            ? values[fields.get("studyNctId")]
+                            : Strings.EMPTY)
+                    .studyTitle(fields.containsKey("studyTitle") && !values[fields.get("studyTitle")].isEmpty()
+                            ? values[fields.get("studyTitle")]
+                            : Strings.EMPTY)
+                    .studyAcronym(fields.containsKey("studyAcronym") && !values[fields.get("studyAcronym")].isEmpty()
+                            ? emptyToNullString(values[fields.get("studyAcronym")])
+                            : null)
+                    .gender(fields.containsKey("studyGender") && !values[fields.get("studyGender")].isEmpty()
+                            ? emptyToNullString(values[fields.get("studyGender")])
+                            : null)
+                    .countriesOfStudy(fields.containsKey("countriesOfStudy") && !values[fields.get("countriesOfStudy")].isEmpty()
                             ? stringToSet(values[fields.get("countriesOfStudy")])
                             : Sets.newHashSet())
-                    .therapyNames(fields.containsKey("treatment") ? stringToSet(values[fields.get("treatment")]) : Sets.newHashSet())
+                    .therapyNames(
+                            fields.containsKey("treatment") && !values[fields.get("treatment")].isEmpty() ? stringToSet(values[fields.get(
+                                    "treatment")]) : Sets.newHashSet())
                     .build();
         }
 
