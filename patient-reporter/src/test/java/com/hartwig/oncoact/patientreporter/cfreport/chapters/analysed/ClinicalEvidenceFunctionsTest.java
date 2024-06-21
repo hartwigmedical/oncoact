@@ -61,26 +61,6 @@ public class ClinicalEvidenceFunctionsTest {
         assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.C,
                 EvidenceDirection.RESISTANT,
                 true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
-
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.B,
-                EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESISTANT, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESPONSIVE, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.PREDICTED_RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.C, EvidenceDirection.RESPONSIVE, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.C,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
-
     }
 
     @NotNull

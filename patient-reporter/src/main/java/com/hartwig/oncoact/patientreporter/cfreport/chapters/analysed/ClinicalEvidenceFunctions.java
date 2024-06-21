@@ -139,20 +139,6 @@ public class ClinicalEvidenceFunctions {
             Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
-        evidences.sort(Comparator.comparing(ProtectEvidence::event)
-                .thenComparing(it -> {
-                    return it.gene() != null ? it.gene() : Strings.EMPTY;
-                })
-                .thenComparing(ProtectEvidence::level)
-                .thenComparing(ProtectEvidence::direction)
-                .thenComparing(ProtectEvidence::onLabel)
-                .thenComparing(it -> {
-                    return it.clinicalTrial() != null ? it.clinicalTrial().studyNctId() : Strings.EMPTY;
-                })
-                .thenComparing(it -> {
-                    return it.clinicalTrial() != null ? setToField(it.clinicalTrial().therapyNames()) : Strings.EMPTY;
-                }));
-
         for (ProtectEvidence evidence : evidences) {
             ClinicalTrial clinicalTrialModel = evidence.clinicalTrial();
 
@@ -200,7 +186,7 @@ public class ClinicalEvidenceFunctions {
             if (clinicalTrial != null && evidenceToCheckTrial != null) {
                 if (clinicalTrial.studyNctId().equals(evidenceToCheckTrial.studyNctId()) && StringUtils.equals(evidence.gene(),
                         evidenceToCheck.gene()) && evidence.event().equals(evidenceToCheck.event())) {
-                    return priorityEvidence(evidence, evidenceToCheck);
+                    return true;
                 }
             }
         }
