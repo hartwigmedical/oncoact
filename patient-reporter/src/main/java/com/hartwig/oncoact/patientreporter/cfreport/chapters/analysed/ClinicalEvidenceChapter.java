@@ -50,9 +50,12 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         allEvidences.addAll(reportedOnLabel);
         allEvidences.addAll(reportedOffLabel);
 
+        List<ProtectEvidence> reportedStudiesEvidences = Lists.newArrayList();
+        reportedStudiesEvidences.addAll(reportedStudies);
+
         addTreatmentSection(document, allEvidences);
         document.add(clinicalEvidenceFunctions.noteEvidence());
-        addTrialSection(document, reportedStudies);
+        addTrialSection(document, reportedStudiesEvidences);
         document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate "
                 + "genomic events for potential clinical study eligibility. Please note that clinical study eligibility "
                 + "depends on multiple patient and tumor characteristics of which only the genomic events are considered "
