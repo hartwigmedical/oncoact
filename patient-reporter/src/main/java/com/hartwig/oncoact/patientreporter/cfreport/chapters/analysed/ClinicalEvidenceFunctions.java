@@ -4,6 +4,7 @@ import static com.hartwig.oncoact.util.ActionabilityIntervation.setToField;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +85,20 @@ public class ClinicalEvidenceFunctions {
             Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
 
+        evidences.sort(Comparator.comparing(ProtectEvidence::event)
+                .thenComparing(it -> {
+                    return it.gene() != null ? it.gene() : Strings.EMPTY;
+                })
+                .thenComparing(ProtectEvidence::level)
+                .thenComparing(ProtectEvidence::direction)
+                .thenComparing(ProtectEvidence::onLabel)
+                .thenComparing(it -> {
+                    Set<String> treatmentApproaches =
+                            it.treatment() != null ? extractCombinedTreatmentApproaches(it.treatment().treatmentApproachesDrugClass(),
+                                    it.treatment().treatmentApproachesTherapy()) : Sets.newHashSet();
+                    return String.join(",", treatmentApproaches);
+                }));
+
         for (ProtectEvidence evidence : evidences) {
             Treatment treatmentModel = evidence.treatment();
             if (treatmentModel != null) {
@@ -127,6 +142,20 @@ public class ClinicalEvidenceFunctions {
     public static Map<String, List<ProtectEvidence>> buildTrialMap(@NotNull List<ProtectEvidence> evidences, boolean reportGermline,
             Boolean requireOnLabel, @NotNull String name) {
         Map<String, List<ProtectEvidence>> evidencePerTreatmentMap = Maps.newHashMap();
+
+        evidences.sort(Comparator.comparing(ProtectEvidence::event)
+                .thenComparing(it -> {
+                    return it.gene() != null ? it.gene() : Strings.EMPTY;
+                })
+                .thenComparing(ProtectEvidence::level)
+                .thenComparing(ProtectEvidence::direction)
+                .thenComparing(ProtectEvidence::onLabel)
+                .thenComparing(it -> {
+                    return it.clinicalTrial() != null ? it.clinicalTrial().studyNctId() : Strings.EMPTY;
+                })
+                .thenComparing(it -> {
+                    return it.clinicalTrial() != null ? setToField(it.clinicalTrial().therapyNames()) : Strings.EMPTY;
+                }));
 
         for (ProtectEvidence evidence : evidences) {
             ClinicalTrial clinicalTrialModel = evidence.clinicalTrial();
@@ -203,30 +232,14 @@ public class ClinicalEvidenceFunctions {
     }
 
     public static boolean priorityEvidence(@NotNull ProtectEvidence evidence, @NotNull ProtectEvidence evidenceToCheck) {
-        //To determine highest evidence:
-        // - On label is higher than off label onless level/direction
-        // - When on-label is the same determine highest level and direction
-        if (TUMOR_TYPE_PRIORITY_MAP.get(evidence.onLabel()) < TUMOR_TYPE_PRIORITY_MAP.get(evidenceToCheck.onLabel())) {
-            if (evidence.level().equals(evidenceToCheck.level())) {
-                if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
-                    return true;
-                } else {
-                    return DIRECTION_PRIORITY_MAP.get(evidence.direction()) > DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
-                }
-            } else if (evidenceToCheck.level().isHigher(evidence.level())) {
+        if (evidence.level().equals(evidenceToCheck.level())) {
+            if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
                 return true;
+            } else {
+                return DIRECTION_PRIORITY_MAP.get(evidence.direction()) < DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
             }
-
-        } else {
-            if (evidence.level().equals(evidenceToCheck.level())) {
-                if (DIRECTION_PRIORITY_MAP.get(evidence.direction()).equals(DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction()))) {
-                    return true;
-                } else {
-                    return DIRECTION_PRIORITY_MAP.get(evidence.direction()) < DIRECTION_PRIORITY_MAP.get(evidenceToCheck.direction());
-                }
-            } else if (!evidenceToCheck.level().isHigher(evidence.level())) {
-                return true;
-            }
+        } else if (!evidenceToCheck.level().isHigher(evidence.level())) {
+            return true;
         }
         return false;
     }
@@ -246,7 +259,7 @@ public class ClinicalEvidenceFunctions {
 
     @NotNull
     public Table createTrialTable(@NotNull String title, @NotNull Map<String, List<ProtectEvidence>> treatmentMap, float contentWidth) {
-        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 60, 150, 80, 80, 160 },
+        Table treatmentTable = TableUtil.createReportContentTable(new float[] { 20, 70, 130, 80, 80, 130 },
                 new Cell[] { tableUtil.createHeaderCell("nct ID", 2), tableUtil.createHeaderCell("Trial", 1),
                         tableUtil.createHeaderCell("Treatment", 1), tableUtil.createHeaderCell("Match", 1),
                         tableUtil.createHeaderCell("Genomic event", 1) },

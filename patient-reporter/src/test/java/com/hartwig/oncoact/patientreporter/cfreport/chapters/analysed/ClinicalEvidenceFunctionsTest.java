@@ -26,10 +26,6 @@ public class ClinicalEvidenceFunctionsTest {
     public void canDetermineHigherEvidence() {
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.B,
                 EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, false)));
-
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.B,
-                EvidenceDirection.RESPONSIVE,
                 true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
         assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.A,
                 EvidenceDirection.RESISTANT,
@@ -49,9 +45,6 @@ public class ClinicalEvidenceFunctionsTest {
 
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.B,
                 EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, false)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.B,
-                EvidenceDirection.RESPONSIVE,
                 true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
         assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.A,
                 EvidenceDirection.RESISTANT,
@@ -69,9 +62,6 @@ public class ClinicalEvidenceFunctionsTest {
                 EvidenceDirection.RESISTANT,
                 true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
 
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.B,
-                EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, false)));
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTrial(createProtectEvidenceList(EvidenceLevel.B,
                 EvidenceDirection.RESPONSIVE,
                 true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
