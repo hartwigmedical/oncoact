@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,9 +57,6 @@ public class ClinicalEvidenceFunctions {
     private static final String PREDICTED_SYMBOL = "P";
     private static final EnumMap<EvidenceDirection, Integer> DIRECTION_PRIORITY_MAP =
             EvidenceDirectionComparator.generateDirectionPriorityMap();
-    private static final HashMap<Boolean, Integer> TUMOR_TYPE_PRIORITY_MAP =
-            EvidenceTumorTypeSpecificComparator.generateTumorTypePriorityMap();
-
     private static final Set<EvidenceDirection> RESISTANT_DIRECTIONS =
             Sets.newHashSet(EvidenceDirection.RESISTANT, EvidenceDirection.PREDICTED_RESISTANT);
     private static final Set<EvidenceDirection> RESPONSE_DIRECTIONS =
