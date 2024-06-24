@@ -119,20 +119,21 @@ public class ExplanationChapter implements ReportChapter {
                 .add(createContentDiv(new String[] {
                         "When the 'tVAF', 'Biallelic', 'Hotspot' and 'Driver' are not reported for a variant, there is uncertainty "
                                 + "about the presence of the variant in the tumor." }))
-                .add(new Div().add(createParaGraphWithLinkAdd(
+                .add(new Div().add(createParaGraphWithLinkGermlineVariant(
                         "For most genes normal DNA is used as a reference and only somatic variants in tumor"
-                                + " DNA are reported. For the genes (which can be download from the ",
-                        "resources",
+                                + " DNA are reported. For the genes, both germline and somatic variants are reported because "
+                                + "they are potential therapeutic targets (",
+                        "resources, ",
                         "https://storage.googleapis.com/hmf-public/OncoAct-Resources/latest_oncoact.zip",
-                        " or the OncoAct WGS specification sheet can be downloaded from ",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
                         "https://www.oncoact.nl/specsheetOncoActWGS",
-                        ") both germline and somatic variants are reported because "
-                                + "they are potential therapeutic targets. In some cases, the OncoAct result may be a reason for referral to "
+                        "). In some cases, the OncoAct result may be a reason for referral to "
                                 + "a clinical geneticist for germline testing. Whether your patient's specific OncoAct result is reason to "
                                 + "consider germline testing should be discussed in a Molecular Tumor Board (multidisciplinary meeting of "
                                 + "cancer experts) with the participation of a clinical laboratory geneticist/clinical geneticist."))));
 
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
+        table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
 
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed gains & losses")));
@@ -195,7 +196,7 @@ public class ExplanationChapter implements ReportChapter {
                         "."))));
 
         table.addCell(TableUtil.createLayoutCell(1, 5).setHeight(30));
-        
+
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported tumor observed viral insertions")));
         table.addCell(TableUtil.createLayoutCell());
         table.addCell(TableUtil.createLayoutCell().add(createSectionTitle("Details on the reported pharmacogenetics")));
@@ -276,6 +277,18 @@ public class ExplanationChapter implements ReportChapter {
                 .add(new Text(string3))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string4).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string5));
+    }
+
+    @NotNull
+    private Paragraph createParaGraphWithLinkGermlineVariant(@NotNull String string1, @NotNull String string2, @NotNull String link,
+            @NotNull String string3, @NotNull String link2, @NotNull String string5) {
+        return new Paragraph(string1).addStyle(reportResources.subTextStyle())
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string2).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link)))
+                .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
+                .add(new Text(string3).addStyle(reportResources.urlStyle()).setAction(PdfAction.createURI(link2)))
                 .setFixedLeading(ReportResources.BODY_TEXT_LEADING)
                 .add(new Text(string5));
     }
