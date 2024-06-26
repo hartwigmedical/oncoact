@@ -130,8 +130,8 @@ public class DetailsAndDisclaimerChapter implements ReportChapter {
                 + "used to do the analyses and generate this report. Hartwig Medical Foundation is not liable and cannot be held "
                 + "accountable for any incorrectness, incompleteness or error of any other kind in these data sources, or the external "
                 + "software used to harmonize and curate these data sources."));
-        div.add(createContentParagraph("Based on the Dutch Act on Exceptional Medical Treatments (in Dutch: ‘Wet op de bijzondere "
-                + "medische verrichten’) Stichting Hartwig Medical Foundation is not authorized to interpret germline "
+        div.add(createContentParagraph("Based on the Dutch Act on Exceptional Medical Treatments (in Dutch: ‘Wet bijzondere medische "
+                + "verrichtingen’) Stichting Hartwig Medical Foundation is not authorized to interpret germline "
                 + "results, but may share data on explicit request of a licensed clinical genetics laboratory that is "
                 + "authorized to provide germline test results."));
         div.add(createContentParagraph("For feedback or complaints please contact ", ReportResources.CONTACT_EMAIL_QA + "."));

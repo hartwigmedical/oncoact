@@ -242,8 +242,8 @@ public class GenomicAlterationsChapter implements ReportChapter {
 
         contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())
                 .add(new Paragraph("\nVariant annotation is by default based on the canonical transcript. In case another transcript "
-                        + "is more commonly used in routine practice, this annotation is also provided.").addStyle(reportResources.subTextStyle()
-                        .setTextAlignment(TextAlignment.LEFT))));
+                        + "is more commonly used in routine practice, this annotation is also provided (bottom annotation).").addStyle(
+                        reportResources.subTextStyle().setTextAlignment(TextAlignment.LEFT))));
 
         if (SomaticVariants.hasNotifiableGermlineVariant(notifyGermlineStatusPerVariant)) {
             contentTable.addCell(TableUtil.createLayoutCell(1, contentTable.getNumberOfColumns())

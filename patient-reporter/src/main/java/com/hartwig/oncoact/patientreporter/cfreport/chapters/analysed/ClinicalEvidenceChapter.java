@@ -54,8 +54,9 @@ public class ClinicalEvidenceChapter implements ReportChapter {
         reportedStudiesEvidences.addAll(reportedStudies);
 
         addTreatmentSection(document, allEvidences);
-        document.add(clinicalEvidenceFunctions.noteEvidence());
         addTrialSection(document, reportedStudiesEvidences);
+
+        document.add(clinicalEvidenceFunctions.noteEvidence());
         document.add(clinicalEvidenceFunctions.note("The Clinical Knowledgebase (CKB) database is used to annotate "
                 + "genomic events for potential clinical study eligibility. Please note that clinical study eligibility "
                 + "depends on multiple patient and tumor characteristics of which only the genomic events are considered "
@@ -78,7 +79,7 @@ public class ClinicalEvidenceChapter implements ReportChapter {
 
         Map<String, List<ProtectEvidence>> onLabelTreatments =
                 ClinicalEvidenceFunctions.buildTrialMap(evidences, flagGermline, true, "study");
-        document.add(clinicalEvidenceFunctions.createTrialTable("Tumor type specific clinical studies (NL)",
+        document.add(clinicalEvidenceFunctions.createTrialTable("Potentially relevant clinical studies (NL)",
                 onLabelTreatments,
                 contentWidth()));
     }
