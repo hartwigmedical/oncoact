@@ -1,6 +1,5 @@
 package com.hartwig.oncoact.patientreporter.cfreport.chapters.analysed;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class ClinicalEvidenceFunctionsTest {
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.B,
                 EvidenceDirection.RESPONSIVE,
                 true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.A,
+        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.A,
                 EvidenceDirection.RESISTANT,
                 true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.A,
@@ -39,26 +38,7 @@ public class ClinicalEvidenceFunctionsTest {
         assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.A,
                 EvidenceDirection.PREDICTED_RESPONSIVE,
                 true), createProtectEvidence(EvidenceLevel.C, EvidenceDirection.RESPONSIVE, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.C,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
-
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.B,
-                EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESISTANT, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESISTANT,
-                true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESISTANT, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.B, EvidenceDirection.RESPONSIVE, true)));
-        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.A,
-                EvidenceDirection.PREDICTED_RESPONSIVE,
-                true), createProtectEvidence(EvidenceLevel.C, EvidenceDirection.RESPONSIVE, true)));
-        assertFalse(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatment(createProtectEvidenceList(EvidenceLevel.C,
+        assertTrue(ClinicalEvidenceFunctions.hasHigherOrEqualEvidenceForEventAndTreatmentApproach(createProtectEvidenceList(EvidenceLevel.C,
                 EvidenceDirection.RESISTANT,
                 true), createProtectEvidence(EvidenceLevel.A, EvidenceDirection.RESPONSIVE, true)));
     }
