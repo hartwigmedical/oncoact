@@ -17,10 +17,13 @@ import com.hartwig.serve.datamodel.gene.ActionableGene;
 import com.hartwig.serve.datamodel.gene.GeneEvent;
 import com.hartwig.silo.diagnostic.client.model.PatientInformationResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CopyNumberEvidence {
+    private static final Logger LOGGER = LogManager.getLogger(CopyNumberEvidence.class);
 
     @NotNull
     private final PersonalizedEvidenceFactory personalizedEvidenceFactory;
@@ -72,20 +75,23 @@ public class CopyNumberEvidence {
         List<ProtectEvidence> result = Lists.newArrayList();
         for (ActionableGene actionable : actionableGenes) {
             if (actionable.gene().equals(gainLoss.gene()) && isTypeMatch(actionable, gainLoss)) {
+                boolean reportInterpretation;
                 EvidenceType type = PersonalizedEvidenceFactory.determineEvidenceType(actionable, null);
                 if (type.equals(EvidenceType.ABSENCE_OF_PROTEIN)) {
-                    report = Genes.MSI_GENES.contains(actionable.gene());
+                    reportInterpretation = Genes.MSI_GENES.contains(actionable.gene());
                 } else if (type.equals(EvidenceType.PRESENCE_OF_PROTEIN)) {
-                    report = false;
+                    reportInterpretation = false;
+                } else {
+                    reportInterpretation = report;
                 }
-
-                ProtectEvidence evidence = personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, report)
-                        .gene(gainLoss.gene())
-                        .transcript(gainLoss.transcript())
-                        .isCanonical(gainLoss.isCanonical())
-                        .event(EventGenerator.gainLossEvent(gainLoss))
-                        .eventIsHighDriver(EvidenceDriverLikelihood.interpretGainLoss())
-                        .build();
+                ProtectEvidence evidence =
+                        personalizedEvidenceFactory.somaticEvidence(actionable, diagnosticPatientData, reportInterpretation)
+                                .gene(gainLoss.gene())
+                                .transcript(gainLoss.transcript())
+                                .isCanonical(gainLoss.isCanonical())
+                                .event(EventGenerator.gainLossEvent(gainLoss))
+                                .eventIsHighDriver(EvidenceDriverLikelihood.interpretGainLoss())
+                                .build();
                 result.add(evidence);
             }
         }
